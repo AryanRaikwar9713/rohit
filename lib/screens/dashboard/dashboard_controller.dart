@@ -313,7 +313,7 @@ class DashboardController extends GetxController {
 
   Future<void> handleDonationScreen() async {
     if (getBoolAsync(SharedPreferenceConst.IS_LOGGED_IN)) {
-      addScreenAtPosition(2, const DonationScreen());
+      addScreenAtPosition(2, const ImpactDashboardScreen());
     } else {
       addScreenAtPosition(2, const DonationLoginScreen());
     }

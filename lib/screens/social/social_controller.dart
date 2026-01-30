@@ -117,15 +117,17 @@ class SocialController extends GetxController {
         hasMoreData.value = d.data?.pagination?.hasNextPage ?? false;
         currentPage.value++;
       }, onFailure: (s) {
-        print("objectbs");
+        hasMoreData.value = false;
       }, onError: (e) {
         Get.snackbar("Error", e);
+        hasMoreData.value = false;
       });
 
       isLoading.value = false;
     } catch (e) {
       print("Error $e");
       isLoading.value = false;
+      hasMoreData.value = false;
     }
   }
 

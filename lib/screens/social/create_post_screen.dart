@@ -228,25 +228,42 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             ),
             title: Text(
               'Create Post',
-              style: boldTextStyle(size: 18, color: Colors.white),
+              style: boldTextStyle(size: 20, color: Colors.white),
             ),
             actions: [
               Obx(() => TextButton(
-                    onPressed:
-                        (_isPosting || _socialController.isUploadingPost.value)
-                            ? null
-                            : _createPost,
-                    child: Text(
-                      'Post',
-                      style: boldTextStyle(
-                        size: 16,
-                        color: (_isPosting ||
-                                _socialController.isUploadingPost.value)
-                            ? Colors.grey
-                            : appColorPrimary,
-                      ),
+                onPressed:
+                (_isPosting || _socialController.isUploadingPost.value)
+                    ? null
+                    : _createPost,
+                child: (_isPosting || _socialController.isUploadingPost.value)
+                    ? Text(
+                  'Post',
+                  style: boldTextStyle(
+                    size: 18,
+                    color: Colors.grey,
+                  ),
+                )
+                    : ShaderMask(
+                  shaderCallback: (Rect bounds) {
+                    return LinearGradient(
+                      colors: [
+                        Colors.yellow.shade400,  // Yellow
+                        Colors.orange.shade400,  // Orange
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ).createShader(bounds);
+                  },
+                  child: Text(
+                    'Post',
+                    style: boldTextStyle(
+                      size: 18,
+                      color: Colors.white, // IMPORTANT: White रखें
                     ),
-                  )),
+                  ),
+                ),
+              )),
             ],
           ),
           body: SingleChildScrollView(
@@ -377,16 +394,45 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(
-                            Icons.add_photo_alternate_outlined,
-                            color: appColorPrimary,
-                            size: 48,
+                          ShaderMask(
+                            shaderCallback: (Rect bounds) {
+                              return LinearGradient(
+                                colors: [
+                                  Colors.yellow.shade400,  // Yellow
+                                  Colors.orange.shade400,  // Orange
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ).createShader(bounds);
+                            },
+                            child: Icon(
+                              Icons.add_photo_alternate_outlined,
+                              size: 48,
+                              color: Colors.white, // IMPORTANT: White रखें
+                            ),
                           ),
-                          12.height,
-                          Text(
-                            'Add Photo',
-                            style:
-                                boldTextStyle(size: 16, color: appColorPrimary),
+
+                          SizedBox(height: 12),
+
+                          // Text with Gradient
+                          ShaderMask(
+                            shaderCallback: (Rect bounds) {
+                              return LinearGradient(
+                                colors: [
+                                  Colors.yellow.shade400,  // Yellow
+                                  Colors.orange.shade400,  // Orange
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ).createShader(bounds);
+                            },
+                            child: Text(
+                              'Add Photo',
+                              style: boldTextStyle(
+                                size: 16,
+                                color: Colors.white, // IMPORTANT: White रखें
+                              ),
+                            ),
                           ),
                           4.height,
                           Text(
@@ -478,7 +524,24 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
                 //
                 10.height,
-                ElevatedButton(
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.yellow.shade400,
+                        Colors.orange.shade400,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Colors.transparent,
+                      width: 1,
+                    ),
+                  ),
+                  child: ElevatedButton(
                     onPressed: () async {
                       // toast("Coming Soon");
 
@@ -498,7 +561,23 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       //
                       followController.cleareData();
                     },
-                    child: const Text("Tag People")),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      "Tag People",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

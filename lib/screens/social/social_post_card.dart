@@ -266,14 +266,26 @@ class _SocialPostCardState extends State<SocialPostCard> {
                     runSpacing: 4,
                     children: [
                       for (var i in widget.post.hashtags!.split(','))
-                        Text(
-                          '#${i.trim()}',
-                          style: GoogleFonts.roboto(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.blue[300],
+                        ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            return LinearGradient(
+                              colors: [
+                                Colors.yellow.shade400,  // Yellow
+                                Colors.orange.shade400,  // Orange
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ).createShader(bounds);
+                          },
+                          child: Text(
+                            '#${i.trim()}',
+                            style: GoogleFonts.roboto(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white, // IMPORTANT: White रखें
+                            ),
                           ),
-                        )
+                        ),
                     ],
                   ),
                 ],
@@ -310,14 +322,30 @@ class _SocialPostCardState extends State<SocialPostCard> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      WammilsLikeBotton(like: isLiked,),
+                      // Like Button
+                      WammilsLikeBotton(like: isLiked),
+
                       const SizedBox(width: 4),
-                      Text(
-                        likeCount.toString(),
-                        style: GoogleFonts.poppins(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
+
+                      // Like Count with YELLOW-ORANGE GRADIENT
+                      ShaderMask(
+                        shaderCallback: (Rect bounds) {
+                          return LinearGradient(
+                            colors: [
+                              Colors.yellow.shade400,  // Yellow
+                              Colors.orange.shade500,  // Orange
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ).createShader(bounds);
+                        },
+                        child: Text(
+                          likeCount.toString(),
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white, // IMPORTANT: White रखें
+                          ),
                         ),
                       ),
                     ],
@@ -337,7 +365,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        CupertinoIcons.chat_bubble_fill,
+                        CupertinoIcons.chat_bubble,
                         color: Colors.white,
                         size: 24,
                       ),
@@ -360,7 +388,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
                 GestureDetector(
                   onTap: widget.onSare,
                   child: Icon(
-                    CupertinoIcons.share,
+                    CupertinoIcons.paperplane,
                     color: Colors.white,
                     size: 24,
                   ),
@@ -374,10 +402,16 @@ class _SocialPostCardState extends State<SocialPostCard> {
                     // Handle donation
                   },
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: appColorPrimary,
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.yellow.shade400,  // Yellow
+                          Colors.orange.shade400,  // Orange
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: Row(
@@ -386,13 +420,13 @@ class _SocialPostCardState extends State<SocialPostCard> {
                         Icon(
                           Icons.favorite,
                           color: Colors.black,
-                          size: 14,
+                          size: 16,
                         ),
                         const SizedBox(width: 6),
                         Text(
                           'Donate 0',
                           style: GoogleFonts.poppins(
-                            fontSize: 13,
+                            fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: Colors.black,
                           ),

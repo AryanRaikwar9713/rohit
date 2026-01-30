@@ -77,10 +77,20 @@ class BottomNavigationWrapper extends StatelessWidget {
 
   Widget _navigationBarItemWidget(BottomBarItem navBar, bool isCurrentTab) {
     return NavigationDestination(
-      selectedIcon: Icon(
-        navBar.activeIcon,
-        color: appColorPrimary,
-        size: 20,
+      selectedIcon: ShaderMask(
+        shaderCallback: (bounds) => LinearGradient(
+          colors: [
+            Colors.yellow.shade400,  // Yellow
+            Colors.orange.shade500,  // Orange
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ).createShader(bounds),
+        child: Icon(
+          navBar.activeIcon,
+          color: Colors.white,
+          size: 20,
+        ),
       ),
       icon: Icon(
         navBar.icon,

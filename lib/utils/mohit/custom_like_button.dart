@@ -40,9 +40,23 @@ class CustomLikeButton extends StatelessWidget {
           ),
         ),
         if (likeCount != null)
-          Text(
-            ' $likeCount',
-            style: TextStyle(color: Colors.white),
+          ShaderMask(
+            shaderCallback: (Rect bounds) {
+              return LinearGradient(
+                colors: [
+                  Colors.yellow.shade400,  // Yellow
+                  Colors.orange.shade500,  // Orange
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ).createShader(bounds);
+            },
+            child: Text(
+              ' $likeCount',
+              style: TextStyle(
+                color: Colors.white, // IMPORTANT: White रखें
+              ),
+            ),
           ),
       ],
     );
