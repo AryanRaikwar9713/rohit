@@ -44,14 +44,30 @@ class _ReelsScreenState extends State<ReelsScreen> {
         surfaceTintColor: Colors.transparent,
         actions: [
           IconButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(Colors.red),
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(Colors.transparent), // IMPORTANT
+              padding: WidgetStatePropertyAll(EdgeInsets.all(12)),
+            ),
+            onPressed: () {
+              Get.to(() => const UploadReelScreen());
+            },
+            icon: Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.yellow.shade400,  // Yellow
+                    Colors.orange.shade400,  // Orange
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                shape: BoxShape.circle,
               ),
-              onPressed: () {
-                //add reels from hear
-                Get.to(() => const UploadReelScreen());
-              },
-              icon: Icon(Icons.add)),
+              child: Icon(Icons.add, color: Colors.white),
+            ),
+          ),
           SizedBox(
             width: 15,
           )

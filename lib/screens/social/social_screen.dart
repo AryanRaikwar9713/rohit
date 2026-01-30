@@ -41,9 +41,7 @@ class _SocialScreenState extends State<SocialScreen>
     controller = (Get.isRegistered<SocialController>())
         ? Get.find<SocialController>()
         : Get.put(SocialController());
-    _controller.addListener(() {
-      _scrollListener();
-    });
+    _controller.addListener(_scrollListener);
 
     storyController = (Get.isRegistered<StoryContrller>())
         ? Get.find<StoryContrller>()
@@ -52,14 +50,20 @@ class _SocialScreenState extends State<SocialScreen>
   }
 
   _scrollListener() {
-    print("loading More");
-    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+    if (!_controller.hasClients) return;
+    final position = _controller.position;
+    final atBottom = position.pixels >= position.maxScrollExtent - 50;
+    if (atBottom &&
+        controller.hasMoreData.value &&
+        !controller.isLoading.value) {
       controller.loadMorePosts();
     }
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_scrollListener);
+    _controller.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -124,7 +128,7 @@ class _SocialScreenState extends State<SocialScreen>
                       icon: const Icon(
                         Icons.campaign,
                         color: Colors.white,
-                        size: 22,
+                        size: 24,
                       ),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
@@ -141,7 +145,7 @@ class _SocialScreenState extends State<SocialScreen>
                           icon: const Icon(
                             Icons.notifications_none_rounded,
                             color: Colors.white,
-                            size: 22,
+                            size: 24,
                           ),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
@@ -150,11 +154,18 @@ class _SocialScreenState extends State<SocialScreen>
                           right: 8,
                           top: 10,
                           child: Container(
-                            width: 16,
-                            height: 16,
+                            width: 17,
+                            height: 17,
                             padding: const EdgeInsets.all(2),
                             decoration: BoxDecoration(
-                              color: appColorPrimary,
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.yellow.shade400,  // Yellow
+                                  Colors.orange.shade500,  // Orange
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
                               shape: BoxShape.circle,
                               border: Border.all(color: appScreenBackgroundDark, width: 1.5),
                             ),
@@ -162,7 +173,7 @@ class _SocialScreenState extends State<SocialScreen>
                               child: Text(
                                 '1',
                                 style: GoogleFonts.poppins(
-                                  fontSize: 9,
+                                  fontSize: 10,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black,
                                 ),
@@ -191,16 +202,36 @@ class _SocialScreenState extends State<SocialScreen>
           ),
           floatingActionButton: Padding(
             padding: const EdgeInsets.only(bottom: 90),
-            child: FloatingActionButton(
+            child: ElevatedButton(
               onPressed: () async {
                 Get.to(CreatePostScreen());
               },
-              backgroundColor: appColorPrimary,
-              elevation: 8,
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 28,
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(56, 56),
+                maximumSize: Size(56, 56),
+                padding: EdgeInsets.zero,
+                shape: CircleBorder(),
+                backgroundColor: Colors.transparent, // IMPORTANT
+                foregroundColor: Colors.white,
+                shadowColor: Colors.orange,
+                elevation: 8,
+              ),
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    colors: [
+                      Color(0xFFFFD700), // Gold
+                      Color(0xFFFFA500), // Orange
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+             
+                ),
+                child: Icon(Icons.add, size: 28),
               ),
             ),
           ),
@@ -432,9 +463,21 @@ class _SocialScreenState extends State<SocialScreen>
                     color: appColorPrimary.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text(
-                    'SPONSORED',
-                    style: boldTextStyle(size: 10, color: appColorPrimary),
+                  child:  ShaderMask(
+                    shaderCallback: (Rect bounds) {
+                      return LinearGradient(
+                        colors: [
+                          Colors.yellow.shade400,  // Yellow
+                          Colors.orange.shade400,  // Orange
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ).createShader(bounds);
+                    },
+                    child: Text(
+                      'SPONSORED',
+                      style: boldTextStyle(size: 11, color: Colors.white), // IMPORTANT: White रखें
+                    ),
                   ),
                 ),
                 8.width,
@@ -442,7 +485,7 @@ class _SocialScreenState extends State<SocialScreen>
                 const Icon(
                   Icons.info_outline,
                   color: Colors.grey,
-                  size: 16,
+                  size: 18,
                 ),
               ],
             ),
@@ -480,7 +523,14 @@ class _SocialScreenState extends State<SocialScreen>
                   width: double.infinity,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: appColorPrimary,
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.yellow.shade400,  // Yellow
+                        Colors.orange.shade400,  // Orange
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(

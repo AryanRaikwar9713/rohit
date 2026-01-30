@@ -47,8 +47,8 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   log('${FirebaseMsgConst.notificationDataKey} : ${message.data}');
   log('${FirebaseMsgConst.notificationKey} : ${message.notification}');
-  log('${FirebaseMsgConst.notificationTitleKey} : ${message.notification!.title}');
-  log('${FirebaseMsgConst.notificationBodyKey} : ${message.notification!.body}');
+  log('${FirebaseMsgConst.notificationTitleKey} : ${message.notification?.title ?? ''}');
+  log('${FirebaseMsgConst.notificationBodyKey} : ${message.notification?.body ?? ''}');
 }
 
 Rx<BaseLanguage> locale = LanguageEn().obs;

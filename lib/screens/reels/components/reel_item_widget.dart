@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -313,25 +314,25 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                     },
                   );
                 }),
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
 
                 // Comment Button
                 Obx(() {
                   final currentReel = _getCurrentReel();
                   final commentCount = currentReel?.stats?.commentsCount ?? 0;
                   return _buildActionButton(
-                    icon: Icons.chat_bubble_outline,
+                    icon: CupertinoIcons.chat_bubble,
                     count: commentCount,
                     onTap: () {
                       _showCommentBottomSheet();
                     },
                   );
                 }),
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
 
                 // Share Button
                 _buildActionButton(
-                  icon: Icons.send,
+                  icon: CupertinoIcons.arrowshape_turn_up_right_fill,
                   count: 0,
                   onTap: () {
                     // widget.controller.shareReel(0);
@@ -409,22 +410,50 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                         child: Blur(
                           borderRadius: BorderRadius.circular(4),
                           color: Colors.black.withOpacity(0.1),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 6),
+                          child:  Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color:
-                                    isFollowing ? Colors.green : Colors.white,
+                                color: isFollowing ? Colors.transparent : Colors.white,
                                 width: 1,
                               ),
                               borderRadius: BorderRadius.circular(4),
+                              gradient: isFollowing
+                                  ? LinearGradient(
+                                colors: [
+                                  Colors.yellow.shade400,  // Yellow
+                                  Colors.orange.shade500,  // Orange
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              )
+                                  : null,
                             ),
-                            child: Text(
-                              isFollowing ? 'Connected' : 'Connect',
+                            child: isFollowing
+                                ? ShaderMask(
+                              shaderCallback: (Rect bounds) {
+                                return LinearGradient(
+                                  colors: [
+                                    Colors.white,
+                                    Colors.white.withOpacity(0.9),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ).createShader(bounds);
+                              },
+                              child: Text(
+                                'Connected',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                                : Text(
+                              'Connect',
                               style: TextStyle(
-                                color:
-                                    isFollowing ? Colors.green : Colors.white,
+                                color: Colors.white,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -443,6 +472,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                 RichText(
                   text: TextSpan(
                     children: [
+                      // Caption (regular white text)
                       TextSpan(
                         text: widget.reel.content?.caption ?? '',
                         style: const TextStyle(
@@ -451,15 +481,30 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                           height: 1.3,
                         ),
                       ),
+
+                      // Hashtags with GRADIENT
                       if (widget.reel.content?.hashtags != null &&
                           widget.reel.content!.hashtags!.isNotEmpty)
-                        TextSpan(
-                          text:
-                              ' ${widget.reel.content?.hashtags?.join(' #') ?? ''}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                        WidgetSpan(
+                          child: ShaderMask(
+                            shaderCallback: (Rect bounds) {
+                              return LinearGradient(
+                                colors: [
+                                  Colors.yellow.shade400,  // Yellow
+                                  Colors.orange.shade500,  // Orange
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ).createShader(bounds);
+                            },
+                            child: Text(
+                              ' ${widget.reel.content!.hashtags!.join(' #')}',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white, // IMPORTANT: White रखें
+                              ),
+                            ),
                           ),
                         ),
                     ],
@@ -472,10 +517,22 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                 // Music info with dancing icon
                 Row(
                   children: [
-                    const Icon(
-                      Icons.music_note,
-                      color: Colors.white,
-                      size: 16,
+                      ShaderMask(
+                      shaderCallback: (Rect bounds) {
+                        return LinearGradient(
+                          colors: [
+                            Colors.yellow.shade400,  // Yellow
+                            Colors.orange.shade500,  // Orange
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ).createShader(bounds);
+                      },
+                      child: Icon(
+                        CupertinoIcons.music_note_2,
+                        size: 16,
+                        color: Colors.white, // IMPORTANT: White रखें
+                      ),
                     ),
                     const SizedBox(width: 4),
                     Expanded(
