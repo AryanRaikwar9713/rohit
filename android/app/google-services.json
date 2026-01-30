@@ -1,0 +1,79 @@
+{
+  "project_info": {
+    "project_number": "228110272023",
+    "firebase_url": "https://maarket-points-default-rtdb.firebaseio.com",
+    "project_id": "maarket-points",
+    "storage_bucket": "maarket-points.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:228110272023:android:bbf433ef131198d0087e52",
+        "android_client_info": {
+          "package_name": "com.anytimeott.live"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "228110272023-e67prudmcahjliotdej9skm13rbm7pkq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anytimeott.live",
+            "certificate_hash": "8e82c8dbf234ed45e56b17ff4f2677b23199f5d0"
+          }
+        },
+        {
+          "client_id": "228110272023-fjbndhfijpurgm9h0hth9hag5gkjpl1r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anytimeott.live",
+            "certificate_hash": "ea00eec8378d70a940df8fd6a532b9cd7a9b564b"
+          }
+        },
+        {
+          "client_id": "228110272023-gj4qscf8b7jf9nf22jhda0rbhrio2iip.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anytimeott.live",
+            "certificate_hash": "fc3caa21440b8e96eb769a0a26ad2198aedef22e"
+          }
+        },
+        {
+          "client_id": "228110272023-hsmjc8v02j53oq9agfq06c4qna209llk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anytimeott.live",
+            "certificate_hash": "9c54b6e8c742af6e38a54a969ad7beac81cda4b0"
+          }
+        },
+        {
+          "client_id": "228110272023-dhnin6t8nvlj5edf7j09uimtu3l2dit7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnuULTK1fQXIbK0vRPCcNx81M8mS19_fU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "228110272023-dhnin6t8nvlj5edf7j09uimtu3l2dit7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "228110272023-d4cmai99ein70d8ttl50ppvbmfgbjl25.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.anytimeott.live"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

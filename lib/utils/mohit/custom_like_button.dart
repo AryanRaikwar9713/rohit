@@ -1,0 +1,76 @@
+import 'package:flutter/material.dart';
+import 'package:streamit_laravel/screens/home/home_controller.dart';
+import 'package:get/get.dart';
+import 'package:streamit_laravel/screens/home/home_screen.dart';
+
+class CustomLikeButton extends StatelessWidget {
+  final bool isLiked;
+  final int? likeCount;
+  final Future<void> Function()? onLike;
+  const CustomLikeButton(
+      {required this.isLiked, this.likeCount, this.onLike, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          onTap: onLike,
+          child: Container(
+            // padding: EdgeInsets.all(5),
+            height: 30,
+            width: 30,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 100),
+              transitionBuilder: (child, animation) {
+                return ScaleTransition(
+                  scale: animation,
+                  child: child,
+                );
+              },
+              child: isLiked
+                  ? Image.asset(
+                      'assets/icons/like_bulbe.png',
+                      color: Colors.yellow,
+                    )
+                  : const Icon(Icons.lightbulb_outline),
+            ),
+          ),
+        ),
+        if (likeCount != null)
+          Text(
+            ' $likeCount',
+            style: TextStyle(color: Colors.white),
+          ),
+      ],
+    );
+  }
+}
+
+class CustomStreamButton extends StatelessWidget {
+  const CustomStreamButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        HomeController controller = (Get.isRegistered<HomeController>())
+            ? Get.find()
+            : Get.put(HomeController());
+
+        Get.to(HomeScreen(homeScreenController: controller));
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Image.asset(
+          "assets/launcher_icons/streamLogo.png",
+          width: 20,
+          height: 20,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
