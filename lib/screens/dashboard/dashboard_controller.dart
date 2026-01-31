@@ -282,18 +282,18 @@ class DashboardController extends GetxController {
         bottomNavItems.indexWhere((item) => item.type == BottomItem.home.name);
     if (homeIndex >= 0) {
       // Initialize VideoChannelController
-      final VideoChannelController videoChannelController =
-          getOrPutController(() => VideoChannelController());
+      final HomeController homeScreenController =
+          getOrPutController<HomeController>(() => HomeController());
       
       // Always show VideoChannelScreen first to avoid black screen
-      addScreenAtPosition(homeIndex, const VideoChannelScreen());
+      addScreenAtPosition(homeIndex, HomeScreen(homeScreenController: homeScreenController));
       
       // Load channel data if not already loaded or loading
-      // Screen will automatically update via Obx when data loads
-      if (!videoChannelController.loading.value && 
-          videoChannelController.channel.value == null) {
-        videoChannelController.getChannel();
-      }
+      // // Screen will automatically update via Obx when data loads
+      // if (!videoChannelController.loading.value &&
+      //     videoChannelController.channel.value == null) {
+      //   videoChannelController.getChannel();
+      // }
     }
   }
 

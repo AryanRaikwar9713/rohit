@@ -6,6 +6,7 @@ import '../screens/dashboard/dashboard_screen.dart';
 import '../screens/dashboard/components/menu.dart';
 import '../utils/app_common.dart';
 import '../utils/colors.dart';
+import '../utils/mohit/custom_like_button.dart';
 
 /// Wrapper widget that adds bottom navigation bar to any screen
 class BottomNavigationWrapper extends StatelessWidget {
@@ -86,17 +87,21 @@ class BottomNavigationWrapper extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ).createShader(bounds),
-        child: Icon(
-          navBar.activeIcon,
-          color: Colors.white,
-          size: 20,
-        ),
+        child: navBar.customIcon != null 
+            ? CustomStreamButton()
+            : Icon(
+                navBar.activeIcon,
+                color: Colors.white,
+                size: 20,
+              ),
       ),
-      icon: Icon(
-        navBar.icon,
-        color: iconColor,
-        size: 20,
-      ),
+      icon: navBar.customIcon != null
+          ? CustomStreamButton()
+          : Icon(
+              navBar.icon,
+              color: iconColor,
+              size: 20,
+            ),
       label: navBar.title,
     );
   }
