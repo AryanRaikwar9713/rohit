@@ -8,6 +8,13 @@ import '../../../../components/cached_image_widget.dart';
 import '../../../../main.dart';
 import '../../../../utils/common_base.dart';
 
+/// Apna gradient - Logout dialog (yellow-orange)
+const LinearGradient _logoutGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+
 class LogoutAccountComponent extends StatelessWidget {
   final String device;
   final String deviceName;
@@ -23,10 +30,10 @@ class LogoutAccountComponent extends StatelessWidget {
       width: double.infinity,
       decoration: boxDecorationDefault(
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(32),
-          topRight: Radius.circular(32),
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
         ),
-        border: Border(top: BorderSide(color: borderColor.withValues(alpha: 0.8))),
+        border: Border(top: BorderSide(color: _logoutGradient.colors.first.withOpacity(0.5), width: 2)),
         color: appScreenBackgroundDark,
       ),
       child: AnimatedScrollView(
@@ -59,21 +66,38 @@ class LogoutAccountComponent extends StatelessWidget {
                 text: locale.value.cancel,
                 color: lightBtnColor,
                 textStyle: appButtonTextStyleWhite,
-                shapeBorder: RoundedRectangleBorder(borderRadius: radius(6)),
+                shapeBorder: RoundedRectangleBorder(borderRadius: radius(12)),
                 onTap: () {
                   Get.back();
                 },
               ).expand(),
               16.width,
-              AppButton(
-                width: double.infinity,
-                text: locale.value.proceed,
-                color: appColorPrimary,
-                textStyle: appButtonTextStyleWhite,
-                shapeBorder: RoundedRectangleBorder(borderRadius: radius(6)),
-                onTap: () {
-                  onLogout.call(logOutAll);
-                },
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => onLogout.call(logOutAll),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    decoration: BoxDecoration(
+                      gradient: _logoutGradient,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: _logoutGradient.colors.first.withOpacity(0.35),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      locale.value.proceed,
+                      textAlign: TextAlign.center,
+                      style: boldTextStyle(size: 16, color: Colors.black),
+                    ),
+                  ),
+                ),
               ).expand(),
             ],
           ),

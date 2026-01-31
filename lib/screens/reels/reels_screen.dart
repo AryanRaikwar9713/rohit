@@ -32,7 +32,12 @@ class _ReelsScreenState extends State<ReelsScreen> {
     _pageController.dispose();
     // Restore system UI
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    Get.delete<ReelsController>();
+    // Delete controller immediately — by the time we're disposed, children
+    // (ReelItemWidgets) are already disposed, so no Obx/listeners remain.
+    // Delaying to next frame caused crash when switching to Profile tab.
+    if (Get.isRegistered<ReelsController>()) {
+      Get.delete<ReelsController>();
+    }
     super.dispose();
   }
 

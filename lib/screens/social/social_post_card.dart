@@ -178,49 +178,11 @@ class _SocialPostCardState extends State<SocialPostCard> {
             ),
           ),
 
-          // Post Image
+          // Post Image: actual size; sirf full-screen type (jo puri screen cover kare) ko 70% cap
           if (widget.post.imageUrl != null && widget.post.imageUrl!.isNotEmpty)
-            GestureDetector(
+            _PostImageWidget(
+              imageUrl: widget.post.imageUrl!,
               onTap: widget.onImageTap,
-              child: Container(
-                margin: const EdgeInsetsGeometry.symmetric(horizontal: 5),
-                clipBehavior: Clip.hardEdge,
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.2,
-                decoration: BoxDecoration(
-                  color: Colors.grey[900],
-                  borderRadius: BorderRadius.circular(16)
-                ),
-                child: Image.network(
-                  widget.post.imageUrl!,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Container(
-                      color: Colors.grey[900],
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
-                              : null,
-                          color: appColorPrimary,
-                        ),
-                      ),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[900],
-                      child: const Icon(
-                        Icons.image_not_supported,
-                        color: Colors.grey,
-                        size: 50,
-                      ),
-                    );
-                  },
-                ),
-              ),
             ),
 
           // Caption and Content (Below Image)
@@ -453,6 +415,157 @@ class _SocialPostCardState extends State<SocialPostCard> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Post image: actual size dikhata hai; sirf jo full-screen type (puri screen cover) ho woh 70% cap
+class _PostImageWidget extends StatefulWidget {
+  final String imageUrl;
+  final Future<void> Function()? onTap;
+
+  const _PostImageWidget({required this.imageUrl, this.onTap});
+
+  @override
+  State<_PostImageWidget> createState() => _PostImageWidgetState();
+}
+
+class _PostImageWidgetState extends State<_PostImageWidget> {
+  int? _imageWidth;
+  int? _imageHeight;
+  bool _loadFailed = false;
+  ImageStream? _imageStream;
+  ImageStreamListener? _listener;
+
+  @override
+  void initState() {
+    super.initState();
+    _resolveImageDimensions();
+  }
+
+  void _resolveImageDimensions() {
+    final provider = NetworkImage(widget.imageUrl);
+    final stream = provider.resolve(const ImageConfiguration());
+    _listener = ImageStreamListener(
+      (ImageInfo info, bool synchronousCall) {
+        if (!mounted) return;
+        final w = info.image.width;
+        final h = info.image.height;
+        if (w > 0 && h > 0 && _listener != null) {
+          stream.removeListener(_listener!);
+          setState(() {
+            _imageWidth = w;
+            _imageHeight = h;
+          });
+        }
+      },
+      onError: (exception, stackTrace) {
+        if (!mounted) return;
+        if (_listener != null) stream.removeListener(_listener!);
+        setState(() => _loadFailed = true);
+      },
+    );
+    _imageStream = stream;
+    stream.addListener(_listener!);
+  }
+
+  @override
+  void dispose() {
+    if (_imageStream != null && _listener != null) {
+      _imageStream!.removeListener(_listener!);
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    const appBarHeight = 56.0;
+    const bottomNavHeight = 80.0;
+    final remainingHeight = screenHeight - appBarHeight - bottomNavHeight - MediaQuery.of(context).padding.top;
+    final maxHeightForFullScreen = remainingHeight * 0.70;
+
+    // Dimensions nahi aaye ya load fail: placeholder (chota height, baad mein actual size dikhega)
+    if (_loadFailed || (_imageWidth == null && _imageHeight == null)) {
+      final placeholderHeight = _loadFailed ? 200.0 : 220.0;
+      return GestureDetector(
+        onTap: widget.onTap,
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          width: double.infinity,
+          height: placeholderHeight,
+          decoration: BoxDecoration(
+            color: Colors.grey[900],
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: _loadFailed
+                ? const Center(
+                    child: Icon(Icons.image_not_supported, color: Colors.grey, size: 50),
+                  )
+                : Center(
+                    child: CircularProgressIndicator(color: appColorPrimary),
+                  ),
+          ),
+        ),
+      );
+    }
+
+    // Actual size: full width, height = aspect ratio; sirf full-screen type ko 70% cap
+    final w = _imageWidth!.toDouble();
+    final h = _imageHeight!.toDouble();
+    final heightIfFullWidth = screenWidth * (h / w);
+    final displayHeight = heightIfFullWidth > maxHeightForFullScreen
+        ? maxHeightForFullScreen
+        : heightIfFullWidth;
+
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 5),
+        width: double.infinity,
+        height: displayHeight,
+        decoration: BoxDecoration(
+          color: Colors.grey[900],
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Image.network(
+            widget.imageUrl,
+            fit: BoxFit.contain,
+            width: double.infinity,
+            height: displayHeight,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Container(
+                color: Colors.grey[900],
+                height: displayHeight,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                        : null,
+                    color: appColorPrimary,
+                  ),
+                ),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                height: displayHeight,
+                color: Colors.grey[900],
+                child: const Center(
+                  child: Icon(Icons.image_not_supported, color: Colors.grey, size: 50),
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

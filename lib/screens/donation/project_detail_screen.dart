@@ -17,6 +17,13 @@ class ProjectDetailScreen extends StatefulWidget {
   State<ProjectDetailScreen> createState() => _ProjectDetailScreenState();
 }
 
+/// Apna color combo - Impact Dashboard jaisa yellow-orange gradient
+const LinearGradient _appGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+
 class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
   late ProjectDetailController controller;
 
@@ -102,64 +109,117 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
 
                     const SizedBox(height: 16),
 
-                    // 💰 Funding Progress
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Raised: ${detail.value.fundingRaised ?? 0} Bolts",
-                            style: const TextStyle(color: Colors.greenAccent)),
-                        Text("Goal: ${detail.value.fundingGoal ?? 0} Bolts",
-                            style: const TextStyle(color: Colors.white54)),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    LinearProgressIndicator(
-                      value: (detail.value.progressPercentage ?? 0) / 100,
-                      backgroundColor: Colors.grey.shade800,
-                      color: Colors.greenAccent,
-                      minHeight: 8,
-                      borderRadius: BorderRadius.circular(8),
+                    // 💰 Funding Progress (gradient)
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade900.withOpacity(0.6),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade800),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ShaderMask(
+                                shaderCallback: (b) => _appGradient.createShader(b),
+                                child: Text(
+                                  "Raised: ${detail.value.fundingRaised ?? 0} Bolts",
+                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              Text("Goal: ${detail.value.fundingGoal ?? 0} Bolts",
+                                  style: const TextStyle(color: Colors.white54)),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: SizedBox(
+                              height: 10,
+                              child: LinearProgressIndicator(
+                                value: (detail.value.progressPercentage ?? 0) / 100,
+                                backgroundColor: Colors.grey.shade800,
+                                valueColor: AlwaysStoppedAnimation<Color>(_appGradient.colors.first),
+                                minHeight: 10,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 16),
 
-                    // 📅 Duration & Days Remaining
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _iconText(Icons.timer_outlined,
-                            "${detail.value.daysRemaining ?? 0} days left"),
-                        _iconText(Icons.access_time,
-                            "Duration: ${detail.value.durationDays ?? 0} days"),
-                      ],
+                    // 📅 Duration & Location card
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade900.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade800),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _iconText(Icons.timer_outlined,
+                                  "${detail.value.daysRemaining ?? 0} days left"),
+                              _iconText(Icons.access_time,
+                                  "Duration: ${detail.value.durationDays ?? 0} days"),
+                            ],
+                          ),
+                          if (detail.value.location != null) ...[
+                            const SizedBox(height: 8),
+                            _iconText(
+                                Icons.location_on_outlined, detail.value.location!,
+                                color: _appGradient.colors.first),
+                          ],
+                        ],
+                      ),
                     ),
 
-                    const SizedBox(height: 16),
-
-                    // 📍 Location
-                    if (detail.value.location != null)
-                      _iconText(
-                          Icons.location_on_outlined, detail.value.location!,
-                          color: Colors.amberAccent),
-
-                    const SizedBox(height: 16),
-
-                    // 🧠 Description / Story
-                    const Text("About the Project",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18)),
-                    const SizedBox(height: 8),
-                    Text(
-                      detail.value.description?.isNotEmpty == true
-                          ? detail.value.description!
-                          : (detail.value.description ??
-                              'No description available.'),
-                      style:
-                          const TextStyle(color: Colors.white70, height: 1.4),
-                    ),
                     const SizedBox(height: 20),
 
+                    // 🧠 About the Project (gradient section)
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            _appGradient.colors.first.withOpacity(0.08),
+                            _appGradient.colors.last.withOpacity(0.05),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.grey.shade800),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ShaderMask(
+                            shaderCallback: (b) => _appGradient.createShader(b),
+                            child: const Text("About the Project",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18)),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            detail.value.description?.isNotEmpty == true
+                                ? detail.value.description!
+                                : (detail.value.description ??
+                                    'No description available.'),
+                            style: const TextStyle(color: Colors.white70, height: 1.5, fontSize: 15),
+                          ),
+                        ],
+                      ),
+                    ),
                     if (detail.value.images != null &&
                         detail.value.images!.isNotEmpty) ...[
                       SingleChildScrollView(
@@ -205,43 +265,64 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                               ),
                           ],
                         ),
-                      )
+                      ),
+                      const SizedBox(height: 20),
                     ],
 
-                    20.height,
-
-                    const Text("Story",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18)),
-                    const SizedBox(height: 8),
-                    Text(
-                      detail.value.story?.isNotEmpty == true
-                          ? detail.value.story!
-                          : (detail.value.description ??
-                              'No description available.'),
-                      style:
-                          const TextStyle(color: Colors.white70, height: 1.4),
+                    // 📖 Story (gradient section)
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            _appGradient.colors.last.withOpacity(0.06),
+                            _appGradient.colors.first.withOpacity(0.06),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.grey.shade800),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ShaderMask(
+                            shaderCallback: (b) => _appGradient.createShader(b),
+                            child: const Text("Story",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18)),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            detail.value.story?.isNotEmpty == true
+                                ? detail.value.story!
+                                : (detail.value.description ??
+                                    'No description available.'),
+                            style: const TextStyle(color: Colors.white70, height: 1.5, fontSize: 15),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
 
                     // 👤 Creator Info
                     if (detail.value.creator != null) ...[
-                      const Text("Project Creator",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),),
+                      ShaderMask(
+                        shaderCallback: (b) => _appGradient.createShader(b),
+                        child: const Text("Project Creator",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18)),
+                      ),
 
-                      //
                       const SizedBox(height: 12),
-
-                      //
                       GestureDetector(
                         onTap: () async {
                           var u = await DB().getUser();
-
                           if (detail.value.creator?.id != null) {
                             Get.to(() => VammisProfileScreen(
                                   userId: detail.value.creator!.id!,
@@ -251,37 +332,44 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                 ));
                           }
                         },
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 25,
-                              backgroundImage: NetworkImage(
-                                  detail.value.creator?.avatar ?? ''),
-                              backgroundColor: Colors.grey.shade700,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                      "${detail.value.creator?.firstName ?? ''} ${detail.value.creator?.lastName ?? ''}",
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600)),
-                                  Text(
-                                    "@${detail.value.creator?.username ?? ''}",
-                                    style:
-                                        const TextStyle(color: Colors.white54),
-                                  ),
-                                ],
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade900.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.grey.shade800),
+                          ),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 26,
+                                backgroundImage: NetworkImage(
+                                    detail.value.creator?.avatar ?? ''),
+                                backgroundColor: Colors.grey.shade700,
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            const CustomStreamButton(),
-                            // const Icon(Icons.arrow_forward_ios,
-                            //     color: Colors.white54, size: 16),
-                          ],
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        "${detail.value.creator?.firstName ?? ''} ${detail.value.creator?.lastName ?? ''}",
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16)),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      "@${detail.value.creator?.username ?? ''}",
+                                      style: const TextStyle(
+                                          color: Colors.white54, fontSize: 13),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const CustomStreamButton(),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -308,15 +396,18 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
 
                     const SizedBox(height: 24),
 
-                    // 👥 Donors Section with Tabs
+                    // 👥 Donors Section with Tabs (gradient title)
                     if (detail.value.recentDonors != null &&
                         detail.value.recentDonors!.isNotEmpty) ...[
-                      const Text(
-                        "Donors",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                      ShaderMask(
+                        shaderCallback: (b) => _appGradient.createShader(b),
+                        child: const Text(
+                          "Donors",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -324,20 +415,13 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                       const SizedBox(height: 24),
                     ],
 
-                    // 🎁 Donate Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.greenAccent.shade400,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                        onPressed: () async {
+                    // 🎁 Donate Button (gradient)
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () async {
                           final amountTextFiel = TextEditingController();
                           final messageTextField = TextEditingController();
-
                           await showModalBottomSheet(
                             context: context,
                             builder: (context) => _DonatSheet(
@@ -347,9 +431,34 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                             ),
                           );
                         },
-                        child: const Text("Donate Now",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16)),
+                        borderRadius: BorderRadius.circular(14),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          decoration: BoxDecoration(
+                            gradient: _appGradient,
+                            borderRadius: BorderRadius.circular(14),
+                            boxShadow: [
+                              BoxShadow(
+                                color: _appGradient.colors.first.withOpacity(0.4),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.favorite, color: Colors.black, size: 22),
+                              SizedBox(width: 8),
+                              Text("Donate Now",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w700)),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 40),
@@ -402,11 +511,18 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
               indicatorSize: TabBarIndicatorSize.tab,
               dividerColor: Colors.transparent,
               indicator: BoxDecoration(
-                color: Colors.greenAccent.withOpacity(0.2),
+                gradient: LinearGradient(
+                  colors: [
+                    _appGradient.colors.first.withOpacity(0.35),
+                    _appGradient.colors.last.withOpacity(0.35),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 borderRadius: BorderRadius.circular(12),
               ),
-              indicatorColor: Colors.greenAccent,
-              labelColor: Colors.greenAccent,
+              indicatorColor: _appGradient.colors.first,
+              labelColor: _appGradient.colors.first,
               unselectedLabelColor: Colors.white54,
               labelStyle: const TextStyle(
                 fontWeight: FontWeight.bold,

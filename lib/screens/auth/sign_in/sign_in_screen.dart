@@ -22,6 +22,13 @@ import '../sign_in/sign_in_controller.dart';
 import '../sign_up/signup_screen.dart';
 import 'component/social_auth.dart';
 
+/// Apna gradient - Sign In (yellow-orange)
+const LinearGradient _signInGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+
 class SignInScreen extends StatelessWidget {
   // ignore: use_super_parameters
   final bool showBackButton;
@@ -48,7 +55,13 @@ class SignInScreen extends StatelessWidget {
               ).center(),
               20.height,
               // Text(locale.value.welcomeBackToStreamIt, style: commonW500PrimaryTextStyle(size: 20)),
-              Text("Welcome Back To $APP_NAME", style: commonW500PrimaryTextStyle(size: 20)),
+              ShaderMask(
+                shaderCallback: (b) => _signInGradient.createShader(b),
+                child: Text(
+                  "Welcome Back To $APP_NAME",
+                  style: commonW500PrimaryTextStyle(size: 20, color: Colors.white),
+                ),
+              ),
               8.height,
               Text(locale.value.weHaveEagerlyAwaitedYourReturn, style: secondaryTextStyle()),
               40.height,
@@ -135,23 +148,47 @@ class SignInScreen extends StatelessWidget {
                         ),
                         24.height,
                         Obx(
-                          () => AppButton(
-                            onTap: () {
-                              if (signInController.signInformKey.currentState!.validate()) {
-                                hideKeyboard(context);
-                                signInController.isPhoneAuthLoading(true);
-                                signInController.checkIfDemoUser(
-                                  callBack: () {
-                                    signInController.onLoginPressed();
-                                  },
-                                );
-                              }
-                            },
-                            width: Get.width,
-                            color: signInController.isBtnEnable.isTrue ? appColorPrimary : lightBtnColor,
-                            textStyle: appButtonTextStyleWhite,
-                            shapeBorder: RoundedRectangleBorder(borderRadius: radius(4)),
-                            child: Text(locale.value.getVerificationCode, style: boldTextStyle()),
+                          () => Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: signInController.isBtnEnable.isTrue
+                                  ? () {
+                                      if (signInController.signInformKey.currentState!.validate()) {
+                                        hideKeyboard(context);
+                                        signInController.isPhoneAuthLoading(true);
+                                        signInController.checkIfDemoUser(
+                                          callBack: () => signInController.onLoginPressed(),
+                                        );
+                                      }
+                                    }
+                                  : null,
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                width: Get.width,
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                decoration: BoxDecoration(
+                                  gradient: signInController.isBtnEnable.isTrue ? _signInGradient : null,
+                                  color: signInController.isBtnEnable.isTrue ? null : lightBtnColor,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: signInController.isBtnEnable.isTrue
+                                      ? [
+                                          BoxShadow(
+                                            color: _signInGradient.colors.first.withOpacity(0.3),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ]
+                                      : null,
+                                ),
+                                child: Text(
+                                  locale.value.getVerificationCode,
+                                  textAlign: TextAlign.center,
+                                  style: boldTextStyle(
+                                    color: signInController.isBtnEnable.isTrue ? Colors.black : darkGrayTextColor,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                         16.height,
@@ -166,7 +203,7 @@ class SignInScreen extends StatelessWidget {
                     TextSpan(text: locale.value.dontHaveAnAccount, style: secondaryTextStyle(size: 12)),
                     TextSpan(
                       text: locale.value.signUp.prefixText(value: ' '),
-                      style: commonW500SecondaryTextStyle(size: 12, color: appColorPrimary),
+                      style: commonW500SecondaryTextStyle(size: 12, color: _signInGradient.colors.first),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           Get.to(() => SignUpScreen());
@@ -178,19 +215,33 @@ class SignInScreen extends StatelessWidget {
               40.height,
               Row(
                 children: [
-                  const Divider(
-                    indent: 24,
-                    endIndent: 24,
-                    height: 4,
-                    color: borderColor,
-                  ).expand(),
+                  Expanded(
+                    child: Container(
+                      height: 1,
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.transparent, _signInGradient.colors.first.withOpacity(0.4)],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                      ),
+                    ),
+                  ),
                   Text(locale.value.or, style: secondaryTextStyle()),
-                  const Divider(
-                    indent: 24,
-                    endIndent: 24,
-                    height: 8,
-                    color: borderColor,
-                  ).expand(),
+                  Expanded(
+                    child: Container(
+                      height: 1,
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [_signInGradient.colors.first.withOpacity(0.4), Colors.transparent],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
               28.height,
@@ -221,7 +272,7 @@ class SignInScreen extends StatelessWidget {
                             alignment: WrapAlignment.center,
                             children: [
                               Text('${locale.value.bySigningYouAgreeTo} $APP_NAME ', style: commonW500SecondaryTextStyle()),
-                              Text('${locale.value.termsConditions} ', style: commonW500SecondaryTextStyle(color: appColorPrimary)),
+                              Text('${locale.value.termsConditions} ', style: commonW500SecondaryTextStyle(color: _signInGradient.colors.first)),
                               Text(locale.value.ofAll, style: commonW500SecondaryTextStyle()),
                             ],
                           ),
@@ -235,7 +286,7 @@ class SignInScreen extends StatelessWidget {
                             alignment: WrapAlignment.center,
                             children: [
                               Text(locale.value.servicesAnd, style: commonW500SecondaryTextStyle()),
-                              Text(locale.value.privacyPolicy, style: commonW500SecondaryTextStyle(color: appColorPrimary)),
+                              Text(locale.value.privacyPolicy, style: commonW500SecondaryTextStyle(color: _signInGradient.colors.first)),
                             ],
                           ),
                         ),
@@ -312,9 +363,9 @@ class SignInScreen extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(1),
                   decoration: boxDecorationDefault(
-                    borderRadius: BorderRadius.circular(2),
-                    color: signInController.isRememberMe.isTrue ? appColorPrimary : appScreenBackgroundDark,
-                    border: Border.all(color: appColorPrimary),
+                    borderRadius: BorderRadius.circular(4),
+                    color: signInController.isRememberMe.isTrue ? _signInGradient.colors.first : appScreenBackgroundDark,
+                    border: Border.all(color: _signInGradient.colors.first.withOpacity(0.8)),
                   ),
                   child: Icon(
                     Icons.check,
@@ -343,9 +394,9 @@ class SignInScreen extends StatelessWidget {
                 locale.value.forgotPassword,
                 style: primaryTextStyle(
                   size: 12,
-                  color: appColorPrimary,
+                  color: _signInGradient.colors.first,
                   fontStyle: FontStyle.italic,
-                  decorationColor: appColorPrimary,
+                  decorationColor: _signInGradient.colors.first,
                 ),
               ),
             ),
@@ -353,17 +404,36 @@ class SignInScreen extends StatelessWidget {
         ),
         30.height,
         Obx(
-          () => AppButton(
-            width: double.infinity,
-            text: locale.value.signIn,
-            color: appColorPrimary,
-            textStyle: appButtonTextStyleWhite,
-            shapeBorder: RoundedRectangleBorder(borderRadius: radius(defaultAppButtonRadius / 2)),
-            onTap: () {
-              if (signInController.signInformKey.currentState!.validate()) {
-                signInController.saveForm(isNormalLogin: true);
-              }
-            },
+          () => Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                if (signInController.signInformKey.currentState!.validate()) {
+                  signInController.saveForm(isNormalLogin: true);
+                }
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: BoxDecoration(
+                  gradient: _signInGradient,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _signInGradient.colors.first.withOpacity(0.35),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  locale.value.signIn,
+                  textAlign: TextAlign.center,
+                  style: boldTextStyle(size: 16, color: Colors.black),
+                ),
+              ),
+            ),
           ),
         ),
         16.height,

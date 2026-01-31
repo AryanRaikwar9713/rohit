@@ -16,6 +16,13 @@ import '../../../utils/country_picker/country_list.dart';
 import '../../../utils/country_picker/country_utils.dart';
 import 'sign_up_controller.dart';
 
+/// Apna gradient - Sign up (yellow-orange)
+const LinearGradient _signUpGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+
 class SignUpScreen extends StatelessWidget {
   final SignUpController signUpController = Get.put(SignUpController());
 
@@ -27,19 +34,43 @@ class SignUpScreen extends StatelessWidget {
       scaffoldBackgroundColor: appScreenBackgroundDark,
       isLoading: signUpController.isLoading,
       topBarBgColor: Colors.transparent,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 120),
-        child: Form(
-          key: signUpController.signUpFormKey,
-          child: Column(
-            children: [
-              const AppLogoWidget(
-                size: Size(160, 160),
-              ).center(),
-              Text(locale.value.createYourAccount, style: boldTextStyle(size: 20)),
-              8.height,
-              Text(locale.value.completeProfileSubtitle, style: secondaryTextStyle()),
-              28.height,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              appScreenBackgroundDark,
+              appScreenBackgroundDark,
+              const Color(0xFF0f0d0a),
+            ],
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: 120),
+          child: Form(
+            key: signUpController.signUpFormKey,
+            child: Column(
+              children: [
+                const AppLogoWidget(
+                  size: Size(160, 160),
+                ).center(),
+                12.height,
+                ShaderMask(
+                  shaderCallback: (b) => _signUpGradient.createShader(b),
+                  child: Text(
+                    locale.value.createYourAccount,
+                    style: boldTextStyle(size: 22, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                8.height,
+                Text(
+                  locale.value.completeProfileSubtitle,
+                  style: secondaryTextStyle(size: 14),
+                  textAlign: TextAlign.center,
+                ).paddingSymmetric(horizontal: 16),
+                28.height,
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -372,23 +403,45 @@ class SignUpScreen extends StatelessWidget {
                     },
                   ),
                   40.height,
-                  AppButton(
-                    width: double.infinity,
-                    text: locale.value.signUp,
-                    color: appColorPrimary,
-                    textStyle: appButtonTextStyleWhite,
-                    shapeBorder: RoundedRectangleBorder(borderRadius: radius(defaultAppButtonRadius / 2)),
-                    onTap: () {
-                      if (signUpController.signUpFormKey.currentState!.validate()) {
-                        hideKeyboard(context);
-                        signUpController.saveForm();
-                      }
-                    },
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: _signUpGradient,
+                      borderRadius: BorderRadius.circular(defaultAppButtonRadius / 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFFFF9800).withValues(alpha: 0.35),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          if (signUpController.signUpFormKey.currentState!.validate()) {
+                            hideKeyboard(context);
+                            signUpController.saveForm();
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(defaultAppButtonRadius / 2),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          alignment: Alignment.center,
+                          child: Text(
+                            locale.value.signUp,
+                            style: appButtonTextStyleWhite.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ],
           ).paddingSymmetric(horizontal: 24),
+        ),
         ),
       ),
     );

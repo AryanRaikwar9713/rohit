@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:streamit_laravel/utils/colors.dart';
 
@@ -63,10 +64,16 @@ class LocationMonitor {
     if (_isOverlayShowing || _overlayEntry != null) return;
 
     _isOverlayShowing = true;
-    final OverlayState? overlayState = Overlay.of(context);
+    // Use navigator overlay (builder context has no Overlay ancestor)
+    OverlayState? overlayState;
+    try {
+      overlayState = Overlay.maybeOf(context);
+    } catch (_) {}
+    overlayState ??= Get.key?.currentState?.overlay;
 
     if (overlayState == null) {
       _isOverlayShowing = false;
+      _logger.w('No Overlay available for location blocking overlay');
       return;
     }
 

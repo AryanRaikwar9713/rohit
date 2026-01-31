@@ -37,8 +37,11 @@ class ReelsController extends GetxController {
   @override
   void onClose() {
     for (var player in videoControllers.values) {
-      player.dispose();
+      try {
+        player.dispose();
+      } catch (_) {}
     }
+    videoControllers.clear();
     videoPlayerControllers.clear();
     super.onClose();
   }
@@ -245,36 +248,40 @@ class ReelsController extends GetxController {
 
   // Video Player Methods (keeping existing functionality)
   void onReelChanged(int reelId) {
-    currentReelId(reelId);
+    if (!isClosed) {
+      currentReelId.value = reelId;
+    }
 
-    //
-    videoControllers.forEach(
-      (key, value) {
-        if (key == reelId) {
-          value.play();
-        } else {
-          value.pause();
-        }
-      },
-    );
+    try {
+      videoControllers.forEach((key, value) {
+        try {
+          if (key == reelId) {
+            value.play();
+          } else {
+            value.pause();
+          }
+        } catch (_) {}
+      });
+    } catch (_) {}
 
-    print("Reel Changed $reelId");
-    //
     if (videoControllers.containsKey(reelId)) {
-      videoControllers[reelId]?.play();
+      try {
+        videoControllers[reelId]?.play();
+      } catch (_) {}
     } else {
       initializeVideo(reelId);
     }
 
-    int reelIndex = apiReels.indexWhere(
-      (element) => element.id == reelId,
-    );
-
-    if ((apiReels.length - reelIndex) < 10) {
-      if (reelIndex % 10 > 7) {
+    try {
+      final reelIndex = apiReels.indexWhere(
+        (element) => element.id == reelId,
+      );
+      if (reelIndex >= 0 &&
+          (apiReels.length - reelIndex) < 10 &&
+          reelIndex % 10 > 7) {
         loadMoreReels();
       }
-    }
+    } catch (_) {}
   }
 
   void togglePlayPause() {
@@ -306,18 +313,19 @@ class ReelsController extends GetxController {
   }
 
   void initializeVideo(int reelId) {
+    if (isClosed) return;
     try {
-      final reel = apiReels.firstWhere(
-        (element) => element.id == reelId,
-      );
+      final reelIndex = apiReels.indexWhere((e) => e.id == reelId);
+      if (reelIndex < 0) return;
+      final reel = apiReels[reelIndex];
+      if (reel.content?.videoUrl == null) return;
       final player = getVideoController(reelId);
-
-      if (player != null && reel.content?.videoUrl != null) {
-        player.open(Media(reel.content?.videoUrl ?? ''));
+      if (player != null) {
+        player.open(Media(reel.content!.videoUrl!));
         player.play();
       }
     } catch (e) {
-      print('Error initializing video for index $reelId: $e');
+      Logger().w('Error initializing video for reelId $reelId: $e');
     }
   }
 

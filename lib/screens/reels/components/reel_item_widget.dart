@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -43,6 +45,8 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
   late AnimationController _heartAnimationController;
   late Animation<double> _heartScaleAnimation;
   bool _showHeartAnimation = false;
+  StreamSubscription? _positionSubscription;
+  StreamSubscription? _completedSubscription;
 
   bool isLike = false;
   int likeCount = 0;
@@ -95,6 +99,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
   bool coineGet = false;
 
   _videoListener(Duration p) {
+    if (!mounted) return;
     Duration sub = p - prePosition;
     watchTime = watchTime + sub;
     prePosition = p;
@@ -114,29 +119,34 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
   }
 
   void _initializeVideo() {
-    if (!isInitialized && !hasError) {
-      try {
-        final player =
-            widget.controller.getVideoController(widget.reel.id ?? 0);
-        if (player != null && widget.reel.content?.videoUrl != null) {
-          videoController = VideoController(player);
-          player.open(Media(widget.reel.content?.videoUrl ?? ''));
+    if (!mounted || isInitialized || hasError) return;
+    try {
+      if (!Get.isRegistered<ReelsController>()) return;
+      final player =
+          widget.controller.getVideoController(widget.reel.id ?? 0);
+      if (player == null || widget.reel.content?.videoUrl == null) return;
+      final videoUrl = widget.reel.content!.videoUrl!;
+      videoController = VideoController(player);
+      player.open(Media(videoUrl));
+      player.play();
+      if (!mounted) return;
+      setState(() {
+        isInitialized = true;
+      });
+
+      _completedSubscription = player.stream.completed.listen((event) {
+        if (!mounted) return;
+        try {
+          player.seek(Duration.zero);
           player.play();
-          setState(() {
-            isInitialized = true;
-          });
+        } catch (_) {}
+      });
 
-          player.stream.completed.listen((event) {
-            player.seek(Duration.zero);
-            player.play();
-          });
-
-          player.streams.position.listen((event) {
-            _videoListener(event);
-          });
-        }
-      } catch (e) {
-        print('Error initializing video: $e');
+      _positionSubscription = player.streams.position.listen((event) {
+        _videoListener(event);
+      });
+    } catch (e) {
+      if (mounted) {
         setState(() {
           hasError = true;
           isInitialized = false;
@@ -147,12 +157,18 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
 
   @override
   void dispose() {
+    _positionSubscription?.cancel();
+    _positionSubscription = null;
+    _completedSubscription?.cancel();
+    _completedSubscription = null;
+    videoController = null;
     _likeAnimationController.dispose();
     _heartAnimationController.dispose();
     super.dispose();
   }
 
   void _onDoubleTap() {
+    if (!Get.isRegistered<ReelsController>()) return;
     var reelId = int.tryParse(widget.reel.id?.toString() ?? '0') ?? 0;
     if (!(widget.reel.interactions?.isLiked ?? false)) {
       widget.controller.toggleLikeReel(reelId);
@@ -207,6 +223,14 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
 
   @override
   Widget build(BuildContext context) {
+    // Don't build Obx when controller is gone (e.g. after tab switch) — avoids GetX "improper use" error
+    if (!Get.isRegistered<ReelsController>()) {
+      return Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: Colors.black,
+      );
+    }
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -256,18 +280,12 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
           Positioned.fill(
             child: GestureDetector(
               onTap: () {
-                widget.controller.togglePlayPause();
+                if (Get.isRegistered<ReelsController>()) {
+                  widget.controller.togglePlayPause();
+                }
               },
               onDoubleTap: _onDoubleTap,
-              child: Container(
-                color: Colors.transparent,
-                child: Obx(() {
-                  if (!widget.controller.isPlaying.value) {
-                    return const SizedBox.shrink();
-                  }
-                  return const SizedBox.shrink();
-                }),
-              ),
+              child: Container(color: Colors.transparent),
             ),
           ),
 
@@ -380,13 +398,15 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                     const SizedBox(width: 8),
                     GestureDetector(
                       onTap: () {
-                        DB().getUser().then((value) => {
-                              Get.to(() => VammisProfileScreen(
-                                  popButton: true,
-                                  userId: widget.reel.user!.id!,
-                                  isOwnProfile:
-                                      value?.id == widget.reel.user?.id))
-                            });
+                        final userId = widget.reel.user?.id;
+                        if (userId == null) return;
+                        DB().getUser().then((value) {
+                          if (!mounted) return;
+                          Get.to(() => VammisProfileScreen(
+                              popButton: true,
+                              userId: userId,
+                              isOwnProfile: value?.id == widget.reel.user?.id));
+                        });
                       },
                       child: Text(
                         '@${widget.reel.user?.fullName ?? 'user'}',
@@ -595,17 +615,15 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
       children: [
         GestureDetector(
           onTap: () {
-            DB().getUser().then(
-                  (value) => {
-                    if (widget.reel.user?.id != null)
-                      {
-                        Get.to(() => VammisProfileScreen(
-                            popButton: true,
-                            userId: widget.reel.user!.id!,
-                            isOwnProfile: value?.id == widget.reel.user?.id))
-                      }
-                  },
-                );
+            final userId = widget.reel.user?.id;
+            if (userId == null) return;
+            DB().getUser().then((value) {
+              if (!mounted) return;
+              Get.to(() => VammisProfileScreen(
+                  popButton: true,
+                  userId: userId,
+                  isOwnProfile: value?.id == widget.reel.user?.id));
+            });
           },
           child: Container(
             width: 48,
@@ -757,9 +775,8 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
   }
 
   void _showCommentBottomSheet() async {
-    final controller = (Get.isRegistered<ReelsController>())
-        ? Get.find<ReelsController>()
-        : widget.controller;
+    if (!Get.isRegistered<ReelsController>()) return;
+    final controller = Get.find<ReelsController>();
     controller.getReelComments(widget.reel.id ?? 0);
 
     await showModalBottomSheet(
