@@ -765,8 +765,6 @@
 // }
 import 'package:flutter/material.dart';
 
-
-
 class ImpactDashboardScreen extends StatelessWidget {
   const ImpactDashboardScreen({super.key});
 
@@ -936,8 +934,6 @@ class ImpactDashboardScreen extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 10),
-
-
 
                   Padding(
                     padding: EdgeInsetsGeometry.only(right:10 ),

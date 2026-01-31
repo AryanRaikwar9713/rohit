@@ -70,11 +70,12 @@ class CustomStreamButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        // Navigate directly to HomeScreen
         HomeController controller = (Get.isRegistered<HomeController>())
             ? Get.find()
             : Get.put(HomeController());
 
-        Get.to(HomeScreen(homeScreenController: controller));
+        Get.to(() => HomeScreen(homeScreenController: controller));
       },
       child: Padding(
         padding: const EdgeInsets.all(10),
