@@ -10,6 +10,13 @@ import 'components/event_card_component.dart';
 import 'events_controller.dart';
 import 'event_detail_screen.dart';
 
+/// Apna gradient - Impact/Donation jaisa yellow-orange
+const LinearGradient _eventsGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+
 class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
 
@@ -39,25 +46,32 @@ class _EventsScreenState extends State<EventsScreen> {
       hasLeadingWidget: false,
       body: Column(
         children: [
-          // Search Bar
+          // Search Bar (gradient border accent)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: CupertinoSearchTextField(
-              controller: _searchController,
-              style: const TextStyle(color: Colors.white),
-              onChanged: (value) {
-                // API not ready yet - just for UI display
-                // TODO: Implement search API when ready
-              },
-              placeholder: 'Search Events',
-              placeholderStyle: const TextStyle(color: Colors.white70),
+            child: Container(
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: _eventsGradient.colors.first.withOpacity(0.4),
+                  width: 1,
+                ),
+                color: Colors.grey.withOpacity(0.15),
               ),
-              prefixIcon: const Icon(
-                Icons.search,
-                color: Colors.white,
+              child: CupertinoSearchTextField(
+                controller: _searchController,
+                style: const TextStyle(color: Colors.white),
+                onChanged: (value) {},
+                placeholder: 'Search Events',
+                placeholderStyle: const TextStyle(color: Colors.white70),
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                prefixIcon: ShaderMask(
+                  shaderCallback: (b) => _eventsGradient.createShader(b),
+                  child: const Icon(Icons.search, color: Colors.white, size: 22),
+                ),
               ),
             ),
           ),

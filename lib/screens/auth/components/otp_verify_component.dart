@@ -8,6 +8,13 @@ import 'package:streamit_laravel/utils/colors.dart';
 import '../../../main.dart';
 import '../../../utils/common_base.dart';
 
+/// Apna gradient - OTP (yellow-orange)
+const LinearGradient _otpGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+
 class OTPVerifyComponent extends StatelessWidget {
   final String mobileNo;
 
@@ -22,10 +29,10 @@ class OTPVerifyComponent extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: boxDecorationDefault(
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(32),
-          topRight: Radius.circular(32),
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
         ),
-        border: Border(top: BorderSide(color: borderColor.withValues(alpha: 0.8))),
+        border: Border(top: BorderSide(color: _otpGradient.colors.first.withOpacity(0.5), width: 2)),
         color: appScreenBackgroundDark,
       ),
       child: Stack(
@@ -37,9 +44,12 @@ class OTPVerifyComponent extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 20.height,
-                Text(
-                  locale.value.oTPVerification,
-                  style: commonW500PrimaryTextStyle(size: 20),
+                ShaderMask(
+                  shaderCallback: (b) => _otpGradient.createShader(b),
+                  child: Text(
+                    locale.value.oTPVerification,
+                    style: commonW500PrimaryTextStyle(size: 20, color: Colors.white),
+                  ),
                 ),
                 8.height,
                 Text(
@@ -106,7 +116,7 @@ class OTPVerifyComponent extends StatelessWidget {
                         child: Text(
                           locale.value.resendOTP.prefixText(value: ' '),
                           style: commonW500SecondaryTextStyle(
-                            color: verificationCont.codeResendTime.value == 0 ? appColorPrimary : darkGrayTextColor,
+                            color: verificationCont.codeResendTime.value == 0 ? _otpGradient.colors.first : darkGrayTextColor,
                           ),
                         ),
                       ),
@@ -115,36 +125,61 @@ class OTPVerifyComponent extends StatelessWidget {
                 ),
                 20.height,
                 Obx(
-                  () => AppButton(
-                    width: double.infinity,
-                    text: locale.value.verify,
-                    color: verificationCont.isOTPVerify.isTrue
-                        ? appColorPrimary
-                        : verificationCont.isVerifyBtn.isTrue && verificationCont.codeResendTime.value != 0
-                            ? appColorPrimary
-                            : lightBtnColor,
-                    textStyle: appButtonTextStyleWhite,
-                    shapeBorder: RoundedRectangleBorder(borderRadius: radius(defaultAppButtonRadius / 2)),
-                    onTap: () {
-                      if (verificationCont.isLoading.isTrue) {
-                        verificationCont.isVerifyBtn(false);
-                        return;
-                      }
-                      if (verificationCont.isOTPVerify.isTrue) {
-                        verificationCont.phoneSignIn();
-                      } else {
-                        if (verificationCont.isVerifyBtn.isTrue && verificationCont.codeResendTime.value != 0) {
-                          verificationCont.checkIfDemoUser(
-                            verify: true,
-                            callBack: () {
-                              verificationCont.isVerifyBtn(false);
-                              verificationCont.onVerifyPressed();
-                            },
-                          );
-                        }
-                      }
-                    },
-                  ),
+                  () {
+                    final isEnabled = verificationCont.isOTPVerify.isTrue ||
+                        (verificationCont.isVerifyBtn.isTrue && verificationCont.codeResendTime.value != 0);
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          if (verificationCont.isLoading.isTrue) {
+                            verificationCont.isVerifyBtn(false);
+                            return;
+                          }
+                          if (verificationCont.isOTPVerify.isTrue) {
+                            verificationCont.phoneSignIn();
+                          } else {
+                            if (verificationCont.isVerifyBtn.isTrue && verificationCont.codeResendTime.value != 0) {
+                              verificationCont.checkIfDemoUser(
+                                verify: true,
+                                callBack: () {
+                                  verificationCont.isVerifyBtn(false);
+                                  verificationCont.onVerifyPressed();
+                                },
+                              );
+                            }
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          decoration: BoxDecoration(
+                            gradient: isEnabled ? _otpGradient : null,
+                            color: isEnabled ? null : lightBtnColor,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: isEnabled
+                                ? [
+                                    BoxShadow(
+                                      color: _otpGradient.colors.first.withOpacity(0.35),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ]
+                                : null,
+                          ),
+                          child: Text(
+                            locale.value.verify,
+                            textAlign: TextAlign.center,
+                            style: boldTextStyle(
+                              size: 16,
+                              color: isEnabled ? Colors.black : darkGrayTextColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 20.height,
               ],

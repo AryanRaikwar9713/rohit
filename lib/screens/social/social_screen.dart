@@ -10,6 +10,7 @@ import 'package:streamit_laravel/screens/dash_boad_drawer.dart';
 import 'package:streamit_laravel/screens/notificationSection/notification_screen.dart';
 import 'package:streamit_laravel/screens/social/comment_responce_model.dart';
 import 'package:streamit_laravel/screens/social/social_post_card.dart';
+import 'package:streamit_laravel/screens/social/social_search_screen.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/get_story_responce_model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/story_controller.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/view_story_screen.dart';
@@ -18,6 +19,7 @@ import 'package:streamit_laravel/utils/constants.dart';
 import 'package:streamit_laravel/utils/mohit/vammis_profile_avtar.dart';
 
 import '../../utils/colors.dart';
+import '../search/search_screen.dart';
 import 'social_controller.dart';
 import 'create_post_screen.dart';
 
@@ -104,11 +106,11 @@ class _SocialScreenState extends State<SocialScreen>
                     Row(
                       children: [
                         // Footprints icon (two footprints) - using custom icon
-                        Icon(
-                          Icons.pets_rounded,
-                          color: Colors.white,
-                          size: 24,
-                        ),
+                        // Icon(
+                        //   Icons.pets_rounded,
+                        //   color: Colors.white,
+                        //   size: 24,
+                        // ),
                         8.width,
                         Text(
                           'WAMIMS',
@@ -123,16 +125,16 @@ class _SocialScreenState extends State<SocialScreen>
                     ),
                     const Spacer(),
                     // Megaphone icon (campaign icon)
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.campaign,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                    ),
+                    // IconButton(
+                    //   onPressed: () {},
+                    //   icon: const Icon(
+                    //     Icons.campaign,
+                    //     color: Colors.white,
+                    //     size: 24,
+                    //   ),
+                    //   padding: EdgeInsets.zero,
+                    //   constraints: const BoxConstraints(),
+                    // ),
                     4.width,
                     // Notification with badge
                     Stack(
@@ -186,7 +188,9 @@ class _SocialScreenState extends State<SocialScreen>
                     4.width,
                     // Search icon
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(() => const SocialSearchScreen());
+                      },
                       icon: const Icon(
                         Icons.search,
                         color: Colors.white,

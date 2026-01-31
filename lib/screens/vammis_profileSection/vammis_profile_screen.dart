@@ -28,6 +28,13 @@ import 'package:streamit_laravel/utils/mohit/campain_project_card.dart';
 import 'package:streamit_laravel/utils/mohit/custom_like_button.dart';
 import 'package:streamit_laravel/utils/mohit/vammis_profile_avtar.dart';
 
+/// Apna gradient - yellow-orange (Impact/Events jaisa)
+const LinearGradient _profileGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+
 class VammisProfileScreen extends StatefulWidget {
   final int userId;
   final bool isOwnProfile;
@@ -223,21 +230,6 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                 
                 _budildSocialAccounts(socialMediaController),
 
-                if (kDebugMode) ...[
-                  Text(
-                    controller.currentTab.toString(),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  Text(
-                    controller.hasMorePosts.value.toString(),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  Text(
-                    controller.hasMoreReels.value.toString(),
-                    style: TextStyle(color: Colors.white),
-                  )
-                ],
-
                 // Tab Bar
                 _buildTabBar(controller),
 
@@ -432,25 +424,41 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
           // Action Buttons
 
           if (widget.isOwnProfile) ...[
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
                   Get.to(() => const EditVammisProfileScreen())?.then((result) {
                     if (result == true) {
                       controller.refreshProfile();
                     }
                   });
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: appColorPrimary,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    gradient: _profileGradient,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _profileGradient.colors.first.withOpacity(0.35),
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: const Text(
+                    "Edit Profile",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
-                child:
-                    Text("Edit Profile", style: TextStyle(color: Colors.white)),
               ),
             )
           ] else ...[
@@ -500,13 +508,16 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
       ),
     );
   }
-
+  
   Widget _buildStatItem(String count, String label) {
     return Column(
       children: [
-        Text(
-          count,
-          style: boldTextStyle(size: 18, color: Colors.white),
+        ShaderMask(
+          shaderCallback: (bounds) => _profileGradient.createShader(bounds),
+          child: Text(
+            count,
+            style: boldTextStyle(size: 18, color: Colors.white),
+          ),
         ),
         4.height,
         Text(
@@ -608,32 +619,49 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
       return InkWell(
         onTap: () => controller.currentTab.value = index,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
-                color: isSelected ? appColorPrimary : Colors.transparent,
-                width: 2,
+                color: isSelected
+                    ? _profileGradient.colors.first
+                    : Colors.transparent,
+                width: 3,
               ),
             ),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                color: isSelected ? appColorPrimary : Colors.grey,
-                size: 20,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  color: isSelected ? appColorPrimary : Colors.grey,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                  fontSize: 14,
+              if (isSelected)
+                ShaderMask(
+                  shaderCallback: (b) => _profileGradient.createShader(b),
+                  child: Icon(icon, color: Colors.white, size: 20),
+                )
+              else
+                Icon(icon, color: Colors.grey, size: 20),
+              const SizedBox(width: 6),
+              if (isSelected)
+                ShaderMask(
+                  shaderCallback: (b) => _profileGradient.createShader(b),
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                )
+              else
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 14,
+                  ),
                 ),
-              ),
             ],
           ),
         ),
@@ -691,15 +719,15 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.only(
-        top: 2,
+        top: 12,
         bottom: 80,
-        left: 2,
-        right: 2,
+        left: 10,
+        right: 10,
       ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        crossAxisSpacing: 2,
-        mainAxisSpacing: 2,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
         childAspectRatio: 1,
       ),
       itemCount: controller.userPosts.length,
@@ -712,37 +740,57 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
           child: Container(
             decoration: BoxDecoration(
               color: Colors.grey.shade900,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: _profileGradient.colors.first.withOpacity(0.3),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            child: post.imageUrl != null && post.imageUrl!.isNotEmpty
-                ? CachedNetworkImage(
-                    imageUrl: post.imageUrl!,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      color: Colors.grey.shade800,
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          color: appColorPrimary,
-                          strokeWidth: 2,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(9),
+              child: post.imageUrl != null && post.imageUrl!.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: post.imageUrl!,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        color: Colors.grey.shade800,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: appColorPrimary,
+                            strokeWidth: 2,
+                          ),
                         ),
                       ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.grey.shade800,
+                        child: const Icon(
+                          Icons.image_not_supported,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    )
+                  : Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       color: Colors.grey.shade800,
-                      child: const Icon(
-                        Icons.image_not_supported,
-                        color: Colors.grey,
+                      child: Text(
+                        "${post.caption}",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                  )
-                : Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsetsGeometry.symmetric(horizontal: 10),
-                    color: Colors.grey.shade800,
-                    child: Text(
-                      "${post.caption}",
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
+            ),
           ),
         );
       },
@@ -786,28 +834,72 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.only(
-        top: 2,
+        top: 12,
         bottom: 80,
-        left: 2,
-        right: 2,
+        left: 10,
+        right: 10,
       ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        crossAxisSpacing: 2,
-        mainAxisSpacing: 2,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
         childAspectRatio: 0.75,
       ),
       itemCount: controller.userReels.length,
       itemBuilder: (context, index) {
         final Reel reel = controller.userReels[index];
+        final thumbUrl = reel.content?.thumbnailUrl ?? '';
 
         return GestureDetector(
           onTap: () {
             Get.to(UserReelScreen(reelId: reel.id ?? 0));
           },
-          child: Image.network(
-            '${reel.content?.thumbnailUrl ?? ''}',
-            fit: BoxFit.cover,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey.shade900,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: _profileGradient.colors.first.withOpacity(0.3),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(9),
+              child: thumbUrl.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: thumbUrl,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        color: Colors.grey.shade800,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: appColorPrimary,
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.grey.shade800,
+                        child: const Icon(
+                          Icons.videocam_off,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    )
+                  : Container(
+                      color: Colors.grey.shade800,
+                      child: const Center(
+                        child: Icon(Icons.video_library_outlined, color: Colors.grey),
+                      ),
+                    ),
+            ),
           ),
         );
       },
@@ -853,14 +945,13 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
       padding: const EdgeInsets.only(
         top: 16,
         bottom: 80,
-        left: 10,
-        right: 10,
+        left: 14,
+        right: 14,
       ),
       itemCount: controller.userProjects.length +
           (controller.hasMoreProjects.value ? 1 : 0),
       itemBuilder: (context, index) {
         if (index == controller.userProjects.length) {
-          // Load more indicator
           if (controller.hasMoreProjects.value) {
             controller.loadMoreProjects();
             return const Padding(
@@ -874,7 +965,24 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
         }
 
         final project = controller.userProjects[index];
-        return CampaignProjectCard(project: project);
+        return Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: _profileGradient.colors.first.withOpacity(0.35),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.25),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: CampaignProjectCard(project: project),
+        );
       },
     );
   }
@@ -889,14 +997,19 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
       decoration: BoxDecoration(
         color: Colors.grey[900],
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[800]!),
+        border: Border.all(
+          color: _profileGradient.colors.first.withOpacity(0.3),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Personal Information',
-            style: boldTextStyle(size: 16, color: Colors.white),
+          ShaderMask(
+            shaderCallback: (b) => _profileGradient.createShader(b),
+            child: Text(
+              'Personal Information',
+              style: boldTextStyle(size: 16, color: Colors.white),
+            ),
           ),
           16.height,
           if (user.email != null && user.email!.isNotEmpty) ...[

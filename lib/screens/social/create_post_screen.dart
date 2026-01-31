@@ -266,320 +266,421 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               )),
             ],
           ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // User Info
-                if (user != null)
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundImage: NetworkImage(
-                          user!.profileImage,
-                        ),
-                      ),
-                      12.width,
-                      Text(
-                        'You',
-                        style: boldTextStyle(size: 16, color: Colors.white),
-                      ),
-                    ],
-                  ),
-                20.height,
-
-                //Title,
-                TextField(
-                  controller: _titleController,
-                  style: primaryTextStyle(
-                      size: 18, weight: FontWeight.w700, color: Colors.white),
-                  decoration: InputDecoration(
-                    hintText: 'Title',
-                    hintStyle: secondaryTextStyle(size: 16, color: Colors.grey),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
+          body: Column(
+            children: [
+              // Facebook-style header with user info
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey[900],
+                  border: Border(
+                    bottom: BorderSide(color: Colors.grey[800]!, width: 1),
                   ),
                 ),
-
-                // Caption Input
-                TextField(
-                  controller: _captionController,
-                  maxLines: 5,
-                  style: primaryTextStyle(size: 16, color: Colors.white),
-                  decoration: InputDecoration(
-                    hintText: 'What\'s on your mind?',
-                    hintStyle: secondaryTextStyle(size: 16, color: Colors.grey),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
-                  ),
-                ),
-                20.height,
-                // Image Section
-                if (_selectedImage != null) ...[
-                  Container(
-                    width: double.infinity,
-                    height: 300,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey[700]!),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.file(
-                        _selectedImage!,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  16.height,
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: _showImageSourceDialog,
-                          icon: const Icon(Icons.edit, color: appColorPrimary),
-                          label: Text(
-                            'Change Image',
-                            style: primaryTextStyle(color: appColorPrimary),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: appColorPrimary),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                child: Row(
+                  children: [
+                    // User Avatar
+                    user != null
+                        ? CircleAvatar(
+                            radius: 24,
+                            backgroundImage: NetworkImage(
+                              user!.profileImage,
                             ),
+                            backgroundColor: Colors.grey[700],
+                            child: user!.profileImage.isEmpty
+                                ? const Icon(Icons.person, color: Colors.white)
+                                : null,
+                          )
+                        : CircleAvatar(
+                            radius: 24,
+                            backgroundColor: Colors.grey[700],
+                            child: const Icon(Icons.person, color: Colors.white),
                           ),
-                        ),
-                      ),
-                      12.width,
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () {
-                            setState(() {
-                              _selectedImage = null;
-                            });
-                          },
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          label: Text(
-                            'Remove',
-                            style: primaryTextStyle(color: Colors.red),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.red),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ] else ...[
-                  // Add Image Button
-                  GestureDetector(
-                    onTap: _showImageSourceDialog,
-                    child: Container(
-                      width: double.infinity,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[800],
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Colors.grey[700]!,
-                          style: BorderStyle.solid,
-                          width: 2,
-                        ),
-                      ),
+                    const SizedBox(width: 12),
+                    // User Info
+                    Expanded(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ShaderMask(
-                            shaderCallback: (Rect bounds) {
-                              return LinearGradient(
-                                colors: [
-                                  Colors.yellow.shade400,  // Yellow
-                                  Colors.orange.shade400,  // Orange
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ).createShader(bounds);
-                            },
-                            child: Icon(
-                              Icons.add_photo_alternate_outlined,
-                              size: 48,
-                              color: Colors.white, // IMPORTANT: White रखें
+                          Text(
+                            user?.firstName ?? 'You',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
-
-                          SizedBox(height: 12),
-
-                          // Text with Gradient
-                          ShaderMask(
-                            shaderCallback: (Rect bounds) {
-                              return LinearGradient(
-                                colors: [
-                                  Colors.yellow.shade400,  // Yellow
-                                  Colors.orange.shade400,  // Orange
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ).createShader(bounds);
-                            },
-                            child: Text(
-                              'Add Photo',
-                              style: boldTextStyle(
+                          const SizedBox(height: 2),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.public,
                                 size: 16,
-                                color: Colors.white, // IMPORTANT: White रखें
+                                color: Colors.grey[400],
                               ),
-                            ),
-                          ),
-                          4.height,
-                          Text(
-                            'Tap to select from gallery or camera',
-                            style: secondaryTextStyle(
-                                size: 12, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-                20.height,
-                // Posting Indicator
-                Obx(() => _socialController.isUploadingPost.value
-                    ? Row(
-                        children: [
-                          const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  appColorPrimary),
-                            ),
-                          ),
-                          12.width,
-                          Text(
-                            'Uploading post...',
-                            style: secondaryTextStyle(
-                                size: 14, color: Colors.grey),
-                          ),
-                        ],
-                      )
-                    : const SizedBox.shrink()),
-
-                if (hashtags.isNotEmpty)
-                  Wrap(
-                    children: hashtags
-                        .map((hashtag) => Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 3, vertical: 5),
-                              child: Text(
-                                '#' + hashtag,
+                              const SizedBox(width: 4),
+                              Text(
+                                'Public',
                                 style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700),
+                                  color: Colors.grey[400],
+                                  fontSize: 14,
+                                ),
                               ),
-                            ))
-                        .toList(),
-                  ),
-
-                // add Hash Tag
-                TextField(
-                  style: const TextStyle(color: Colors.white),
-                  controller: hashTagController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide:
-                          const BorderSide(color: Colors.grey, width: 1),
+                              const SizedBox(width: 8),
+                              Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 16,
+                                color: Colors.grey[400],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide:
-                          const BorderSide(color: Colors.grey, width: 1),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: grey, width: 1),
-                    ),
-                    hintText: 'Add Hashtag',
-                    hintStyle: secondaryTextStyle(size: 14, color: Colors.grey),
-                    suffixIcon: IconButton(
-                        onPressed: () {
-                          if (hashTagController.text.trim().isNotEmpty) {
-                            hashtags.add(hashTagController.text.trim());
-                            hashTagController.clear();
-                            setState(() {});
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.add,
-                          color: appColorPrimary,
-                        )),
-                  ),
+                  ],
                 ),
-
-                //
-                10.height,
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.yellow.shade400,
-                        Colors.orange.shade400,
+              ),
+              
+              // Main content area
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Title Input
+                      TextField(
+                        controller: _titleController,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        decoration: const InputDecoration(
+                          hintText: 'Post title...',
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      
+                      // Caption Input
+                      TextField(
+                        controller: _captionController,
+                        maxLines: 8,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          height: 1.4,
+                        ),
+                        decoration: const InputDecoration(
+                          hintText: 'What\'s on your mind?',
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                      
+                      // Image Section
+                      if (_selectedImage != null) ...[
+                        const SizedBox(height: 20),
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.grey[700]!),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.file(
+                              _selectedImage!,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[800],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextButton.icon(
+                                  onPressed: _showImageSourceDialog,
+                                  icon: const Icon(Icons.edit, color: appColorPrimary),
+                                  label: const Text(
+                                    'Edit',
+                                    style: TextStyle(color: appColorPrimary),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: 1,
+                                height: 24,
+                                color: Colors.grey[600],
+                              ),
+                              Expanded(
+                                child: TextButton.icon(
+                                  onPressed: () {
+                                    setState(() {
+                                      _selectedImage = null;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.delete_outline, color: Colors.red),
+                                  label: const Text(
+                                    'Remove',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Colors.transparent,
-                      width: 1,
-                    ),
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      // toast("Coming Soon");
-
-                      //
-                      FollowerController followController =
-                          Get.put(FollowerController());
-
-                      //
-                      followController.initData();
-                      await showModalBottomSheet(
-                          context: context,
-                          clipBehavior: Clip.hardEdge,
-                          builder: (context) => _FollowBottomSheet(
-                                controller: followController,
-                              ));
-
-                      //
-                      followController.cleareData();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                      
+                      const SizedBox(height: 20),
+                      
+                      // Hashtags Section
+                      if (hashtags.isNotEmpty) ...[
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: hashtags
+                              .map((hashtag) => Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.yellow.shade400,
+                                          Colors.orange.shade400,
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          '#$hashtag',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        GestureDetector(
+                                          onTap: () {
+                                            hashtags.remove(hashtag);
+                                            setState(() {});
+                                          },
+                                          child: const Icon(
+                                            Icons.close,
+                                            size: 16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                      
+                      // Add Hashtag Input
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[800],
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey[700]!),
+                        ),
+                        child: TextField(
+                          controller: hashTagController,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            hintText: 'Add hashtag...',
+                            hintStyle: TextStyle(
+                              color: Colors.grey[400],
+                              fontSize: 14,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.all(12),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                if (hashTagController.text.trim().isNotEmpty) {
+                                  hashtags.add(hashTagController.text.trim());
+                                  hashTagController.clear();
+                                  setState(() {});
+                                }
+                              },
+                              icon: const Icon(
+                                Icons.add,
+                                color: appColorPrimary,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    child: const Text(
-                      "Tag People",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                      
+                      const SizedBox(height: 20),
+                      
+                      // Tag People Button
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.yellow.shade400,
+                              Colors.orange.shade400,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            FollowerController followController =
+                                Get.put(FollowerController());
+                            followController.initData();
+                            await showModalBottomSheet(
+                                context: context,
+                                clipBehavior: Clip.hardEdge,
+                                builder: (context) => _FollowBottomSheet(
+                                      controller: followController,
+                                    ));
+                            followController.cleareData();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Text(
+                            "Tag People",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      
+                      const SizedBox(height: 40), // Bottom padding (scroll end)
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              
+              // Facebook-style bottom action bar
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey[900],
+                  border: Border(
+                    top: BorderSide(color: Colors.grey[800]!, width: 1),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    // Add to post section
+                    Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: _showImageSourceDialog,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[800],
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ShaderMask(
+                                    shaderCallback: (Rect bounds) {
+                                      return LinearGradient(
+                                        colors: [
+                                          Colors.yellow.shade400,
+                                          Colors.orange.shade400,
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ).createShader(bounds);
+                                    },
+                                    child: const Icon(
+                                      Icons.photo_library,
+                                      size: 20,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Text(
+                                    'Add Photo',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    
+                    const SizedBox(height: 12),
+                    
+                    // Posting Indicator
+                    Obx(() => _socialController.isUploadingPost.value
+                        ? const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      appColorPrimary),
+                                ),
+                              ),
+                              SizedBox(width: 12),
+                              Text(
+                                'Uploading post...',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          )
+                        : const SizedBox.shrink()),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -608,7 +709,14 @@ class _FollowBottomSheet extends StatelessWidget {
                   indicatorColor: appColorPrimary,
                   padding: EdgeInsetsGeometry.symmetric(horizontal: 10,vertical: 10),
                   indicator: BoxDecoration(
-                    color: Colors.red,
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.yellow.shade400,
+                        Colors.orange.shade400,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                     borderRadius: BorderRadius.circular(200),
                   ),
 

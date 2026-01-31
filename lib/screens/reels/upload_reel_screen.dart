@@ -5,6 +5,13 @@ import 'package:video_player/video_player.dart';
 
 import 'upload_reel_controller.dart';
 
+/// Apna gradient - Create Reel (yellow-orange)
+const LinearGradient _uploadReelGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+
 class UploadReelScreen extends StatefulWidget {
   const UploadReelScreen({super.key});
 
@@ -58,21 +65,31 @@ class _UploadReelScreenState extends State<UploadReelScreen>
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
         appBar: _buildAppBar(),
-        body: FadeTransition(
-          opacity: _fadeAnimation,
-          child: Obx(() {
-            if (_controller.isUploading.value) {
-              return _buildUploadProgress();
-            }
-
-            if (!_controller.isVideoSelected.value) {
-              return _buildVideoSelection();
-            }
-
-            return _buildUploadForm();
-          }),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black,
+                const Color(0xFF0f0d0a),
+              ],
+            ),
+          ),
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: Obx(() {
+              if (_controller.isUploading.value) {
+                return _buildUploadProgress();
+              }
+              if (!_controller.isVideoSelected.value) {
+                return _buildVideoSelection();
+              }
+              return _buildUploadForm();
+            }),
+          ),
         ),
       ),
     );
@@ -80,7 +97,7 @@ class _UploadReelScreenState extends State<UploadReelScreen>
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       leading: Obx(() => IconButton(
             icon: const Icon(Icons.close, color: Colors.white),
@@ -88,26 +105,53 @@ class _UploadReelScreenState extends State<UploadReelScreen>
                 ? null
                 : () => _controller.cancelUpload(),
           )),
-      title: const Text(
-        'Create Reel',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
+      title: ShaderMask(
+        shaderCallback: (bounds) => _uploadReelGradient.createShader(bounds),
+        child: const Text(
+          'Create Reel',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
+      centerTitle: true,
       actions: [
         Obx(() {
           if (_controller.isVideoSelected.value &&
               !_controller.isUploading.value) {
-            return TextButton(
-              onPressed: _controller.uploadReel,
-              child: const Text(
-                'Share',
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+            return Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: _uploadReelGradient,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFFF9800).withValues(alpha: 0.35),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: _controller.uploadReel,
+                    borderRadius: BorderRadius.circular(8),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Text(
+                        'Share',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             );
@@ -119,95 +163,124 @@ class _UploadReelScreenState extends State<UploadReelScreen>
   }
 
   Widget _buildVideoSelection() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Camera icon
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              color: Colors.grey[800],
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.videocam,
-              color: Colors.white,
-              size: 50,
-            ),
-          ),
-          const SizedBox(height: 32),
-
-          // Title
-          const Text(
-            'Add Video to Reel',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Subtitle
-          Text(
-            'Choose a video from your gallery or record a new one',
-            style: TextStyle(
-              color: Colors.grey[400],
-              fontSize: 16,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 48),
-
-          // Action buttons
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              // Gallery button
-              _buildActionButton(
-                icon: Icons.photo_library,
-                label: 'Gallery',
-                onTap: _controller.pickVideoFromGallery,
-              ),
-
-              // Camera button
-              _buildActionButton(
-                icon: Icons.camera_alt,
-                label: 'Camera',
-                onTap: _controller.pickVideoFromCamera,
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-
-          // Video requirements
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 32),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.grey[900],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              children: [
-                const Text(
-                  'Video Requirements',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 24),
+            // Camera icon with gradient
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: _uploadReelGradient,
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFFF9800).withValues(alpha: 0.4),
+                    blurRadius: 20,
+                    offset: const Offset(0, 6),
                   ),
+                ],
+              ),
+              child: const Icon(
+                Icons.videocam_rounded,
+                color: Colors.white,
+                size: 44,
+              ),
+            ),
+            const SizedBox(height: 28),
+
+            // Title with gradient
+            ShaderMask(
+              shaderCallback: (bounds) => _uploadReelGradient.createShader(bounds),
+              child: const Text(
+                'Add Video to Reel',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(height: 12),
-                _buildRequirementItem('Maximum 3 minutes duration'),
-                _buildRequirementItem('Vertical orientation preferred'),
-                _buildRequirementItem('High quality video'),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // Subtitle
+            Text(
+              'Choose a video from your gallery or record a new one',
+              style: TextStyle(
+                color: Colors.grey[400],
+                fontSize: 15,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 40),
+
+            // Action buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildActionButton(
+                  icon: Icons.photo_library_rounded,
+                  label: 'Gallery',
+                  onTap: _controller.pickVideoFromGallery,
+                ),
+                const SizedBox(width: 20),
+                _buildActionButton(
+                  icon: Icons.camera_alt_rounded,
+                  label: 'Camera',
+                  onTap: _controller.pickVideoFromCamera,
+                ),
               ],
             ),
-          ),
-        ],
+            const SizedBox(height: 36),
+
+            // Video requirements card
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1a1510),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: const Color(0xFFFF9800).withValues(alpha: 0.25),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFFF9800).withValues(alpha: 0.06),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ShaderMask(
+                    shaderCallback: (bounds) => _uploadReelGradient.createShader(bounds),
+                    child: const Text(
+                      'Video Requirements',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  _buildRequirementItem('Maximum 3 minutes duration'),
+                  _buildRequirementItem('Vertical orientation preferred'),
+                  _buildRequirementItem('High quality video'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }
@@ -217,30 +290,58 @@ class _UploadReelScreenState extends State<UploadReelScreen>
     required String label,
     required VoidCallback onTap,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 120,
-        height: 120,
-        decoration: BoxDecoration(
-          color: Colors.grey[800],
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey[700]!, width: 1),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: Colors.white, size: 32),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          width: 120,
+          height: 120,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: const Color(0xFFFF9800).withValues(alpha: 0.5),
+              width: 1.5,
             ),
-          ],
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                const Color(0xFF1a1510),
+                const Color(0xFF0f0d0a),
+              ],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFFF9800).withValues(alpha: 0.1),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: _uploadReelGradient,
+                ),
+                child: Icon(icon, color: Colors.white, size: 28),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -248,15 +349,22 @@ class _UploadReelScreenState extends State<UploadReelScreen>
 
   Widget _buildRequirementItem(String text) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
-          Icon(
-            Icons.check_circle,
-            color: Colors.green[400],
-            size: 16,
+          Container(
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: _uploadReelGradient,
+            ),
+            child: const Icon(
+              Icons.check_rounded,
+              color: Colors.white,
+              size: 14,
+            ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               text,
@@ -408,7 +516,7 @@ class _UploadReelScreenState extends State<UploadReelScreen>
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.blue),
+              borderSide: const BorderSide(color: Color(0xFFFF9800), width: 1.5),
             ),
             filled: true,
             fillColor: Colors.grey[900],
@@ -462,7 +570,7 @@ class _UploadReelScreenState extends State<UploadReelScreen>
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.blue),
+                    borderSide: const BorderSide(color: Color(0xFFFF9800), width: 1.5),
                   ),
                   filled: true,
                   fillColor: Colors.grey[900],
@@ -522,7 +630,7 @@ class _UploadReelScreenState extends State<UploadReelScreen>
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.blue),
+                    borderSide: const BorderSide(color: Color(0xFFFF9800), width: 1.5),
                   ),
                   filled: true,
                   fillColor: Colors.grey[900],
@@ -539,23 +647,33 @@ class _UploadReelScreenState extends State<UploadReelScreen>
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: Colors.blue.withOpacity(0.2),
+                            gradient: LinearGradient(
+                              colors: [
+                                const Color(0xFFFF9800).withValues(alpha: 0.2),
+                                const Color(0xFFFFF176).withValues(alpha: 0.15),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.blue),
+                            border: Border.all(color: const Color(0xFFFF9800).withValues(alpha: 0.6)),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(
-                                '#$hashtag',
-                                style: const TextStyle(color: Colors.blue),
+                              ShaderMask(
+                                shaderCallback: (b) => _uploadReelGradient.createShader(b),
+                                child: Text(
+                                  '#$hashtag',
+                                  style: const TextStyle(color: Colors.white),
+                                ),
                               ),
                               const SizedBox(width: 4),
                               GestureDetector(
                                 onTap: () => _controller.removeHashtag(hashtag),
                                 child: const Icon(
                                   Icons.close,
-                                  color: Colors.blue,
+                                  color: Color(0xFFFF9800),
                                   size: 16,
                                 ),
                               ),
@@ -573,8 +691,12 @@ class _UploadReelScreenState extends State<UploadReelScreen>
     return Obx(() => Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.grey[900],
+            color: const Color(0xFF1a1510),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: const Color(0xFFFF9800).withValues(alpha: 0.2),
+              width: 1,
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -619,19 +741,15 @@ class _UploadReelScreenState extends State<UploadReelScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Progress indicator
-          Container(
+          // Progress indicator with gradient
+          SizedBox(
             width: 120,
             height: 120,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.blue, width: 3),
-            ),
             child: Obx(() => CircularProgressIndicator(
                   value: _controller.uploadProgress.value,
-                  strokeWidth: 3,
-                  backgroundColor: Colors.grey[800],
-                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+                  strokeWidth: 4,
+                  backgroundColor: const Color(0xFF1a1510),
+                  valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFF9800)),
                 )),
           ),
           const SizedBox(height: 32),

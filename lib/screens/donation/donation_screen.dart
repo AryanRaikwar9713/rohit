@@ -763,7 +763,14 @@
 //     );
 //   }
 // }
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:streamit_laravel/screens/Impact-dashBoard/model/campain_cat_responce_model.dart';
+import 'package:streamit_laravel/screens/donation/donation_controller.dart';
+import 'package:streamit_laravel/screens/donation/model/get_project_list_responce_model.dart';
+import 'package:streamit_laravel/screens/donation/project_detail_screen.dart';
+import 'package:streamit_laravel/utils/colors.dart';
 
 class ImpactDashboardScreen extends StatelessWidget {
   const ImpactDashboardScreen({super.key});
@@ -779,91 +786,137 @@ class ImpactDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0D0D0F),
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsetsGeometry.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-          
-              Row(
+    return GetBuilder<DonationController>(
+      init: DonationController(),
+      builder: (controller) {
+        return Scaffold(
+          backgroundColor: const Color(0xFF0D0D0F),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _gradientIcon(Icons.favorite, 34),
-                  const SizedBox(width: 8),
+                  // Header - same rahega (Impact Dashboard + subtitle)
+                  Row(
+                    children: [
+                      _gradientIcon(Icons.favorite, 34),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Impact Dashboard',
+                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
                   const Text(
-                    'Impact Dashboard',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                    'Make a positive impact by supporting important projects.',
+                    style: TextStyle(color: Colors.white, fontSize: 17),
+                  ),
+                  const SizedBox(height: 10),
+                  // Filters: Near Me + Worldwide (static), Category from API, Urgency (static)
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey.withOpacity(0.1)),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
+                    child: Obx(() {
+                      if (controller.categoriesLoading.value) {
+                        return const SizedBox(
+                          height: 36,
+                          child: Center(
+                            child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFFFF9800)),
+                            ),
+                          ),
+                        );
+                      }
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            FilterChipWidget(icon: Icons.public, text: 'Near Me + Worldwide'),
+                            const SizedBox(width: 8),
+                            // All categories chip
+                            FilterChipWidget(
+                              icon: Icons.category,
+                              text: 'All',
+                              isSelected: controller.selectedCategoryId.value == null,
+                              onTap: () => controller.setSelectedCategoryId(null),
+                            ),
+                            ...controller.categories.map((Datum cat) {
+                              final isSelected = controller.selectedCategoryId.value == cat.id;
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: FilterChipWidget(
+                                  icon: Icons.category,
+                                  text: cat.name ?? 'Category',
+                                  isSelected: isSelected,
+                                  onTap: () => controller.setSelectedCategoryId(cat.id),
+                                ),
+                              );
+                            }),
+                            const SizedBox(width: 8),
+                            FilterChipWidget(icon: Icons.local_fire_department, text: 'Urgency'),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                  const SizedBox(height: 0),
+                  // API se content - loading / empty / list
+                  Expanded(
+                    child: Obx(() {
+                      if (controller.loading.value) {
+                        return const Center(
+                          child: CircularProgressIndicator(color: appColorPrimary),
+                        );
+                      }
+                      final list = controller.filteredProjectList;
+                      if (list.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            'No Data',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 20,
+                            ),
+                          ),
+                        );
+                      }
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          await controller.getProjectlist(refresh: true);
+                        },
+                        color: appColorPrimary,
+                        child: ListView.builder(
+                          padding: const EdgeInsets.only(top: 10, bottom: 20),
+                          itemCount: list.length,
+                          itemBuilder: (context, index) {
+                            final project = list[index];
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _donationCard(project),
+                                if (index < list.length - 1) _divider(),
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    }),
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
-              const Text(
-                'Make a positive impact by supporting important projects.',
-                style: TextStyle(color: Colors.white,fontSize: 17),
-              ),
-        
-              const SizedBox(height: 10),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey.withOpacity(0.1))
-                ),
-                padding: EdgeInsets.symmetric(vertical: 9),
-                child: Row(
-
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: const [
-                    FilterChipWidget(icon: Icons.public, text: 'Near Me + Worldwide'),
-                    const SizedBox(width: 10),
-                    FilterChipWidget(icon: Icons.category, text: 'Category'),
-                    const SizedBox(width: 10),
-                    FilterChipWidget(icon: Icons.local_fire_department, text: 'Urgency'),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 0),
-              Container(
-                width: 420,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black54,
-                      blurRadius: 20,
-                      offset: Offset(0, 10),
-                    )
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Header
-          
-          
-                    // Filters
-          
-          
-                    const SizedBox(height: 24),
-          
-                    // ===== MULTIPLE CARDS =====
-                    _donationCard(),
-                    _divider(),
-                    _donationCard(),
-                    _divider(),
-                    _donationCard(),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -877,20 +930,46 @@ class ImpactDashboardScreen extends StatelessWidget {
     );
   }
 
-  static Widget _donationCard() {
+  static Widget _donationCard(Project project) {
+    final imageUrl = project.projectImages != null && project.projectImages!.isNotEmpty
+        ? project.projectImages!.first
+        : 'https://images.unsplash.com/photo-1546182990-dffeafbe841d';
+    final raised = project.fundingRaised ?? 0;
+    final goal = project.fundingGoal ?? 0;
+    final percent = (project.fundingPercentage ?? 0) / 100;
+
     return Padding(
-      padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              'https://images.unsplash.com/photo-1546182990-dffeafbe841d',
-              width: 110,
-              height: 130,
-              fit: BoxFit.cover,
+          GestureDetector(
+            onTap: () {
+              Get.to(() => ProjectDetailScreen(id: project.id ?? 0));
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
+                width: 110,
+                height: 130,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                width: 110,
+                height: 130,
+                color: Colors.grey.shade800,
+                child: const Center(
+                  child: CircularProgressIndicator(color: appColorPrimary, strokeWidth: 2),
+                ),
+              ),
+              errorWidget: (context, url, error) => Container(
+                width: 110,
+                height: 130,
+                color: Colors.grey.shade800,
+                child: const Icon(Icons.image_not_supported, color: Colors.grey, size: 32),
+              ),
             ),
+          ),
           ),
           const SizedBox(width: 13),
           Expanded(
@@ -898,55 +977,50 @@ class ImpactDashboardScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 6),
-                const Text(
-                  'Help Rebuild Wildlife Habitats',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),
+                Text(
+                  project.title ?? 'Untitled Project',
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 6),
                 RichText(
                   text: TextSpan(
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.white, // default color
-                    ),
+                    style: const TextStyle(fontSize: 12, color: Colors.white),
                     children: [
-                      const TextSpan(
-                        text: '\$1,240 ',
-                        style: TextStyle(
-                          color: Colors.white, // pehla part white
+                      TextSpan(
+                        text: '\$${raised.toStringAsFixed(0)} ',
+                        style: const TextStyle(
+                          color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       TextSpan(
                         text: 'of ',
-                        style: TextStyle(
-                          color: Colors.grey.shade400, // "of" grey
-                        ),
+                        style: TextStyle(color: Colors.grey.shade400),
                       ),
                       TextSpan(
-                        text: '\$2,500 goal',
-                        style: TextStyle(
-                          color: Colors.grey.shade400, // baaki sab grey
-                        ),
+                        text: '\$${goal} goal',
+                        style: TextStyle(color: Colors.grey.shade400),
                       ),
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 10),
-
-                  Padding(
-                    padding: EdgeInsetsGeometry.only(right:10 ),
-                    child: Align(
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Align(
                     alignment: Alignment.centerRight,
-                    child: Text('49%', style: TextStyle(color: Colors.grey.shade400)),
-                                    ),
+                    child: Text(
+                      '${(percent * 100).toStringAsFixed(0)}%',
+                      style: TextStyle(color: Colors.grey.shade400),
+                    ),
                   ),
+                ),
                 const SizedBox(height: 3),
                 Padding(
-                  padding: EdgeInsetsGeometry.only(right:10 ),
+                  padding: const EdgeInsets.only(right: 10),
                   child: ClipRRect(
-
                     borderRadius: BorderRadius.circular(10),
                     child: SizedBox(
                       height: 6,
@@ -955,32 +1029,31 @@ class ImpactDashboardScreen extends StatelessWidget {
                           return appGradient.createShader(bounds);
                         },
                         child: LinearProgressIndicator(
-                          value: 0.55,
+                          value: percent.clamp(0.0, 1.0),
                           backgroundColor: Colors.white12,
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                            Colors.white, // IMPORTANT: white hi rahe
-                          ),
+                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       ),
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 10),
                 Align(
                   alignment: Alignment.centerRight,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(30),
-                    onTap: () {},
+                    onTap: () {
+                      Get.to(() => ProjectDetailScreen(id: project.id ?? 0));
+                    },
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
                       decoration: BoxDecoration(
                         gradient: appGradient,
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      child: Row(
+                      child: const Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
+                        children: [
                           Icon(Icons.favorite, color: Colors.black, size: 18),
                           SizedBox(width: 2),
                           Text(
@@ -996,10 +1069,9 @@ class ImpactDashboardScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -1018,18 +1090,32 @@ class ImpactDashboardScreen extends StatelessWidget {
 class FilterChipWidget extends StatelessWidget {
   final IconData icon;
   final String text;
+  final bool isSelected;
+  final VoidCallback? onTap;
 
-  const FilterChipWidget({super.key, required this.icon, required this.text});
+  const FilterChipWidget({
+    super.key,
+    required this.icon,
+    required this.text,
+    this.isSelected = false,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final chip = Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
       decoration: BoxDecoration(
-        color:   Colors.grey.withOpacity(0.1),
+        color: isSelected
+            ? ImpactDashboardScreen.appGradient.colors.first.withOpacity(0.25)
+            : Colors.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(30),
+        border: isSelected
+            ? Border.all(color: ImpactDashboardScreen.appGradient.colors.first, width: 1)
+            : null,
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           ShaderMask(
             shaderCallback: (bounds) {
@@ -1038,9 +1124,24 @@ class FilterChipWidget extends StatelessWidget {
             child: Icon(icon, size: 19, color: Colors.white),
           ),
           const SizedBox(width: 6),
-          Text(text, style: const TextStyle(fontSize: 14, color: Colors.white)),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.white,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            ),
+          ),
         ],
       ),
     );
+    if (onTap != null) {
+      return GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: chip,
+      );
+    }
+    return chip;
   }
 }

@@ -174,7 +174,7 @@ class HomeScreen extends StatelessWidget {
               ),
               12.width,
               Text(
-                'StreamIt',
+                'Wamims',
                 style: boldTextStyle(size: 20, color: Colors.white),
               ),
             ],

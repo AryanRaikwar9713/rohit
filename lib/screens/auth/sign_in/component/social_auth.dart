@@ -11,6 +11,13 @@ import '../../../../utils/colors.dart';
 import '../../../../utils/common_base.dart';
 import '../sign_in_controller.dart';
 
+/// Apna gradient - Social auth buttons (yellow-orange)
+const LinearGradient _socialAuthGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+
 class SocialAuthComponent extends StatelessWidget {
   SocialAuthComponent({super.key});
 
@@ -56,29 +63,40 @@ class SocialIconWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppButton(
-      onTap: onTap,
-      splashColor: appColorPrimary.withValues(alpha: 0.3),
-      shapeBorder: RoundedRectangleBorder(borderRadius: radius(4)),
-      padding: EdgeInsets.zero,
-      color: cardDarkColor,
-      height: 50,
-      width: buttonWidth,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CachedImageWidget(
-            url: icon,
-            fit: BoxFit.cover,
-            height: iconSize?.height ?? 18,
-            width: iconSize?.width ?? 18,
-            color: iconColor,
-          ).paddingRight(16),
-          Text(
-            text.validate(),
-            style: commonW500PrimaryTextStyle(color: primaryTextColor),
-          )
-        ],
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          height: 50,
+          width: buttonWidth,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            color: cardDarkColor,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: _socialAuthGradient.colors.first.withOpacity(0.45),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CachedImageWidget(
+                url: icon,
+                fit: BoxFit.cover,
+                height: iconSize?.height ?? 18,
+                width: iconSize?.width ?? 18,
+                color: iconColor,
+              ).paddingRight(16),
+              Text(
+                text.validate(),
+                style: commonW500PrimaryTextStyle(color: primaryTextColor),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

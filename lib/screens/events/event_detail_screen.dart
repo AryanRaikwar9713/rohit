@@ -9,6 +9,13 @@ import '../../widgets/bottom_navigation_wrapper.dart';
 import '../event/get_event_responce_modle.dart';
 import 'events_controller.dart';
 
+/// Apna gradient - Events detail accent (yellow-orange)
+const LinearGradient _eventDetailGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+
 class EventDetailScreen extends StatelessWidget {
   final ShopEvents event;
   final EventsController eventsController;
@@ -89,15 +96,20 @@ class EventDetailScreen extends StatelessWidget {
   Widget _buildHeroSection() {
     return Stack(
       children: [
-        // Cover Image
-        Container(
-          height: 320,
-          width: Get.width,
-          child: CachedImageWidget(
-            url: event.cover_image_url ?? '',
+        // Cover Image (contain = no cut, full image visible) + tap → bottom sheet
+        GestureDetector(
+          onTap: () => _showImageBottomSheet(Get.context!),
+          child: Container(
             height: 320,
             width: Get.width,
-            fit: BoxFit.cover,
+            color: appScreenBackgroundDark,
+            alignment: Alignment.center,
+            child: CachedImageWidget(
+              url: event.cover_image_url ?? '',
+              height: 320,
+              width: Get.width,
+              fit: BoxFit.contain,
+            ),
           ),
         ),
 
@@ -135,17 +147,143 @@ class EventDetailScreen extends StatelessWidget {
                   icon: _getStatusIcon(event.status ?? ''),
                 ),
 
-              // Featured Badge
+              // Featured Badge (gradient)
               if (event.isFeatured == 1)
-                _buildModernBadge(
-                  text: 'FEATURED',
-                  color: appColorPrimary,
-                  icon: Icons.star,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  decoration: BoxDecoration(
+                    gradient: _eventDetailGradient,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _eventDetailGradient.colors.first.withOpacity(0.4),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.star, size: 14, color: Colors.black),
+                      const SizedBox(width: 6),
+                      Text(
+                        'FEATURED',
+                        style: boldTextStyle(size: 11, color: Colors.black),
+                      ),
+                    ],
+                  ),
                 ),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  void _showImageBottomSheet(BuildContext context) {
+    final url = event.cover_image_url ?? '';
+    if (url.isEmpty) return;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        height: MediaQuery.of(context).size.height * 0.85,
+        decoration: BoxDecoration(
+          color: appScreenBackgroundDark,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(
+            color: _eventDetailGradient.colors.first.withOpacity(0.4),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: _eventDetailGradient.colors.first.withOpacity(0.15),
+              blurRadius: 20,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Drag handle + gradient bar
+            Padding(
+              padding: const EdgeInsets.only(top: 12, bottom: 8),
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: _eventDetailGradient.colors.first.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            // Header with title and close (gradient accent)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  ShaderMask(
+                    shaderCallback: (b) => _eventDetailGradient.createShader(b),
+                    child: Text(
+                      event.title ?? 'Event Image',
+                      style: boldTextStyle(size: 18, color: Colors.white),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const Spacer(),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => Navigator.of(ctx).pop(),
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          gradient: _eventDetailGradient,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: _eventDetailGradient.colors.first.withOpacity(0.3),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(Icons.close, size: 20, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1, color: Colors.grey),
+            // Full image (contain = no cut)
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Center(
+                  child: Container(
+                    width: Get.width - 32,
+                    height: MediaQuery.of(context).size.height * 0.55,
+                    color: Colors.grey[900],
+                    alignment: Alignment.center,
+                    child: CachedImageWidget(
+                      url: url,
+                      width: Get.width - 32,
+                      height: MediaQuery.of(context).size.height * 0.55,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -195,31 +333,36 @@ class EventDetailScreen extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // Event Type
+          // Event Type (gradient)
           if (event.eventType != null)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    appColorPrimary.withOpacity(0.2),
-                    appColorPrimary.withOpacity(0.1),
+                    _eventDetailGradient.colors.first.withOpacity(0.25),
+                    _eventDetailGradient.colors.last.withOpacity(0.15),
                   ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: appColorPrimary.withOpacity(0.3),
+                  color: _eventDetailGradient.colors.first.withOpacity(0.5),
                   width: 1,
                 ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.event, size: 18, color: appColorPrimary),
+                  ShaderMask(
+                    shaderCallback: (b) => _eventDetailGradient.createShader(b),
+                    child: const Icon(Icons.event, size: 18, color: Colors.white),
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     event.eventType ?? '',
-                    style: boldTextStyle(size: 14, color: appColorPrimary),
+                    style: boldTextStyle(size: 14, color: _eventDetailGradient.colors.first),
                   ),
                 ],
               ),
@@ -234,7 +377,7 @@ class EventDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
-          // Start Date Card
+          // Start Date Card (theme color)
           if (event.startDate != null)
             Expanded(
               child: _buildInfoCard(
@@ -242,14 +385,14 @@ class EventDetailScreen extends StatelessWidget {
                 title: 'Starts',
                 value: DateFormat('MMM dd').format(event.startDate!),
                 time: DateFormat('hh:mm a').format(event.startDate!),
-                color: Colors.green,
+                color: _eventDetailGradient.colors.first,
               ),
             ),
 
           if (event.startDate != null && event.endDate != null)
             const SizedBox(width: 12),
 
-          // End Date Card
+          // End Date Card (theme color)
           if (event.endDate != null)
             Expanded(
               child: _buildInfoCard(
@@ -257,7 +400,7 @@ class EventDetailScreen extends StatelessWidget {
                 title: 'Ends',
                 value: DateFormat('MMM dd').format(event.endDate!),
                 time: DateFormat('hh:mm a').format(event.endDate!),
-                color: Colors.red,
+                color: _eventDetailGradient.colors.last,
               ),
             ),
         ],
@@ -335,7 +478,7 @@ class EventDetailScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(
-                  color: appColorPrimary.withOpacity(0.3),
+                  color: _eventDetailGradient.colors.first.withOpacity(0.5),
                   width: 2,
                 ),
               ),
@@ -359,7 +502,10 @@ class EventDetailScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.store, size: 16, color: appColorPrimary),
+                    ShaderMask(
+                      shaderCallback: (b) => _eventDetailGradient.createShader(b),
+                      child: const Icon(Icons.store, size: 16, color: Colors.white),
+                    ),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
@@ -416,11 +562,24 @@ class EventDetailScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: appColorPrimary.withOpacity(0.2),
+                  gradient: LinearGradient(
+                    colors: [
+                      _eventDetailGradient.colors.first.withOpacity(0.3),
+                      _eventDetailGradient.colors.last.withOpacity(0.2),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: _eventDetailGradient.colors.first.withOpacity(0.4),
+                    width: 1,
+                  ),
                 ),
-                child:
-                    Icon(Icons.description, size: 20, color: appColorPrimary),
+                child: ShaderMask(
+                  shaderCallback: (b) => _eventDetailGradient.createShader(b),
+                  child: const Icon(Icons.description, size: 20, color: Colors.white),
+                ),
               ),
               const SizedBox(width: 12),
               Text(
@@ -452,13 +611,13 @@ class EventDetailScreen extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            appColorPrimary.withOpacity(0.1),
-            appColorPrimary.withOpacity(0.05),
+            _eventDetailGradient.colors.first.withOpacity(0.12),
+            _eventDetailGradient.colors.last.withOpacity(0.06),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: appColorPrimary.withOpacity(0.2),
+          color: _eventDetailGradient.colors.first.withOpacity(0.35),
           width: 1,
         ),
       ),
@@ -470,11 +629,24 @@ class EventDetailScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: appColorPrimary.withOpacity(0.2),
+                  gradient: LinearGradient(
+                    colors: [
+                      _eventDetailGradient.colors.first.withOpacity(0.3),
+                      _eventDetailGradient.colors.last.withOpacity(0.2),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: _eventDetailGradient.colors.first.withOpacity(0.4),
+                    width: 1,
+                  ),
                 ),
-                child: Icon(Icons.calendar_today,
-                    size: 20, color: appColorPrimary),
+                child: ShaderMask(
+                  shaderCallback: (b) => _eventDetailGradient.createShader(b),
+                  child: const Icon(Icons.calendar_today, size: 20, color: Colors.white),
+                ),
               ),
               const SizedBox(width: 12),
               Text(
@@ -485,40 +657,40 @@ class EventDetailScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // Start Date
+          // Start Date (theme)
           if (event.startDate != null)
             _buildTimelineItem(
               icon: Icons.play_circle_filled,
               label: 'Start Date',
               date: DateFormat('MMM dd, yyyy').format(event.startDate!),
               time: DateFormat('hh:mm a').format(event.startDate!),
-              color: Colors.green,
+              color: _eventDetailGradient.colors.first,
             ),
 
           if (event.startDate != null && event.endDate != null)
             const SizedBox(height: 16),
 
-          // End Date
+          // End Date (theme)
           if (event.endDate != null)
             _buildTimelineItem(
               icon: Icons.stop_circle,
               label: 'End Date',
               date: DateFormat('MMM dd, yyyy').format(event.endDate!),
               time: DateFormat('hh:mm a').format(event.endDate!),
-              color: Colors.red,
+              color: _eventDetailGradient.colors.last,
             ),
 
           if (event.endDate != null && event.resultDate != null)
             const SizedBox(height: 16),
 
-          // Result Date
+          // Result Date (theme)
           if (event.resultDate != null)
             _buildTimelineItem(
               icon: Icons.emoji_events,
               label: 'Result Date',
               date: DateFormat('MMM dd, yyyy').format(event.resultDate!),
               time: DateFormat('hh:mm a').format(event.resultDate!),
-              color: Colors.amber,
+              color: _eventDetailGradient.colors.first,
             ),
         ],
       ),
@@ -581,13 +753,13 @@ class EventDetailScreen extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.blue.withOpacity(0.1),
-            Colors.purple.withOpacity(0.1),
+            _eventDetailGradient.colors.first.withOpacity(0.1),
+            _eventDetailGradient.colors.last.withOpacity(0.06),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.blue.withOpacity(0.2),
+          color: _eventDetailGradient.colors.first.withOpacity(0.35),
           width: 1,
         ),
       ),
@@ -599,10 +771,24 @@ class EventDetailScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.2),
+                  gradient: LinearGradient(
+                    colors: [
+                      _eventDetailGradient.colors.first.withOpacity(0.3),
+                      _eventDetailGradient.colors.last.withOpacity(0.2),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: _eventDetailGradient.colors.first.withOpacity(0.4),
+                    width: 1,
+                  ),
                 ),
-                child: Icon(Icons.people, size: 20, color: Colors.blue),
+                child: ShaderMask(
+                  shaderCallback: (b) => _eventDetailGradient.createShader(b),
+                  child: const Icon(Icons.people, size: 20, color: Colors.white),
+                ),
               ),
               const SizedBox(width: 12),
               Text(
@@ -625,9 +811,7 @@ class EventDetailScreen extends StatelessWidget {
               widthFactor: percentage.clamp(0.0, 1.0),
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.blue, Colors.purple],
-                  ),
+                  gradient: _eventDetailGradient,
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
@@ -635,7 +819,7 @@ class EventDetailScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Stats
+          // Stats (theme colors only)
           Row(
             children: [
               Expanded(
@@ -643,7 +827,7 @@ class EventDetailScreen extends StatelessWidget {
                   icon: Icons.person,
                   label: 'Joined',
                   value: '$current',
-                  color: Colors.blue,
+                  color: _eventDetailGradient.colors.first,
                 ),
               ),
               const SizedBox(width: 12),
@@ -652,7 +836,7 @@ class EventDetailScreen extends StatelessWidget {
                   icon: Icons.group,
                   label: 'Max',
                   value: '$max',
-                  color: Colors.purple,
+                  color: _eventDetailGradient.colors.last,
                 ),
               ),
               const SizedBox(width: 12),
@@ -661,7 +845,7 @@ class EventDetailScreen extends StatelessWidget {
                   icon: Icons.event_available,
                   label: 'Available',
                   value: '$available',
-                  color: Colors.green,
+                  color: _eventDetailGradient.colors.first.withOpacity(0.85),
                 ),
               ),
             ],
@@ -713,7 +897,7 @@ class EventDetailScreen extends StatelessWidget {
         color: canvasColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.grey[800]!,
+          color: _eventDetailGradient.colors.first.withOpacity(0.35),
           width: 1,
         ),
       ),
@@ -725,10 +909,24 @@ class EventDetailScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.2),
+                  gradient: LinearGradient(
+                    colors: [
+                      _eventDetailGradient.colors.first.withOpacity(0.3),
+                      _eventDetailGradient.colors.last.withOpacity(0.2),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: _eventDetailGradient.colors.first.withOpacity(0.4),
+                    width: 1,
+                  ),
                 ),
-                child: Icon(Icons.rule, size: 20, color: Colors.orange),
+                child: ShaderMask(
+                  shaderCallback: (b) => _eventDetailGradient.createShader(b),
+                  child: const Icon(Icons.rule, size: 20, color: Colors.white),
+                ),
               ),
               const SizedBox(width: 12),
               Text(
@@ -741,10 +939,10 @@ class EventDetailScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.1),
+              color: _eventDetailGradient.colors.first.withOpacity(0.08),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: Colors.orange.withOpacity(0.2),
+                color: _eventDetailGradient.colors.first.withOpacity(0.25),
                 width: 1,
               ),
             ),
@@ -773,15 +971,17 @@ class EventDetailScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.amber.withOpacity(0.3),
-                      Colors.orange.withOpacity(0.3),
-                    ],
-                  ),
+                  gradient: _eventDetailGradient,
                   borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _eventDetailGradient.colors.first.withOpacity(0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
-                child: Icon(Icons.emoji_events, size: 20, color: Colors.amber),
+                child: const Icon(Icons.emoji_events, size: 20, color: Colors.black),
               ),
               const SizedBox(width: 12),
               Text(
@@ -809,10 +1009,17 @@ class EventDetailScreen extends StatelessWidget {
   }
 
   Widget _buildModernPrizeCard(Prize prize, int position) {
+    // All prizes use theme gradient shades (no blue/purple/green/brown)
     final colors = [
-      [Colors.amber, Colors.orange],
-      [Colors.grey[400]!, Colors.grey[600]!],
-      [Colors.brown[300]!, Colors.brown[500]!],
+      [_eventDetailGradient.colors.first, _eventDetailGradient.colors.last],
+      [
+        _eventDetailGradient.colors.first.withOpacity(0.7),
+        _eventDetailGradient.colors.last.withOpacity(0.7),
+      ],
+      [
+        _eventDetailGradient.colors.first.withOpacity(0.5),
+        _eventDetailGradient.colors.last.withOpacity(0.5),
+      ],
     ];
 
     final colorIndex = (position - 1) % colors.length;
@@ -914,20 +1121,24 @@ class EventDetailScreen extends StatelessWidget {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.2),
+                          color: _eventDetailGradient.colors.last.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: _eventDetailGradient.colors.last.withOpacity(0.4),
+                            width: 1,
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(Icons.attach_money,
-                                size: 12, color: Colors.green),
+                                size: 12, color: _eventDetailGradient.colors.last),
                             const SizedBox(width: 4),
                             Text(
                               prize.prizeValue ?? '',
                               style: boldTextStyle(
                                 size: 12,
-                                color: Colors.green,
+                                color: _eventDetailGradient.colors.last,
                               ),
                             ),
                           ],
@@ -947,14 +1158,14 @@ class EventDetailScreen extends StatelessWidget {
     switch (status.toLowerCase()) {
       case 'active':
       case 'ongoing':
-        return Colors.green;
+        return _eventDetailGradient.colors.first;
       case 'upcoming':
-        return Colors.blue;
+        return _eventDetailGradient.colors.last;
       case 'completed':
       case 'ended':
         return Colors.grey;
       default:
-        return btnColor;
+        return _eventDetailGradient.colors.first;
     }
   }
 

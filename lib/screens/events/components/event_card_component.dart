@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:streamit_laravel/screens/shops_section/shop_profile_screen.dart';
 import '../../../components/cached_image_widget.dart';
 import '../../../utils/colors.dart';
-import '../../../utils/common_base.dart';
 import '../../event/get_event_responce_modle.dart';
+
+/// Apna gradient - Events screen accent
+const LinearGradient _eventGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
 
 class EventCardComponent extends StatelessWidget {
   final ShopEvents event;
@@ -26,30 +31,47 @@ class EventCardComponent extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: boxDecorationDefault(
-          borderRadius: BorderRadius.circular(12),
+        decoration: BoxDecoration(
           color: canvasColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: _eventGradient.colors.first.withOpacity(0.2),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.25),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Cover Image
+            // Cover Image (contain = no cut, full image visible)
             Stack(
               children: [
                 ClipRRect(
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
+                    topLeft: Radius.circular(15),
+                    topRight: Radius.circular(15),
                   ),
-                  child: CachedImageWidget(
-                    url: event.cover_image_url ?? '',
+                  child: Container(
                     height: 200,
-                    width: Get.width,
-                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    color: Colors.grey[900],
+                    alignment: Alignment.center,
+                    child: CachedImageWidget(
+                      url: event.cover_image_url ?? '',
+                      height: 200,
+                      width: Get.width,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
-                // Featured Badge
+                // Featured Badge (gradient)
                 if (event.isFeatured == 1)
                   Positioned(
                     top: 12,
@@ -59,13 +81,20 @@ class EventCardComponent extends StatelessWidget {
                         horizontal: 12,
                         vertical: 6,
                       ),
-                      decoration: boxDecorationDefault(
+                      decoration: BoxDecoration(
+                        gradient: _eventGradient,
                         borderRadius: BorderRadius.circular(20),
-                        color: appColorPrimary,
+                        boxShadow: [
+                          BoxShadow(
+                            color: _eventGradient.colors.first.withOpacity(0.4),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Text(
                         'Featured',
-                        style: boldTextStyle(size: 12, color: white),
+                        style: boldTextStyle(size: 12, color: Colors.black),
                       ),
                     ),
                   ),
@@ -79,9 +108,13 @@ class EventCardComponent extends StatelessWidget {
                         horizontal: 12,
                         vertical: 6,
                       ),
-                      decoration: boxDecorationDefault(
-                        borderRadius: BorderRadius.circular(20),
+                      decoration: BoxDecoration(
                         color: _getStatusColor(event.status ?? ''),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.3),
+                          width: 0.5,
+                        ),
                       ),
                       child: Text(
                         event.status!.toUpperCase(),
@@ -93,45 +126,57 @@ class EventCardComponent extends StatelessWidget {
             ),
             // Event Details
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Title
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Text(
                           event.title ?? 'No Title',
-                          style: boldTextStyle(size: 20, color: white),
+                          style: boldTextStyle(size: 18, color: white),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      3.width,
-                      
-                      // Event Type
+                      8.width,
+                      // Event Type (gradient accent)
                       if (event.eventType != null)
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 10,
                             vertical: 6,
                           ),
-                          decoration: boxDecorationDefault(
-                            borderRadius: BorderRadius.circular(6),
-                            color: appColorPrimary.withOpacity(0.2),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                _eventGradient.colors.first.withOpacity(0.25),
+                                _eventGradient.colors.last.withOpacity(0.2),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: _eventGradient.colors.first.withOpacity(0.5),
+                              width: 1,
+                            ),
                           ),
                           child: Text(
                             event.eventType ?? '',
-                            style: secondaryTextStyle(
-                              size: 12,
-                              color: appColorPrimary,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: _eventGradient.colors.first,
                             ),
                           ),
                         ),
                     ],
                   ),
-                  5.height,
+                  10.height,
                   // Shop Info
                   if (event.shopName != null)
                     InkWell(
@@ -246,30 +291,29 @@ class EventCardComponent extends StatelessWidget {
                         ),
                     ],
                   ),
-                  8.height,
+                  12.height,
 
-                  _buildButton(
+                  // Redeem Points (gradient CTA)
+                  _buildGradientButton(
                     title: 'Redeem Points',
-                    onTap: () {
-                      // Handle join event logic
-                    },
+                    onTap: () {},
                   ),
-                  5.height,
+                  10.height,
                   Row(
                     children: [
-                      Expanded(child: _buildButton(
-                        title: 'Price',
-                        onTap: () {
-                          // Handle join event logic
-                        },
-                      )),
-                      5.width,
-                      Expanded(child: _buildButton(
-                        title: 'Leader Board',
-                        onTap: () {
-                          // Handle join event logic
-                        },
-                      )),
+                      Expanded(
+                        child: _buildOutlineButton(
+                          title: 'Price',
+                          onTap: () {},
+                        ),
+                      ),
+                      10.width,
+                      Expanded(
+                        child: _buildOutlineButton(
+                          title: 'Leader Board',
+                          onTap: () {},
+                        ),
+                      ),
                     ],
                   ),
 
@@ -287,32 +331,76 @@ class EventCardComponent extends StatelessWidget {
     switch (status.toLowerCase()) {
       case 'active':
       case 'ongoing':
-        return Colors.green;
+        return _eventGradient.colors.first;
       case 'upcoming':
-        return Colors.blue;
+        return _eventGradient.colors.last;
       case 'completed':
       case 'ended':
         return Colors.grey;
       default:
-        return btnColor;
+        return _eventGradient.colors.first;
     }
   }
 
-  _buildButton({
+  Widget _buildGradientButton({
     required String title,
     VoidCallback? onTap,
-})
-  {
-    return Container(
-      alignment: Alignment.center,
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.grey[400]?.withOpacity(.1),
-        border: Border.all(color: Colors.grey,width: .5),
-        borderRadius: BorderRadius.circular(3),
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          alignment: Alignment.center,
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            gradient: _eventGradient,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: _eventGradient.colors.first.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Text(
+            title,
+            style: boldTextStyle(size: 15, color: Colors.black),
+          ),
+        ),
       ),
-      child: Text(title ?? '',style: secondaryTextStyle(color: white),),
     );
-    }
+  }
+
+  Widget _buildOutlineButton({
+    required String title,
+    VoidCallback? onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.grey[800]?.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: _eventGradient.colors.first.withOpacity(0.4),
+              width: 1,
+            ),
+          ),
+          child: Text(
+            title,
+            style: secondaryTextStyle(size: 14, color: white),
+          ),
+        ),
+      ),
+    );
+  }
 }
