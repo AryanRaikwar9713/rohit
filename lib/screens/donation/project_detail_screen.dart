@@ -424,6 +424,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                           final messageTextField = TextEditingController();
                           await showModalBottomSheet(
                             context: context,
+                            backgroundColor: Colors.transparent,
                             builder: (context) => _DonatSheet(
                               amountController: amountTextFiel,
                               messageController: messageTextField,
@@ -724,123 +725,184 @@ class _DonatSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        // is padding se keyboard ke open hone par bottom safe ho jaata hai
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-          left: 16,
-          right: 16,
-          top: 20,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                "Enter Bolt Amount",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // 💰 Input Field
-              TextField(
-                controller: amountController,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                ),
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                inputFormatters: [NumberInputFormatter(decimalRange: 3)],
-                decoration: InputDecoration(
-                  hintText: "Amount",
-                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.4)),
-                  filled: true,
-                  fillColor: Colors.grey.shade900,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-
-              10.height,
-
-              TextField(
-                controller: messageController,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-                decoration: InputDecoration(
-                  hintText: "Add Message",
-                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.4)),
-                  filled: true,
-                  fillColor: Colors.grey.shade900,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // 🔘 Donate Button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.greenAccent.shade400,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF0D0D0D),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFFF9800).withOpacity(0.15),
+            blurRadius: 24,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 16,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Handle bar
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                      gradient: _appGradient,
+                      borderRadius: BorderRadius.circular(2),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  onPressed: () {
-                    if (amountController.text.trim().isEmpty ||
-                        messageController.text.trim().isEmpty) {
-                      Get.snackbar(
-                        "Error",
-                        "Please enter an amount and message",
-                        backgroundColor: Colors.redAccent.withOpacity(0.8),
-                        colorText: Colors.white,
-                      );
-                      return;
-                    }
-
-                    // 👉 Call donation logic here
-                    controller.donate(
-                      double.parse(amountController.text.trim()),
-                      messageController.text.trim(),
-                    );
-
-                    Navigator.pop(context); // close sheet
-                  },
+                ),
+                ShaderMask(
+                  shaderCallback: (b) => _appGradient.createShader(b),
                   child: const Text(
-                    "Donate",
+                    "Enter Bolt Amount",
                     style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
+                      color: Colors.white,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              ),
+                const SizedBox(height: 20),
 
-              const SizedBox(height: 10),
-            ],
+                // Amount input
+                TextField(
+                  controller: amountController,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [NumberInputFormatter(decimalRange: 3)],
+                  decoration: InputDecoration(
+                    hintText: "Amount",
+                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.4)),
+                    filled: true,
+                    fillColor: const Color(0xFF1A1A1A),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: Color(0xFFFF9800), width: 1.5),
+                    ),
+                  ),
+                ),
+
+                14.height,
+
+                // Message input
+                TextField(
+                  controller: messageController,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: "Add Message",
+                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.4)),
+                    filled: true,
+                    fillColor: const Color(0xFF1A1A1A),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: Color(0xFFFF9800), width: 1.5),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // Donate button - apna gradient
+                SizedBox(
+                  width: double.infinity,
+                  child: Material(
+                    borderRadius: BorderRadius.circular(14),
+                    child: InkWell(
+                      onTap: () {
+                        if (amountController.text.trim().isEmpty ||
+                            messageController.text.trim().isEmpty) {
+                          Get.snackbar(
+                            "Error",
+                            "Please enter an amount and message",
+                            backgroundColor: Colors.redAccent.withOpacity(0.8),
+                            colorText: Colors.white,
+                          );
+                          return;
+                        }
+                        controller.donate(
+                          double.parse(amountController.text.trim()),
+                          messageController.text.trim(),
+                        );
+                        Navigator.pop(context);
+                      },
+                      borderRadius: BorderRadius.circular(14),
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          gradient: _appGradient,
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFFFF9800).withOpacity(0.4),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.favorite_rounded, color: Colors.white, size: 22),
+                              SizedBox(width: 10),
+                              Text(
+                                "Donate",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
         ),
       ),

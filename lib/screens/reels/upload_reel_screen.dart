@@ -383,28 +383,18 @@ class _UploadReelScreenState extends State<UploadReelScreen>
     return SingleChildScrollView(
       child: Column(
         children: [
-          // Video preview
           _buildVideoPreview(),
-
-          // Form fields
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Caption field
                 _buildCaptionField(),
                 const SizedBox(height: 16),
-
-                // Location field
                 _buildLocationField(),
                 const SizedBox(height: 16),
-
-                // Hashtags field
                 _buildHashtagsField(),
                 const SizedBox(height: 16),
-
-                // Video info
                 _buildVideoInfo(),
               ],
             ),
@@ -638,7 +628,6 @@ class _UploadReelScreenState extends State<UploadReelScreen>
                 ),
               ),
               const SizedBox(height: 12),
-              // Hashtags list
               Wrap(
                 spacing: 8,
                 runSpacing: 8,

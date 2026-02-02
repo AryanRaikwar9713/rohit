@@ -8,9 +8,14 @@ import 'package:streamit_laravel/location_api.dart';
 import 'package:streamit_laravel/screens/shops_section/model/user_order_history_model.dart';
 import '../../components/cached_image_widget.dart';
 import '../../local_db.dart';
-import '../../utils/colors.dart';
 import 'model/product_list_responce_model.dart';
 import 'p/order_api.dart';
+
+const _orderFormGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
 
 class OrderFormScreen extends StatefulWidget {
   final Product product;
@@ -318,21 +323,33 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
 
         return true;
       },
-      child: Scaffold(
-        floatingActionButton: FloatingActionButton(onPressed: () async {}),
-        backgroundColor: appScreenBackgroundDark,
-        appBar: AppBar(
-          backgroundColor: Colors.grey[900],
-          title: Text(
-            'Place Order',
-            style: boldTextStyle(size: 20, color: Colors.white),
-          ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Get.back(),
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF0D0D0D), Color(0xFF000000)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
-        body: Form(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+              onPressed: () => Get.back(),
+            ),
+            title: ShaderMask(
+              shaderCallback: (bounds) => _orderFormGradient.createShader(bounds),
+              child: Text(
+                'Place Order',
+                style: boldTextStyle(size: 20, color: Colors.white),
+              ),
+            ),
+            centerTitle: true,
+          ),
+          body: Form(
           key: _formKey,
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
@@ -395,36 +412,49 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                 // Submit Button
                 SizedBox(
                   width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: _isSubmitting ? null : _submitOrder,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: appColorPrimary,
-                      disabledBackgroundColor: Colors.grey[700],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: _isSubmitting
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
+                  height: 52,
+                  child: Material(
+                    borderRadius: BorderRadius.circular(14),
+                    child: InkWell(
+                      onTap: _isSubmitting ? null : _submitOrder,
+                      borderRadius: BorderRadius.circular(14),
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          gradient: _isSubmitting ? null : _orderFormGradient,
+                          color: _isSubmitting ? Colors.grey[700] : null,
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: _isSubmitting ? null : [
+                            BoxShadow(
+                              color: const Color(0xFFFF9800).withOpacity(0.35),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
                             ),
-                          )
-                        : Text(
-                            'Place Order',
-                            style: boldTextStyle(size: 16, color: Colors.white),
-                          ),
+                          ],
+                        ),
+                        child: Center(
+                          child: _isSubmitting
+                              ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  'Place Order',
+                                  style: boldTextStyle(size: 17, color: Colors.white),
+                                ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 32.height,
               ],
             ),
           ),
+        ),
         ),
       ),
     );
@@ -434,14 +464,43 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey[900],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[700]!),
+        color: const Color(0xFF1A1A1A),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFF2E2E2E)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+          BoxShadow(
+            color: const Color(0xFFFF9800).withOpacity(0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      child: Row(
+      child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          // Product Image
-          ClipRRect(
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            child: Container(
+              height: 3,
+              decoration: BoxDecoration(
+                gradient: _orderFormGradient,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Row(
+              children: [
+                // Product Image
+                ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: widget.product.featuredImage != null &&
                     widget.product.featuredImage!.isNotEmpty
@@ -461,28 +520,35 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                     ),
                   ),
           ),
-          16.width,
-          // Product Details
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.product.name ?? 'Product',
-                  style: boldTextStyle(size: 16, color: Colors.white),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                8.height,
-                if (widget.product.price != null)
-                  Text(
-                    '${widget.product.price!.toStringAsFixed(2)} Bolts',
-                    style: boldTextStyle(size: 18, color: appColorPrimary),
+                16.width,
+                // Product Details
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.product.name ?? 'Product',
+                        style: boldTextStyle(size: 16, color: Colors.white),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      8.height,
+                      if (widget.product.price != null)
+                        ShaderMask(
+                          shaderCallback: (bounds) =>
+                              _orderFormGradient.createShader(bounds),
+                          child: Text(
+                            '${widget.product.price!.toStringAsFixed(2)} Bolts',
+                            style: boldTextStyle(size: 18, color: Colors.white),
+                          ),
+                        ),
+                      8.height,
+                      Text(
+                        'Quantity: ${widget.quantity}',
+                        style: secondaryTextStyle(size: 14, color: Colors.grey[400]),
+                      ),
+                    ],
                   ),
-                8.height,
-                Text(
-                  'Quantity: ${widget.quantity}',
-                  style: secondaryTextStyle(size: 14, color: Colors.grey[400]),
                 ),
               ],
             ),
@@ -497,16 +563,25 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
       children: [
         Container(
           width: 4,
-          height: 20,
+          height: 22,
           decoration: BoxDecoration(
-            color: appColorPrimary,
+            gradient: _orderFormGradient,
             borderRadius: BorderRadius.circular(2),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFFF9800).withOpacity(0.3),
+                blurRadius: 6,
+              ),
+            ],
           ),
         ),
-        10.width,
-        Text(
-          title,
-          style: boldTextStyle(size: 18, color: Colors.white),
+        12.width,
+        ShaderMask(
+          shaderCallback: (bounds) => _orderFormGradient.createShader(bounds),
+          child: Text(
+            title,
+            style: boldTextStyle(size: 18, color: Colors.white),
+          ),
         ),
       ],
     );
@@ -516,17 +591,38 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey[900],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[700]!),
+        color: const Color(0xFF1A1A1A),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFF2E2E2E)),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 8, offset: const Offset(0, 2)),
+        ],
       ),
-      child: Column(
+      child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          _buildRadioTile('cash_on_delivery', 'Cash on Delivery', Icons.money),
-          // 12.height,
-          // _buildRadioTile('online_payment', 'Online Payment', Icons.payment),
-          12.height,
-          _buildRadioTile('wallet', 'Wallet', Icons.account_balance_wallet),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            child: Container(
+              height: 3,
+              decoration: BoxDecoration(
+                gradient: _orderFormGradient,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Column(
+              children: [
+                _buildRadioTile('cash_on_delivery', 'Cash on Delivery', Icons.money_rounded),
+                12.height,
+                _buildRadioTile('wallet', 'Wallet', Icons.account_balance_wallet_rounded),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -549,9 +645,12 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                 _selectedPaymentMethod = val!;
               });
             },
-            activeColor: appColorPrimary,
+            activeColor: const Color(0xFFFF9800),
           ),
-          Icon(icon, color: Colors.white, size: 20),
+          ShaderMask(
+            shaderCallback: (bounds) => _orderFormGradient.createShader(bounds),
+            child: Icon(icon, color: Colors.white, size: 20),
+          ),
           12.width,
           Text(
             title,
@@ -570,12 +669,32 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey[900],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[700]!),
+        color: const Color(0xFF1A1A1A),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFF2E2E2E)),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 8, offset: const Offset(0, 2)),
+        ],
       ),
-      child: Column(
+      child: Stack(
+        clipBehavior: Clip.none,
         children: [
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            child: Container(
+              height: 3,
+              decoration: BoxDecoration(
+                gradient: _orderFormGradient,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Column(
+              children: [
           _buildTextField(
             controller: _shippingNameController,
             label: 'Full Name *',
@@ -740,6 +859,9 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
               }
               return null;
             },
+          ),
+              ],
+            ),
           ),
         ],
       ),
@@ -993,31 +1115,33 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
         hintText: hint,
         labelStyle: secondaryTextStyle(size: 12, color: Colors.grey[400]),
         hintStyle: secondaryTextStyle(size: 14, color: Colors.grey[600]),
-        prefixIcon: Icon(icon, color: appColorPrimary, size: 20),
+        prefixIcon: ShaderMask(
+          shaderCallback: (bounds) => _orderFormGradient.createShader(bounds),
+          child: Icon(icon, color: Colors.white, size: 20),
+        ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Colors.grey[700]!),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Colors.grey[700]!),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: appColorPrimary, width: 2),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFFFF9800), width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Colors.red),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Colors.red, width: 2),
         ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         filled: true,
-        fillColor: Colors.grey[800]!.withOpacity(0.5),
+        fillColor: const Color(0xFF161616),
       ),
     );
   }

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
-import '../../utils/colors.dart';
 import 'product_controller.dart';
+
+const _filterGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
 
 class ProductFilterSheet extends StatelessWidget {
   final ProductController controller;
@@ -12,37 +17,50 @@ class ProductFilterSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() => Container(
-      padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        color: Colors.black87,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0D0D0D),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFFF9800).withOpacity(0.12),
+            blurRadius: 24,
+            offset: const Offset(0, -4),
+          ),
+        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 40,
-            height: 4,
-            margin: const EdgeInsets.only(bottom: 20),
-            decoration: BoxDecoration(
-              color: Colors.grey[600],
-              borderRadius: BorderRadius.circular(2),
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              margin: const EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                gradient: _filterGradient,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
           ),
           Row(
             children: [
-              Text(
-                'Filters',
-                style: boldTextStyle(size: 20, color: Colors.white),
+              ShaderMask(
+                shaderCallback: (bounds) => _filterGradient.createShader(bounds),
+                child: Text(
+                  'Filters',
+                  style: boldTextStyle(size: 22, color: Colors.white),
+                ),
               ).expand(),
               TextButton(
-                onPressed: () {
-                  controller.clearFilters();
-                },
-                child: Text(
-                  'Clear All',
-                  style: primaryTextStyle(size: 14, color: appColorPrimary),
+                onPressed: () => controller.clearFilters(),
+                child: ShaderMask(
+                  shaderCallback: (bounds) => _filterGradient.createShader(bounds),
+                  child: Text(
+                    'Clear All',
+                    style: primaryTextStyle(size: 14, color: Colors.white),
+                  ),
                 ),
               ),
             ],
@@ -83,17 +101,37 @@ class ProductFilterSheet extends StatelessWidget {
           // Apply Button
           SizedBox(
             width: double.infinity,
-            child: AppButton(
-              text: 'Apply Filters',
-              color: appColorPrimary,
-              textStyle: boldTextStyle(size: 16, color: Colors.white),
-              shapeBorder: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+            child: Material(
+              borderRadius: BorderRadius.circular(14),
+              child: InkWell(
+                onTap: () {
+                  controller.applyFilters();
+                  Get.back();
+                },
+                borderRadius: BorderRadius.circular(14),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    gradient: _filterGradient,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFFF9800).withOpacity(0.35),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Center(
+                      child: Text(
+                        'Apply Filters',
+                        style: boldTextStyle(size: 16, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              onTap: () {
-                controller.applyFilters();
-                Get.back();
-              },
             ),
           ),
         ],
@@ -119,21 +157,22 @@ class ProductFilterSheet extends StatelessWidget {
           decoration: InputDecoration(
             hintText: 'Search products...',
             hintStyle: secondaryTextStyle(size: 14, color: Colors.grey),
-            prefixIcon: Icon(Icons.search, color: Colors.grey),
+            prefixIcon: Icon(Icons.search_rounded, color: Colors.grey[500]),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[700]!),
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[700]!),
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: appColorPrimary),
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: Color(0xFFFF9800), width: 1.5),
             ),
             filled: true,
-            fillColor: Colors.grey[900],
+            fillColor: const Color(0xFF1A1A1A),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           ),
         ),
       ],
@@ -194,13 +233,23 @@ class ProductFilterSheet extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? appColorPrimary : Colors.grey[800],
-          borderRadius: BorderRadius.circular(20),
+          gradient: isSelected ? _filterGradient : null,
+          color: isSelected ? null : const Color(0xFF1A1A1A),
+          borderRadius: BorderRadius.circular(22),
           border: Border.all(
-            color: isSelected ? appColorPrimary : Colors.grey[700]!,
+            color: isSelected ? Colors.transparent : const Color(0xFF3E3E3E),
+            width: 1,
           ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFFFF9800).withOpacity(0.25),
+                    blurRadius: 8,
+                  ),
+                ]
+              : null,
         ),
         child: Text(
           label,
@@ -241,18 +290,18 @@ class ProductFilterSheet extends StatelessWidget {
                   hintStyle: secondaryTextStyle(size: 14, color: Colors.grey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey[700]!),
+                    borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey[700]!),
+                    borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: appColorPrimary),
+                    borderSide: const BorderSide(color: Color(0xFFFF9800), width: 1.5),
                   ),
                   filled: true,
-                  fillColor: Colors.grey[900],
+                  fillColor: const Color(0xFF1A1A1A),
                 ),
               ),
             ),
@@ -274,18 +323,18 @@ class ProductFilterSheet extends StatelessWidget {
                   hintStyle: secondaryTextStyle(size: 14, color: Colors.grey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey[700]!),
+                    borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey[700]!),
+                    borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: appColorPrimary),
+                    borderSide: const BorderSide(color: Color(0xFFFF9800), width: 1.5),
                   ),
                   filled: true,
-                  fillColor: Colors.grey[900],
+                  fillColor: const Color(0xFF1A1A1A),
                 ),
               ),
             ),
@@ -371,12 +420,13 @@ class ProductFilterSheet extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? appColorPrimary : Colors.grey[800],
-          borderRadius: BorderRadius.circular(20),
+          gradient: isSelected ? _filterGradient : null,
+          color: isSelected ? null : const Color(0xFF1A1A1A),
+          borderRadius: BorderRadius.circular(22),
           border: Border.all(
-            color: isSelected ? appColorPrimary : Colors.grey[700]!,
+            color: isSelected ? Colors.transparent : const Color(0xFF3E3E3E),
           ),
         ),
         child: Text(
@@ -419,31 +469,36 @@ class ProductFilterSheet extends StatelessWidget {
                 },
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 8),
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? appColorPrimary.withOpacity(0.2)
-                        : Colors.grey[800],
-                    borderRadius: BorderRadius.circular(12),
+                        ? const Color(0xFFFF9800).withOpacity(0.15)
+                        : const Color(0xFF1A1A1A),
+                    borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: isSelected ? appColorPrimary : Colors.grey[700]!,
+                      color: isSelected
+                          ? const Color(0xFFFF9800)
+                          : const Color(0xFF2E2E2E),
+                      width: isSelected ? 1.5 : 1,
                     ),
                   ),
                   child: Row(
                     children: [
                       Expanded(
                         child: Text(
-                    option.replaceAll("_", " ").capitalizeEachWord(),
+                          option.replaceAll("_", " ").capitalizeEachWord(),
                           style: primaryTextStyle(
                             size: 14,
-                            color: isSelected ? appColorPrimary : Colors.white,
+                            color: isSelected
+                                ? const Color(0xFFFF9800)
+                                : Colors.white,
                           ),
                         ),
                       ),
                       if (isSelected)
                         Icon(
-                          Icons.check_circle,
-                          color: appColorPrimary,
+                          Icons.check_circle_rounded,
+                          color: const Color(0xFFFF9800),
                           size: 20,
                         ),
                     ],

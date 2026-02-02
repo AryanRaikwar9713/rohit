@@ -2,9 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
-import '../../utils/colors.dart';
 import 'order_history_controller.dart';
 import 'model/user_order_history_model.dart';
+
+const _orderGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
 
 class OrderHistoryScreen extends StatelessWidget {
   const OrderHistoryScreen({super.key});
@@ -13,32 +18,63 @@ class OrderHistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final OrderHistoryController controller = Get.put(OrderHistoryController());
 
-    return Scaffold(
-      backgroundColor: appScreenBackgroundDark,
-      appBar: AppBar(
-        backgroundColor: Colors.grey[900],
-        title: Text(
-          'Order History',
-          style: boldTextStyle(size: 20, color: Colors.white),
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF0D0D0D), Color(0xFF000000)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Get.back(),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.white),
-            onPressed: () {
-              controller.loadOrders(refresh: true);
-            },
-            tooltip: 'Refresh',
-          ),
-        ],
       ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+            onPressed: () => Get.back(),
+          ),
+          title: ShaderMask(
+            shaderCallback: (bounds) => _orderGradient.createShader(bounds),
+            child: Text(
+              'Order History',
+              style: boldTextStyle(size: 20, color: Colors.white),
+            ),
+          ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  gradient: _orderGradient,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFFF9800).withOpacity(0.3),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.refresh_rounded, color: Colors.white, size: 20),
+              ),
+              onPressed: () => controller.loadOrders(refresh: true),
+              tooltip: 'Refresh',
+            ),
+          ],
+        ),
       body: Obx(() {
         if (controller.isLoading.value) {
           return Center(
-            child: CircularProgressIndicator(color: appColorPrimary),
+            child: SizedBox(
+              width: 48,
+              height: 48,
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                valueColor: AlwaysStoppedAnimation(_orderGradient.colors.first),
+              ),
+            ),
           );
         }
 
@@ -68,17 +104,31 @@ class OrderHistoryScreen extends StatelessWidget {
                   ),
                 ).paddingSymmetric(horizontal: 32),
                 24.height,
-                ElevatedButton(
-                  onPressed: () => controller.loadOrders(refresh: true),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: appColorPrimary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                Material(
+                  borderRadius: BorderRadius.circular(14),
+                  child: InkWell(
+                    onTap: () => controller.loadOrders(refresh: true),
+                    borderRadius: BorderRadius.circular(14),
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        gradient: _orderGradient,
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFFF9800).withOpacity(0.35),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                        child: Text(
+                          'Retry',
+                          style: boldTextStyle(size: 16, color: Colors.white),
+                        ),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    'Retry',
-                    style: boldTextStyle(size: 16, color: Colors.white),
                   ),
                 ),
               ],
@@ -91,55 +141,69 @@ class OrderHistoryScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.shopping_bag_outlined,
-                  size: 100,
-                  color: appColorPrimary.withOpacity(0.5),
+                Container(
+                  padding: const EdgeInsets.all(28),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: _orderGradient,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFFF9800).withOpacity(0.35),
+                        blurRadius: 24,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.shopping_bag_rounded,
+                    size: 56,
+                    color: Colors.white,
+                  ),
                 ),
-                24.height,
-                Text(
-                  'No Orders Yet',
-                  style: boldTextStyle(size: 24, color: white),
+                28.height,
+                ShaderMask(
+                  shaderCallback: (bounds) => _orderGradient.createShader(bounds),
+                  child: Text(
+                    'No Orders Yet',
+                    style: boldTextStyle(size: 24, color: Colors.white),
+                  ),
                 ),
-                16.height,
+                12.height,
                 Text(
                   'Your order history will appear here',
                   textAlign: TextAlign.center,
-                  style: primaryTextStyle(
-                    size: 16,
-                    color: textSecondaryColorGlobal,
-                  ),
-                ).paddingSymmetric(horizontal: 32),
+                  style: primaryTextStyle(size: 15, color: Colors.grey[400]),
+                ).paddingSymmetric(horizontal: 40),
               ],
             ),
           );
         }
 
         return RefreshIndicator(
-          onRefresh: () async {
-            controller.loadOrders(refresh: true);
-          },
-          color: appColorPrimary,
+          onRefresh: () async => controller.loadOrders(refresh: true),
+          color: _orderGradient.colors.first,
+          backgroundColor: const Color(0xFF2A2A2A),
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Total Orders Count
                 if (controller.totalOrders.value > 0)
-                  Text(
-                    '${controller.totalOrders.value} Order${controller.totalOrders.value != 1 ? 's' : ''}',
-                    style:
-                        secondaryTextStyle(size: 14, color: Colors.grey[400]),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Text(
+                      '${controller.totalOrders.value} Order${controller.totalOrders.value != 1 ? 's' : ''}',
+                      style: secondaryTextStyle(size: 14, color: Colors.grey[400]),
+                    ),
                   ),
-                if (controller.totalOrders.value > 0) 16.height,
-                // Orders List
+                if (controller.totalOrders.value > 0) 12.height,
                 ...controller.orders.map((order) => OrderCard(order: order)),
               ],
             ),
           ),
         );
       }),
+    ),
     );
   }
 }
@@ -184,20 +248,37 @@ class OrderCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.grey[900],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[700]!, width: 1),
+        color: const Color(0xFF1A1A1A),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFF2E2E2E), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.35),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+          BoxShadow(
+            color: const Color(0xFFFF9800).withOpacity(0.06),
+            blurRadius: 16,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Section
+          // Gradient strip at top
+          Container(
+            height: 3,
+            decoration: BoxDecoration(
+              gradient: _orderGradient,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+            ),
+          ),
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.grey[800]!.withOpacity(0.5),
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12)),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
             ),
             child: Row(
               children: [
@@ -302,10 +383,13 @@ class OrderCard extends StatelessWidget {
                         ),
                         4.height,
                         if (order.finalAmount != null)
-                          Text(
-                            '${order.finalAmount} Bolts',
-                            style:
-                                boldTextStyle(size: 20, color: appColorPrimary),
+                          ShaderMask(
+                            shaderCallback: (bounds) =>
+                                _orderGradient.createShader(bounds),
+                            child: Text(
+                              '${order.finalAmount} Bolts',
+                              style: boldTextStyle(size: 20, color: Colors.white),
+                            ),
                           ),
                       ],
                     ),
