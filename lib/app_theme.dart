@@ -38,7 +38,7 @@ class AppTheme {
 
         fillColor: Colors.grey.withOpacity(.1),
         filled: true,
-        hintStyle: TextStyle(color: Colors.white.withOpacity(.5),fontSize: 15,fontFamily: GoogleFonts.poppins().fontFamily),
+        hintStyle: TextStyle(color: Colors.white.withOpacity(.5),fontSize: 15,fontFamily: GoogleFonts.roboto().fontFamily),
         
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),

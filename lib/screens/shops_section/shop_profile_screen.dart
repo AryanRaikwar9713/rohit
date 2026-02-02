@@ -8,6 +8,12 @@ import 'package:streamit_laravel/screens/shops_section/shop_products_screen.dart
 
 import '../../utils/colors.dart';
 
+const _shopProfileGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+
 class ShopProfileScreen extends StatelessWidget {
   const ShopProfileScreen({super.key});
 
@@ -15,12 +21,27 @@ class ShopProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final ShopController controller = Get.find<ShopController>();
 
-    return Scaffold(
-      backgroundColor: appScreenBackgroundDark,
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF0D0D0D), Color(0xFF000000)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
       body: Obx(() {
         if (controller.isLoading.value) {
           return Center(
-            child: CircularProgressIndicator(color: appColorPrimary),
+            child: SizedBox(
+              width: 48,
+              height: 48,
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                valueColor: AlwaysStoppedAnimation(_shopProfileGradient.colors.first),
+              ),
+            ),
           );
         }
 
@@ -52,9 +73,9 @@ class ShopProfileScreen extends StatelessWidget {
             SliverAppBar(
               expandedHeight: 250,
               pinned: true,
-              backgroundColor: Colors.grey[900],
+              backgroundColor: const Color(0xFF0D0D0D),
               leading: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.white),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
                 onPressed: () => Get.back(),
               ),
               flexibleSpace: FlexibleSpaceBar(
@@ -141,30 +162,35 @@ class ShopProfileScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                shopData.name ?? 'Shop Name',
-                                style: boldTextStyle(
-                                  size: 24,
-                                  color: Colors.white,
+                              ShaderMask(
+                                shaderCallback: (bounds) =>
+                                    _shopProfileGradient.createShader(bounds),
+                                child: Text(
+                                  shopData.name ?? 'Shop Name',
+                                  style: boldTextStyle(size: 24, color: Colors.white),
                                 ),
                               ),
                               8.height,
                               if (shopData.category != null)
                                 Container(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     horizontal: 12,
                                     vertical: 6,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: appColorPrimary.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: appColorPrimary),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: const Color(0xFFFF9800),
+                                      width: 1.5,
+                                    ),
+                                    color: const Color(0xFFFF9800).withOpacity(0.12),
                                   ),
-                                  child: Text(
-                                    shopData.category!.name ?? '',
-                                    style: primaryTextStyle(
-                                      size: 12,
-                                      color: appColorPrimary,
+                                  child: ShaderMask(
+                                    shaderCallback: (bounds) =>
+                                        _shopProfileGradient.createShader(bounds),
+                                    child: Text(
+                                      shopData.category!.name ?? '',
+                                      style: primaryTextStyle(size: 12, color: Colors.white),
                                     ),
                                   ),
                                 ),
@@ -202,88 +228,51 @@ class ShopProfileScreen extends StatelessWidget {
 
                     // Create Product Button (only if verified)
                     if (shopData.status == 'approved')
-                      SizedBox(
-                        width: double.infinity,
-                        child: AppButton(
-                          text: 'Create Product',
-                          color: appColorPrimary,
-                          textStyle: boldTextStyle(
-                            size: 16,
-                            color: Colors.white,
-                          ),
-                          shapeBorder: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          onTap: () {
-                            if (shopData.id != null) {
-                              Get.to(
-                                () => ProductCreateScreen(shopId: shopData.id!),
-                              );
-                            }
-                          },
-                        ),
+                      _gradientButton(
+                        label: 'Create Product',
+                        onTap: () {
+                          if (shopData.id != null) {
+                            Get.to(() => ProductCreateScreen(shopId: shopData.id!));
+                          }
+                        },
                       ),
-                    if (shopData.status == 'approved') 16.height,
+                    if (shopData.status == 'approved') 14.height,
 
                     // Create Event Button (only if verified)
                     if (shopData.status == 'approved')
-                      SizedBox(
-                        width: double.infinity,
-                        child: AppButton(
-                          text: 'Create Event',
-                          color: Colors.orange,
-                          textStyle: boldTextStyle(
-                            size: 16,
-                            color: Colors.white,
-                          ),
-                          shapeBorder: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          onTap: () {
-                            Get.to(() => const EventCreateScreen());
-                          },
-                        ),
+                      _gradientButton(
+                        label: 'Create Event',
+                        onTap: () => Get.to(() => const EventCreateScreen()),
                       ),
-                    if (shopData.status == 'approved') 16.height,
+                    if (shopData.status == 'approved') 14.height,
 
                     // View All Products Button
                     if (shopData.status == 'approved' && shopData.id != null)
-                      SizedBox(
-                        width: double.infinity,
-                        child: AppButton(
-                          text: 'View All Products',
-                          color: Colors.grey[800],
-                          textStyle: boldTextStyle(
-                            size: 16,
-                            color: Colors.white,
-                          ),
-                          shapeBorder: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            side: BorderSide(
-                              color: Colors.grey[700]!,
-                              width: 1,
+                      _outlineGradientButton(
+                        label: 'View All Products',
+                        onTap: () {
+                          Get.to(
+                            () => ShopProductsScreen(
+                              shopId: shopData.id!,
+                              shopName: shopData.name,
                             ),
-                          ),
-                          onTap: () {
-                            Get.to(
-                              () => ShopProductsScreen(
-                                shopId: shopData.id!,
-                                shopName: shopData.name,
-                              ),
-                            );
-                          },
-                        ),
+                          );
+                        },
                       ),
                     if (shopData.status == 'approved') 24.height,
 
                     // Description
                     if (shopData.description != null &&
                         shopData.description!.isNotEmpty) ...[
-                      Text(
-                        'About',
-                        style: boldTextStyle(size: 18, color: Colors.white),
+                      ShaderMask(
+                        shaderCallback: (bounds) =>
+                            _shopProfileGradient.createShader(bounds),
+                        child: Text(
+                          'About',
+                          style: boldTextStyle(size: 18, color: Colors.white),
+                        ),
                       ),
-                      8.height,
+                      10.height,
                       Text(
                         shopData.description!,
                         style: primaryTextStyle(
@@ -405,6 +394,76 @@ class ShopProfileScreen extends StatelessWidget {
           ],
         );
       }),
+    ),
+    );
+  }
+
+  Widget _gradientButton({required String label, required VoidCallback onTap}) {
+    return SizedBox(
+      width: double.infinity,
+      child: Material(
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(14),
+          child: Ink(
+            decoration: BoxDecoration(
+              gradient: _shopProfileGradient,
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFFF9800).withOpacity(0.35),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Center(
+                child: Text(
+                  label,
+                  style: boldTextStyle(size: 16, color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _outlineGradientButton({required String label, required VoidCallback onTap}) {
+    return SizedBox(
+      width: double.infinity,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(14),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: const Color(0xFFFF9800),
+                width: 1.5,
+              ),
+              color: const Color(0xFFFF9800).withOpacity(0.08),
+            ),
+            child: Center(
+              child: ShaderMask(
+                shaderCallback: (bounds) =>
+                    _shopProfileGradient.createShader(bounds),
+                child: Text(
+                  label,
+                  style: boldTextStyle(size: 16, color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -415,16 +474,47 @@ class ShopProfileScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: boldTextStyle(size: 18, color: Colors.white)),
+        ShaderMask(
+          shaderCallback: (bounds) =>
+              _shopProfileGradient.createShader(bounds),
+          child: Text(title, style: boldTextStyle(size: 18, color: Colors.white)),
+        ),
         12.height,
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.grey[900],
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[700]!),
+            color: const Color(0xFF1A1A1A),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: const Color(0xFF2E2E2E)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-          child: Column(children: children),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: Container(
+                  height: 3,
+                  decoration: BoxDecoration(
+                    gradient: _shopProfileGradient,
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Column(children: children),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -441,7 +531,11 @@ class ShopProfileScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: appColorPrimary, size: 20),
+          ShaderMask(
+            shaderCallback: (bounds) =>
+                _shopProfileGradient.createShader(bounds),
+            child: Icon(icon, color: Colors.white, size: 20),
+          ),
           12.width,
           Expanded(
             child: Column(

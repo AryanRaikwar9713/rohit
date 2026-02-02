@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../components/cached_image_widget.dart';
-import '../../utils/colors.dart';
 import 'model/product_list_responce_model.dart';
+
+const _cardGradient = LinearGradient(
+  colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -21,22 +26,27 @@ class ProductCard extends StatelessWidget {
     final bool hasDiscount = product.comparePrice != null &&
         product.comparePrice! > (product.price ?? 0);
 
-    double bRRR= 5;
+    const double cardRadius = 14;
 
     return GestureDetector(
       onTap: isOutOfStock ? null : onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[900],
-          borderRadius: BorderRadius.circular(bRRR),
+          color: const Color(0xFF1C1C1C),
+          borderRadius: BorderRadius.circular(cardRadius),
           border: Border.all(
-            color: Colors.grey[900]!,
+            color: const Color(0xFF2E2E2E),
             width: 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: bRRR,
+              color: Colors.black.withOpacity(0.4),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+            BoxShadow(
+              color: const Color(0xFFFF9800).withOpacity(0.06),
+              blurRadius: 16,
               offset: const Offset(0, 2),
             ),
           ],
@@ -44,15 +54,14 @@ class ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image Section
             Expanded(
               flex: 3,
               child: Stack(
                 children: [
                   ClipRRect(
-                    borderRadius:  BorderRadius.only(
-                      topLeft: Radius.circular(bRRR),
-                      topRight: Radius.circular(bRRR),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(cardRadius),
+                      topRight: Radius.circular(cardRadius),
                     ),
                     child: product.featuredImage != null &&
                             product.featuredImage!.isNotEmpty
@@ -65,36 +74,55 @@ class ProductCard extends StatelessWidget {
                         : Container(
                             width: double.infinity,
                             height: double.infinity,
-                            color: Colors.grey[800],
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  const Color(0xFF2A2A2A),
+                                  const Color(0xFF1E1E1E),
+                                ],
+                              ),
+                            ),
                             child: Icon(
                               Icons.image_not_supported_outlined,
-                              size: 48,
+                              size: 44,
                               color: Colors.grey[600],
                             ),
                           ),
                   ),
-
-                  // Overlay for out of stock
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      height: 3,
+                      decoration: BoxDecoration(
+                        gradient: _cardGradient,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(cardRadius),
+                          topRight: Radius.circular(cardRadius),
+                        ),
+                      ),
+                    ),
+                  ),
                   if (isOutOfStock)
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.6),
                         borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(16),
-                          topRight: Radius.circular(16),
+                          topLeft: Radius.circular(14),
+                          topRight: Radius.circular(14),
                         ),
                       ),
                     ),
-
-                  // Badges
                   Positioned(
-                    top: 8,
-                    left: 8,
-                    right: 8,
+                    top: 10,
+                    left: 10,
+                    right: 10,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Out of Stock Badge
                         if (isOutOfStock)
                           Container(
                             padding: const EdgeInsets.symmetric(
@@ -104,6 +132,12 @@ class ProductCard extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Colors.red,
                               borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.3),
+                                  blurRadius: 6,
+                                ),
+                              ],
                             ),
                             child: Text(
                               'Out of Stock',
@@ -115,8 +149,6 @@ class ProductCard extends StatelessWidget {
                           )
                         else
                           const SizedBox.shrink(),
-
-                        // Featured Badge
                         if (product.isFeatured == true)
                           Container(
                             padding: const EdgeInsets.symmetric(
@@ -124,14 +156,20 @@ class ProductCard extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: appColorPrimary,
+                              gradient: _cardGradient,
                               borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFFFF9800).withOpacity(0.4),
+                                  blurRadius: 8,
+                                ),
+                              ],
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  Icons.star,
+                                  Icons.star_rounded,
                                   size: 12,
                                   color: Colors.white,
                                 ),
@@ -149,12 +187,10 @@ class ProductCard extends StatelessWidget {
                       ],
                     ),
                   ),
-
-                  // Discount Badge
                   if (hasDiscount && !isOutOfStock)
                     Positioned(
-                      top: 8,
-                      right: 8,
+                      top: 10,
+                      right: 10,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
@@ -163,6 +199,12 @@ class ProductCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              blurRadius: 6,
+                            ),
+                          ],
                         ),
                         child: Text(
                           '${((product.comparePrice! - (product.price ?? 0)) / product.comparePrice! * 100).toStringAsFixed(0)}% OFF',
@@ -176,70 +218,66 @@ class ProductCard extends StatelessWidget {
                 ],
               ),
             ),
-
-            // Product Details Section
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Product Name
                   Text(
                     product.name ?? 'Product Name',
                     style: boldTextStyle(
-                      size: 15,
+                      size: 14,
                       color: Colors.white,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  3.height,
-
+                  4.height,
                   Text(
                     product.shortDescription ?? '',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                      // height: 1,
-                      fontWeight: FontWeight.w300
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey[500],
+                      fontWeight: FontWeight.w400,
+                      height: 1.2,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-
-                  // Price Section
+                  8.height,
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      // Current Price
                       if (product.price != null)
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '${product.price!.toInt()}',
-                              style: boldTextStyle(
-                                size: 18,
-                                color: appColorPrimary,
-                              ),
-                            ),
-                            4.width,
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 2),
-                              child: Text(
-                                'Bolts',
-                                style: secondaryTextStyle(
-                                  size: 11,
-                                  color: appColorPrimary,
+                        ShaderMask(
+                          shaderCallback: (bounds) =>
+                              _cardGradient.createShader(bounds),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '${product.price!.toInt()}',
+                                style: boldTextStyle(
+                                  size: 18,
+                                  color: Colors.white,
                                 ),
                               ),
-                            ),
-                          ],
+                              4.width,
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 2),
+                                child: Text(
+                                  'Bolts',
+                                  style: secondaryTextStyle(
+                                    size: 11,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-
-                      // Compare Price (if discount exists)
                       if (hasDiscount) ...[
                         8.width,
                         Row(

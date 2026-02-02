@@ -30,123 +30,136 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appScreenBackgroundDark,
-      appBar: AppBar(
-        backgroundColor: appScreenBackgroundDark,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Get.back(),
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-        ),
-        title: ShaderMask(
-          shaderCallback: (b) => _addStoryGradient.createShader(b),
-          child: Text(
-            'Add Story',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              fontFamily: GoogleFonts.poppins().fontFamily,
-            ),
+      backgroundColor: Colors.transparent,
+      appBar: _buildAppBar(),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              appScreenBackgroundDark,
+              const Color(0xFF0f0d0a),
+            ],
           ),
         ),
-        centerTitle: true,
+        child: Stack(
+          children: [
+            _buildBody(),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: _buildCaptionBar(),
+            ),
+          ],
+        ),
       ),
-      body: Stack(
-        children: [
-          _buildBody(),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    appScreenBackgroundDark.withOpacity(0.85),
-                  ],
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      leading: IconButton(
+        onPressed: () => Get.back(),
+        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 22),
+      ),
+      title: ShaderMask(
+        shaderCallback: (b) => _addStoryGradient.createShader(b),
+        child: Text(
+          'Add Story',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+          ),
+        ),
+      ),
+      centerTitle: true,
+    );
+  }
+
+  Widget _buildCaptionBar() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(context).padding.bottom),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.transparent,
+            appScreenBackgroundDark.withValues(alpha: 0.95),
+          ],
+        ),
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1a1510),
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(
+            color: _addStoryGradient.colors.first.withValues(alpha: 0.3),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: captionController,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                  fontSize: 15,
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: captionController,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                          fontSize: 15,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'Caption',
-                          hintStyle: TextStyle(
-                            color: Colors.white54,
-                            fontFamily: GoogleFonts.poppins().fontFamily,
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[900],
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide(
-                              color: _addStoryGradient.colors.first.withOpacity(0.3),
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide(
-                              color: _addStoryGradient.colors.first.withOpacity(0.35),
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide(
-                              color: _addStoryGradient.colors.first,
-                              width: 1.5,
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 14,
-                          ),
-                        ),
-                      ),
-                    ),
-                    12.width,
-                    GestureDetector(
-                      onTap: _createStory,
-                      child: Container(
-                        width: 52,
-                        height: 52,
-                        decoration: BoxDecoration(
-                          gradient: _addStoryGradient,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: _addStoryGradient.colors.first.withOpacity(0.4),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.send_rounded,
-                          color: Colors.black,
-                          size: 24,
-                        ),
-                      ),
-                    ),
-                  ],
+                decoration: InputDecoration(
+                  hintText: 'Add a caption...',
+                  hintStyle: TextStyle(
+                    color: Colors.white54,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    fontSize: 15,
+                  ),
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 ),
               ),
             ),
-          ),
-        ],
+            GestureDetector(
+              onTap: _createStory,
+              child: Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  gradient: _addStoryGradient,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: _addStoryGradient.colors.last.withValues(alpha: 0.45),
+                      blurRadius: 12,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.send_rounded, color: Colors.white, size: 22),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -186,50 +199,115 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
 
   Widget _buildBody() {
     if (mediaUrl == null) {
-      return Center(
-        child: GestureDetector(
-          onTap: _selectimage,
-          child: Container(
-            padding: const EdgeInsets.all(32),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [
-                  _addStoryGradient.colors.first.withOpacity(0.15),
-                  _addStoryGradient.colors.last.withOpacity(0.08),
+      return _buildEmptyState();
+    }
+    if (mediaUrl.isImage) {
+      return _buildImagePreview();
+    }
+    if (mediaUrl.isVideo) {
+      return const Center(child: Text('This is Video', style: TextStyle(color: Colors.white)));
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildEmptyState() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 40),
+          // Main tap area - card style
+          GestureDetector(
+            onTap: _selectimage,
+            child: Container(
+              width: double.infinity,
+              constraints: const BoxConstraints(minHeight: 280),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1a1510),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: _addStoryGradient.colors.first.withValues(alpha: 0.4),
+                  width: 2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: _addStoryGradient.colors.first.withValues(alpha: 0.12),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
                 ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
               ),
-              border: Border.all(
-                color: _addStoryGradient.colors.first.withOpacity(0.5),
-                width: 2,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: _addStoryGradient.colors.first.withOpacity(0.2),
-                  blurRadius: 20,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ShaderMask(
-                  shaderCallback: (b) => _addStoryGradient.createShader(b),
-                  child: const Icon(Icons.add_rounded, size: 48, color: Colors.white),
-                ),
-                12.height,
-                ShaderMask(
-                  shaderCallback: (b) => _addStoryGradient.createShader(b),
-                  child: Text(
-                    'Add Story',
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 48),
+                  Container(
+                    width: 88,
+                    height: 88,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: _addStoryGradient,
+                      boxShadow: [
+                        BoxShadow(
+                          color: _addStoryGradient.colors.last.withValues(alpha: 0.45),
+                          blurRadius: 20,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.add_rounded, color: Colors.white, size: 44),
+                  ),
+                  const SizedBox(height: 20),
+                  ShaderMask(
+                    shaderCallback: (b) => _addStoryGradient.createShader(b),
+                    child: Text(
+                      'Add Story',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: GoogleFonts.poppins().fontFamily,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap to add a photo or video',
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                      color: Colors.white54,
+                      fontSize: 15,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                    ),
+                  ),
+                  const SizedBox(height: 48),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 32),
+          // Story tips card
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1a1510).withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: _addStoryGradient.colors.first.withValues(alpha: 0.2),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.info_outline_rounded, size: 20, color: _addStoryGradient.colors.first),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Photo or video • Stays 24 hours • Add a caption when ready',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 13,
                       fontFamily: GoogleFonts.poppins().fontFamily,
                     ),
                   ),
@@ -237,26 +315,59 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImagePreview() {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: Image.file(File(mediaUrl!), fit: BoxFit.cover),
         ),
-      );
-    }
-    if (mediaUrl.isImage) {
-      return Center(
+        Positioned(
+          top: 16,
+          right: 16,
           child: GestureDetector(
             onTap: _selectimage,
-            child: SizedBox(
-                    height: double.infinity,
-                    width: double.infinity,
-                    child: Image.file(
-            File(mediaUrl!),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              decoration: BoxDecoration(
+                gradient: _addStoryGradient,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: _addStoryGradient.colors.last.withValues(alpha: 0.4),
+                    blurRadius: 12,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.edit_rounded, color: Colors.white, size: 18),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Change',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
                     ),
                   ),
-          ));
-    }
-    if (mediaUrl.isVideo) {
-      return const Center(child: Text('This is Video'));
-    }
-    return SizedBox();
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   _selectimage() async {
