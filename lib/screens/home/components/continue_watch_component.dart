@@ -23,7 +23,6 @@ class ContinueWatchComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         viewAllWidget(
           label: locale.value.continueWatching,
@@ -48,7 +47,7 @@ class ContinueWatchComponent extends StatelessWidget {
                       },
                     ),
                   );
-                }) else NoDataWidget(
+                },) else NoDataWidget(
                 titleTextStyle: commonW600PrimaryTextStyle(),
                 subTitleTextStyle: secondaryTextStyle(),
                 title: locale.value.noItemsToContinueWatching,

@@ -31,9 +31,9 @@ class StripeServices {
         throw e.toString();
       });
       final paysheetData = await getStripePaymentIntents(amount: amount, loderOnOFF: loderOnOFF);
-      String? clientSecret = paysheetData == null ? null : paysheetData["client_secret"];
-      String? tnxId = paysheetData == null ? null : paysheetData["transaction_id"];
-      SetupPaymentSheetParameters setupPaymentSheetParameters = SetupPaymentSheetParameters(
+      final String? clientSecret = paysheetData == null ? null : paysheetData["client_secret"];
+      final String? tnxId = paysheetData == null ? null : paysheetData["transaction_id"];
+      final SetupPaymentSheetParameters setupPaymentSheetParameters = SetupPaymentSheetParameters(
         paymentIntentClientSecret: clientSecret,
         style: isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
         appearance: const PaymentSheetAppearance(colors: PaymentSheetAppearanceColors(primary: appColorPrimary)),
@@ -79,12 +79,12 @@ class StripeServices {
 
   static Future<Map<String, dynamic>?> getStripePaymentIntents({required num amount, required Function(bool) loderOnOFF}) async {
     try {
-      var headers = {
+      final headers = {
         'Authorization': 'Bearer ${appConfigs.value.stripePay.stripeSecretkey}',
         'Content-Type': 'application/x-www-form-urlencoded',
       };
 
-      var request = http.Request('POST', Uri.parse(STRIPE_URL));
+      final request = http.Request('POST', Uri.parse(STRIPE_URL));
 
       request.bodyFields = {
         'amount': (amount * 100).toInt().toString(),
@@ -94,9 +94,9 @@ class StripeServices {
 
       request.headers.addAll(headers);
 
-      http.StreamedResponse response = await request.send();
+      final http.StreamedResponse response = await request.send();
 
-      var res = jsonDecode(await response.stream.bytesToString());
+      final res = jsonDecode(await response.stream.bytesToString());
 
       log('RESPONSE: ${response.reasonPhrase}');
 
@@ -109,7 +109,7 @@ class StripeServices {
       if (response.statusCode == 200) {
         log("Response: $res");
         loderOnOFF.call(false);
-        var paymentDetail = {"transaction_id": res["id"], "client_secret": res["client_secret"]};
+        final paymentDetail = {"transaction_id": res["id"], "client_secret": res["client_secret"]};
         return paymentDetail;
       } else {
         loderOnOFF.call(false);

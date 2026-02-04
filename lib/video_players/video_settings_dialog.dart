@@ -90,7 +90,7 @@ class VideoSettingsDialog extends StatelessWidget {
               videoPlayerController.videoModel.value.videoUrlInput,
             );
           } else {
-            VideoLinks link = videoPlayerController.videoQualities[index - 1];
+            final VideoLinks link = videoPlayerController.videoQualities[index - 1];
             if (link.quality == QualityConstants.low) {
               return buildQualityOption(locale.value.lowQuality, QualityConstants.low, link.type, link.url);
             } else if (link.quality == QualityConstants.medium) {
@@ -133,7 +133,7 @@ class VideoSettingsDialog extends StatelessWidget {
                 },
               );
             } else {
-              SubtitleModel subtitle = videoPlayerController.subtitleList[index - 1];
+              final SubtitleModel subtitle = videoPlayerController.subtitleList[index - 1];
               return ListTile(
                 title: Text(
                   subtitle.language,

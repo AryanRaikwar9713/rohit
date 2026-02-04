@@ -35,7 +35,6 @@ class GenreProfileComponent extends StatelessWidget {
           alignment: Alignment.topCenter,
         ),
         IgnorePointer(
-          ignoring: true,
           child: Container(
             height: Get.height * 0.45,
             width: double.infinity,

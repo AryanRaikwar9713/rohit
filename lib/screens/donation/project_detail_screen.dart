@@ -11,7 +11,7 @@ import 'package:streamit_laravel/widgets/bottom_navigation_wrapper.dart';
 
 class ProjectDetailScreen extends StatefulWidget {
   final int id;
-  const ProjectDetailScreen({required this.id, Key? key}) : super(key: key);
+  const ProjectDetailScreen({required this.id, super.key});
 
   @override
   State<ProjectDetailScreen> createState() => _ProjectDetailScreenState();
@@ -49,7 +49,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
           body: Obx(() {
             if (controller.loading.value) {
               return const Center(
-                  child: CircularProgressIndicator(color: Colors.white));
+                  child: CircularProgressIndicator(color: Colors.white),);
             }
 
             final detail = controller.detail;
@@ -77,7 +77,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                           width: double.infinity,
                           color: Colors.grey.shade800,
                           child: const Icon(Icons.image_not_supported,
-                              color: Colors.white54),
+                              color: Colors.white54,),
                         ),
                       ),
                     ),
@@ -102,7 +102,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                             style: const TextStyle(
                                 color: Colors.white54,
                                 fontWeight: FontWeight.w900,
-                                fontSize: 20),
+                                fontSize: 20,),
                           ),
                         ],
                       ),
@@ -194,7 +194,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  const Text(
                                     "Raised",
                                     style: TextStyle(
                                       color: Colors.white70,
@@ -218,7 +218,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text(
+                                  const Text(
                                     "Goal",
                                     style: TextStyle(
                                       color: Colors.white70,
@@ -257,16 +257,16 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               _iconText(Icons.timer_outlined,
-                                  "${detail.value.daysRemaining ?? 0} days left"),
+                                  "${detail.value.daysRemaining ?? 0} days left",),
                               _iconText(Icons.access_time,
-                                  "Duration: ${detail.value.durationDays ?? 0} days"),
+                                  "Duration: ${detail.value.durationDays ?? 0} days",),
                             ],
                           ),
                           if (detail.value.location != null) ...[
                             const SizedBox(height: 8),
                             _iconText(
                                 Icons.location_on_outlined, detail.value.location!,
-                                color: _appGradient.colors.first),
+                                color: _appGradient.colors.first,),
                           ],
                         ],
                       ),
@@ -298,7 +298,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 18)),
+                                    fontSize: 18,),),
                           ),
                           const SizedBox(height: 10),
                           Text(
@@ -317,10 +317,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: [
-                            for (String i in detail.value.images ?? [])
+                            for (final String i in detail.value.images ?? [])
                               GestureDetector(
                                 onTap: (){
-                                  int? imIn = detail.value.images?.indexWhere((element) => element==i,);
+                                  final int? imIn = detail.value.images?.indexWhere((element) => element==i,);
 
                                   final pac = PageController(initialPage: ((imIn!=null)&&(imIn>=0))?imIn:0);
 
@@ -329,9 +329,9 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                       child: PageView(
                                         controller: pac,
                                         children: [
-                                          for(String l in detail.value.images ?? [])
+                                          for(final String l in detail.value.images ?? [])
                                             GestureDetector(
-                                                child: Image.network(l))
+                                                child: Image.network(l),),
                                         ],
                                       ),
                                     );
@@ -384,7 +384,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 18)),
+                                    fontSize: 18,),),
                           ),
                           const SizedBox(height: 10),
                           Text(
@@ -407,20 +407,20 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 18)),
+                                fontSize: 18,),),
                       ),
 
                       const SizedBox(height: 12),
                       GestureDetector(
                         onTap: () async {
-                          var u = await DB().getUser();
+                          final u = await DB().getUser();
                           if (detail.value.creator?.id != null) {
                             Get.to(() => VammisProfileScreen(
                                   userId: detail.value.creator!.id!,
                                   popButton: true,
                                   isOwnProfile:
                                       detail.value.creator!.id == (u?.id ?? 0),
-                                ));
+                                ),);
                           }
                         },
                         child: Container(
@@ -435,7 +435,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                               CircleAvatar(
                                 radius: 26,
                                 backgroundImage: NetworkImage(
-                                    detail.value.creator?.avatar ?? ''),
+                                    detail.value.creator?.avatar ?? '',),
                                 backgroundColor: Colors.grey.shade700,
                               ),
                               const SizedBox(width: 14),
@@ -448,12 +448,12 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                         style: const TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w600,
-                                            fontSize: 16)),
+                                            fontSize: 16,),),
                                     const SizedBox(height: 2),
                                     Text(
                                       "@${detail.value.creator?.username ?? ''}",
                                       style: const TextStyle(
-                                          color: Colors.white54, fontSize: 13),
+                                          color: Colors.white54, fontSize: 13,),
                                     ),
                                   ],
                                 ),
@@ -475,13 +475,13 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                           _iconStat(
                               Icons.favorite, detail.value.likesCount ?? 0,
                               active: detail.value.userInteraction?.hasLiked ??
-                                  false),
+                                  false,),
                           _iconStat(
-                              Icons.people, detail.value.donorsCount ?? 0),
+                              Icons.people, detail.value.donorsCount ?? 0,),
                           _iconStat(
-                              Icons.comment, detail.value.commentsCount ?? 0),
+                              Icons.comment, detail.value.commentsCount ?? 0,),
                           _iconStat(Icons.remove_red_eye,
-                              detail.value.viewsCount ?? 0),
+                              detail.value.viewsCount ?? 0,),
                         ],
                       ),
 
@@ -547,7 +547,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 17,
-                                      fontWeight: FontWeight.w700)),
+                                      fontWeight: FontWeight.w700,),),
                             ],
                           ),
                         ),
@@ -596,7 +596,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: Colors.grey.shade800,
-                width: 1,
               ),
             ),
             child: TabBar(
@@ -635,7 +634,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: Colors.grey.shade800,
-                width: 1,
               ),
             ),
             child: TabBarView(
@@ -712,11 +710,11 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
       child: InkWell(
         onTap: () async {
           print('aghd');
-          var user = await DB().getUser();
+          final user = await DB().getUser();
           Get.to(VammisProfileScreen(
               userId: donor.id ?? 0,
               isOwnProfile: user?.id == donor.id,
-              popButton: true));
+              popButton: true,),);
         },
         child: Row(
           children: [
@@ -763,7 +761,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
 
             // Amount
             IgnorePointer(
-              ignoring: true,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
@@ -771,7 +768,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: Colors.greenAccent.withOpacity(0.5),
-                    width: 1,
                   ),
                 ),
                 child: Row(
@@ -792,7 +788,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                       height: 18,
                       width: 18,
                       color: Colors.greenAccent,
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -808,7 +804,7 @@ class _DonatSheet extends StatelessWidget {
   final TextEditingController amountController;
   final TextEditingController messageController;
   final ProjectDetailController controller;
-  _DonatSheet({
+  const _DonatSheet({
     required this.messageController,
     required this.amountController,
     required this.controller,
@@ -885,11 +881,11 @@ class _DonatSheet extends StatelessWidget {
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+                      borderSide: const BorderSide(color: Color(0xFF2E2E2E)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+                      borderSide: const BorderSide(color: Color(0xFF2E2E2E)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -917,11 +913,11 @@ class _DonatSheet extends StatelessWidget {
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+                      borderSide: const BorderSide(color: Color(0xFF2E2E2E)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+                      borderSide: const BorderSide(color: Color(0xFF2E2E2E)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -984,7 +980,6 @@ class _DonatSheet extends StatelessWidget {
                             "Invalid project. Please refresh and try again.",
                             backgroundColor: Colors.redAccent.withOpacity(0.8),
                             colorText: Colors.white,
-                            duration: const Duration(seconds: 3),
                           );
                           Navigator.pop(context);
                           // Refresh project using stored ID

@@ -535,7 +535,6 @@ Future<SnackbarController> errorSnackBar({required dynamic error, SnackPosition?
     snackPosition: position ?? SnackPosition.TOP,
     colorText: primaryTextColor,
     backgroundColor: appColorPrimary,
-    instantInit: false,
   );
 }
 

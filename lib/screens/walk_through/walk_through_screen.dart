@@ -40,7 +40,6 @@ class WalkThroughScreen extends StatelessWidget {
         child: SafeArea(
           child: Obx(
             () => Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 8.height,
@@ -67,9 +66,8 @@ class WalkThroughScreen extends StatelessWidget {
                   child: PageView.builder(
                     itemCount: walkThroughCont.pages.length,
                     itemBuilder: (BuildContext context, int index) {
-                      WalkThroughModelClass page = walkThroughCont.pages[index];
+                      final WalkThroughModelClass page = walkThroughCont.pages[index];
                       return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Expanded(
@@ -105,7 +103,6 @@ class WalkThroughScreen extends StatelessWidget {
                       );
                     },
                     controller: walkThroughCont.pageController.value,
-                    scrollDirection: Axis.horizontal,
                     onPageChanged: (num) {
                       walkThroughCont.currentPosition.value = num + 1;
                     },

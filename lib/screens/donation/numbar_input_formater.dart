@@ -26,7 +26,7 @@ class NumberInputFormatter extends TextInputFormatter {
     // allow digits and dot only
     final onlyValidChars = RegExp(r'^[0-9.]*$');
     if (!onlyValidChars.hasMatch(newText)) {
-      final invalid = newText.replaceAll(RegExp(r'[0-9.]'), '');
+      final invalid = newText.replaceAll(RegExp('[0-9.]'), '');
       onInvalid?.call(invalid);
       return oldValue;
     }

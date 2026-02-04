@@ -9,7 +9,7 @@ class QRScannerController extends GetxController {
   RxBool isProcessing = false.obs;
   RxBool isLoading = false.obs;
 
-  MobileScannerController scannerController = MobileScannerController(autoStart: true);
+  MobileScannerController scannerController = MobileScannerController();
 
   Future<void> onDetect(BarcodeCapture capture) async {
     if (isProcessing.value) return;

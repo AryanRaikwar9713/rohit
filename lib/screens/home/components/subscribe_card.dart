@@ -16,11 +16,9 @@ class SubscribeCard extends StatelessWidget {
       return InkWell(
         onTap: () {
           onSubscriptionLoginCheck(
-            planLevel: 0,
             callBack: () {
               AuthServiceApis().removeCacheData();
             },
-            planId: 0,
             isFromSubscribeCard: true,
             videoAccess: '',
           );
@@ -28,8 +26,6 @@ class SubscribeCard extends StatelessWidget {
         child: Shimmer.fromColors(
           baseColor: goldColor.withValues(alpha: 1),
           highlightColor: goldAnimatedColor,
-          enabled: true,
-          direction: ShimmerDirection.ltr,
           period: const Duration(seconds: 2),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

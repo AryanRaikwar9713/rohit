@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/app_lovin_ads/add_helper.dart';
+import 'package:streamit_laravel/components/admob_native_ad_widget.dart';
 import 'package:streamit_laravel/screens/dash_boad_drawer.dart';
 import 'package:streamit_laravel/screens/notificationSection/notification_screen.dart';
 import 'package:streamit_laravel/screens/social/comment_responce_model.dart';
@@ -19,7 +20,6 @@ import 'package:streamit_laravel/screens/walletSection/wallet_tab_manage.dart';
 import 'package:streamit_laravel/utils/constants.dart';
 import 'package:streamit_laravel/utils/mohit/vammis_profile_avtar.dart';
 import '../../utils/colors.dart';
-import '../search/search_screen.dart';
 import 'social_controller.dart';
 import 'create_post_screen.dart';
 
@@ -51,7 +51,7 @@ class _SocialScreenState extends State<SocialScreen>
     storyController.loadStory();
   }
 
-  _scrollListener() {
+  void _scrollListener() {
     if (!_controller.hasClients) return;
     final position = _controller.position;
     final atBottom = position.pixels >= position.maxScrollExtent - 50;
@@ -142,7 +142,7 @@ class _SocialScreenState extends State<SocialScreen>
                       children: [
                         IconButton(
                           onPressed: () {
-                            Get.to(WamimsNotificationScreen());
+                            Get.to(const WamimsNotificationScreen());
                           },
                           icon: const Icon(
                             Icons.notifications_none_rounded,
@@ -223,13 +223,13 @@ class _SocialScreenState extends State<SocialScreen>
             padding: const EdgeInsets.only(bottom: 90),
             child: ElevatedButton(
               onPressed: () async {
-                Get.to(CreatePostScreen());
+                Get.to(const CreatePostScreen());
               },
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(56, 56),
-                maximumSize: Size(56, 56),
+                minimumSize: const Size(56, 56),
+                maximumSize: const Size(56, 56),
                 padding: EdgeInsets.zero,
-                shape: CircleBorder(),
+                shape: const CircleBorder(),
                 backgroundColor: Colors.transparent, // IMPORTANT
                 foregroundColor: Colors.white,
                 shadowColor: Colors.orange,
@@ -240,7 +240,7 @@ class _SocialScreenState extends State<SocialScreen>
                 height: 56,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     colors: [
                       Color(0xFFFFD700), // Gold
                       Color(0xFFFFA500), // Orange
@@ -250,7 +250,7 @@ class _SocialScreenState extends State<SocialScreen>
                   ),
              
                 ),
-                child: Icon(Icons.add, size: 28),
+                child: const Icon(Icons.add, size: 28),
               ),
             ),
           ),
@@ -285,7 +285,7 @@ class _SocialScreenState extends State<SocialScreen>
                     //     );
                     //   }),
 
-                    _UserSotuyWWigdet(),
+                    const _UserSotuyWWigdet(),
 
                     // Social Feed
                     Obx(() {
@@ -293,7 +293,7 @@ class _SocialScreenState extends State<SocialScreen>
                       print('Is Loading: ${controller.isLoading.value}');
                       print('Posts Count: ${controller.posts.length}');
                       print(
-                          'Posts: ${controller.posts.map((p) => '${p.postId}: ${p.caption}').toList()}');
+                          'Posts: ${controller.posts.map((p) => '${p.postId}: ${p.caption}').toList()}',);
 
                       if (controller.isLoading.value &&
                           controller.posts.isEmpty) {
@@ -318,13 +318,13 @@ class _SocialScreenState extends State<SocialScreen>
                               Text(
                                 'No posts yet',
                                 style: boldTextStyle(
-                                    size: 18, color: Colors.grey[600]),
+                                    size: 18, color: Colors.grey[600],),
                               ),
                               8.height,
                               Text(
                                 'Be the first to share something!',
                                 style: secondaryTextStyle(
-                                    size: 14, color: Colors.grey[500]),
+                                    size: 14, color: Colors.grey[500],),
                               ),
                               24.height,
                               // Debug buttons
@@ -338,7 +338,7 @@ class _SocialScreenState extends State<SocialScreen>
                                     },
                                     child: Text('Refresh',
                                         style:
-                                            boldTextStyle(color: Colors.white)),
+                                            boldTextStyle(color: Colors.white),),
                                   ),
                                   16.width,
                                   ElevatedButton(
@@ -348,7 +348,7 @@ class _SocialScreenState extends State<SocialScreen>
                                     },
                                     child: Text('Test API',
                                         style:
-                                            boldTextStyle(color: Colors.white)),
+                                            boldTextStyle(color: Colors.white),),
                                   ),
                                 ],
                               ),
@@ -358,29 +358,29 @@ class _SocialScreenState extends State<SocialScreen>
                       }
 
                       // Build a list of items (posts and ads)
-                      List<Widget> items = [];
+                      final List<Widget> items = [];
                       for (int i = 0; i < controller.posts.length; i++) {
                         items.add(SocialPostCard(
                           post: controller.posts[i],
                           key: ValueKey(controller.posts[i].postId),
                           onLike: () async {
                             await controller.toggleLike(
-                                int.parse(controller.posts[i].postId ?? '0'));
+                                int.parse(controller.posts[i].postId ?? '0'),);
                           },
                           onFollowTap: () async {
-                            await controller.followUser(int.parse(
-                                controller.posts[i].user?.userId ?? '0'));
+                            controller.followUser(int.parse(
+                                controller.posts[i].user?.userId ?? '0',),);
                           },
                           onComment: () async {
                             controller.getPostComment(
-                                int.parse(controller.posts[i].postId ?? '0'));
+                                int.parse(controller.posts[i].postId ?? '0'),);
                             await showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
                               backgroundColor: Colors.transparent,
                               builder: (context) => _CommentBottomSheet(
                                 postId: int.parse(
-                                    controller.posts[i].postId ?? '0'),
+                                    controller.posts[i].postId ?? '0',),
                               ),
                             );
                             controller.resateCommentData();
@@ -411,26 +411,30 @@ class _SocialScreenState extends State<SocialScreen>
                                 action: PointAction.postView,
                                 getBolt: false,
                                 targetId: int.parse(
-                                    controller.posts[i].postId ?? '0'),
+                                    controller.posts[i].postId ?? '0',),
                                 contentType: "post",
-                                viewDuration: 20,
                                 onError: onError,
-                                onFailure: (d) {});
+                                onFailure: (d) {},);
                           },
                           onSare: () async {
-                            Clipboard.setData(ClipboardData(
-                                text: Constants.DUMMY_SHARE_LINK));
+                            Clipboard.setData(const ClipboardData(
+                                text: Constants.DUMMY_SHARE_LINK,),);
                             toast("Url Copied");
                           },
-                        ));
+                        ),);
+
+                        // Add AdMob Native Ad after every 4 posts (matches social post UI)
+                        if ((i + 1) % 4 == 0) {
+                          items.add(const AdMobNativeAdWidget());
+                        }
 
                         // Add AppLovin banner ad after every 5 posts
                         if ((i + 1) % 5 == 0) {
                           items.add(_buildAppLovinBannerAd());
                         }
 
-                        // Add custom ad after every 3 posts (but not if we just added AppLovin ad)
-                        if ((i + 1) % 3 == 0 && (i + 1) % 5 != 0) {
+                        // Add custom ad after every 3 posts (but not if we just added other ads)
+                        if ((i + 1) % 3 == 0 && (i + 1) % 4 != 0 && (i + 1) % 5 != 0) {
                           final adIndex = ((i + 1) ~/ 3) - 1;
                           if (adIndex < controller.ads.length) {
                             items.add(_buildAdCard(controller.ads[adIndex]));
@@ -465,7 +469,7 @@ class _SocialScreenState extends State<SocialScreen>
       decoration: BoxDecoration(
         color: Colors.grey[800],
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: appColorPrimary.withOpacity(0.3), width: 1),
+        border: Border.all(color: appColorPrimary.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -573,7 +577,7 @@ class _SocialScreenState extends State<SocialScreen>
       decoration: BoxDecoration(
         color: Colors.grey[900],
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: appColorPrimary.withOpacity(0.3), width: 1),
+        border: Border.all(color: appColorPrimary.withOpacity(0.3)),
       ),
       child: Column(
         children: [
@@ -608,7 +612,7 @@ class _SocialScreenState extends State<SocialScreen>
 
 class _CommentBottomSheet extends StatefulWidget {
   final int postId;
-  _CommentBottomSheet({required this.postId});
+  const _CommentBottomSheet({required this.postId});
 
   @override
   State<_CommentBottomSheet> createState() => _CommentBottomSheetState();
@@ -636,7 +640,7 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
     // Auto focus text field to open keyboard when bottom sheet appears
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Small delay to ensure bottom sheet is fully rendered
-      Future.delayed(Duration(milliseconds: 300), () {
+      Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted) {
           _focusNode.requestFocus();
         }
@@ -675,7 +679,7 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
               Container(
                 width: 40,
                 height: 4,
-                margin: EdgeInsets.symmetric(vertical: 12),
+                margin: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   color: Colors.grey[700],
                   borderRadius: BorderRadius.circular(2),
@@ -692,9 +696,9 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                       "Comments",
                       style: boldTextStyle(size: 18, color: Colors.white),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     IconButton(
-                      icon: Icon(Icons.close, color: Colors.white),
+                      icon: const Icon(Icons.close, color: Colors.white),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ],
@@ -705,10 +709,10 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
 
               // Comments List
               if (controller.commentLoading.value)
-                Expanded(
+                const Expanded(
                     child: Center(
                   child: CircularProgressIndicator(),
-                ))
+                ),)
               else
                 Expanded(
                   child: controller.comments.isEmpty
@@ -719,39 +723,39 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                               Text(
                                 "No Comments",
                                 style: secondaryTextStyle(
-                                    size: 14, color: Colors.grey),
+                                    size: 14, color: Colors.grey,),
                               ),
                               if (kDebugMode) ...[
                                 Obx(
                                   () => Text(
                                     controller.comments.length.toString(),
-                                    style: TextStyle(color: Colors.white),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                 ),
                                 Obx(
                                   () => Text(
                                     controller.currentPage.toString(),
-                                    style: TextStyle(color: Colors.white),
+                                    style: const TextStyle(color: Colors.white),
                                   ),
                                 ),
-                              ]
+                              ],
                             ],
                           ),
                         )
                       : ListView.builder(
                           controller: _scrollController,
                           padding:
-                              EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                              const EdgeInsets.symmetric(vertical: 8),
                           itemCount: controller.comments.length,
                           itemBuilder: (context, index) {
-                            SocialPostComment comment =
+                            final SocialPostComment comment =
                                 controller.comments[index];
 
                             // return Text("${c.toJson()}",style: TextStyle(color: Colors.white),);
 
                             return Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
+                                  horizontal: 16, vertical: 8,),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -881,12 +885,12 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                     BoxShadow(
                       color: Colors.black.withOpacity(0.2),
                       blurRadius: 4,
-                      offset: Offset(0, -2),
+                      offset: const Offset(0, -2),
                     ),
                   ],
                 ),
                 child: TextField(
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   controller: _commentController,
                   focusNode: _focusNode,
                   decoration: InputDecoration(
@@ -903,11 +907,11 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                       icon: const Icon(Icons.send, color: appColorPrimary),
                       onPressed: () async {
                         if (_commentController.text.isEmpty) return;
-                        var controller = (Get.isRegistered<SocialController>())
+                        final controller = (Get.isRegistered<SocialController>())
                             ? Get.find<SocialController>()
                             : Get.put(SocialController());
                         await controller.commentOnPost(
-                            widget.postId, _commentController.text.trim());
+                            widget.postId, _commentController.text.trim(),);
                         _commentController.clear();
                       },
                     ),
@@ -924,7 +928,7 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
 
 
 class _UserSotuyWWigdet extends StatefulWidget {
-  const _UserSotuyWWigdet({super.key});
+  const _UserSotuyWWigdet();
 
   @override
   State<_UserSotuyWWigdet> createState() => _UserSotuyWWigdetState();
@@ -946,16 +950,16 @@ class _UserSotuyWWigdetState extends State<_UserSotuyWWigdet> {
     return Obx(() {
       if(_storyContrller.storyList.isEmpty)
         {
-          return SizedBox();
+          return const SizedBox();
         }
       
       return Container(
-        margin: EdgeInsetsGeometry.only(
+        margin: const EdgeInsetsGeometry.only(
           top: 10,
           bottom: 5,
         ),
         // height: 70,
-        padding: EdgeInsetsGeometry.symmetric(vertical: 3),
+        padding: const EdgeInsetsGeometry.symmetric(vertical: 3),
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.grey.shade900,
@@ -963,15 +967,15 @@ class _UserSotuyWWigdetState extends State<_UserSotuyWWigdet> {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Padding(
-            padding: EdgeInsetsGeometry.symmetric(horizontal: 5),
+            padding: const EdgeInsetsGeometry.symmetric(horizontal: 5),
             child: Row(children: [
-              for(StoryUser story in _storyContrller.storyList)
+              for(final StoryUser story in _storyContrller.storyList)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: WamimsProfileAvtar(image: story.user?.avatar??'',story: true,radious: 30,onTap: (){
-                    Get.to(()=>ViewStoryScreen());
+                    Get.to(()=>const ViewStoryScreen());
                   },),
-                )
+                ),
 
             ],),
           ),

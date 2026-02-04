@@ -10,7 +10,7 @@ class MyStoryScreen extends StatefulWidget {
   final String? storyId;
   final MyStoryController controller;
   const MyStoryScreen(
-      {required this.controller, required this.storyId, super.key});
+      {required this.controller, required this.storyId, super.key,});
 
   @override
   State<MyStoryScreen> createState() => _MyStoryScreenState();
@@ -346,7 +346,7 @@ class _MyStoryScreenState extends State<MyStoryScreen> {
                         i++)
                       Expanded(
                         key: ValueKey(
-                            'progress_${widget.controller.activeStories[i].id}_$currentStoryIndex'),
+                            'progress_${widget.controller.activeStories[i].id}_$currentStoryIndex',),
                         child: Padding(
                           padding: EdgeInsets.only(
                             right:
@@ -356,7 +356,7 @@ class _MyStoryScreenState extends State<MyStoryScreen> {
                           ),
                           child: _StoryProgressBar(
                             key: ValueKey(
-                                'bar_${widget.controller.activeStories[i].id}_${i == currentStoryIndex}'),
+                                'bar_${widget.controller.activeStories[i].id}_${i == currentStoryIndex}',),
                             isActive: i == currentStoryIndex,
                             isCompleted: i < currentStoryIndex,
                             duration: i == currentStoryIndex
@@ -366,7 +366,7 @@ class _MyStoryScreenState extends State<MyStoryScreen> {
                                         'video'
                                     ? const Duration(
                                         seconds:
-                                            5) // Will be updated when loaded
+                                            5,) // Will be updated when loaded
                                     : const Duration(seconds: 5)),
                             onComplete: _goToNextStory,
                             isPaused: (isPaused || _isVideoLoading) &&
@@ -374,9 +374,7 @@ class _MyStoryScreenState extends State<MyStoryScreen> {
                             videoController: i == currentStoryIndex
                                 ? videoPlayerController
                                 : null,
-                            isVideoLoading: i == currentStoryIndex
-                                ? _isVideoLoading
-                                : false,
+                            isVideoLoading: i == currentStoryIndex && _isVideoLoading,
                           ),
                         ),
                       ),
@@ -452,7 +450,7 @@ class _StoryViewWidget extends StatelessWidget {
       return Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.black,
         ),
         child: story.mediaUrl != null
@@ -700,7 +698,7 @@ class _StoryProgressBarState extends State<_StoryProgressBar>
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
-        double progress = widget.isCompleted
+        final double progress = widget.isCompleted
             ? 1.0
             : (widget.isActive ? _animation.value : 0.0);
 

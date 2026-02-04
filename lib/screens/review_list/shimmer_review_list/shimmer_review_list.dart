@@ -22,11 +22,9 @@ class ShimmerReviewList extends StatelessWidget {
               return Container(
                       decoration: boxDecorationDefault(color: context.cardColor),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const ShimmerWidget(
@@ -53,7 +51,7 @@ class ShimmerReviewList extends StatelessWidget {
                                 height: Constants.shimmerTextSize,
                                 width: 90,
                                 radius: 6,
-                              ).paddingOnly(right: 16)
+                              ).paddingOnly(right: 16),
                             ],
                           ),
                           16.height,
@@ -69,7 +67,7 @@ class ShimmerReviewList extends StatelessWidget {
                             radius: 6,
                           ).paddingOnly(right: 16),
                         ],
-                      ).paddingOnly(bottom: 16, top: 16, left: 8))
+                      ).paddingOnly(bottom: 16, top: 16, left: 8),)
                   .paddingOnly(right: 16, top: 8, bottom: 8);
             },
           ),

@@ -16,17 +16,17 @@ class WalletController extends GetxController {
 
   }
 
-  initWalletData() {
+  void initWalletData() {
     clearData();
     getWallet();
     getPointHistory();
   }
 
 
-  var isLoading = true.obs;
+  RxBool isLoading = true.obs;
   Rx<WalletData> walletData= WalletData().obs;
   RxList<PointHistory> pointHistory= <PointHistory>[].obs;
-  var errorMessage = ''.obs;
+  RxString errorMessage = ''.obs;
   RxInt page= 1.obs;
 
 
@@ -37,7 +37,7 @@ class WalletController extends GetxController {
 
       await WalletApi().getWallet(
         onSuccess: (data) {
-          walletData?.value = data;
+          walletData.value = data;
         },
         onError: (error) {
           errorMessage.value = error;
@@ -101,15 +101,15 @@ class WalletController extends GetxController {
     }
   }
 
-  loadMorePointHistory() {
+  void loadMorePointHistory() {
     if(page.value>1)
       {
-        getPointHistory(refresh: false);
+        getPointHistory();
       }
   }
 
 
-  clearData() {
+  void clearData() {
     walletData.value = WalletData();
     pointHistory.clear();
     errorMessage.value = '';

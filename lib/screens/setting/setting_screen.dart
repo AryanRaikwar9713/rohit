@@ -120,7 +120,7 @@ class SettingScreen extends StatelessWidget {
                                           },
                                         );
                                       },
-                                    )
+                                    ),
                                 ],
                               ),
                               //  10.height,
@@ -179,7 +179,7 @@ class SettingScreen extends StatelessWidget {
                                     ],
                                   ).visible(settingCont.isChildrenProfileEnabled.value && !selectedAccountProfile.value.isChildProfile.getBoolInt());
                                 },
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -194,7 +194,6 @@ class SettingScreen extends StatelessWidget {
       ),
       bottomNavBar: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           VersionInfoWidget(
             prefixText: '${locale.value.version}: ',
@@ -239,7 +238,6 @@ class SettingScreen extends StatelessWidget {
       );
     } else if (aboutDataModel.title == locale.value.logout) {
       Get.bottomSheet(
-        isDismissible: true,
         isScrollControlled: true,
         enableDrag: false,
         LogoutAccountComponent(

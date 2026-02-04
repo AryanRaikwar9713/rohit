@@ -29,7 +29,7 @@ class SocialPostCard extends StatefulWidget {
       this.onFollowTap,
       this.onSare,
       this.profilenavigation = true,
-      super.key});
+      super.key,});
 
   @override
   State<SocialPostCard> createState() => _SocialPostCardState();
@@ -77,7 +77,6 @@ class _SocialPostCardState extends State<SocialPostCard> {
           BoxShadow(
             color: Colors.black.withOpacity(0.35),
             blurRadius: 18,
-            spreadRadius: 0,
             offset: const Offset(0, 6),
           ),
         ],
@@ -92,14 +91,14 @@ class _SocialPostCardState extends State<SocialPostCard> {
               onTap: () async {
                 if (widget.post.user?.userId != null ||
                     widget.profilenavigation) {
-                  var u = await DB().getUser();
+                  final u = await DB().getUser();
 
                   final userId = int.tryParse(widget.post.user!.userId!);
                   if (userId != null) {
                     Get.to(() => VammisProfileScreen(
                         popButton: true,
                         userId: userId,
-                        isOwnProfile: u?.id == userId));
+                        isOwnProfile: u?.id == userId,),);
                   }
                 }
               },
@@ -143,7 +142,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
                         4.height,
                         Text(
                           _formatTimeAgo(
-                              widget.post.createdAt ?? DateTime.now()),
+                              widget.post.createdAt ?? DateTime.now(),),
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
@@ -227,7 +226,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
                     spacing: 8,
                     runSpacing: 4,
                     children: [
-                      for (var i in widget.post.hashtags!.split(','))
+                      for (final i in widget.post.hashtags!.split(','))
                         ShaderMask(
                           shaderCallback: (Rect bounds) {
                             return LinearGradient(
@@ -326,7 +325,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
+                      const Icon(
                         CupertinoIcons.chat_bubble,
                         color: Colors.white,
                         size: 24,
@@ -349,7 +348,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
                 // Share Button (CupertinoIcons - Instagram-style)
                 GestureDetector(
                   onTap: widget.onSare,
-                  child: Icon(
+                  child: const Icon(
                     CupertinoIcons.paperplane,
                     color: Colors.white,
                     size: 24,
@@ -379,7 +378,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.favorite,
                           color: Colors.black,
                           size: 16,
@@ -405,7 +404,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
                   onTap: () {
                     // Handle bookmark
                   },
-                  child: Icon(
+                  child: const Icon(
                     CupertinoIcons.bookmark,
                     color: Colors.white,
                     size: 24,
@@ -506,7 +505,7 @@ class _PostImageWidgetState extends State<_PostImageWidget> {
                 ? const Center(
                     child: Icon(Icons.image_not_supported, color: Colors.grey, size: 50),
                   )
-                : Center(
+                : const Center(
                     child: CircularProgressIndicator(color: appColorPrimary),
                   ),
           ),
@@ -572,7 +571,7 @@ class _PostImageWidgetState extends State<_PostImageWidget> {
 }
 
 String formateTime(DateTime date) {
-  var months = {
+  final months = {
     1: 'Jan',
     2: 'Feb',
     3: 'Mar',

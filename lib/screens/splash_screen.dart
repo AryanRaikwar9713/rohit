@@ -71,8 +71,9 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Logo with transparent background on black screen
             Image.asset(
-              'assets/splash_image.jpeg',
+              'assets/launcher_icons/wammisLogo.png',
               height: 160,
               width: 160,
               fit: BoxFit.contain,
@@ -91,7 +92,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           splashController.init(showLoader: true);
                         },
                       ).visible(splashController.appNotSynced.isTrue),
-              )
+              ),
           ],
         ),
       ),

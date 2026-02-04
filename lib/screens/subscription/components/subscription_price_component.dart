@@ -53,7 +53,6 @@ class PriceComponent extends StatelessWidget {
           children: [
             if (subscriptionCont.isShowCoupon.isTrue)
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
@@ -91,10 +90,8 @@ class PriceComponent extends StatelessWidget {
                   ).expand(),
                   PriceWidget(
                     price: subscriptionCont.priceWithCouponDiscount.value,
-                    isPercentage: false,
-                    size: 16,
                     color: discountColor,
-                  )
+                  ),
                 ],
               ),
             if (appConfigs.value.taxPercentage.isNotEmpty && subscriptionCont.isShowCoupon.isTrue)
@@ -106,7 +103,6 @@ class PriceComponent extends StatelessWidget {
                   itemCount: appConfigs.value.taxPercentage.length,
                   itemBuilder: (context, index) {
                     return Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
@@ -118,8 +114,7 @@ class PriceComponent extends StatelessWidget {
                         ).expand(),
                         PriceWidget(
                           price: appConfigs.value.taxPercentage[index].value,
-                          isPercentage: appConfigs.value.taxPercentage[index].type.toLowerCase() == 'percentage' ? true : false,
-                          size: 16,
+                          isPercentage: (appConfigs.value.taxPercentage[index].type.toLowerCase() == 'percentage'),
                           color: appColorPrimary,
                         ),
                       ],
@@ -129,7 +124,6 @@ class PriceComponent extends StatelessWidget {
             if (subscriptionCont.isShowCoupon.isTrue) 12.height,
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Column(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -145,7 +139,6 @@ class PriceComponent extends StatelessWidget {
                         subscriptionCont.isShowCoupon.value = !subscriptionCont.isShowCoupon.value;
                       },
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Obx(() {

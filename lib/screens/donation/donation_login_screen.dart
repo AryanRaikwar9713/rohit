@@ -50,7 +50,7 @@ class DonationLoginScreen extends StatelessWidget {
               Get.to(() => SignInScreen(), arguments: true)?.then((value) {
                 if (value == true) {
                   Get.offAll(() => DashboardScreen(
-                      dashboardController: getDashboardController()));
+                      dashboardController: getDashboardController(),),);
                 }
               });
               Get.lazyPut(() => HomeController());
@@ -67,7 +67,7 @@ class DonationLoginScreen extends StatelessWidget {
                 TextSpan(
                   text: "Contact Support",
                   style: commonW600SecondaryTextStyle(
-                      size: 14, color: appColorPrimary),
+                      size: 14, color: appColorPrimary,),
                 ),
               ],
             ),

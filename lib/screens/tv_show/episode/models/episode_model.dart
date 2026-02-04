@@ -209,7 +209,6 @@ class EpisodeModel {
       isPurchased: json['is_purchased'] is bool ? json['is_purchased'] : false,
       discountedPrice: json['discounted_price'] is num ? json['discounted_price'] : 0,
       availableSubTitle: json['subtitle_info'] is List ? List<SubtitleModel>.from(json['subtitle_info'].map((x) => SubtitleModel.fromJson(x))) : [],
-      type: VideoType.episode,
     );
   }
 

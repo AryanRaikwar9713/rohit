@@ -37,7 +37,7 @@ class _ReelsWidgetState extends State<ReelsWidget> {
 
     return Obx(() {
       if (controller.isLoading.value) {
-        return Container(
+        return SizedBox(
           height: 200,
           child: const Center(
             child: CircularProgressIndicator(
@@ -160,14 +160,14 @@ class _ReelsWidgetState extends State<ReelsWidget> {
                                   right: 8,
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 6, vertical: 2),
+                                        horizontal: 6, vertical: 2,),
                                     decoration: BoxDecoration(
                                       color: Colors.black.withOpacity(0.7),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
-                                    child: Text(
+                                    child: const Text(
                                       '2:30', // Dummy duration
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
@@ -207,7 +207,7 @@ class _ReelsWidgetState extends State<ReelsWidget> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border:
-                                    Border.all(color: Colors.white, width: 1),
+                                    Border.all(color: Colors.white),
                               ),
                               child: ClipOval(
                                 child: CachedNetworkImage(

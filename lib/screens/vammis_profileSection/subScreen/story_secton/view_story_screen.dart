@@ -44,7 +44,7 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
 
           if(storyContrller.isLoading.value)
             {
-              return Center(child: CircularProgressIndicator(),);
+              return const Center(child: CircularProgressIndicator(),);
             }
 
           return  PageView(
@@ -53,8 +53,8 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
               storyContrller.onUserChage(storyContrller.storyList[index].user?.id??0);
             },
             children: [
-              for(StoryUser model in storyContrller.storyList)
-                _buildUsers(model,storyContrller)
+              for(final StoryUser model in storyContrller.storyList)
+                _buildUsers(model,storyContrller),
             ],
           );
 
@@ -65,14 +65,14 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
 
 
 
-  _buildUsers(StoryUser model,StoryContrller controller)
+  Column _buildUsers(StoryUser model,StoryContrller controller)
   {
     return Column(
       children: [
         10.height,
         ListTile(
           leading: WamimsProfileAvtar(image: model.user?.avatar??'', story: true, radious: 30,),
-          title: Text("${model.user?.username??'No Name'}",style: TextStyle(color: Colors.white,fontFamily: GoogleFonts.poppins().fontFamily),),
+          title: Text(model.user?.username??'No Name',style: TextStyle(color: Colors.white,fontFamily: GoogleFonts.poppins().fontFamily),),
         ),
         Expanded(
           child: PageView(
@@ -81,17 +81,17 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
               controller.onStoryChange(model.stories?[index].id??0,model.user?.id ??0);
             },
             children: [
-              for(StoryStory story in model.stories??[])
-                _buildStory(story,controller)
+              for(final StoryStory story in model.stories??[])
+                _buildStory(story,controller),
             ],
           ),
-        )
+        ),
       ],
     );
   }
 
 
-  _buildStory(StoryStory s,StoryContrller controller)
+  Container _buildStory(StoryStory s,StoryContrller controller)
   {
 
     return Container(
@@ -99,9 +99,7 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
       child: Stack(
         children: [
 
-          (s.mediaType=='video')?
-          Center(child: Text(s.mediaUrl??'',style: TextStyle(color: Colors.white),),)
-              :Center(child: Image.network(s.mediaUrl??'',
+          if (s.mediaType=='video') Center(child: Text(s.mediaUrl??'',style: TextStyle(color: Colors.white),),) else Center(child: Image.network(s.mediaUrl??'',
           errorBuilder: (context, error, stackTrace) => Icon(Icons.image_not_supported_outlined,color: Colors.white,size: 40,),)),
 
           //
@@ -109,7 +107,7 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
             onTap: (){
               print("ajsdf");
             },
-            child: Container(
+            child: SizedBox(
 
               height: double.infinity,
               width:MediaQuery.of(context).size.width*.3,
@@ -129,7 +127,7 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
                 width:MediaQuery.of(context).size.width*.3,
               ),
             ),
-          )
+          ),
 
         ],
       ),

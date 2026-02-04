@@ -44,7 +44,7 @@ class PriceWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     TextStyle _textStyle({int? aSize, bool isOriginalPrice = false}) {
       // Apply line-through decoration only for the original price when a discount exists
-      bool applyLineThrough = isOriginalPrice && isDiscountedPrice;
+      final bool applyLineThrough = isOriginalPrice && isDiscountedPrice;
 
       // If it's the original price and a discount exists, apply secondaryTextStyle with line-through
       if (applyLineThrough) {
@@ -68,7 +68,6 @@ class PriceWidget extends StatelessWidget {
           size: aSize ?? size!.toInt(),
           color: color ?? context.primaryColor,
           fontFamily: fontFamilyWeight700,
-          decoration: null, // No decoration for discounted price or regular price
         );
       }
 
@@ -87,7 +86,6 @@ class PriceWidget extends StatelessWidget {
     final String formattedOriginalPrice = "${isPercentage ? '' : leftCurrencyFormat()}${price.toStringAsFixed(appCurrency.value.noOfDecimal).formatNumberWithComma(seperator: appCurrency.value.thousandSeparator)}${isPercentage ? '' : rightCurrencyFormat()}";
     return Row(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (isDiscountedPrice && discount != 0 && discountedPrice != null) ...[
           // Discounted price

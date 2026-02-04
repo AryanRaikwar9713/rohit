@@ -16,16 +16,16 @@ class MyCampaignApi {
   }) async {
     try {
       final head = await DB().getHeaderForRow();
-      UserData? userId = await DB().getUser();
+      final UserData? userId = await DB().getUser();
 
-      String url =
+      final String url =
           'https://app.wamims.world/public/social/impact/submit_project_fixed.php?action=get_categories';
 
       Logger().i('Fetching Campaign Categories for user: ${userId?.id}');
 
       final response = await http.post(
         Uri.parse(url),
-        headers: head,
+        headers: head ?? {},
       );
 
       respPrinter(response.statusCode, response.body);
@@ -65,17 +65,17 @@ class MyCampaignApi {
   }) async {
     try {
       final head = await DB().getHeaderForRow();
-      UserData? userId = await DB().getUser();
+      final UserData? userId = await DB().getUser();
 
-      String url =
+      final String url =
           'https://app.wamims.world/public/social/impact/submit_project_fixed.php';
 
       Logger().i('Creating Campaign for user: ${userId?.id}');
 
-      var request = http.MultipartRequest('POST', Uri.parse(url));
+      final request = http.MultipartRequest('POST', Uri.parse(url));
 
       // Add headers
-      request.headers.addAll(head);
+      request.headers.addAll(head ?? {});
 
       // Add form fields
       request.fields['user_id'] = (userId?.id ?? 0).toString();
@@ -97,7 +97,7 @@ class MyCampaignApi {
       // Add project images
       if (projectImages != null && projectImages.isNotEmpty) {
         for (int i = 0; i < projectImages.length; i++) {
-          var image = projectImages[i];
+          final image = projectImages[i];
           if (image.existsSync()) {
             request.files.add(
               await http.MultipartFile.fromPath(
@@ -113,7 +113,7 @@ class MyCampaignApi {
       // Add project documents
       if (projectDocuments != null && projectDocuments.isNotEmpty) {
         for (int i = 0; i < projectDocuments.length; i++) {
-          var document = projectDocuments[i];
+          final document = projectDocuments[i];
           if (document.existsSync()) {
             request.files.add(
               await http.MultipartFile.fromPath(
@@ -152,5 +152,5 @@ class MyCampaignApi {
   Future<void> getImpactProjects(
       {required int page,
       required Null Function(dynamic data) onSuccess,
-      required Null Function(dynamic error) onError}) async {}
+      required Null Function(dynamic error) onError,}) async {}
 }

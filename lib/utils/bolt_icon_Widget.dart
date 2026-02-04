@@ -7,8 +7,8 @@ class BoltIconWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double exp = -5;
-    return Container(
+    final double exp = -5;
+    return SizedBox(
       height: size??24,
       width: size??24,
       // color: kDebugMode?Colors.grey:null,
@@ -18,7 +18,7 @@ class BoltIconWidget extends StatelessWidget {
               bottom: exp,
               left: exp,
               right: exp,
-              child: Image.asset("assets/icons/boalt_Icons.png",fit: BoxFit.cover,))
-        ],));
+              child: Image.asset("assets/icons/boalt_Icons.png",fit: BoxFit.cover,),),
+        ],),);
   }
 }

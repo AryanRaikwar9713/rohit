@@ -57,7 +57,6 @@ class AccountSettingScreen extends StatelessWidget {
           onSuccess: (res) {
             return Obx(
               () => AnimatedScrollView(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 listAnimationType: commonListAnimationType,
                 refreshIndicatorColor: appColorPrimary,
@@ -91,12 +90,10 @@ class AccountSettingScreen extends StatelessWidget {
             ? const Offstage()
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   InkWell(
                     onTap: () {
                       Get.bottomSheet(
-                        isDismissible: true,
                         isScrollControlled: true,
                         enableDrag: false,
                         AppDialogWidget(
@@ -118,7 +115,7 @@ class AccountSettingScreen extends StatelessWidget {
                         color: appColorPrimary,
                       ),
                     ).paddingOnly(bottom: 18, top: 18),
-                  )
+                  ),
                 ],
               ).visible(!settingController.isLoading.value),
       ),

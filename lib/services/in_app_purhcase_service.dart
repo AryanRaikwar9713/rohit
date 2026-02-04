@@ -17,14 +17,14 @@ class InAppPurchaseService {
       final String apiKey = isApple ? appConfigs.value.appleApiKey : appConfigs.value.googleApiKey;
 
       if (apiKey.isNotEmpty) {
-        PurchasesConfiguration configuration = PurchasesConfiguration(apiKey);
+        final PurchasesConfiguration configuration = PurchasesConfiguration(apiKey);
         await Purchases.configure(configuration);
         log('In App Purchase Configuration Successful');
         setValue(SharedPreferenceConst.HAS_IN_APP_SDK_INITIALISE_AT_LEASE_ONCE, true);
         if (isLoggedIn.value && !getBoolAsync(SharedPreferenceConst.HAS_IN_APP_USER_LOGIN_DONE_AT_LEASE_ONCE)) loginToRevenueCate();
       } else {}
     } catch (e) {
-      log('In App Purchase Configuration Failed: ${e.toString()}');
+      log('In App Purchase Configuration Failed: ${e}');
     }
     log('In App Purchase Init Complete');
   }
@@ -36,7 +36,7 @@ class InAppPurchaseService {
       setValue(SharedPreferenceConst.HAS_IN_APP_USER_LOGIN_DONE_AT_LEASE_ONCE, true);
       getCustomerInfo();
     } catch (e) {
-      log('In App Purchase User Login Failed: ${e.toString()}');
+      log('In App Purchase User Login Failed: ${e}');
     }
   }
 

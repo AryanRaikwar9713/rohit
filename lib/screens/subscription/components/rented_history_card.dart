@@ -13,7 +13,7 @@ class RentedHistoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: boxDecorationDefault(
         borderRadius: radius(4),
         color: context.cardColor,
@@ -37,7 +37,6 @@ class RentedHistoryCard extends StatelessWidget {
           ).expand(),
           16.width,
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               PriceWidget(
                 price: rentalHistory.total,
@@ -45,7 +44,7 @@ class RentedHistoryCard extends StatelessWidget {
                 color: context.primaryColor,
               ),
             ],
-          )
+          ),
         ],
       ),
     );

@@ -19,19 +19,11 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
     super.initState();
 
     setContrller();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        controller.loadMore();
-      }
-    });
   }
 
-  setContrller() {
+  void setContrller() {
     controller = Get.put(BoaltWalletController());
   }
-
-  final ScrollController _scrollController = ScrollController();
 
   Widget cardDecoration(String title, String value) {
     return Container(
@@ -48,7 +40,6 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: Colors.white.withOpacity(0.2),
-          width: 1,
         ),
       ),
       child: Column(
@@ -60,14 +51,14 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
             style: TextStyle(
                 color: Colors.white.withOpacity(0.9),
                 fontSize: 12,
-                fontWeight: FontWeight.w600),
+                fontWeight: FontWeight.w600,),
           ),
           const SizedBox(height: 4),
           Text(
             value,
             textAlign: TextAlign.center,
             style: const TextStyle(
-                color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800),
+                color: Colors.white, fontSize: 18, fontWeight: FontWeight.w800,),
           ),
         ],
       ),
@@ -87,11 +78,11 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
             // Color(0xff004e92),
 
             Color(0xff000000),
-            Color(0xff434343)
-          ])),
+            Color(0xff434343),
+          ],),),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Center(
+        body: SingleChildScrollView(
           child: Column(
             children: [
               //
@@ -105,14 +96,14 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                         colors: [
                           Color(0xff232526),
                           Color(0xff414345),
-                        ]),
+                        ],),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.3),
                         blurRadius: 15,
                         offset: const Offset(0, 5),
                       ),
-                    ]),
+                    ],),
                 height: 180,
                 margin: const EdgeInsets.only(top: 15, left: 15, right: 15),
                 width: double.infinity,
@@ -141,7 +132,7 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                                       color: Colors.white.withOpacity(0.8),
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.5),
+                                      letterSpacing: 0.5,),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
@@ -150,23 +141,23 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                                       color: Colors.white,
                                       fontSize: 32,
                                       fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.5),
+                                      letterSpacing: 0.5,),
                                 ),
                               ],
                             ),
                           ),
                           const SizedBox(width: 10),
                           cardDecoration("Conversion Rate",
-                              '${controller.dashboardData.value.data?.wallet?.conversionRate ?? 0} 🔁'),
+                              '${controller.dashboardData.value.data?.wallet?.conversionRate ?? 0} 🔁',),
                           const SizedBox(width: 8),
                           cardDecoration("Bolt Value",
-                              '${controller.dashboardData.value.data?.wallet?.inrValue ?? 0} Bolts')
+                              '${controller.dashboardData.value.data?.wallet?.inrValue ?? 0} Bolts',),
                         ],
                       ),
                       const Spacer(),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
+                            horizontal: 12, vertical: 8,),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(10),
@@ -178,14 +169,14 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                               style: TextStyle(
                                   color: Colors.white.withOpacity(0.9),
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 14),
+                                  fontSize: 14,),
                             ),
                             Text(
                               "${controller.dashboardData.value.data?.wallet?.displayValue ?? 0} Bolts",
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
-                                  fontWeight: FontWeight.w800),
+                                  fontWeight: FontWeight.w800,),
                             ),
                           ],
                         ),
@@ -214,7 +205,6 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: Colors.orange.withOpacity(0.3),
-                      width: 1,
                     ),
                   ),
                   child: Row(
@@ -242,84 +232,135 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                           ),
                         ],
                       ),
-                      // Watch Ads Button
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: controller.isWatchingAd.value ? null : () => controller.watchAdForReward(),
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.yellow.shade400,
-                                  Colors.orange.shade500,
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
+                      // Watch Ads Buttons
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // App Lovin Ad Button
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: controller.isWatchingAd.value ? null : () => controller.watchAdForReward(),
                               borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.orange.withOpacity(0.4),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (controller.isWatchingAd.value)
-                                  const SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.black,
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                else
-                                  const Icon(Icons.play_circle_outline, color: Colors.black, size: 20),
-                                const SizedBox(width: 8),
-                                Text(
-                                  controller.isWatchingAd.value ? 'Loading...' : 'Watch Ad',
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.yellow.shade400,
+                                      Colors.orange.shade500,
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
                                   ),
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.orange.withOpacity(0.4),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (controller.isWatchingAd.value)
+                                      const SizedBox(
+                                        width: 14,
+                                        height: 14,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.black,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    else
+                                      const Icon(Icons.play_circle_outline, color: Colors.black, size: 18),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      controller.isWatchingAd.value ? 'Loading...' : 'App Lovin',
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          const SizedBox(height: 6),
+                          // AdMob Rewarded Ad Button
+                          Obx(() => Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: controller.isWatchingAd.value ? null : () => controller.watchAdMobForReward(),
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.blue.shade400,
+                                      Colors.blue.shade600,
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.monetization_on, color: Colors.white, size: 18),
+                                    SizedBox(width: 6),
+                                    Text(
+                                      'AdMob',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),),
+                        ],
                       ),
                     ],
                   ),
-                )),
+                ),),
               ),
 
               const SizedBox(height: 20),
 
-              // Filter Chips
+              // Filter Chips - Simplified to 2 types
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Obx(() => SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      _buildFilterChip('All', 'all', controller.selectedFilter.value, () => controller.setFilter('all')),
-                      const SizedBox(width: 8),
-                      _buildFilterChip('Ads', 'ads', controller.selectedFilter.value, () => controller.setFilter('ads')),
-                      const SizedBox(width: 8),
-                      _buildFilterChip('Social', 'social', controller.selectedFilter.value, () => controller.setFilter('social')),
-                      const SizedBox(width: 8),
-                      _buildFilterChip('Donation', 'donation', controller.selectedFilter.value, () => controller.setFilter('donation')),
-                    ],
-                  ),
-                )),
+                child: Obx(() => Row(
+                  children: [
+                    Expanded(
+                      child: _buildFilterChip(
+                        '💰 Earnings History', 
+                        'earnings', 
+                        controller.selectedFilter.value, 
+                        () => controller.setFilter('earnings'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildFilterChip(
+                        '💝 Donations History', 
+                        'donations', 
+                        controller.selectedFilter.value, 
+                        () => controller.setFilter('donations'),
+                      ),
+                    ),
+                  ],
+                ),),
               ),
 
               const SizedBox(height: 15),
@@ -350,18 +391,19 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
                           fontSize: 22,
-                          letterSpacing: 0.5),
+                          letterSpacing: 0.5,),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 10),
 
-              Expanded(child: Obx(
-                () {
-                  if (controller.historyLoading.value &&
-                      controller.transactionList.isEmpty) {
-                    return Center(
+              Obx(() {
+                if (controller.historyLoading.value &&
+                    controller.transactionList.isEmpty) {
+                  return SizedBox(
+                    height: 200,
+                    child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -378,11 +420,14 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                           ),
                         ],
                       ),
-                    );
-                  }
+                    ),
+                  );
+                }
 
-                  if (controller.transactionList.isEmpty) {
-                    return Center(
+                if (controller.transactionList.isEmpty) {
+                  return SizedBox(
+                    height: 200,
+                    child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -402,26 +447,28 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                           ),
                         ],
                       ),
-                    );
-                  }
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      controller.refresh();
-                    },
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 5),
-                      itemCount: controller.transactionList.length,
-                      itemBuilder: (context, index) {
-                        return _TransactionTile(
-                          transection: controller.transactionList[index],
-                        );
-                      },
                     ),
                   );
-                },
-              ))
+                }
+                return Column(
+                  children: [
+                    ...controller.transactionList.map((transaction) => 
+                      _TransactionTile(transection: transaction),
+                    ),
+                    if (controller.hasMore.value)
+                      const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(
+                          child: CircularProgressIndicator(color: Colors.white),
+                        ),
+                      ),
+                  ],
+                );
+              }),
+              
+              const SizedBox(height: 20), // Bottom padding,
+              
+              const SizedBox(height: 20), // Bottom padding
             ],
           ),
         ),
@@ -451,7 +498,6 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: isSelected ? Colors.white.withOpacity(0.3) : Colors.white.withOpacity(0.2),
-              width: 1,
             ),
           ),
           child: Text(
@@ -496,7 +542,6 @@ class _TransactionTile extends StatelessWidget {
         ],
         border: Border.all(
           color: Colors.white.withOpacity(0.1),
-          width: 1,
         ),
       ),
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 15),
@@ -545,7 +590,7 @@ class _TransactionTile extends StatelessWidget {
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
-                      letterSpacing: 0.3),
+                      letterSpacing: 0.3,),
                 ),
                 const SizedBox(height: 6),
                 Row(
@@ -561,7 +606,7 @@ class _TransactionTile extends StatelessWidget {
                       style: TextStyle(
                           color: Colors.white.withOpacity(0.7),
                           fontWeight: FontWeight.w400,
-                          fontSize: 13),
+                          fontSize: 13,),
                     ),
                   ],
                 ),
@@ -576,7 +621,6 @@ class _TransactionTile extends StatelessWidget {
               border: Border.all(
                 color:
                     (isPositive ? Colors.green : Colors.red).withOpacity(0.3),
-                width: 1,
               ),
             ),
             child: Text(
@@ -585,7 +629,7 @@ class _TransactionTile extends StatelessWidget {
                   color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  letterSpacing: 0.5),
+                  letterSpacing: 0.5,),
             ),
           ),
         ],

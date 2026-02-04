@@ -47,7 +47,6 @@ class SignInScreen extends StatelessWidget {
         child: Form(
           key: signInController.signInformKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const AppLogoWidget(
@@ -74,7 +73,6 @@ class SignInScreen extends StatelessWidget {
                       children: [
                         Obx(
                           () => Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               InkWell(
                                 onTap: () {
@@ -222,8 +220,6 @@ class SignInScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [Colors.transparent, _signInGradient.colors.first.withOpacity(0.4)],
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
                         ),
                       ),
                     ),
@@ -236,8 +232,6 @@ class SignInScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [_signInGradient.colors.first.withOpacity(0.4), Colors.transparent],
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
                         ),
                       ),
                     ),

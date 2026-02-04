@@ -46,7 +46,7 @@ class GoogleSignInAuthService {
       if (currentUser.displayName.validate().split(' ').length >= 2) lastName = currentUser.displayName.splitAfter(' ');
 
       /// Create a temporary request to send
-      UserData tempUserData = UserData(planDetails: SubscriptionPlanModel())
+      final UserData tempUserData = UserData(planDetails: SubscriptionPlanModel())
         ..mobile = currentUser.phoneNumber.validate()
         ..email = currentUser.email.validate()
         ..firstName = firstName.validate()
@@ -100,7 +100,7 @@ class GoogleSignInAuthService {
           }
 
           /// Create a temporary request to send
-          UserData tempUserData = UserData(planDetails: SubscriptionPlanModel())
+          final UserData tempUserData = UserData(planDetails: SubscriptionPlanModel())
             ..mobile = currentUser.phoneNumber.validate()
             ..email = currentUser.email.validate()
             ..firstName = firstName.validate()

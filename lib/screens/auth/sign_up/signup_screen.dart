@@ -35,14 +35,14 @@ class SignUpScreen extends StatelessWidget {
       isLoading: signUpController.isLoading,
       topBarBgColor: Colors.transparent,
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
               appScreenBackgroundDark,
               appScreenBackgroundDark,
-              const Color(0xFF0f0d0a),
+              Color(0xFF0f0d0a),
             ],
           ),
         ),

@@ -16,7 +16,7 @@ class _WalletScreenState extends State<WalletScreen> {
   late WalletController controller;
   ScrollController scrollController = ScrollController();
 
-  setController() {
+  void setController() {
     controller = Get.isRegistered<WalletController>()
         ? Get.find<WalletController>()
         : Get.put(WalletController());
@@ -123,7 +123,6 @@ class _WalletScreenState extends State<WalletScreen> {
                   ],
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     //Message
@@ -169,22 +168,22 @@ class _WalletScreenState extends State<WalletScreen> {
                   gridInfo(
                       "Transactions",
                       '${controller.walletData.value.stats?.totalTransactions ?? 0}',
-                      0),
+                      0,),
                   //
                   gridInfo(
                       "Credits",
                       '${controller.walletData.value.stats?.totalCredited ?? 0}',
-                      1),
+                      1,),
                   //
                   gridInfo(
                       "Debits",
                       '${controller.walletData.value.stats?.totalDebited ?? 0}',
-                      2),
+                      2,),
                   //
                   gridInfo(
                       "Pending",
                       '${controller.walletData.value.stats?.pendingTransactions ?? 0}',
-                      3),
+                      3,),
                 ],
               ),
 
@@ -248,14 +247,14 @@ class _WalletScreenState extends State<WalletScreen> {
                     : ListView.builder(
                         controller: scrollController,
                         padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 15),
+                            vertical: 10, horizontal: 15,),
                         itemCount: controller.pointHistory.length,
                         itemBuilder: (context, index) {
                           return pointHistoryCard(
-                              controller.pointHistory[index]);
+                              controller.pointHistory[index],);
                         },
                       ),
-              )
+              ),
             ],
           );
         },
@@ -285,7 +284,6 @@ class _WalletScreenState extends State<WalletScreen> {
         ],
         border: Border.all(
           color: Colors.white.withOpacity(0.1),
-          width: 1,
         ),
       ),
       child: ListTile(
@@ -348,7 +346,6 @@ class _WalletScreenState extends State<WalletScreen> {
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: Colors.green.withOpacity(0.3),
-              width: 1,
             ),
           ),
           child: Text(
@@ -370,13 +367,13 @@ class _WalletScreenState extends State<WalletScreen> {
     final List<List<Color>> gradientColors = [
       [
         const Color(0xff667eea),
-        const Color(0xff764ba2)
+        const Color(0xff764ba2),
       ], // Transactions - Purple
       [const Color(0xfff093fb), const Color(0xfff5576c)], // Credits - Pink/Red
       [const Color(0xff4facfe), const Color(0xff00f2fe)], // Debits - Blue
       [
         const Color(0xfffa709a),
-        const Color(0xfffee140)
+        const Color(0xfffee140),
       ], // Pending - Pink/Yellow
     ];
 
@@ -395,7 +392,6 @@ class _WalletScreenState extends State<WalletScreen> {
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
           color: Colors.white.withOpacity(0.15),
-          width: 1,
         ),
         boxShadow: [
           BoxShadow(
@@ -406,7 +402,6 @@ class _WalletScreenState extends State<WalletScreen> {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(

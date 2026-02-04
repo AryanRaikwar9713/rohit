@@ -58,7 +58,7 @@ class SubscriptionController extends GetxController {
       revenueCatSubscriptionOfferings(value);
       if (revenueCatSubscriptionOfferings.value != null && revenueCatSubscriptionOfferings.value!.current != null && revenueCatSubscriptionOfferings.value!.current!.availablePackages.isNotEmpty) {
         storeProductList.value = revenueCatSubscriptionOfferings.value!.current!.availablePackages.map((e) => e.storeProduct).toList();
-        Set<String> revenueCatIdentifiers = revenueCatSubscriptionOfferings.value!.current!.availablePackages.map((package) => package.storeProduct.identifier).toSet();
+        final Set<String> revenueCatIdentifiers = revenueCatSubscriptionOfferings.value!.current!.availablePackages.map((package) => package.storeProduct.identifier).toSet();
 
         // Filter backend plans to match RevenueCat identifiers
 
@@ -78,7 +78,7 @@ class SubscriptionController extends GetxController {
 
   Package? getSelectedPlanFromRevenueCat(SubscriptionPlanModel selectedPlan) {
     if (revenueCatSubscriptionOfferings.value != null && revenueCatSubscriptionOfferings.value!.current != null && revenueCatSubscriptionOfferings.value!.current!.availablePackages.isNotEmpty) {
-      int index = revenueCatSubscriptionOfferings.value!.current!.availablePackages
+      final int index = revenueCatSubscriptionOfferings.value!.current!.availablePackages
           .indexWhere((element) => element.storeProduct.identifier == (isIOS ? selectedPlan.appleInAppPurchaseIdentifier : selectedPlan.googleInAppPurchaseIdentifier));
       if (index > -1) {
         return revenueCatSubscriptionOfferings.value!.current!.availablePackages[index];
@@ -93,7 +93,7 @@ class SubscriptionController extends GetxController {
     //int plan_id, int user_id, String identifier, String payment_status, String payment_type, String transaction_id
 
     isLoading(true);
-    Map<String, dynamic> request = {
+    final Map<String, dynamic> request = {
       "plan_id": selectPlan.value.planId,
       "user_id": loginUserData.value.id,
       "identifier": selectPlan.value.name.validate(),
@@ -123,7 +123,7 @@ class SubscriptionController extends GetxController {
       setValue(SharedPreferenceConst.USER_SUBSCRIPTION_DATA, value.data.toJson());
       setValue(SharedPreferenceConst.USER_DATA, loginUserData.toJson());
 
-      successSnackBar(value.message.toString());
+      successSnackBar(value.message);
     }).catchError((e) {
       isLoading(false);
       errorSnackBar(error: e);
@@ -183,7 +183,7 @@ class SubscriptionController extends GetxController {
 
     double totalTax = 0.0;
     double totalTaxWithoutDiscount = 0.0;
-    for (var tax in appConfigs.value.taxPercentage) {
+    for (final tax in appConfigs.value.taxPercentage) {
       if (tax.type.toLowerCase() == Tax.percentage) {
         totalTax += price.value * tax.value / 100;
         totalTaxWithoutDiscount += (selectPlan.value.price.toDouble() - priceWithCouponDiscount.toDouble()) * (tax.value / 100);

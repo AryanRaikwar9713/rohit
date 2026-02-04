@@ -77,8 +77,8 @@ class DownloadController extends GetxController {
     if (getStringListAsync('${SharedPreferenceConst.DOWNLOAD_VIDEOS}_${loginUserData.value.id}').validate().isNotEmpty) {
       try {
         isLoading(true);
-        List<String> videoListJson = getStringListAsync('${SharedPreferenceConst.DOWNLOAD_VIDEOS}_${loginUserData.value.id}').validate();
-        List<Map<String, dynamic>> videoListMap = videoListJson.map((videoJson) {
+        final List<String> videoListJson = getStringListAsync('${SharedPreferenceConst.DOWNLOAD_VIDEOS}_${loginUserData.value.id}').validate();
+        final List<Map<String, dynamic>> videoListMap = videoListJson.map((videoJson) {
           return jsonDecode(videoJson) as Map<String, dynamic>;
         }).toList();
 
@@ -100,7 +100,7 @@ class DownloadController extends GetxController {
     bool supported = false;
     PlanLimit currentPlanLimit = PlanLimit();
     int index = -1;
-    index = currentSubscription.value.planType.indexWhere((element) => (element.slug == SubscriptionTitle.downloadStatus || element.limitationSlug == SubscriptionTitle.downloadStatus));
+    index = currentSubscription.value.planType.indexWhere((element) => element.slug == SubscriptionTitle.downloadStatus || element.limitationSlug == SubscriptionTitle.downloadStatus);
 
     if (requirePlanLevel == 0) {
       supported = true;
@@ -141,7 +141,6 @@ class DownloadController extends GetxController {
 
   Future<void> handleRemoveFromDownload(BuildContext context) async {
     Get.bottomSheet(
-      isDismissible: true,
       isScrollControlled: false,
       enableDrag: false,
       BackdropFilter(

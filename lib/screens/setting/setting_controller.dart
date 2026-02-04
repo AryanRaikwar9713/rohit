@@ -30,9 +30,9 @@ class SettingController extends GetxController {
       AccountSettingResponse(
           data: AccountSettingModel(
               planDetails: SubscriptionPlanModel(),
-              yourDevice: YourDevice()))).obs;
+              yourDevice: YourDevice(),),),).obs;
   Rx<AccountSettingModel> accountSettingResp = AccountSettingModel(
-          planDetails: SubscriptionPlanModel(), yourDevice: YourDevice())
+          planDetails: SubscriptionPlanModel(), yourDevice: YourDevice(),)
       .obs;
   Rx<Future<RxList<RentalHistoryModel>>> getRentalHistoryFuture =
       Future(() => RxList<RentalHistoryModel>()).obs;
@@ -68,7 +68,7 @@ class SettingController extends GetxController {
       profileDetailsResp(Get.arguments);
     }
     isChildrenProfileEnabled(
-        selectedAccountProfile.value.isProtectedProfile.getBoolInt());
+        selectedAccountProfile.value.isProtectedProfile.getBoolInt(),);
     newPin.value = "";
     confirmPin.value = "";
 
@@ -84,7 +84,7 @@ class SettingController extends GetxController {
     // Assign the result of getInitListData to getSettingInitialize
     getSettingInitialize(Future(() async {
       return initializeSettings(isLoginCheck); // Wrap the bool in RxBool
-    })).whenComplete(() => isLoading(false));
+    }),).whenComplete(() => isLoading(false));
   }
 
   Future<void> getAccountSetting({bool showLoader = false}) async {
@@ -95,12 +95,12 @@ class SettingController extends GetxController {
       isLoading(true);
     }
     await getAccountSettingFuture(CoreServiceApis()
-            .getAccountSettingsResponse(deviceId: yourDevice.value.deviceId))
+            .getAccountSettingsResponse(deviceId: yourDevice.value.deviceId),)
         .then((value) {
       accountSettingResp(value.data);
       if (accountSettingResp.value.otherDevice.isNotEmpty) {
         accountSettingResp.value.otherDevice.removeWhere(
-            (element) => element.deviceId == yourDevice.value.deviceId);
+            (element) => element.deviceId == yourDevice.value.deviceId,);
 
         accountSettingResp.refresh();
       }
@@ -113,9 +113,9 @@ class SettingController extends GetxController {
               .any((element) => element.slug == SubscriptionTitle.videoCast)) {
         isCastingSupported(currentSubscription.value.planType
             .firstWhere(
-                (element) => element.slug == SubscriptionTitle.videoCast)
+                (element) => element.slug == SubscriptionTitle.videoCast,)
             .limitationValue
-            .getBoolInt());
+            .getBoolInt(),);
       } else {
         isCastingSupported(false);
       }
@@ -154,7 +154,7 @@ class SettingController extends GetxController {
     await getPageListFuture(CoreServiceApis().getPageList()).then((value) {
       appPageList.value = value.data; // data in the observable list
       setValue(SharedPreferenceConst.PAGE_LAST_CALL_TIME,
-          DateTime.timestamp().millisecondsSinceEpoch);
+          DateTime.timestamp().millisecondsSinceEpoch,);
       getInitListData();
     }).whenComplete(() => isLoading(false));
   }
@@ -173,7 +173,7 @@ class SettingController extends GetxController {
     )
         .then((value) {
       setValue(SharedPreferenceConst.FAQ_LAST_CALL_TIME,
-          DateTime.timestamp().millisecondsSinceEpoch);
+          DateTime.timestamp().millisecondsSinceEpoch,);
     }).whenComplete(() => isLoading(false));
   }
 
@@ -214,7 +214,6 @@ class SettingController extends GetxController {
           icon: Assets.iconsIcParentPassword,
           title: locale.value.parentalControl,
           subTitle: "",
-          showArrow: false,
           showSwitch: true,
         ),
       );
@@ -256,16 +255,14 @@ class SettingController extends GetxController {
         icon: Assets.iconsIcFaq,
         title: locale.value.faqs,
         subTitle: "",
-        showArrow: false,
       ),
     );
-    for (var element in appPageList) {
+    for (final element in appPageList) {
       settingList.add(
         SettingModel(
           icon: getPageIcon(element.slug),
           title: element.name,
           subTitle: "",
-          showArrow: false,
           slug: element.slug,
           url: element.url,
         ),
@@ -277,8 +274,7 @@ class SettingController extends GetxController {
         icon: Assets.iconsIcLogout,
         title: locale.value.logout,
         subTitle: "",
-        showArrow: false,
-      ));
+      ),);
     }
     return true.obs;
   }
@@ -334,12 +330,12 @@ class SettingController extends GetxController {
     await AuthServiceApis().deleteAccountCompletely().then((value) async {
       await AuthServiceApis().clearData();
       AuthServiceApis().removeCacheData();
-      DashboardController dashboardController = getDashboardController();
+      final DashboardController dashboardController = getDashboardController();
 
       dashboardController.onInit();
 
       Get.offAll(
-          () => DashboardScreen(dashboardController: dashboardController));
+          () => DashboardScreen(dashboardController: dashboardController),);
       isLoading(false);
     }).catchError((e) {
       isLoading(false);

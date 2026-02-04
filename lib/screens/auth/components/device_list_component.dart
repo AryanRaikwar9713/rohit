@@ -38,7 +38,6 @@ class DeviceListComponent extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 30, top: 16, right: 16, left: 16),
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
@@ -49,7 +48,6 @@ class DeviceListComponent extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       Get.bottomSheet(
-                        isDismissible: true,
                         isScrollControlled: true,
                         enableDrag: false,
                         LogoutAccountComponent(
@@ -80,13 +78,11 @@ class DeviceListComponent extends StatelessWidget {
                       deviceDetail: loggedInDeviceList[index],
                       onDeviceLogout: () {
                         Get.bottomSheet(
-                          isDismissible: true,
                           isScrollControlled: true,
                           enableDrag: false,
                           LogoutAccountComponent(
                             device: loggedInDeviceList[index].deviceId,
                             deviceName: loggedInDeviceList[index].deviceName,
-                            logOutAll: false,
                             onLogout: (logoutAll) {
                               onLogout.call(false, loggedInDeviceList[index].deviceId, loggedInDeviceList[index].deviceName);
                             },

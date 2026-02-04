@@ -770,6 +770,7 @@ import 'package:streamit_laravel/screens/Impact-dashBoard/model/campain_cat_resp
 import 'package:streamit_laravel/screens/donation/donation_controller.dart';
 import 'package:streamit_laravel/screens/donation/model/get_project_list_responce_model.dart';
 import 'package:streamit_laravel/screens/donation/project_detail_screen.dart';
+import 'package:streamit_laravel/screens/Impact-dashBoard/impact_profile_screen.dart';
 import 'package:streamit_laravel/utils/colors.dart';
 
 class ImpactDashboardScreen extends StatelessWidget {
@@ -799,14 +800,34 @@ class ImpactDashboardScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header - same rahega (Impact Dashboard + subtitle)
+                  // Header – Impact Dashboard title + icon to go to My Impact (create/manage)
                   Row(
                     children: [
                       _gradientIcon(Icons.favorite, 34),
                       const SizedBox(width: 8),
-                      const Text(
-                        'Impact Dashboard',
-                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                      const Expanded(
+                        child: Text(
+                          'Impact Dashboard',
+                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () => Get.to(() => const ImpactProfileScreen()),
+                          borderRadius: BorderRadius.circular(24),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: ShaderMask(
+                              shaderCallback: (bounds) => appGradient.createShader(bounds),
+                              child: const Icon(
+                                Icons.dashboard_customize,
+                                size: 28,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -841,7 +862,7 @@ class ImpactDashboardScreen extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            FilterChipWidget(icon: Icons.public, text: 'Near Me + Worldwide'),
+                            const FilterChipWidget(icon: Icons.public, text: 'Near Me + Worldwide'),
                             const SizedBox(width: 8),
                             // All categories chip
                             FilterChipWidget(
@@ -863,7 +884,7 @@ class ImpactDashboardScreen extends StatelessWidget {
                               );
                             }),
                             const SizedBox(width: 8),
-                            FilterChipWidget(icon: Icons.local_fire_department, text: 'Urgency'),
+                            const FilterChipWidget(icon: Icons.local_fire_department, text: 'Urgency'),
                           ],
                         ),
                       );
@@ -1167,7 +1188,7 @@ class FilterChipWidget extends StatelessWidget {
             : Colors.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(30),
         border: isSelected
-            ? Border.all(color: ImpactDashboardScreen.appGradient.colors.first, width: 1)
+            ? Border.all(color: ImpactDashboardScreen.appGradient.colors.first)
             : null,
       ),
       child: Row(

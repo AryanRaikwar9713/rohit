@@ -20,7 +20,7 @@ class SearchApi {
 
       final String url = "https://app.wamims.world/public/social/search_content.php?q=$query&type=all&limit=10";
 
-      var responce = await http.get(Uri.parse(url));
+      final responce = await http.get(Uri.parse(url));
 
       respPrinter(responce.statusCode, responce.body);
 

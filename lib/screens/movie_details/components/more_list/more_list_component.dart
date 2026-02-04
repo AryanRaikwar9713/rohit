@@ -19,7 +19,6 @@ class MoreListComponent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
           locale.value.moreLikeThis,

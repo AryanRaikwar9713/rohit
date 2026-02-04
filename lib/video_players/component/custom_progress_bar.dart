@@ -71,7 +71,7 @@ class CustomProgressBar extends StatelessWidget {
                     child: Container(
                       width: 10,
                       height: 10,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: barColor,
                         shape: BoxShape.circle,
                       ),

@@ -61,7 +61,7 @@ class ReviewListController extends GetxController {
       },
     ).then((value) async {
       await getReviewDetails();
-      successSnackBar(value.message.toString());
+      successSnackBar(value.message);
     }).catchError((e) {
       errorSnackBar(error: e);
     }).whenComplete(() {
@@ -101,7 +101,7 @@ class ReviewListController extends GetxController {
         final TvShowController showCont = Get.put(TvShowController());
         await showCont.getTvShowDetail();
       }
-      successSnackBar(value.message.toString());
+      successSnackBar(value.message);
     }).catchError((e) {
       errorSnackBar(error: e);
     }).whenComplete(() => isLoading(false));
@@ -123,7 +123,7 @@ class ReviewListController extends GetxController {
       ),
     ).then((value) {
       if (isLoggedIn.value) {
-        int usersReviewIndex = value.indexWhere((element) => element.userId == loginUserData.value.id);
+        final int usersReviewIndex = value.indexWhere((element) => element.userId == loginUserData.value.id);
         if (usersReviewIndex > -1) {
           review = value[usersReviewIndex];
         }

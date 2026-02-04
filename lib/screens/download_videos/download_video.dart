@@ -45,7 +45,6 @@ class DownloadVideosScreen extends StatelessWidget {
       body: AnimatedListView(
         shrinkWrap: true,
         physics: const AlwaysScrollableScrollPhysics(),
-        scrollDirection: Axis.vertical,
         itemCount: downloadVideoCont.movieDet.length,
         listAnimationType: ListAnimationType.FadeIn,
         emptyWidget: NoDataWidget(
@@ -56,7 +55,7 @@ class DownloadVideosScreen extends StatelessWidget {
           imageWidget: const EmptyStateWidget(),
         ).paddingSymmetric(horizontal: 16),
         itemBuilder: (context, index) {
-          VideoPlayerModel poster = downloadVideoCont.movieDet[index];
+          final VideoPlayerModel poster = downloadVideoCont.movieDet[index];
           return Obx(
             () => Row(
               children: [

@@ -49,7 +49,6 @@ class PinGenerationBottomSheet extends StatelessWidget {
               SizedBox(
                 height: 42,
                 child: OTPTextField(
-                  pinLength: 4,
                   fieldWidth: 42,
                   cursorColor: appColorPrimary,
                   textStyle: primaryTextStyle(),
@@ -89,7 +88,6 @@ class PinGenerationBottomSheet extends StatelessWidget {
               SizedBox(
                 height: 42,
                 child: OTPTextField(
-                  pinLength: 4,
                   fieldWidth: 42,
                   cursorColor: appColorPrimary,
                   textStyle: primaryTextStyle(),

@@ -16,7 +16,7 @@ class LocationApi {
       if (!serviceEnabled) {
         toast("Turn On Location");
         print("Askin for permission");
-        bool d = await Geolocator.openLocationSettings();
+        final bool d = await Geolocator.openLocationSettings();
         print("loation is done $d");
         toast("Lcoation $d");
       }
@@ -37,16 +37,16 @@ class LocationApi {
 
       if (_locationPermission == LocationPermission.deniedForever) {
         _logger.w(
-            'handleLocationPermission: Location permissions are permanently denied');
+            'handleLocationPermission: Location permissions are permanently denied',);
         return false;
       }
 
       _logger.d(
-          'handleLocationPermission: location permission granted: $_locationPermission');
+          'handleLocationPermission: location permission granted: $_locationPermission',);
       return true;
     } catch (e) {
       _logger.e(
-          'handleLocationPermission: Error handling location permission: $e');
+          'handleLocationPermission: Error handling location permission: $e',);
       return false;
     }
   }

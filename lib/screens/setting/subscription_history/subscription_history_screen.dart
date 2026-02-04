@@ -31,11 +31,10 @@ class SubscriptionHistoryScreen extends StatelessWidget {
       appBartitleText: locale.value.subscriptionHistory,
       body: Obx(() {
         return AnimatedScrollView(
-          padding: EdgeInsets.only(bottom: 120, top: 8),
-          crossAxisAlignment: CrossAxisAlignment.start,
+          padding: const EdgeInsets.only(bottom: 120, top: 8),
           listAnimationType: commonListAnimationType,
           refreshIndicatorColor: appColorPrimary,
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           onNextPage: () {
             if (!controller.isLastPage.value) {
               controller.page++;
@@ -61,7 +60,6 @@ class SubscriptionHistoryScreen extends StatelessWidget {
                   ),
                 ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (currentSubscription.value.startDate.isNotEmpty && currentSubscription.value.endDate.isNotEmpty)
@@ -156,7 +154,7 @@ class SubscriptionHistoryScreen extends StatelessWidget {
                           final item = controller.subscriptionHistoryList[index];
 
                           if (item.status == SubscriptionStatus.active) {
-                            return Offstage();
+                            return const Offstage();
                           } else {
                             return Column(
                               children: [
@@ -173,7 +171,7 @@ class SubscriptionHistoryScreen extends StatelessWidget {
                   ],
                 ).paddingSymmetric(horizontal: 16);
               },
-            )
+            ),
           ],
         );
       }),
@@ -182,7 +180,6 @@ class SubscriptionHistoryScreen extends StatelessWidget {
 
   Widget planRows({required String title, required String value, required bool isAmount}) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [

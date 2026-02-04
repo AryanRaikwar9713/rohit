@@ -76,7 +76,7 @@ class CouponItemComponent extends StatelessWidget {
             12.width,
             TextButton(
               onPressed: couponData.isCouponApplied ? onRemoveCoupon : onApplyCoupon,
-              style: ButtonStyle(visualDensity: VisualDensity.compact),
+              style: const ButtonStyle(visualDensity: VisualDensity.compact),
               child: Text(
                 couponData.isCouponApplied ? locale.value.remove : locale.value.apply,
                 style: primaryTextStyle(color: appColorPrimary),

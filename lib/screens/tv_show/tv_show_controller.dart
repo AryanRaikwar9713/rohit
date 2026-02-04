@@ -255,8 +255,8 @@ class TvShowController extends GetxController {
   Future<void> addLike() async {
     hideKeyBoardWithoutContext();
     isLoading(true);
-    int isLike = tvShowDetail.value.isLiked ? 0 : 1;
-    tvShowDetail.value.isLiked = isLike.getBoolInt() ? true : false;
+    final int isLike = tvShowDetail.value.isLiked ? 0 : 1;
+    tvShowDetail.value.isLiked = isLike.getBoolInt();
     tvShowDetail.refresh();
     CoreServiceApis().likeMovie(
       request: {
@@ -269,7 +269,7 @@ class TvShowController extends GetxController {
       await getTvShowDetail();
     }).catchError((e) {
       isLoading(false);
-      tvShowDetail.value.isLiked = isLike.getBoolInt() ? true : false;
+      tvShowDetail.value.isLiked = isLike.getBoolInt();
     });
   }
 
@@ -332,7 +332,6 @@ class TvShowController extends GetxController {
 
   void download() {
     Get.bottomSheet(
-      isDismissible: true,
       isScrollControlled: true,
       enableDrag: false,
       BackdropFilter(
@@ -370,7 +369,7 @@ class TvShowController extends GetxController {
       showDownload(false);
     }
 
-    bool downloaded = await checkIfDownloaded(videoId: selectedEpisode.value.id);
+    final bool downloaded = await checkIfDownloaded(videoId: selectedEpisode.value.id);
     isDownloaded(downloaded);
   }
 
@@ -381,7 +380,7 @@ class TvShowController extends GetxController {
       AvailableDevicesForCast(
         onTap: (p1) {
           Get.back();
-          FCCast cast = Get.find();
+          final FCCast cast = Get.find();
           cast.setChromeCast(
             videoURL: isTrailer.isTrue && videoModel.watchedTime.isEmpty ? videoModel.trailerUrl : videoModel.videoUrlInput,
             device: p1,

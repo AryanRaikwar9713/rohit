@@ -149,7 +149,7 @@ class WatchingProfileController extends GetxController {
               accountProfiles.isNotEmpty &&
               accountProfiles.any((element) => element.id == profileId.value)) {
             selectedProfile(accountProfiles
-                .firstWhere((element) => element.id == profileId.value));
+                .firstWhere((element) => element.id == profileId.value),);
             selectedAccountProfile(selectedProfile.value);
           }
 
@@ -177,7 +177,7 @@ class WatchingProfileController extends GetxController {
             // PIN verification is only needed when manually switching from child to protected profile
             // On auto-selection, we can proceed directly
             // Small delay to ensure UI is ready
-            Future.delayed(Duration(milliseconds: 300), () {
+            Future.delayed(const Duration(milliseconds: 300), () {
               handleSelectProfile(profileToSelect!);
             });
           }
@@ -195,7 +195,7 @@ class WatchingProfileController extends GetxController {
     const digits = '0123456789';
 
     return List.generate(
-        length, (index) => digits[random.nextInt(digits.length)]).join();
+        length, (index) => digits[random.nextInt(digits.length)],).join();
   }
 
   Future<void> editUserProfile(bool isEdit, {required String name}) async {
@@ -208,8 +208,8 @@ class WatchingProfileController extends GetxController {
         // Download the image from the network and store it in a temporary file
         final response = await http.get(Uri.parse(centerImagePath.value));
         if (response.statusCode == 200) {
-          Directory tempDir = await getTemporaryDirectory();
-          String tempPath = '${tempDir.path}/downloaded_image.png';
+          final Directory tempDir = await getTemporaryDirectory();
+          final String tempPath = '${tempDir.path}/downloaded_image.png';
           tempFile = File(tempPath);
           await tempFile.writeAsBytes(response.bodyBytes);
         } else {
@@ -221,24 +221,24 @@ class WatchingProfileController extends GetxController {
           tempFile = File(centerImagePath.value);
         } else {
           // Handle the case where the file does not exist or load asset image
-          ByteData byteData = await rootBundle.load(centerImagePath.value);
+          final ByteData byteData = await rootBundle.load(centerImagePath.value);
 
           // Create a temporary file from the asset ByteData
           final buffer = byteData.buffer;
-          Directory tempDir = await getTemporaryDirectory();
-          String tempPath =
+          final Directory tempDir = await getTemporaryDirectory();
+          final String tempPath =
               '${tempDir.path}/temp_image.${generateRandomString()}.png';
 
           tempFile = File(tempPath)
             ..writeAsBytesSync(
               buffer.asUint8List(
-                  byteData.offsetInBytes, byteData.lengthInBytes),
+                  byteData.offsetInBytes, byteData.lengthInBytes,),
             );
         }
       }
 
       // Prepare request data
-      Map<String, dynamic> request = {
+      final Map<String, dynamic> request = {
         "name": name,
         "is_child_profile": isChildrenProfileEnabled.value ? 1 : 0,
         "user_id": loginUserData.value.id,
@@ -255,17 +255,17 @@ class WatchingProfileController extends GetxController {
           accountProfiles.clear();
           if (isEdit) {
             accountProfiles.removeWhere(
-                (element) => element.id == selectedProfile.value.id);
+                (element) => element.id == selectedProfile.value.id,);
           }
           accountProfiles.addAll(value.data);
           selectedProfile(accountProfiles
-              .firstWhere((element) => element.id == value.newUserProfile.id));
+              .firstWhere((element) => element.id == value.newUserProfile.id),);
         } else {
           await getProfilesList();
         }
         successSnackBar(isEdit
             ? locale.value.profileUpdatedSuccessfully
-            : locale.value.newProfileAddedSuccessfully);
+            : locale.value.newProfileAddedSuccessfully,);
       }).catchError((e) {
         isLoading(false);
         if (e is Map<String, dynamic>) {
@@ -275,7 +275,7 @@ class WatchingProfileController extends GetxController {
               const Duration(seconds: 1),
               () {
                 Get.to(() => SubscriptionScreen(launchDashboard: false),
-                    preventDuplicates: false);
+                    preventDuplicates: false,);
               },
             );
           }
@@ -284,17 +284,17 @@ class WatchingProfileController extends GetxController {
         }
       });
     } catch (e) {
-      toast('Error: ${e.toString()}');
+      toast('Error: ${e}');
     } finally {
       isLoading(false);
     }
   }
 
   Future<void> deleteUserProfile(String id,
-      {bool isFromProfileWatching = false}) async {
+      {bool isFromProfileWatching = false,}) async {
     if (isLoading.isTrue) return;
     isLoading(true);
-    Map<String, dynamic> request = {"profile_id": id};
+    final Map<String, dynamic> request = {"profile_id": id};
     await CoreServiceApis()
         .deleteWatchingProfile(request: request)
         .then((value) async {
@@ -316,7 +316,7 @@ class WatchingProfileController extends GetxController {
     selectedAccountProfile(profile);
     profilePin(profile.profilePin);
 
-    isChildrenProfileEnabled.value = profile.isChildProfile == 1 ? true : false;
+    isChildrenProfileEnabled.value = (profile.isChildProfile == 1);
     setValue(SharedPreferenceConst.IS_PROFILE_ID, profile.id);
 
     if (navigateToDashboard.validate()) {
@@ -327,7 +327,7 @@ class WatchingProfileController extends GetxController {
       }
       Get.offAll(
         () => DashboardScreen(
-            dashboardController: Get.put(DashboardController())),
+            dashboardController: Get.put(DashboardController()),),
         binding: BindingsBuilder(() {
           getDashboardController().onBottomTabChange(0);
         }),
@@ -349,10 +349,9 @@ class WatchingProfileController extends GetxController {
       saveNameController.text = selectedProfile.value.name;
       updateCenterImage(profile.avatar);
       isChildrenProfileEnabled.value =
-          profile.isChildProfile == 1 ? true : false;
+          (profile.isChildProfile == 1);
     }
     Get.bottomSheet(
-      isDismissible: true,
       isScrollControlled: true,
       enableDrag: false,
       BackdropFilter(

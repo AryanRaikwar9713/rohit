@@ -26,9 +26,9 @@ class FlutterWaveService {
     required Function(Map<String, dynamic>) onComplete,
     required Function(bool) loderOnOFF,
   }) async {
-    String transactionId = const Uuid().v1();
+    final String transactionId = const Uuid().v1();
 
-    Flutterwave flutterWave = Flutterwave(
+    final Flutterwave flutterWave = Flutterwave(
       context: getContext,
       publicKey: appConfigs.value.flutterWavePay.flutterwavePublickey,
       currency: appCurrency.value.currencyCode,
@@ -68,8 +68,8 @@ class FlutterWaveService {
 //region FlutterWave Verify Transaction API
 Future<bool> verifyPayment({required String transactionId, required String flutterWaveSecretKey, required Function(bool) loderOnOFF}) async {
   try {
-    var res = await handleResponse(await buildHttpResponse("https://api.flutterwave.com/v3/transactions/$transactionId/verify", header: buildHeaderForFlutterWave(flutterWaveSecretKey)),
-        isFlutterWave: true);
+    final res = await handleResponse(await buildHttpResponse("https://api.flutterwave.com/v3/transactions/$transactionId/verify", header: buildHeaderForFlutterWave(flutterWaveSecretKey)),
+        isFlutterWave: true,);
     log("Response: $res");
     loderOnOFF.call(false);
     return res["status"] == "success";

@@ -71,7 +71,7 @@ class SubscriptionHistoryController extends GetxController {
       setValue(SharedPreferenceConst.USER_SUBSCRIPTION_DATA, '');
       await setValue(SharedPreferenceConst.USER_DATA, loginUserData.toJson());
       Get.offAll(() => DashboardScreen(dashboardController: getDashboardController()));
-      successSnackBar(value.message.toString());
+      successSnackBar(value.message);
     }).catchError((e) {
       isLoading(false);
       errorSnackBar(error: e);

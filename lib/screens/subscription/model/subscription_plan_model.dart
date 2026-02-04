@@ -118,7 +118,7 @@ class SubscriptionPlanModel {
       googleInAppPurchaseIdentifier: json['android_identifier'] is String ? json['android_identifier'] : '',
       appleInAppPurchaseIdentifier: json['apple_identifier'] is String ? json['apple_identifier'] : '',
       activePlanInAppPurchaseIdentifier: json['active_in_app_purchase_identifier'] is String ? json['active_in_app_purchase_identifier'] : '',
-      couponDiscount: json['coupon_discount'] is num ? json['coupon_discount'] : -1);
+      couponDiscount: json['coupon_discount'] is num ? json['coupon_discount'] : -1,);
 
   }
 

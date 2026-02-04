@@ -263,7 +263,7 @@ class _ShopRegistrationScreenState extends State<ShopRegistrationScreen> {
             20.height,
             Obx(() {
               if (_controller.isLoadingCategories.value) {
-                return Expanded(
+                return const Expanded(
                   child: Center(
                     child: CircularProgressIndicator(color: appColorPrimary),
                   ),
@@ -276,8 +276,8 @@ class _ShopRegistrationScreenState extends State<ShopRegistrationScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.category_outlined,
-                            size: 50, color: Colors.grey),
+                        const Icon(Icons.category_outlined,
+                            size: 50, color: Colors.grey,),
                         16.height,
                         Text(
                           'No categories available',
@@ -408,7 +408,7 @@ class _ShopRegistrationScreenState extends State<ShopRegistrationScreen> {
                 onPressed:
                     _controller.isRegistering.value ? null : () => Get.back(),
                 icon: const Icon(Icons.close, color: Colors.white),
-              )),
+              ),),
           title: Text(
             'Register Shop',
             style: boldTextStyle(size: 18, color: Colors.white),
@@ -440,14 +440,14 @@ class _ShopRegistrationScreenState extends State<ShopRegistrationScreen> {
                   value: _controller.uploadProgress.value,
                   strokeWidth: 3,
                   backgroundColor: Colors.grey[800],
-                  valueColor: AlwaysStoppedAnimation<Color>(appColorPrimary),
-                )),
+                  valueColor: const AlwaysStoppedAnimation<Color>(appColorPrimary),
+                ),),
           ),
           32.height,
           Obx(() => Text(
                 '${(_controller.uploadProgress.value * 100).toInt()}%',
                 style: boldTextStyle(size: 24, color: Colors.white),
-              )),
+              ),),
           16.height,
           Text(
             'Registering your shop...',
@@ -455,7 +455,7 @@ class _ShopRegistrationScreenState extends State<ShopRegistrationScreen> {
           ),
           8.height,
           Text(
-            'Please don\'t close the app',
+            "Please don't close the app",
             style: secondaryTextStyle(size: 14, color: Colors.grey),
           ),
         ],
@@ -660,11 +660,11 @@ class _ShopRegistrationScreenState extends State<ShopRegistrationScreen> {
                   onTap: onRemove,
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.red,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.close, color: Colors.white, size: 20),
+                    child: const Icon(Icons.close, color: Colors.white, size: 20),
                   ),
                 ),
               ),
@@ -681,14 +681,13 @@ class _ShopRegistrationScreenState extends State<ShopRegistrationScreen> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: Colors.grey[700]!,
-                  style: BorderStyle.solid,
                   width: 2,
                 ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.add_photo_alternate_outlined,
                     color: appColorPrimary,
                     size: 48,
@@ -744,7 +743,7 @@ class _ShopRegistrationScreenState extends State<ShopRegistrationScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: appColorPrimary),
+              borderSide: const BorderSide(color: appColorPrimary),
             ),
             filled: true,
             fillColor: Colors.grey[900],
@@ -787,7 +786,7 @@ class _ShopRegistrationScreenState extends State<ShopRegistrationScreen> {
                     ),
                   ),
                 ),
-                Icon(
+                const Icon(
                   Icons.arrow_drop_down,
                   color: Colors.grey,
                 ),

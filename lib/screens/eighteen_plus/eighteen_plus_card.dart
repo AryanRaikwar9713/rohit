@@ -29,11 +29,11 @@ class EighteenPlusCard extends StatelessWidget {
           topLeft: Radius.circular(28),
           topRight: Radius.circular(28),
         ),
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            const Color(0xFF1a1510),
+            Color(0xFF1a1510),
             appScreenBackgroundDark,
           ],
         ),

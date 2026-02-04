@@ -51,8 +51,9 @@ class CoreServiceApis {
     if (loginUserData.value.id > -1) {
       params.add('user_id=${loginUserData.value.id}');
       if (profileId.value != 0) params.add('profile_id=${profileId.value}');
-      if (selectedAccountProfile.value.isChildProfile.validate() == 1)
+      if (selectedAccountProfile.value.isChildProfile.validate() == 1) {
         params.add('is_restricted=0');
+      }
     }
 
     final DashboardDetailResponse dashboardDetailsResp =
@@ -81,8 +82,9 @@ class CoreServiceApis {
     if (loginUserData.value.id > -1) {
       params.add('user_id=${loginUserData.value.id}');
       if (profileId.value != 0) params.add('profile_id=${profileId.value}');
-      if (selectedAccountProfile.value.isChildProfile.validate() == 1)
+      if (selectedAccountProfile.value.isChildProfile.validate() == 1) {
         params.add('is_restricted=0');
+      }
     }
 
     final DashboardDetailResponse dashboardDetailsResp =
@@ -90,7 +92,7 @@ class CoreServiceApis {
       await handleResponse(
         await buildHttpResponse(
           getEndPoint(
-              endPoint: APIEndPoints.dashboardDetailsOtherData, params: params),
+              endPoint: APIEndPoints.dashboardDetailsOtherData, params: params,),
           manageApiVersion: true,
         ),
       ),
@@ -135,8 +137,9 @@ class CoreServiceApis {
   Future<SearchResponse> getSearchDetails({required String search}) async {
     final List<String> params = [];
     if (loginUserData.value.id > -1) {
-      if (selectedAccountProfile.value.isChildProfile.validate() == 1)
+      if (selectedAccountProfile.value.isChildProfile.validate() == 1) {
         params.add('is_restricted=0');
+      }
     }
     if (search.isNotEmpty) params.add('search=$search');
     return SearchResponse.fromJson(
@@ -184,7 +187,7 @@ class CoreServiceApis {
 
   //Account Setting Screen
   Future<AccountSettingResponse> getAccountSettingsResponse(
-      {required String deviceId}) async {
+      {required String deviceId,}) async {
     final String id = deviceId.isNotEmpty ? "?device_id=$deviceId" : "";
     return AccountSettingResponse.fromJson(
       await handleResponse(
@@ -197,10 +200,11 @@ class CoreServiceApis {
 
   //Live Show details
   Future<LiveShowDetailResponse> getLiveShowDetails(
-      {required int channelId, int userId = -1}) async {
+      {required int channelId, int userId = -1,}) async {
     final List<String> params = [];
-    if (loginUserData.value.id > -1)
+    if (loginUserData.value.id > -1) {
       params.add('user_id=${loginUserData.value.id}');
+    }
 
     params.add('channel_id=$channelId');
     if (profileId.value != 0) params.add('profile_id=${profileId.value}');
@@ -215,12 +219,13 @@ class CoreServiceApis {
 
   //Movie Details
   Future<MovieDetailResponse> getMovieDetails(
-      {required int movieId, int userId = -1}) async {
+      {required int movieId, int userId = -1,}) async {
     final List<String> params = [];
     params.add('movie_id=$movieId');
     params.add('device_id=${yourDevice.value.deviceId}');
-    if (loginUserData.value.id > -1)
+    if (loginUserData.value.id > -1) {
       params.add('user_id=${loginUserData.value.id}');
+    }
     if (profileId.value != 0) params.add('profile_id=${profileId.value}');
     return MovieDetailResponse.fromJson(
       await handleResponse(
@@ -234,10 +239,11 @@ class CoreServiceApis {
 
   //Video Details
   Future<VideoDetailResponse> getVideoDetails(
-      {required int movieId, int userId = -1}) async {
+      {required int movieId, int userId = -1,}) async {
     final List<String> params = [];
-    if (loginUserData.value.id > -1)
+    if (loginUserData.value.id > -1) {
       params.add('user_id=${loginUserData.value.id}');
+    }
 
     params.add('video_id=$movieId');
     params.add('device_id=${yourDevice.value.deviceId}');
@@ -256,10 +262,11 @@ class CoreServiceApis {
       {required int episodeId,
       int userId = -1,
       required int tvShowId,
-      required int seasonId}) async {
+      required int seasonId,}) async {
     final List<String> params = [];
-    if (loginUserData.value.id > -1)
+    if (loginUserData.value.id > -1) {
       params.add('user_id=${loginUserData.value.id}');
+    }
     params.add('device_id=${yourDevice.value.deviceId}');
     params.add('episode_id=$episodeId');
     if (tvShowId > -1) params.add('tv_show=$tvShowId');
@@ -280,12 +287,13 @@ class CoreServiceApis {
 
   //TvShow Details
   Future<TvShowModel> getTvShowDetails(
-      {required int showId, int userId = -1}) async {
+      {required int showId, int userId = -1,}) async {
     final List<String> params = [];
     params.add('tvshow_id=$showId');
     params.add('device_id=${yourDevice.value.deviceId}');
-    if (loginUserData.value.id > -1)
+    if (loginUserData.value.id > -1) {
       params.add('user_id=${loginUserData.value.id}');
+    }
     if (profileId.value != 0) params.add('profile_id=${profileId.value}');
     return TvShowModel.fromJson(
       await handleResponse(
@@ -336,7 +344,7 @@ class CoreServiceApis {
   }
 
   Future<BaseResponseModel> deleteFromDownload(
-      {required List<int> idList}) async {
+      {required List<int> idList,}) async {
     final List<String> params = [];
     params.add('id=${idList.join(',')}');
     return BaseResponseModel.fromJson(
@@ -416,7 +424,7 @@ class CoreServiceApis {
 
   // Save Subscription Details
   Future<SubscriptionResponseModel> saveSubscriptionDetails(
-      {required Map request}) async {
+      {required Map request,}) async {
     return SubscriptionResponseModel.fromJson(
       await handleResponse(
         await buildHttpResponse(
@@ -430,7 +438,7 @@ class CoreServiceApis {
 
   // Cancel Subscription Details
   Future<SubscriptionResponseModel> cancelSubscription(
-      {required Map request}) async {
+      {required Map request,}) async {
     return SubscriptionResponseModel.fromJson(
       await handleResponse(
         await buildHttpResponse(
@@ -502,14 +510,16 @@ class CoreServiceApis {
     final List<String> params = [];
     perPage ??= determinePerPage();
     params.add('per_page=$perPage&page=$page');
-    if (loginUserData.value.id > -1)
+    if (loginUserData.value.id > -1) {
       params.add('user_id=${loginUserData.value.id}');
+    }
     if (actorId > -1) params.add('actor_id=$actorId');
     if (genresId > -1) params.add('genre_id=$genresId');
     if (language.isNotEmpty) params.add('language=$language');
     if (loginUserData.value.id > -1) {
-      if (selectedAccountProfile.value.isChildProfile.validate() == 1)
+      if (selectedAccountProfile.value.isChildProfile.validate() == 1) {
         params.add('is_restricted=0');
+      }
     }
 
     final ListResponse movieList = ListResponse.fromJson(
@@ -533,8 +543,9 @@ class CoreServiceApis {
     final List<String> params = [];
     params.add('type=$type');
     if (loginUserData.value.id > -1) {
-      if (selectedAccountProfile.value.isChildProfile.validate() == 1)
+      if (selectedAccountProfile.value.isChildProfile.validate() == 1) {
         params.add('is_restricted=0');
+      }
     }
 
     final response = await handleResponse(
@@ -592,8 +603,9 @@ class CoreServiceApis {
     perPage ??= determinePerPage();
     params.add('per_page=$perPage&page=$page');
     if (loginUserData.value.id > -1) {
-      if (selectedAccountProfile.value.isChildProfile.validate() == 1)
+      if (selectedAccountProfile.value.isChildProfile.validate() == 1) {
         params.add('is_restricted=0');
+      }
 
       params.add('user_id=${loginUserData.value.id}');
     }
@@ -683,14 +695,14 @@ class CoreServiceApis {
 
 //region Remove from Continue Watching
   Future<BaseResponseModel> removeContinueWatching(
-      {required int continueWatchingId}) async {
+      {required int continueWatchingId,}) async {
     final List<String> params = [];
     params.add('id=$continueWatchingId');
     return BaseResponseModel.fromJson(
       await handleResponse(
         await buildHttpResponse(
           getEndPoint(
-              endPoint: APIEndPoints.deleteContinueWatch, params: params),
+              endPoint: APIEndPoints.deleteContinueWatch, params: params,),
           method: HttpMethodType.POST,
         ),
       ),
@@ -707,8 +719,9 @@ class CoreServiceApis {
     final List<String> params = [];
     perPage ??= determinePerPage();
     if (profileId.value != 0) params.add('profile_id=${profileId.value}');
-    if (loginUserData.value.id > -1)
+    if (loginUserData.value.id > -1) {
       params.add('user_id=${loginUserData.value.id}');
+    }
     params.add('per_page=$perPage&page=$page');
 
     final ListResponse listResponse = ListResponse.fromJson(
@@ -725,7 +738,7 @@ class CoreServiceApis {
   }
 
   Future<BaseResponseModel> deleteFromWatchlist(
-      {required List<int> idList}) async {
+      {required List<int> idList,}) async {
     final List<String> params = [];
     params.add('id=${idList.join(',')}');
     params.add("profile_id=${profileId.value}");
@@ -748,12 +761,14 @@ class CoreServiceApis {
   }) async {
     final List<String> params = [];
     perPage ??= determinePerPage();
-    if (loginUserData.value.id > -1)
+    if (loginUserData.value.id > -1) {
       params.add('user_id=${loginUserData.value.id}');
+    }
     params.add('per_page=$perPage&page=$page');
     if (loginUserData.value.id > -1) {
-      if (selectedAccountProfile.value.isChildProfile.validate() == 1)
+      if (selectedAccountProfile.value.isChildProfile.validate() == 1) {
         params.add('is_restricted=0');
+      }
     }
     final videoList = ListResponse.fromJson(
       await handleResponse(
@@ -779,8 +794,9 @@ class CoreServiceApis {
   }) async {
     final List<String> params = [];
     params.add('per_page=$perPage&page=$page');
-    if (loginUserData.value.id > -1)
+    if (loginUserData.value.id > -1) {
       params.add('user_id=${loginUserData.value.id}');
+    }
     if (seasonId > -1) params.add('season_id=$seasonId');
     if (showId > -1) params.add('show_id=$showId');
     final EpisodeDetailResponse it = EpisodeDetailResponse.fromJson(
@@ -903,7 +919,7 @@ class CoreServiceApis {
         await handleResponse(
           await buildHttpResponse(
             getEndPoint(
-                endPoint: APIEndPoints.getWatchingProfileList, params: params),
+                endPoint: APIEndPoints.getWatchingProfileList, params: params,),
           ),
         ),
       );
@@ -963,7 +979,7 @@ class CoreServiceApis {
 
 // Watching Delete Profile
   Future<BaseResponseModel> deleteWatchingProfile(
-      {required Map request}) async {
+      {required Map request,}) async {
     return BaseResponseModel.fromJson(
       await handleResponse(
         await buildHttpResponse(
@@ -1002,7 +1018,7 @@ class CoreServiceApis {
 
 // Particular Search Delete
   Future<BaseResponseModel> particularSearchDelete(
-      int id, int profileId) async {
+      int id, int profileId,) async {
     return BaseResponseModel.fromJson(
       await handleResponse(
         await buildHttpResponse(
@@ -1048,7 +1064,7 @@ class CoreServiceApis {
       await handleResponse(
         await buildHttpResponse(
           getEndPoint(
-              endPoint: APIEndPoints.subscriptionHistory, params: params),
+              endPoint: APIEndPoints.subscriptionHistory, params: params,),
         ),
       ),
     );
@@ -1125,7 +1141,7 @@ class CoreServiceApis {
   }
 
   Future<BaseResponseModel> updateParentalLock(
-      Map<String, dynamic> request) async {
+      Map<String, dynamic> request,) async {
     return BaseResponseModel.fromJson(
       await handleResponse(
         await buildHttpResponse(
@@ -1153,7 +1169,7 @@ class CoreServiceApis {
   Future<PayPerViewModel> saveRentDetails({required Map request}) async {
     return PayPerViewModel.fromJson(await handleResponse(
         await buildHttpResponse(APIEndPoints.saveRentDetails,
-            request: request, method: HttpMethodType.POST)));
+            request: request, method: HttpMethodType.POST,),),);
   }
 
   Future<RxList<VideoPlayerModel>> getRentedContent({
@@ -1170,8 +1186,9 @@ class CoreServiceApis {
     params.add('per_page=$perPage&page=$page');
     if (loginUserData.value.id > -1) {
       params.add('user_id=${loginUserData.value.id}');
-      if (selectedAccountProfile.value.isChildProfile.validate() == 1)
+      if (selectedAccountProfile.value.isChildProfile.validate() == 1) {
         params.add('is_restricted=0');
+      }
     }
 
     final RentedContent movieList = RentedContent.fromJson(
@@ -1185,12 +1202,12 @@ class CoreServiceApis {
     rentedContentList.addAll(movieList.data.movies +
         movieList.data.tvshows +
         movieList.data.videos +
-        movieList.data.episodes);
+        movieList.data.episodes,);
     lastPageCallBack?.call((movieList.data.movies.length +
             movieList.data.tvshows.length +
             movieList.data.videos.length +
             movieList.data.episodes.length) !=
-        perPage);
+        perPage,);
     return rentedContentList.obs;
   }
 
@@ -1205,8 +1222,9 @@ class CoreServiceApis {
     params.add('per_page=$perPage&page=$page');
     if (loginUserData.value.id > -1) {
       params.add('user_id=${loginUserData.value.id}');
-      if (selectedAccountProfile.value.isChildProfile.validate() == 1)
+      if (selectedAccountProfile.value.isChildProfile.validate() == 1) {
         params.add('is_restricted=0');
+      }
     }
 
     final ListResponse payPerViewList = ListResponse.fromJson(
@@ -1225,7 +1243,7 @@ class CoreServiceApis {
   Future<BaseResponseModel> startDate({required Map request}) async {
     return BaseResponseModel.fromJson(await handleResponse(
         await buildHttpResponse(APIEndPoints.startDate,
-            request: request, method: HttpMethodType.POST)));
+            request: request, method: HttpMethodType.POST,),),);
   }
 
   Future<RxList<RentalHistoryItem>> getRentalHistory({
@@ -1236,8 +1254,9 @@ class CoreServiceApis {
   }) async {
     final List<String> params = [];
     params.add('per_page=$perPage&page=$page');
-    if (loginUserData.value.id > -1)
+    if (loginUserData.value.id > -1) {
       params.add('user_id=${loginUserData.value.id}');
+    }
 
     final RentalHistoryModel res = RentalHistoryModel.fromJson(
       await handleResponse(

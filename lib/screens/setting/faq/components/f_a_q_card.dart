@@ -13,8 +13,8 @@ class FAQCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: Get.width,
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      margin: EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: boxDecorationDefault(
         color: context.cardColor,
       ),

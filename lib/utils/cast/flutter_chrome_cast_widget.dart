@@ -103,13 +103,12 @@ class _FlutterChromeCastWidgetState extends State<FlutterChromeCastWidget> {
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.04),
                           blurRadius: 8,
-                          offset: Offset(0, 4),
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(
                           isConnected ? Icons.cast_connected : Icons.cast,
@@ -137,7 +136,7 @@ class _FlutterChromeCastWidgetState extends State<FlutterChromeCastWidget> {
                             padding: const EdgeInsets.only(top: 12.0),
                             child: Text(
                               _errorMessage.value!,
-                              style: TextStyle(color: redColor, fontSize: 14),
+                              style: const TextStyle(color: redColor, fontSize: 14),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -172,7 +171,7 @@ class _FlutterChromeCastWidgetState extends State<FlutterChromeCastWidget> {
                                 ),
                                 style: OutlinedButton.styleFrom(
                                   foregroundColor: appColorPrimary,
-                                  side: BorderSide(color: appColorPrimary),
+                                  side: const BorderSide(color: appColorPrimary),
                                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                 ),
                               ).expand(),
@@ -181,7 +180,7 @@ class _FlutterChromeCastWidgetState extends State<FlutterChromeCastWidget> {
                         ),
                       ],
                     ),
-                  ));
+                  ),);
             },
           ),
           GoogleCastMiniController(
@@ -194,13 +193,12 @@ class _FlutterChromeCastWidgetState extends State<FlutterChromeCastWidget> {
             ),
             margin: const EdgeInsets.all(16),
             borderRadius: BorderRadius.circular(16),
-            showDeviceName: true,
           ),
           Obx(() => _isLoading.value
-              ? LoaderWidget(
+              ? const LoaderWidget(
                   isBlurBackground: true,
                 )
-              : const SizedBox.shrink()),
+              : const SizedBox.shrink(),),
         ],
       ),
     );

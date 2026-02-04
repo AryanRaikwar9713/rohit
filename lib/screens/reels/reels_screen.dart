@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'components/reel_item_widget.dart';
+import 'components/reel_video_ad_widget.dart';
 import 'reels_controller.dart';
 import 'upload_reel_screen.dart';
+import 'package:streamit_laravel/screens/walletSection/wallet_tab_manage.dart';
 
 class ReelsScreen extends StatefulWidget {
   const ReelsScreen({super.key});
@@ -21,7 +23,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
   void initState() {
     super.initState();
     _controller = Get.put(ReelsController());
-    _pageController = PageController(initialPage: 0);
+    _pageController = PageController();
 
     // Set system UI overlay style for full screen experience
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -48,8 +50,20 @@ class _ReelsScreenState extends State<ReelsScreen> {
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         actions: [
+          // Wallet Icon
           IconButton(
-            style: ButtonStyle(
+            onPressed: () {
+              Get.to(() => const WalletTabManage());
+            },
+            icon: const Icon(
+              Icons.account_balance_wallet,
+              color: Colors.white,
+              size: 26,
+            ),
+            tooltip: 'Wallet - Watch Ads & Earn Bolts',
+          ),
+          IconButton(
+            style: const ButtonStyle(
               backgroundColor: WidgetStatePropertyAll(Colors.transparent), // IMPORTANT
               padding: WidgetStatePropertyAll(EdgeInsets.all(12)),
             ),
@@ -70,12 +84,12 @@ class _ReelsScreenState extends State<ReelsScreen> {
                 ),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.add, color: Colors.white),
+              child: const Icon(Icons.add, color: Colors.white),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 15,
-          )
+          ),
         ],
       ),
       backgroundColor: Colors.black,
@@ -105,24 +119,44 @@ class _ReelsScreenState extends State<ReelsScreen> {
           );
         }
 
+        // Calculate total items (reels + ads every 5 reels)
+        const int adInterval = 5; // Show ad after every 5 reels
+        final int totalItems = _controller.apiReels.length + 
+            (_controller.apiReels.length ~/ adInterval);
+        
         return PageView.builder(
           controller: _pageController,
           scrollDirection: Axis.vertical,
           physics: const PageScrollPhysics(),
-          // Optimize: Only build visible pages + 1 on each side
-          itemCount: _controller.apiReels.length,
+          itemCount: totalItems,
           onPageChanged: (index) {
-            if (index < _controller.apiReels.length) {
-              _controller.onReelChanged(_controller.apiReels[index].id ?? 0);
+            // Calculate actual reel index (accounting for ads)
+            final actualReelIndex = _getActualReelIndex(index, adInterval);
+            if (actualReelIndex >= 0 && actualReelIndex < _controller.apiReels.length) {
+              _controller.onReelChanged(_controller.apiReels[actualReelIndex].id ?? 0);
             }
           },
           itemBuilder: (context, index) {
+            // Check if this position should show an ad
+            if (_shouldShowAd(index, adInterval)) {
+              return RepaintBoundary(
+                key: ValueKey('ad_$index'),
+                child: const ReelVideoAdWidget(),
+              );
+            }
+            
+            // Calculate actual reel index (accounting for ads before this position)
+            final actualReelIndex = _getActualReelIndex(index, adInterval);
+            if (actualReelIndex < 0 || actualReelIndex >= _controller.apiReels.length) {
+              return Container(color: Colors.black);
+            }
+            
             // Use RepaintBoundary to optimize rebuilds
             return RepaintBoundary(
-              key: ValueKey(_controller.apiReels[index].id),
+              key: ValueKey(_controller.apiReels[actualReelIndex].id),
               child: ReelItemWidget(
-                key: ValueKey(_controller.apiReels[index].id),
-                reel: _controller.apiReels[index],
+                key: ValueKey(_controller.apiReels[actualReelIndex].id),
+                reel: _controller.apiReels[actualReelIndex],
                 controller: _controller,
               ),
             );
@@ -130,5 +164,26 @@ class _ReelsScreenState extends State<ReelsScreen> {
         );
       }),
     );
+  }
+  
+  // Check if position should show an ad
+  bool _shouldShowAd(int index, int adInterval) {
+    // Show ad after every 5 reels (at positions 5, 10, 15, etc.)
+    // But skip first position (index 0)
+    if (index == 0) return false;
+    return (index % (adInterval + 1)) == 0;
+  }
+  
+  // Get actual reel index accounting for ads
+  int _getActualReelIndex(int index, int adInterval) {
+    // Count how many ads are before this position
+    int adsBefore = 0;
+    for (int i = 1; i <= index; i++) {
+      if (_shouldShowAd(i, adInterval)) {
+        adsBefore++;
+      }
+    }
+    // Subtract ads to get actual reel index
+    return index - adsBefore;
   }
 }

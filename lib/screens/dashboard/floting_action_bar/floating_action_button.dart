@@ -82,7 +82,7 @@ class FloatingButton extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 56)
+              const SizedBox(height: 56),
             ],
           ),
         ],

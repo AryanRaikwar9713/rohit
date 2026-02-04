@@ -15,7 +15,7 @@ class WamimsProfileAvtar extends StatelessWidget {
     return  Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border:(story)? Border.all(color: Colors.yellow, width: 1):null,
+        border:story? Border.all(color: Colors.yellow):null,
         gradient: LinearGradient(
           colors: [
             appColorPrimary,
@@ -27,7 +27,7 @@ class WamimsProfileAvtar extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: (story)?Colors.yellow.withOpacity(0.7):appColorPrimary.withOpacity(0.3),
+            color: story?Colors.yellow.withOpacity(0.7):appColorPrimary.withOpacity(0.3),
             blurRadius: 12,
             spreadRadius: 2,
           ),
@@ -40,13 +40,13 @@ class WamimsProfileAvtar extends StatelessWidget {
           clipBehavior: Clip.hardEdge,
           height: (radious??50)*2,
           width: (radious??50)*2,
-          decoration:  BoxDecoration(
+          decoration:  const BoxDecoration(
             shape: BoxShape.circle,
             color: Color(0xFF0D0D0D),
             // color: Colors.green
 
           ),
-          padding: EdgeInsetsGeometry.all(2),
+          padding: const EdgeInsetsGeometry.all(2),
           child: ClipRRect(
             clipBehavior: Clip.hardEdge,
             borderRadius: BorderRadiusGeometry.circular((radious??50)*2),

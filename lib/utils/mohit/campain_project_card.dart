@@ -13,7 +13,7 @@ class CampaignProjectCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    double brds = 5;
+    final double brds = 5;
 
     final imageUrl =
     project.projectImages != null && project.projectImages!.isNotEmpty
@@ -37,7 +37,7 @@ class CampaignProjectCard extends StatelessWidget {
               color: Colors.black54,
               blurRadius: 4,
               offset: Offset(0, 3),
-            )
+            ),
           ],
         ),
         child: Column(
@@ -126,12 +126,12 @@ class CampaignProjectCard extends StatelessWidget {
                             Text(
                               'Progress',
                               style: secondaryTextStyle(
-                                  size: 12, color: Colors.white70),
+                                  size: 12, color: Colors.white70,),
                             ),
                             Text(
                               '${project.fundingPercentage!.toStringAsFixed(0)}%',
                               style: secondaryTextStyle(
-                                  size: 12, color: appColorPrimary),
+                                  size: 12, color: appColorPrimary,),
                             ),
                           ],
                         ),
@@ -140,7 +140,7 @@ class CampaignProjectCard extends StatelessWidget {
                           value: (project.fundingPercentage ?? 0) / 100,
                           backgroundColor: Colors.grey[800],
                           valueColor:
-                          AlwaysStoppedAnimation<Color>(appColorPrimary),
+                          const AlwaysStoppedAnimation<Color>(appColorPrimary),
                           minHeight: 6,
                           borderRadius: BorderRadius.circular(3),
                         ),
@@ -189,25 +189,25 @@ class CampaignProjectCard extends StatelessWidget {
                   Row(
                     children: [
                       if (project.donorsCount != null) ...[
-                        Icon(Icons.people, size: 16, color: Colors.white70),
+                        const Icon(Icons.people, size: 16, color: Colors.white70),
                         4.width,
                         Text(
                           '${project.donorsCount} donors',
                           style: secondaryTextStyle(
-                              size: 12, color: Colors.white70),
+                              size: 12, color: Colors.white70,),
                         ),
                       ],
                       if (project.location != null &&
                           project.location!.isNotEmpty) ...[
                         16.width,
-                        Icon(Icons.location_on,
-                            size: 16, color: Colors.white70),
+                        const Icon(Icons.location_on,
+                            size: 16, color: Colors.white70,),
                         4.width,
                         Expanded(
                           child: Text(
                             project.location!,
                             style: secondaryTextStyle(
-                                size: 12, color: Colors.white70),
+                                size: 12, color: Colors.white70,),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -238,7 +238,7 @@ class CampaignProjectCard extends StatelessWidget {
             blurRadius: 2,
             offset: Offset(0, 1),
           ),
-        ]
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

@@ -49,7 +49,7 @@ class AddUpdateProfileDialogComponent extends StatelessWidget {
                       colors: [
                         context.cardColor.withValues(alpha: 0.6),
                         const Color(0x001A1A1A), // rgba(26, 26, 26, 0) for the middle (transparent)
-                        context.cardColor.withValues(alpha: 0.6)
+                        context.cardColor.withValues(alpha: 0.6),
                       ],
                       stops: const [0.0242, 0.4951, 0.986], // These are the stops matching your percentage values
                     ),
@@ -68,15 +68,15 @@ class AddUpdateProfileDialogComponent extends StatelessWidget {
                     itemCount: profileWatchingController.defaultProfileImage.length,
                     itemBuilder: (context, index) {
                       return Obx(() {
-                        int middleIndex = profileWatchingController.currentIndex.value;
-                        bool isCenter = index == middleIndex;
+                        final int middleIndex = profileWatchingController.currentIndex.value;
+                        final bool isCenter = index == middleIndex;
 
                         return GestureDetector(
                           onTap: () {
                             if (!isCenter) {
                               profileWatchingController.pageController.animateToPage(
                                 index,
-                                duration: Duration(milliseconds: 300),
+                                duration: const Duration(milliseconds: 300),
                                 curve: Curves.easeInOut,
                               );
                             }
@@ -111,7 +111,6 @@ class AddUpdateProfileDialogComponent extends StatelessWidget {
             AppTextField(
               textFieldType: TextFieldType.NAME,
               controller: profileWatchingController.saveNameController,
-              isValidationRequired: true,
               textStyle: secondaryTextStyle(color: primaryTextColor),
               decoration: inputDecoration(
                 context,
@@ -178,7 +177,6 @@ class AddUpdateProfileDialogComponent extends StatelessWidget {
                     if (isEdit) {
                       profileWatchingController.saveNameController.clear();
                       Get.bottomSheet(
-                        isDismissible: true,
                         isScrollControlled: true,
                         enableDrag: false,
                         BackdropFilter(

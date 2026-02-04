@@ -226,36 +226,12 @@ class ConfigurationResponse {
           ? json['application_language']
           : "",
       status: json['status'] is bool ? json['status'] : false,
-      enableMovie: json['enable_movie'] is int
-          ? json['enable_movie'] == 1
-              ? true
-              : false
-          : false,
-      enableTvShow: json['enable_tvshow'] is int
-          ? json['enable_tvshow'] == 1
-              ? true
-              : false
-          : false,
-      enableLiveTv: json['enable_livetv'] is int
-          ? json['enable_livetv'] == 1
-              ? true
-              : false
-          : false,
-      enableVideo: json['enable_video'] is int
-          ? json['enable_video'] == 1
-              ? true
-              : false
-          : false,
-      enableContinueWatch: json['continue_watch'] is int
-          ? json['continue_watch'] == 1
-              ? true
-              : false
-          : false,
-      enableRateUs: json['enable_rate_us'] is int
-          ? json['enable_rate_us'] == 1
-              ? true
-              : false
-          : false,
+      enableMovie: json['enable_movie'] is int && ((json['enable_movie'] == 1)),
+      enableTvShow: json['enable_tvshow'] is int && ((json['enable_tvshow'] == 1)),
+      enableLiveTv: json['enable_livetv'] is int && ((json['enable_livetv'] == 1)),
+      enableVideo: json['enable_video'] is int && ((json['enable_video'] == 1)),
+      enableContinueWatch: json['continue_watch'] is int && ((json['continue_watch'] == 1)),
+      enableRateUs: json['enable_rate_us'] is int && ((json['enable_rate_us'] == 1)),
       taxPercentage: json['tax'] is List
           ? List<Tax>.from(json['tax'].map((x) => Tax.fromJson(x)))
           : [],
@@ -271,12 +247,8 @@ class ConfigurationResponse {
           : true,
       isLogin:
           json['is_login'] is bool ? json['is_login'] : json['is_login'] == 1,
-      isCastingAvailable: json['is_download_available'] is int
-          ? (json['is_casting_available'] as int).getBoolInt()
-          : false,
-      isDownloadAvailable: json['is_download_available'] is int
-          ? (json['is_download_available'] as int).getBoolInt()
-          : false,
+      isCastingAvailable: json['is_download_available'] is int && (json['is_casting_available'] as int).getBoolInt(),
+      isDownloadAvailable: json['is_download_available'] is int && (json['is_download_available'] as int).getBoolInt(),
       isEnableSocialLogin: json['enable_social_login'] is bool
           ? json['enable_social_login']
           : true,
@@ -529,15 +501,16 @@ class Currency {
     this.decimalSeparator = ".",
   });
 
-  factory Currency.fromJson(Map<String, dynamic> json) {
+  factory Currency.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return Currency(currencySymbol: "Bolts");
     return Currency(
-      currencyName: "Bolt",
-      currencySymbol: "Bolts",
-      currencyCode: "BOLT",
-      currencyPosition: CurrencyPosition.CURRENCY_POSITION_RIGHT_WITH_SPACE,
-      noOfDecimal: 0,
-      thousandSeparator: ",",
-      decimalSeparator: ".",
+      currencyName: json['currency_name'] is String ? json['currency_name'] as String : "Bolt",
+      currencySymbol: json['currency_symbol'] is String ? json['currency_symbol'] as String : "Bolts",
+      currencyCode: json['currency_code'] is String ? json['currency_code'] as String : "BOLT",
+      currencyPosition: json['currency_position'] is String ? json['currency_position'] as String : CurrencyPosition.CURRENCY_POSITION_RIGHT_WITH_SPACE,
+      noOfDecimal: json['no_of_decimal'] is int ? json['no_of_decimal'] as int : 0,
+      thousandSeparator: json['thousand_separator'] is String ? json['thousand_separator'] as String : ",",
+      decimalSeparator: json['decimal_separator'] is String ? json['decimal_separator'] as String : ".",
     );
   }
 

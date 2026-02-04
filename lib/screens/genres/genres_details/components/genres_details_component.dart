@@ -15,7 +15,6 @@ class GenresDetailsComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Stack(
@@ -29,7 +28,6 @@ class GenresDetailsComponent extends StatelessWidget {
               topRightRadius: 35,
             ),
             IgnorePointer(
-              ignoring: true,
               child: Container(
                 height: 280,
                 width: double.infinity,
@@ -39,7 +37,7 @@ class GenresDetailsComponent extends StatelessWidget {
                       appScreenBackgroundDark.withValues(alpha: 0.0),
                       appScreenBackgroundDark.withValues(alpha: 0.0),
                       appScreenBackgroundDark.withValues(alpha: 0.6),
-                      appScreenBackgroundDark.withValues(alpha: 1)
+                      appScreenBackgroundDark.withValues(alpha: 1),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,

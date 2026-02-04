@@ -35,7 +35,7 @@ extension StrExt on String {
   String get firstLetter => isNotEmpty ? this[0] : '';
 
   String getEpisodeTitle() {
-    RegExp regExp = RegExp(r'^[SE]\d*\s*[SE]\d*\s*');
+    final RegExp regExp = RegExp(r'^[SE]\d*\s*[SE]\d*\s*');
     return replaceFirst(regExp, '');
   }
 
@@ -44,13 +44,13 @@ extension StrExt on String {
     if (!url.contains('http') && (url.length == 11)) return url;
     if (trimWhitespaces) url = url.trim();
 
-    for (var exp in [
+    for (final exp in [
       RegExp(r"^https://(?:www\.|m\.)?youtube\.com/watch\?v=([_\-a-zA-Z0-9]{11}).*$"),
       RegExp(r"^https://(?:www\.|m\.)?youtube(?:-nocookie)?\.com/embed/([_\-a-zA-Z0-9]{11}).*$"),
       RegExp(r"^https://youtu\.be/([_\-a-zA-Z0-9]{11}).*$"),
-      RegExp(r"^https://(?:www\.)?youtube\.com/live/([_\-a-zA-Z0-9]{11})(?:\?.*)?$")
+      RegExp(r"^https://(?:www\.)?youtube\.com/live/([_\-a-zA-Z0-9]{11})(?:\?.*)?$"),
     ]) {
-      Match? match = exp.firstMatch(url);
+      final Match? match = exp.firstMatch(url);
       if (match != null && match.groupCount >= 1) return match.group(1)!;
     }
     return '';
@@ -72,13 +72,13 @@ extension StrExt on String {
 
   bool get isYoutubeLink {
     if (isEmpty) return false;
-    for (var exp in [
+    for (final exp in [
       RegExp(r"^https://(?:www\.|m\.)?youtube\.com/watch\?v=([_\-a-zA-Z0-9]{11}).*$"),
       RegExp(r"^https://(?:www\.|m\.)?youtube(?:-nocookie)?\.com/embed/([_\-a-zA-Z0-9]{11}).*$"),
       RegExp(r"^https://youtu\.be/([_\-a-zA-Z0-9]{11}).*$"),
-      RegExp(r"^https://(?:www\.)?youtube\.com/live/([_\-a-zA-Z0-9]{11})(?:\?.*)?$")
+      RegExp(r"^https://(?:www\.)?youtube\.com/live/([_\-a-zA-Z0-9]{11})(?:\?.*)?$"),
     ]) {
-      Match? match = exp.firstMatch(this);
+      final Match? match = exp.firstMatch(this);
       if (match != null && match.groupCount >= 1) return true;
     }
     return false;
@@ -99,11 +99,11 @@ extension StrExt on String {
   }
 
   (String, String) get extractPhoneCodeAndNumber {
-    List<String> parts = trim().split(RegExp(r'[\s-]+'));
+    final List<String> parts = trim().split(RegExp(r'[\s-]+'));
 
     if (parts.length > 1) {
-      String phoneCode = parts[0].trim().replaceAll("+", '');
-      String phoneNumber = parts.sublist(1).join('').trim();
+      final String phoneCode = parts[0].trim().replaceAll("+", '');
+      final String phoneNumber = parts.sublist(1).join().trim();
       return (phoneCode, phoneNumber);
     } else {
       return ('', trim());

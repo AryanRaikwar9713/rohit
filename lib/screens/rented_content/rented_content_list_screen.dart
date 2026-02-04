@@ -56,7 +56,7 @@ class RentedContentListScreen extends StatelessWidget {
                         runSpacing: 16,
                         itemCount: profileController.rentedContentList.length,
                         itemBuilder: (p0, index) {
-                          VideoPlayerModel poster = profileController.rentedContentList[index];
+                          final VideoPlayerModel poster = profileController.rentedContentList[index];
                           return SizedBox(
                             width: Get.width * 0.27,
                             height: 180,
@@ -65,7 +65,7 @@ class RentedContentListScreen extends StatelessWidget {
 
 
                         },
-                      )
+                      ),
                     ],
                     onNextPage: () async {
                       profileController.onNextPage();
@@ -76,7 +76,7 @@ class RentedContentListScreen extends StatelessWidget {
                   ),
                 ),
               );
-            }
+            },
 
         ),
       ),

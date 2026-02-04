@@ -32,7 +32,7 @@ class ProductController extends GetxController {
   // Available filters from API
   final RxList<Category> availableCategories = <Category>[].obs;
   final RxList<String> sortOptions = <String>[
-    "price","name","view_count"
+    "price","name","view_count",
   ].obs;
 
   @override
@@ -84,7 +84,6 @@ class ProductController extends GetxController {
 
       await ProductAPi().getProductsList(
         page: currentPage.value,
-        limit: 10,
         shopId: selectedShopId.value,
         categoryId: selectedCategoryId.value,
         search:
@@ -171,7 +170,7 @@ class ProductController extends GetxController {
   /// Load more products (pagination)
   Future<void> loadMoreProducts() async {
     if (!hasMoreData.value || isLoadingMore.value) return;
-    await loadProducts(refresh: false);
+    await loadProducts();
   }
 
   /// Apply filters and reload products
