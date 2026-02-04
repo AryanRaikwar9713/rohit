@@ -101,15 +101,15 @@ class _SocialScreenState extends State<SocialScreen>
                 bottom: false,
                 child: Row(
                   children: [
-                    // Left logo footprint + text
+                    // Left logo + text
                     Row(
                       children: [
-                        // Footprints icon (two footprints) - using custom icon
-                        // Icon(
-                        //   Icons.pets_rounded,
-                        //   color: Colors.white,
-                        //   size: 24,
-                        // ),
+                        Image.asset(
+                          'assets/launcher_icons/wammisLogo.png',
+                          height: 32,
+                          width: 32,
+                          fit: BoxFit.contain,
+                        ),
                         8.width,
                         Text(
                           'WAMIMS',

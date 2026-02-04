@@ -68,6 +68,11 @@ class SignInController extends GetxController {
   FocusNode emailFocus = FocusNode();
   FocusNode passwordFocus = FocusNode();
 
+  /// Stored when 406 (other devices) is shown; used to retry login after device logout without re-verification.
+  Map<String, dynamic>? _pendingLoginRequest;
+  bool _pendingIsSocialLogin = false;
+  bool _pendingIsNormalLogin = false;
+
   @override
   void onInit() {
     init();
@@ -273,9 +278,14 @@ class SignInController extends GetxController {
       {required Map<String, dynamic> request,
       required bool isSocialLogin,
       bool isNormalLogin = false}) async {
+    _pendingLoginRequest = Map.from(request);
+    _pendingIsSocialLogin = isSocialLogin;
+    _pendingIsNormalLogin = isNormalLogin;
+
     await AuthServiceApis()
         .loginUser(request: request, isSocialLogin: isSocialLogin)
         .then((value) async {
+      _pendingLoginRequest = null;
       handleLoginResponse(
           isSocialLogin: isSocialLogin, isNormalLogin: isNormalLogin);
     }).catchError((e) async {
@@ -283,6 +293,7 @@ class SignInController extends GetxController {
           (e is Map<String, dynamic> &&
               e.containsKey('status_code') &&
               e['status_code'] == 404)) {
+        _pendingLoginRequest = null;
         ///open sign up screen but not close previous route
         Get.back();
         isLoading(false);
@@ -305,21 +316,36 @@ class SignInController extends GetxController {
               loggedInDeviceList: errorData.otherDevice,
               onLogout: (logoutAll, deviceId, deviceName) {
                 Get.back();
+                Get.back();
                 if (logoutAll) {
-                  logOutAll(errorData.otherDevice.first.userId);
+                  logOutAll(
+                    errorData.otherDevice.first.userId,
+                    onSuccess: _retryPendingLogin,
+                  );
                 } else {
                   deviceLogOut(
-                      device: deviceId,
-                      userId: errorData.otherDevice.first.userId.toInt());
+                    device: deviceId,
+                    userId: errorData.otherDevice.first.userId.toInt(),
+                    onSuccess: _retryPendingLogin,
+                  );
                 }
               },
             ),
-          ).then((value) {
-            Get.back();
-          });
+          );
         }
       }
     });
+  }
+
+  void _retryPendingLogin() {
+    final request = _pendingLoginRequest;
+    if (request == null) return;
+    _pendingLoginRequest = null;
+    loginAPICall(
+      request: request,
+      isSocialLogin: _pendingIsSocialLogin,
+      isNormalLogin: _pendingIsNormalLogin,
+    );
   }
 
   Future<void> saveForm({bool isNormalLogin = false}) async {
@@ -562,34 +588,36 @@ class SignInController extends GetxController {
     }
   }
 
-  Future<void> deviceLogOut(
-      {required String device, required int userId}) async {
+  Future<void> deviceLogOut({
+    required String device,
+    required int userId,
+    VoidCallback? onSuccess,
+  }) async {
     removeKey(SharedPreferenceConst.IS_PROFILE_ID);
     isLoading(true);
     await AuthServiceApis()
         .deviceLogoutApiWithoutAuth(deviceId: device, userId: userId)
         .then((value) {
       successSnackBar(value.message);
-      // Close bottom sheet after success
       if (Get.isBottomSheetOpen ?? false) Get.back();
+      onSuccess?.call();
     }).catchError((e) {
       errorSnackBar(error: e);
-      // Close bottom sheet after error
       if (Get.isBottomSheetOpen ?? false) Get.back();
     }).whenComplete(() {
       isLoading(false);
     });
   }
 
-  Future<void> logOutAll(int userId) async {
-    Get.back();
+  Future<void> logOutAll(int userId, {VoidCallback? onSuccess}) async {
     if (isLoading.value) return;
     isLoading(true);
     await AuthServiceApis()
         .logOutAllAPIWithoutAuth(userId: userId)
         .then((value) async {
       successSnackBar(value.message);
-      Get.back();
+      if (Get.isBottomSheetOpen ?? false) Get.back();
+      onSuccess?.call();
     }).catchError((e) {
       errorSnackBar(error: e);
     }).whenComplete(() {
