@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:streamit_laravel/components/app_logo_widget.dart';
 import 'package:streamit_laravel/location_api.dart';
 import 'package:streamit_laravel/main.dart';
 import '../components/app_scaffold.dart';
@@ -72,7 +71,12 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const AppLogoWidget(size: Size(160, 160)),
+            Image.asset(
+              'assets/splash_image.jpeg',
+              height: 160,
+              width: 160,
+              fit: BoxFit.contain,
+            ),
             if (!_locationPermissionChecked)
               const LoaderWidget().center()
             else
