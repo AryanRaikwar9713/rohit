@@ -21,6 +21,7 @@ import 'package:streamit_laravel/screens/z%20drawer_sub_screen/drawer_sub_projec
 import 'package:streamit_laravel/screens/z%20drawer_sub_screen/drawer_sub_reels.dart';
 import 'package:streamit_laravel/screens/z%20drawer_sub_screen/drawer_sub_social.dart';
 import 'package:streamit_laravel/screens/z%20drawer_sub_screen/notice_board_screen.dart';
+import 'package:streamit_laravel/screens/walletSection/wallet_tab_manage.dart';
 
 class DashBoardDrawer extends StatefulWidget {
   const DashBoardDrawer({super.key});
@@ -172,6 +173,17 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                   title: "Notice Board",
                   onTap: () {
                     Get.to(const NoticeBoardScreen());
+                  }),
+
+              // Wallet - Watch Ads & Earn Bolts
+              _buildTileItem(
+                  icon: const Icon(
+                    Icons.account_balance_wallet,
+                    color: Colors.white,
+                  ),
+                  title: "💵 Wallet",
+                  onTap: () {
+                    Get.to(() => const WalletTabManage());
                   }),
 
               //

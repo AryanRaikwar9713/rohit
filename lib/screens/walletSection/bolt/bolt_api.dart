@@ -190,6 +190,28 @@ class BoltApi {
     );
   }
 
+  /// 🔹 Watch Ad Reward Bolt (0.01 bolt for watching rewarded ad)
+  Future<void> watchAdRewardBolt({
+    required void Function(String) onError,
+    required void Function(http.Response) onFailure,
+    required void Function(Map<String, dynamic>) onSuccess,
+    bool showToast = true,
+  }) async {
+    final user = await DB().getUser();
+    await _postBolt(
+      url: 'https://app.wamims.world/public/social/bolt/watch_ad_reward_bolt.php',
+      body: {
+        "user_id": user?.id ?? 0,
+        "ad_type": "rewarded",
+        "bolt_amount": 0.01,
+      },
+      onError: onError,
+      onFailure: onFailure,
+      onSuccess: onSuccess,
+      showToast: showToast,
+    );
+  }
+
   // get Boalt Dash Board
 
   Future<void> getBoltDashboard({

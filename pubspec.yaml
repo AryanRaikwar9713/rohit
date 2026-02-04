@@ -129,7 +129,6 @@ flutter:
 
   assets:
     - assets/
-    - assets/splash_image.jpeg
     - assets/images/
     - assets/icons/
     - assets/flags/
