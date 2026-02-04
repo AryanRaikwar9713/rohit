@@ -5,7 +5,7 @@
   "packages": [
     {
       "name": "streamit_laravel",
-      "version": "1.6.2+32",
+      "version": "41.2.1+90",
       "dependencies": [
         "applovin_max",
         "cached_network_image",
