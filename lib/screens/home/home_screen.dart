@@ -157,20 +157,11 @@ class HomeScreen extends StatelessWidget {
           // App Logo/Title
           Row(
             children: [
-              Container(
-                width: 32,
+              Image.asset(
+                'assets/launcher_icons/wammisLogo.png',
                 height: 32,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [appColorPrimary, appColorPrimary.withOpacity(0.7)],
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(
-                  Icons.play_arrow,
-                  color: Colors.white,
-                  size: 20,
-                ),
+                width: 32,
+                fit: BoxFit.contain,
               ),
               12.width,
               Text(
