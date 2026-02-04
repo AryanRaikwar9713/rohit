@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/screens/home/shimmer_home.dart';
+import 'package:streamit_laravel/screens/walletSection/wallet_tab_manage.dart';
 import 'package:streamit_laravel/utils/app_common.dart';
 import 'package:streamit_laravel/utils/colors.dart';
 
@@ -173,23 +174,10 @@ class HomeScreen extends StatelessWidget {
 
           const Spacer(),
 
-          // Action Icons
+          // Action Icons - Notification, Search, Wallet (MUST BE VISIBLE)
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-
-
-              // Coming Soon Icon (moved from bottom nav)
-              IconButton(
-                onPressed: () {
-                  Get.toNamed('/coming-soon');
-                },
-                icon: const Icon(
-                  Icons.campaign_outlined,
-                  color: Colors.white,
-                  size: 24,
-                ),
-              ),
-
               // Notification Icon
               IconButton(
                 onPressed: () {
@@ -200,6 +188,19 @@ class HomeScreen extends StatelessWidget {
                   color: Colors.white,
                   size: 24,
                 ),
+              ),
+
+              // Wallet Icon - Watch Ads & Earn Bolts (RIGHT AFTER NOTIFICATION - MUST BE VISIBLE)
+              IconButton(
+                onPressed: () {
+                  Get.to(() => const WalletTabManage());
+                },
+                icon: const Icon(
+                  Icons.account_balance_wallet,
+                  color: Colors.white,
+                  size: 28,
+                ),
+                tooltip: 'Wallet - Watch Ads & Earn Bolts',
               ),
 
               // Search Icon
@@ -213,9 +214,6 @@ class HomeScreen extends StatelessWidget {
                   size: 24,
                 ),
               ),
-
-
-              // Wallet Icon
             ],
           ),
         ],
