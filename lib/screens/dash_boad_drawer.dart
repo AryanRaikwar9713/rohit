@@ -5,8 +5,12 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/components/app_logo_widget.dart';
 import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/dashboard/dashboard_controller.dart';
+// TODO: Keep imports for future release - Shop feature
+// ignore: unused_import
 import 'package:streamit_laravel/screens/shops_section/shop_controller.dart';
+// ignore: unused_import
 import 'package:streamit_laravel/screens/shops_section/shop_profile_screen.dart';
+// ignore: unused_import
 import 'package:streamit_laravel/screens/shops_section/shop_registration_screen.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_controller.dart';
 import 'package:streamit_laravel/screens/video_channel/screens/create_channel_screen.dart';
@@ -125,26 +129,28 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                     // Get.to(const );
                   }),
 
-              if (dashboardController.isShopEnabled.value) ...[
-                //
-                _buildTileItem(
-                    icon: const Icon(
-                      Icons.shopping_bag,
-                      color: Colors.white,
-                    ),
-                    title: "Shop",
-                    onTap: () async {
-                      var shopController = Get.put(ShopController());
-                      await shopController.loadShopProfile();
-                      if (shopController.hasShop.value) {
-                        Get.to(() => const ShopProfileScreen());
-                      } else {
-                        Get.to(() => const ShopRegistrationScreen());
-                      }
-                    }),
+              // TODO: Shop - Hidden for current version, will be released in future
+              // Keep all logic intact, just hide from drawer
+              // if (dashboardController.isShopEnabled.value) ...[
+              //   //
+              //   _buildTileItem(
+              //       icon: const Icon(
+              //         Icons.shopping_bag,
+              //         color: Colors.white,
+              //       ),
+              //       title: "Shop",
+              //       onTap: () async {
+              //         var shopController = Get.put(ShopController());
+              //         await shopController.loadShopProfile();
+              //         if (shopController.hasShop.value) {
+              //           Get.to(() => const ShopProfileScreen());
+              //         } else {
+              //           Get.to(() => const ShopRegistrationScreen());
+              //         }
+              //       }),
 
-                //
-              ],
+              //   //
+              // ],
 
               //
               _buildTileItem(

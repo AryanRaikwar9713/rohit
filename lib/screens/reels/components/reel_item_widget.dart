@@ -11,9 +11,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/local_db.dart';
-import 'package:streamit_laravel/screens/walletSection/bolt/bolt_api.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_api.dart';
-import 'package:streamit_laravel/utils/colors.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart';
 import 'package:streamit_laravel/utils/mohit/custom_like_button.dart';
 
@@ -126,9 +124,14 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
           widget.controller.getVideoController(widget.reel.id ?? 0);
       if (player == null || widget.reel.content?.videoUrl == null) return;
       final videoUrl = widget.reel.content!.videoUrl!;
+      if (videoUrl.isEmpty) return;
+      
       videoController = VideoController(player);
+      
+      // Check if already opened (preloaded)
       player.open(Media(videoUrl));
       player.play();
+      
       if (!mounted) return;
       setState(() {
         isInitialized = true;
@@ -143,7 +146,9 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
       });
 
       _positionSubscription = player.streams.position.listen((event) {
-        _videoListener(event);
+        if (mounted) {
+          _videoListener(event);
+        }
       });
     } catch (e) {
       if (mounted) {

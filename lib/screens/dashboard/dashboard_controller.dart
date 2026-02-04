@@ -36,7 +36,10 @@ import '../reels/reels_screen.dart';
 import '../reels/reels_login_screen.dart';
 import '../shops_section/shop_screen.dart';
 import '../events/events_screen.dart';
+// TODO: Keep imports for future use
+// ignore: unused_import
 import '../video_channel/screens/video_channel_screen.dart';
+// ignore: unused_import
 import '../video_channel/video_channle_controller.dart';
 import 'components/menu.dart';
 import '../../location_api.dart';
@@ -135,27 +138,29 @@ class DashboardController extends GetxController {
           type: BottomItem.donation.name),
     ];
 
+    // TODO: Shop and Events - Hidden for current version, will be released in future
+    // Keep all logic intact, just hide from bottom nav
     // Add Shop only if user is in India
-    if (isShopEnabled.value) {
-      items.add(
-        BottomBarItem(
-            title: 'Shop',
-            icon: Icons.shopping_bag_outlined,
-            activeIcon: Icons.shopping_bag,
-            type: BottomItem.shop.name),
-      );
-    }
+    // if (isShopEnabled.value) {
+    //   items.add(
+    //     BottomBarItem(
+    //         title: 'Shop',
+    //         icon: Icons.shopping_bag_outlined,
+    //         activeIcon: Icons.shopping_bag,
+    //         type: BottomItem.shop.name),
+    //   );
+    // }
 
     // Add Events only if user is in India
-    if (isEventsEnabled.value) {
-      items.add(
-        BottomBarItem(
-            title: 'Events',
-            icon: Icons.event_outlined,
-            activeIcon: Icons.event,
-            type: BottomItem.events.name),
-      );
-    }
+    // if (isEventsEnabled.value) {
+    //   items.add(
+    //     BottomBarItem(
+    //         title: 'Events',
+    //         icon: Icons.event_outlined,
+    //         activeIcon: Icons.event,
+    //         type: BottomItem.events.name),
+    //   );
+    // }
 
     // Clips section is permanently visible (always added)
     items.add(
