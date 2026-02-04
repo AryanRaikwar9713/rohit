@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:streamit_laravel/network/auth_apis.dart';
 import 'package:streamit_laravel/screens/Impact-dashBoard/crate_impact_profile_screen.dart';
 import 'package:streamit_laravel/screens/Impact-dashBoard/impact_profile_controller.dart';
 import 'package:streamit_laravel/screens/Impact-dashBoard/impact_profile_screen.dart';
+import 'package:streamit_laravel/screens/auth/sign_in/sign_in_screen.dart';
 import 'package:streamit_laravel/screens/dashboard/dashboard_controller.dart';
 import 'package:streamit_laravel/screens/reels/upload_reel_screen.dart';
 import 'package:streamit_laravel/screens/shops_section/shop_controller.dart';
@@ -11,12 +14,15 @@ import 'package:streamit_laravel/screens/shops_section/shop_registration_screen.
 import 'package:streamit_laravel/screens/shops_section/shop_screen.dart';
 import 'package:streamit_laravel/screens/social/create_post_screen.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/edit_vammis_profile_screen.dart';
-import 'package:get/get.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/user_post_view_screen.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/user_reel_screen.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_tab_manage.dart';
 import 'package:streamit_laravel/screens/wamims_setting_screen/add_social_media.dart';
+import 'package:streamit_laravel/main.dart';
+import 'package:streamit_laravel/utils/app_common.dart';
 import 'package:streamit_laravel/utils/colors.dart';
+import 'package:streamit_laravel/utils/common_base.dart';
+import 'package:streamit_laravel/utils/constants.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -187,10 +193,62 @@ class _SettingScreenState extends State<SettingScreen> {
                 toast("Coming Soon");
               }),
 
-
+          // Logout - sabse niche
+          _buildTile(
+            title: locale.value.logout,
+            icon: const Icon(Icons.logout),
+            onTap: _showLogoutConfirmation,
+          ),
         ],
       ),
     );
+  }
+
+  void _showLogoutConfirmation() {
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: const Color(0xFF1A1A1A),
+        title: Text(
+          locale.value.logout,
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
+        content: Text(
+          'Are you sure you want to logout?',
+          style: TextStyle(color: Colors.grey[300]),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(locale.value.cancel, style: TextStyle(color: Colors.grey[400])),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              _performLogout();
+            },
+            child: Text(locale.value.logout, style: TextStyle(color: appColorPrimary, fontWeight: FontWeight.w600)),
+          ),
+        ],
+      ),
+      barrierDismissible: false,
+    );
+  }
+
+  Future<void> _performLogout() async {
+    Get.dialog(
+      const Center(child: CircularProgressIndicator(color: appColorPrimary)),
+      barrierDismissible: false,
+    );
+    try {
+      await AuthServiceApis().deviceLogoutApi(deviceId: yourDevice.value.deviceId);
+    } catch (_) {}
+    if (Get.isDialogOpen ?? false) Get.back();
+    isLoggedIn(false);
+    AuthServiceApis().removeCacheData();
+    await AuthServiceApis().clearData();
+    removeKey(SharedPreferenceConst.IS_LOGGED_IN);
+    successSnackBar(locale.value.youHaveBeenLoggedOutSuccessfully);
+    Get.offAll(() => SignInScreen(showBackButton: false));
   }
 
   _buildTile({
