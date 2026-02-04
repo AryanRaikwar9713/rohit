@@ -19,16 +19,14 @@ class OtherDevicesComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (devicesDetail.validate().isEmpty) {
-      return Offstage();
+      return const Offstage();
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
@@ -39,7 +37,6 @@ class OtherDevicesComponent extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Get.bottomSheet(
-                  isDismissible: true,
                   isScrollControlled: true,
                   enableDrag: false,
                   LogoutAccountComponent(
@@ -73,13 +70,11 @@ class OtherDevicesComponent extends StatelessWidget {
                 deviceDetail: devicesDetail[index],
                 onDeviceLogout: () {
                   Get.bottomSheet(
-                    isDismissible: true,
                     isScrollControlled: true,
                     enableDrag: false,
                     LogoutAccountComponent(
                       device: devicesDetail[index].deviceId,
                       deviceName: devicesDetail[index].deviceName,
-                      logOutAll: false,
                       onLogout: (logoutAll) {
                         onLogout.call(logoutAll, devicesDetail[index].deviceId, devicesDetail[index].deviceName);
                       },

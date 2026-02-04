@@ -18,7 +18,6 @@ class LanguageComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         viewAllWidget(
           label: languageDetails.name.capitalizeEachWord(),
@@ -27,10 +26,10 @@ class LanguageComponent extends StatelessWidget {
         HorizontalList(
           physics: isLoading ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
           spacing: 10,
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: languageDetails.data.length,
           itemBuilder: (context, index) {
-            VideoPlayerModel language = languageDetails.data[index];
+            final VideoPlayerModel language = languageDetails.data[index];
             if (isLoading) {
               return ShimmerWidget(
                 height: 60,
@@ -51,7 +50,6 @@ class LanguageComponent extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
                         height: 30,

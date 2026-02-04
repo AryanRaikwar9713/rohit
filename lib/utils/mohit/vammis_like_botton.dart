@@ -18,9 +18,9 @@ class WammilsLikeBotton extends StatelessWidget {
             if(like)
               BoxShadow(
                   color: appColorPrimary.withOpacity(.7),
-                  blurRadius: 10
-              )
-          ]
+                  blurRadius: 10,
+              ),
+          ],
       ),
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 100),

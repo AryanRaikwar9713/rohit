@@ -14,7 +14,7 @@ class ErrorModel {
       error: json['error'] is String ? json['error'] : "",
       otherDevice: json['other_device'] is List
           ? List<YourDevice>.from(
-          json['other_device'].map((x) => YourDevice.fromJson(x)))
+          json['other_device'].map((x) => YourDevice.fromJson(x)),)
           : [],
     );
   }

@@ -81,7 +81,7 @@ extension ExtensionSnackbar on GetInterface {
         animationDuration: animationDuration ?? const Duration(seconds: 1),
         overlayBlur: overlayBlur ?? 0.0,
         overlayColor: overlayColor ?? Colors.transparent,
-        userInputForm: userInputForm);
+        userInputForm: userInputForm,);
 
     final controller = SnackbarController(showSnackBar);
 

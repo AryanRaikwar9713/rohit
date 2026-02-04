@@ -27,7 +27,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   late SocialController _socialController;
   File? _selectedImage;
-  bool _isPosting = false;
+  final bool _isPosting = false;
   List<String> hashtags = [];
   final hashTagController = TextEditingController();
 
@@ -189,7 +189,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   UserData? user;
 
-  loadUser() async {
+  Future<void> loadUser() async {
     user = await DB().getUser();
     if (mounted) {
       setState(() {});
@@ -263,7 +263,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     ),
                   ),
                 ),
-              )),
+              ),),
             ],
           ),
           body: Column(
@@ -274,14 +274,13 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 decoration: BoxDecoration(
                   color: Colors.grey[900],
                   border: Border(
-                    bottom: BorderSide(color: Colors.grey[800]!, width: 1),
+                    bottom: BorderSide(color: Colors.grey[800]!),
                   ),
                 ),
                 child: Row(
                   children: [
                     // User Avatar
-                    user != null
-                        ? CircleAvatar(
+                    if (user != null) CircleAvatar(
                             radius: 24,
                             backgroundImage: NetworkImage(
                               user!.profileImage,
@@ -290,8 +289,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                             child: user!.profileImage.isEmpty
                                 ? const Icon(Icons.person, color: Colors.white)
                                 : null,
-                          )
-                        : CircleAvatar(
+                          ) else CircleAvatar(
                             radius: 24,
                             backgroundColor: Colors.grey[700],
                             child: const Icon(Icons.person, color: Colors.white),
@@ -379,7 +377,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           height: 1.4,
                         ),
                         decoration: const InputDecoration(
-                          hintText: 'What\'s on your mind?',
+                          hintText: "What's on your mind?",
                           hintStyle: TextStyle(
                             color: Colors.grey,
                             fontSize: 16,
@@ -458,7 +456,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           children: hashtags
                               .map((hashtag) => Container(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 6),
+                                        horizontal: 12, vertical: 6,),
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         colors: [
@@ -495,7 +493,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                         ),
                                       ],
                                     ),
-                                  ))
+                                  ),)
                               .toList(),
                         ),
                         const SizedBox(height: 16),
@@ -554,7 +552,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         ),
                         child: ElevatedButton(
                           onPressed: () async {
-                            FollowerController followController =
+                            final FollowerController followController =
                                 Get.put(FollowerController());
                             followController.initData();
                             await showModalBottomSheet(
@@ -562,7 +560,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                 clipBehavior: Clip.hardEdge,
                                 builder: (context) => _FollowBottomSheet(
                                       controller: followController,
-                                    ));
+                                    ),);
                             followController.cleareData();
                           },
                           style: ElevatedButton.styleFrom(
@@ -595,7 +593,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 decoration: BoxDecoration(
                   color: Colors.grey[900],
                   border: Border(
-                    top: BorderSide(color: Colors.grey[800]!, width: 1),
+                    top: BorderSide(color: Colors.grey[800]!),
                   ),
                 ),
                 child: Column(
@@ -608,7 +606,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                             onTap: _showImageSourceDialog,
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12),
+                                  horizontal: 16, vertical: 12,),
                               decoration: BoxDecoration(
                                 color: Colors.grey[800],
                                 borderRadius: BorderRadius.circular(8),
@@ -663,7 +661,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                      appColorPrimary),
+                                      appColorPrimary,),
                                 ),
                               ),
                               SizedBox(width: 12),
@@ -676,7 +674,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               ),
                             ],
                           )
-                        : const SizedBox.shrink()),
+                        : const SizedBox.shrink(),),
                   ],
                 ),
               ),
@@ -690,7 +688,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
 class _FollowBottomSheet extends StatelessWidget {
   final FollowerController controller;
-  const _FollowBottomSheet({required this.controller, super.key});
+  const _FollowBottomSheet({required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -702,12 +700,12 @@ class _FollowBottomSheet extends StatelessWidget {
           child: Column(
             children: [
                TabBar(
-                 labelStyle: TextStyle(color: Colors.white,fontWeight: FontWeight.w700,fontSize: 20),
-                 unselectedLabelStyle: TextStyle(color: Colors.white,fontWeight: FontWeight.w700,fontSize: 20),
+                 labelStyle: const TextStyle(color: Colors.white,fontWeight: FontWeight.w700,fontSize: 20),
+                 unselectedLabelStyle: const TextStyle(color: Colors.white,fontWeight: FontWeight.w700,fontSize: 20),
                  dividerColor: Colors.transparent,
                 indicatorSize: TabBarIndicatorSize.tab,
                   indicatorColor: appColorPrimary,
-                  padding: EdgeInsetsGeometry.symmetric(horizontal: 10,vertical: 10),
+                  padding: const EdgeInsetsGeometry.symmetric(horizontal: 10,vertical: 10),
                   indicator: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
@@ -724,15 +722,15 @@ class _FollowBottomSheet extends StatelessWidget {
                 Tab(text: "Followers"),
                 Tab(text: "Following"),
                 // Tab(text: "Following"),
-              ]),
-              Divider(height: 0,),
+              ],),
+              const Divider(height: 0,),
               Expanded(
                   child: TabBarView(children: [
                 _buildFollowersList(),
                 _buildFollowingList(),
-              ]))
+              ],),),
             ],
-          )),
+          ),),
     );
   }
 
@@ -741,15 +739,15 @@ class _FollowBottomSheet extends StatelessWidget {
 
       if(controller.loading.value)
         {
-          return Center(child: CircularProgressIndicator(),);
+          return const Center(child: CircularProgressIndicator(),);
         }
 
       if (controller.followersList.isEmpty) {
-        return Center(
+        return const Center(
           child: Text(
             "No Followers",
             style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20),
+                color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20,),
           ),
         );
       }
@@ -759,7 +757,7 @@ class _FollowBottomSheet extends StatelessWidget {
           await controller.refrashFollowers();
         },
         child: ListView.builder(
-          padding: EdgeInsetsGeometry.symmetric(vertical: 10),
+          padding: const EdgeInsetsGeometry.symmetric(vertical: 10),
           itemCount: controller.followersList.length,
           itemBuilder: (context, index) {
             return _buldFollowersTile(controller.followersList[index]);
@@ -774,7 +772,7 @@ class _FollowBottomSheet extends StatelessWidget {
 
       if(controller.loading.value)
         {
-          return Center(child: CircularProgressIndicator(),);
+          return const Center(child: CircularProgressIndicator(),);
         }
 
       if (controller.followingList.isEmpty) {
@@ -782,7 +780,7 @@ class _FollowBottomSheet extends StatelessWidget {
           child: Text(
             "No Followers",
             style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20),
+                color: Colors.white, fontWeight: FontWeight.w700, fontSize: 20,),
           ),
         );
       }
@@ -792,7 +790,7 @@ class _FollowBottomSheet extends StatelessWidget {
           await controller.refrashFollowings();
         },
         child: ListView.builder(
-          padding: EdgeInsetsGeometry.symmetric(vertical: 10),
+          padding: const EdgeInsetsGeometry.symmetric(vertical: 10),
           itemCount: controller.followingList.length,
           itemBuilder: (context, index) {
             return _buldFollowersTile(controller.followingList[index]);
@@ -806,7 +804,7 @@ class _FollowBottomSheet extends StatelessWidget {
     return Obx(
       () {
 
-        bool sel = controller.selectedUsers.contains(user.id??0);
+        final bool sel = controller.selectedUsers.contains(user.id??0);
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Row(
@@ -814,14 +812,14 @@ class _FollowBottomSheet extends StatelessWidget {
               //Image
               Container(
                 clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.grey,
                   shape: BoxShape.circle,
                 ),
                 height: 50,
                 width: 50,
                 child: Image.network(
-                  '${user.avatar ?? ""}',
+                  user.avatar ?? "",
                   errorBuilder: (context, error, stackTrace) {
                     return const Icon(Icons.person);
                   },
@@ -837,17 +835,17 @@ class _FollowBottomSheet extends StatelessWidget {
                   children: [
                     Text(
                       "${user.firstName ?? ''} ${user.lastName ?? ''}",
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Colors.white,
                           fontSize: 17,
-                          fontWeight: FontWeight.w700),
+                          fontWeight: FontWeight.w700,),
                     ),
                     Text(
-                      '${user.username ?? ''}',
+                      user.username ?? '',
                       style: TextStyle(
                           color: Colors.white.withOpacity(.5),
                           fontSize: 15,
-                          fontWeight: FontWeight.w600),
+                          fontWeight: FontWeight.w600,),
                     ),
                   ],
                 ),
@@ -859,7 +857,7 @@ class _FollowBottomSheet extends StatelessWidget {
                   onChanged: (d) {
                     controller.selectUser(user.id ?? 0);
                     print(d);
-                  })
+                  },),
             ],
           ),
         );

@@ -38,8 +38,9 @@ class ProfileLoginScreen extends StatelessWidget {
               () => SettingScreen(settingCont: controller),
               binding: BindingsBuilder(
                 () {
-                  if (Get.isRegistered<SettingController>())
+                  if (Get.isRegistered<SettingController>()) {
                     controller.onInit();
+                  }
                 },
               ),
             );
@@ -89,7 +90,7 @@ class ProfileLoginScreen extends StatelessWidget {
               Get.to(() => SignInScreen(), arguments: true)?.then((value) {
                 if (value == true) {
                   Get.offAll(() => DashboardScreen(
-                      dashboardController: getDashboardController()));
+                      dashboardController: getDashboardController(),),);
                 }
               });
               Get.lazyPut(() => HomeController());
@@ -105,19 +106,19 @@ class ProfileLoginScreen extends StatelessWidget {
                 ),
                 if (appPageList.any((element) =>
                     element.slug == AppPages.helpAndSupport &&
-                    element.url.isNotEmpty))
+                    element.url.isNotEmpty,))
                   TextSpan(
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         launchUrlCustomURL(appPageList
                             .firstWhere((element) =>
-                                element.slug == AppPages.helpAndSupport)
+                                element.slug == AppPages.helpAndSupport,)
                             .url
-                            .validate());
+                            .validate(),);
                       },
                     text: locale.value.getHelp,
                     style: commonW600SecondaryTextStyle(
-                        size: 14, color: appColorPrimary),
+                        size: 14, color: appColorPrimary,),
                   ),
               ],
             ),

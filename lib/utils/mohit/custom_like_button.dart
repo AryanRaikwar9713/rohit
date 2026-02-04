@@ -8,17 +8,16 @@ class CustomLikeButton extends StatelessWidget {
   final int? likeCount;
   final Future<void> Function()? onLike;
   const CustomLikeButton(
-      {required this.isLiked, this.likeCount, this.onLike, super.key});
+      {required this.isLiked, this.likeCount, this.onLike, super.key,});
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         GestureDetector(
           onTap: onLike,
-          child: Container(
+          child: SizedBox(
             // padding: EdgeInsets.all(5),
             height: 30,
             width: 30,
@@ -53,7 +52,7 @@ class CustomLikeButton extends StatelessWidget {
             },
             child: Text(
               ' $likeCount',
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white, // IMPORTANT: White रखें
               ),
             ),
@@ -71,7 +70,7 @@ class CustomStreamButton extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // Navigate directly to HomeScreen
-        HomeController controller = (Get.isRegistered<HomeController>())
+        final HomeController controller = (Get.isRegistered<HomeController>())
             ? Get.find()
             : Get.put(HomeController());
 

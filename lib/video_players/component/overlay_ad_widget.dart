@@ -56,10 +56,10 @@ class OverlayAdWidget extends StatelessWidget {
                   : isPipModeOn.value
                       ? 10
                       : 60,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: secondaryTextColor,
               ),
-              child: Padding(
+              child: const Padding(
                 padding: EdgeInsets.all(12),
                 child: CachedImageWidget(
                   url: Assets.iconsIcError,

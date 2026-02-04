@@ -171,7 +171,7 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _buildSectionTitle(
-                                      'Organization Information'),
+                                      'Organization Information',),
                                   16.height,
                                   _buildTextField(
                                     controller: controller.fullNameController,
@@ -318,7 +318,7 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
                               icon: Icons.location_on,
                               keyboardType:
                                   const TextInputType.numberWithOptions(
-                                      decimal: true),
+                                      decimal: true,),
                             ),
                           ),
                           12.width,
@@ -330,14 +330,14 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
                               icon: Icons.location_on,
                               keyboardType:
                                   const TextInputType.numberWithOptions(
-                                      decimal: true),
+                                      decimal: true,),
                             ),
                           ),
                           12.width,
                           IconButton(
                             onPressed: controller.getCurrentLocation,
                             icon: const Icon(Icons.my_location,
-                                color: appColorPrimary),
+                                color: appColorPrimary,),
                             tooltip: 'Get Current Location',
                           ),
                         ],
@@ -399,7 +399,7 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
       ),
       child: Column(
         children: [
-          Icon(
+          const Icon(
             Icons.favorite,
             size: 48,
             color: appColorPrimary,
@@ -429,7 +429,6 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
           color: Colors.white.withOpacity(0.1),
-          width: 1,
         ),
       ),
       child: Column(
@@ -556,7 +555,6 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
           color: Colors.white.withOpacity(0.1),
-          width: 1,
         ),
       ),
       child: TextFormField(
@@ -624,7 +622,6 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
           color: Colors.white.withOpacity(0.1),
-          width: 1,
         ),
       ),
       child: Column(
@@ -672,7 +669,6 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: Colors.grey[700]!,
-                    style: BorderStyle.solid,
                     width: 2,
                   ),
                 ),
@@ -706,7 +702,6 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
           color: Colors.white.withOpacity(0.1),
-          width: 1,
         ),
       ),
       child: Column(
@@ -742,7 +737,6 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: Colors.grey[700]!,
-                          style: BorderStyle.solid,
                           width: 2,
                         ),
                       ),
@@ -758,7 +752,7 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
                           Text(
                             'Add supporting images',
                             style: secondaryTextStyle(
-                                size: 12, color: Colors.grey),
+                                size: 12, color: Colors.grey,),
                           ),
                         ],
                       ),
@@ -819,7 +813,6 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
           borderRadius: BorderRadius.circular(15),
           border: Border.all(
             color: Colors.white.withOpacity(0.1),
-            width: 1,
           ),
         ),
         child: Column(
@@ -849,7 +842,6 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: Colors.grey[700]!,
-                    width: 1,
                   ),
                 ),
                 child: Row(
@@ -884,7 +876,7 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
                           Text(
                             'PDF Document',
                             style: secondaryTextStyle(
-                                size: 12, color: Colors.grey),
+                                size: 12, color: Colors.grey,),
                           ),
                         ],
                       ),
@@ -903,7 +895,6 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: Colors.grey[700]!,
-                      style: BorderStyle.solid,
                       width: 2,
                     ),
                   ),
@@ -925,7 +916,7 @@ class _CrateImpactProfileScreenState extends State<CrateImpactProfileScreen> {
                       Text(
                         'Required for organization accounts',
                         style: secondaryTextStyle(
-                            size: 12, color: Colors.grey[600]!),
+                            size: 12, color: Colors.grey[600],),
                         textAlign: TextAlign.center,
                       ),
                     ],

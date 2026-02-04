@@ -28,6 +28,7 @@ import 'package:streamit_laravel/video_players/model/video_model.dart';
 import 'package:y_player/y_player.dart';
 import 'ads/ads_helper.dart';
 import 'app_lovin_ads/add_helper.dart';
+import 'components/admob_rewarded_ad_helper.dart';
 import 'app_theme.dart';
 import 'configs.dart';
 import 'locale/app_localizations.dart';
@@ -106,11 +107,11 @@ Future<void> main() async {
   fontFamilySecondaryGlobal = GoogleFonts.roboto(
           fontWeight: FontWeight.normal,
           color: secondaryTextColor,
-          fontSize: 14)
+          fontSize: 14,)
       .fontFamily;
   textSecondarySizeGlobal = 14;
   fontFamilyBoldGlobal = GoogleFonts.roboto(
-          fontWeight: FontWeight.bold, color: primaryTextColor, fontSize: 16)
+          fontWeight: FontWeight.bold, color: primaryTextColor, fontSize: 16,)
       .fontFamily;
   textPrimaryColorGlobal = primaryTextColor;
   textSecondaryColorGlobal = secondaryTextColor;
@@ -125,11 +126,11 @@ Future<void> main() async {
   passwordLengthGlobal = 8;
 
   selectedLanguageCode(
-      local.getValueFromLocal(SELECTED_LANGUAGE_CODE) ?? DEFAULT_LANGUAGE);
+      local.getValueFromLocal(SELECTED_LANGUAGE_CODE) ?? DEFAULT_LANGUAGE,);
 
   await initialize(
       aLocaleLanguageList: languageList(),
-      defaultLanguage: selectedLanguageCode.value);
+      defaultLanguage: selectedLanguageCode.value,);
 
   final BaseLanguage temp =
       await const AppLocalizations().load(Locale(selectedLanguageCode.value));
@@ -140,7 +141,7 @@ Future<void> main() async {
   if (getStringAsync(SharedPreferenceConst.CONFIGURATION_RESPONSE).isNotEmpty) {
     final ConfigurationResponse configData = ConfigurationResponse.fromJson(
         jsonDecode(
-            getStringAsync(SharedPreferenceConst.CONFIGURATION_RESPONSE)));
+            getStringAsync(SharedPreferenceConst.CONFIGURATION_RESPONSE),),);
     appConfigs(configData);
   }
 
@@ -157,7 +158,7 @@ Future<void> main() async {
   }
 
   isLoggedIn(getBoolValueAsync(SharedPreferenceConst.IS_LOGGED_IN) ||
-      getStringAsync(SharedPreferenceConst.USER_DATA).isNotEmpty);
+      getStringAsync(SharedPreferenceConst.USER_DATA).isNotEmpty,);
 
   if (isLoggedIn.value) {
     final userData = getStringAsync(SharedPreferenceConst.USER_DATA);
@@ -179,7 +180,9 @@ Future<void> main() async {
     ),
   );
   HttpOverrides.global = MyHttpOverrides();
-  MobileAds.instance.initialize();
+  await MobileAds.instance.initialize();
+  // Initialize AdMob Rewarded Ads
+  AdMobRewardedAdHelper.initialize();
   runApp(const MyApp());
 }
 
@@ -229,14 +232,14 @@ class MyApp extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) {
               return SplashScreen(
-                  deepLink: settings.name.validate(), link: true);
+                  deepLink: settings.name.validate(), link: true,);
             },
           );
         } else {
           return MaterialPageRoute(builder: (_) => const SplashScreen());
         }
       },
-      home: SplashScreen(),
+      home: const SplashScreen(),
       // ),
     );
   }

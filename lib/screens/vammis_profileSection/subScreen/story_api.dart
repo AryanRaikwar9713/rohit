@@ -20,13 +20,13 @@ class StoryApi {
   {
     try {
       // String uri = 'https://app.wamims.world/public/social/story_api.php?action=create_story';
-      String uri =
+      final String uri =
           'https://app.wamims.world/public/social/story_api.php?action=create_story';
 
-      var head = await DB().getHeaderForForm();
+      final head = await DB().getHeaderForForm();
 
-      var request = http.MultipartRequest('POST', Uri.parse(uri));
-      request.headers.addAll(head);
+      final request = http.MultipartRequest('POST', Uri.parse(uri));
+      request.headers.addAll(head ?? {});
 
       request.files.add(await http.MultipartFile.fromPath('media', mediaUrl));
 
@@ -36,10 +36,10 @@ class StoryApi {
         });
       }
 
-      var response = await request.send();
+      final response = await request.send();
 
       print("Response ${response.statusCode}");
-      var res = await response.stream.bytesToString();
+      final res = await response.stream.bytesToString();
       print("Response $res");
       respPrinter(response.statusCode, res ?? '');
       print("Response $res");
@@ -62,15 +62,15 @@ class StoryApi {
   }) async
   {
     try {
-      String uri = 'https://app.wamims.world/public/social/story_api.php?action=get_stories';
+      final String uri = 'https://app.wamims.world/public/social/story_api.php?action=get_stories';
 
-      var head = await DB().getHeaderForForm();
+      final head = await DB().getHeaderForForm();
 
-      var resp = await http.get(Uri.parse(uri), headers: head);
+      final resp = await http.get(Uri.parse(uri), headers: head ?? {});
       respPrinter(resp.statusCode, resp.body);
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var d = jsonDecode(resp.body);
+        final d = jsonDecode(resp.body);
         onSuccess(GetStoryResponceModel.fromJson(d));
       }
       else {
@@ -93,18 +93,18 @@ class StoryApi {
   {
     try
         {
-          String? t = await DB.getUserToke();
-          String uri = 'https://app.wamims.world/social/my_stories_api.php';
+          final String? t = await DB.getUserToke();
+          final String uri = 'https://app.wamims.world/social/my_stories_api.php';
 
-          var head = await DB().getHeaderForForm();
+          final head = await DB().getHeaderForForm();
 
           print(head);
 
-          var resp = await http.get(Uri.parse(uri), headers: head);
+          final resp = await http.get(Uri.parse(uri), headers: head ?? {});
           respPrinter(resp.statusCode, resp.body);
 
           if (resp.statusCode == 200 || resp.statusCode == 201) {
-            var d = jsonDecode(resp.body);
+            final d = jsonDecode(resp.body);
             onSuccess(GetMyStoryResponceModel.fromJson(d));
           }
           else {

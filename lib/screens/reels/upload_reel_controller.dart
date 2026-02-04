@@ -213,14 +213,14 @@ class UploadReelController extends GetxController {
                 getBolt: false,
                 contentType: "reel",
                 onError: onError,
-                onFailure: (d) {});
+                onFailure: (d) {},);
             // Clear form after successful upload
             clearForm();
             // Only pop if user is still on the upload screen
             if (onUploadScreen.value) {
               Navigator.pop(navigatorKey.currentContext!);
             }
-          });
+          },);
 
       // Note: Navigation is handled in onSuccess callback based on onUploadScreen flag
       // Don't clear form here as upload might still be in progress
@@ -274,8 +274,9 @@ class UploadReelController extends GetxController {
   String _formatFileSize(int bytes) {
     if (bytes < 1024) return '$bytes B';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    if (bytes < 1024 * 1024 * 1024)
+    if (bytes < 1024 * 1024 * 1024) {
       return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    }
     return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
   }
 
@@ -283,5 +284,5 @@ class UploadReelController extends GetxController {
   String get hashtagsString => hashtags.map((tag) => '#$tag').join(' ');
 
   // Get full caption with hashtags
-  String get fullCaption => '${caption.value} ${hashtagsString}'.trim();
+  String get fullCaption => '${caption.value} $hashtagsString'.trim();
 }

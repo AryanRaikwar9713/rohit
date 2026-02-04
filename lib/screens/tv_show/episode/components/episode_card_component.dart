@@ -91,7 +91,6 @@ class EpisodeCardComponent extends StatelessWidget {
           16.width,
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Marquee(
@@ -102,7 +101,6 @@ class EpisodeCardComponent extends StatelessWidget {
               ),
               12.height,
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     '${locale.value.sAlphabet}$season ${locale.value.eAlphabet}$episodeNumber',
@@ -116,7 +114,7 @@ class EpisodeCardComponent extends StatelessWidget {
                     style: primaryTextStyle(size: 12, color: darkGrayTextColor),
                   ).visible(episode.releaseDate
                       .validate()
-                      .isNotEmpty),
+                      .isNotEmpty,),
                 ],
               ),
               6.height,

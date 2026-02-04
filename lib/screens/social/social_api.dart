@@ -10,7 +10,7 @@ import 'package:streamit_laravel/screens/social/comment_responce_model.dart';
 import 'package:streamit_laravel/screens/social/social_controller.dart';
 import 'package:streamit_laravel/screens/social/social_post_responce_Model.dart';
 
-respPrinter(int st, String body,{String? uri}) {
+void respPrinter(int st, String body,{String? uri}) {
   if(uri!=null)
     {
       Logger().i(uri);
@@ -18,7 +18,7 @@ respPrinter(int st, String body,{String? uri}) {
   if (st == 200 || st == 201) {
     Logger().i(jsonDecode(body));
   } else {
-    Logger().e('${st}\n$body');
+    Logger().e('$st\n$body');
   }
 }
 
@@ -33,20 +33,20 @@ class SocialApi {
   {
     try {
       // String uri = 'https://app.wamims.world/api/posts/feed?offset=$page';
-      Map<String, String> head = await DB().getHeaderForRow();
+      final head = await DB().getHeaderForRow();
 
-      UserData? userData = await DB().getUser();
+      final UserData? userData = await DB().getUser();
 
-      String uri =
+      final String uri =
           'https://app.wamims.world/social/get_posts.php?logged_in_user_id=${userData?.id ?? 0}&page=$page';
 
-      var resp = await http.get(Uri.parse(uri), headers: head);
+      final resp = await http.get(Uri.parse(uri), headers: head ?? {});
 
       respPrinter(resp.statusCode, resp.body,uri: uri);
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var d = jsonDecode(resp.body);
-        var s = GetSocialPostResponceModel.fromJson(d);
+        final d = jsonDecode(resp.body);
+        final s = GetSocialPostResponceModel.fromJson(d);
         onSuccess(s);
       } else {
         onFailure(resp);
@@ -65,20 +65,20 @@ class SocialApi {
     required void Function(bool isLiked, int likeCount) onSuccess,
   }) async {
     try {
-      String uri = 'https://app.wamims.world/social/post_likes.php';
-      var head = await DB().getHeaderForRow();
-      var user = await DB().getUser();
-      var data = {
+      final String uri = 'https://app.wamims.world/social/post_likes.php';
+      final head = await DB().getHeaderForRow();
+      final user = await DB().getUser();
+      final data = {
         "user_id": user?.id??0,
         "post_id": postId,
       };
-      var resp = await http.post(Uri.parse(uri),
-          headers: head, body: jsonEncode(data));
+      final resp = await http.post(Uri.parse(uri),
+          headers: head ?? {}, body: jsonEncode(data),);
 
       respPrinter(resp.statusCode, resp.body);
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var d = jsonDecode(resp.body);
+        final d = jsonDecode(resp.body);
         onSuccess(d['data']['is_liked'], int.parse(d['data']['likes_count'] ?? '0'));
       } else {
         onFailure(resp);
@@ -96,23 +96,23 @@ class SocialApi {
     required void Function(SocialPostComment) onSuccess,
   }) async {
     try {
-      String uri = 'https://app.wamims.world/social/post_comments.php';
-      var head = await DB().getHeaderForRow();
-      var user = await DB().getUser();
+      final String uri = 'https://app.wamims.world/social/post_comments.php';
+      final head = await DB().getHeaderForRow();
+      final user = await DB().getUser();
 
-      var data = {
+      final data = {
         "user_id":user?.id??0,
         "post_id": postId,
         "comment": comment,
       };
-      var resp = await http.post(Uri.parse(uri),
-          headers: head, body: jsonEncode(data));
+      final resp = await http.post(Uri.parse(uri),
+          headers: head ?? {}, body: jsonEncode(data),);
 
       respPrinter(resp.statusCode, resp.body);
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var d = jsonDecode(resp.body);
-        SocialPostComment c = SocialPostComment.fromJson(d['data']);
+        final d = jsonDecode(resp.body);
+        final SocialPostComment c = SocialPostComment.fromJson(d['data']);
         onSuccess(c);
       } else {
         onFailure(resp);
@@ -131,22 +131,22 @@ class SocialApi {
   }) async
   {
     try {
-      var head = await DB().getHeaderForRow();
-      var user = await DB().getUser();
+      final head = await DB().getHeaderForRow();
+      final user = await DB().getUser();
 
-      String uri =
+      final String uri =
           'https://app.wamims.world/public/social/get_comments.php?post_id=$post_id&logged_in_user_id=${user?.id??0}&page=$page&limit=10';
 
-      var resp = await http.get(
+      final resp = await http.get(
         Uri.parse(uri),
-        headers: head,
+        headers: head ?? {},
       );
 
       respPrinter(resp.statusCode, resp.body);
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var d = jsonDecode(resp.body);
-        var data = SocialPostCommnetResponceModel.fromJson(d);
+        final d = jsonDecode(resp.body);
+        final data = SocialPostCommnetResponceModel.fromJson(d);
         onSuccess(data);
       } else {
         onFailure(resp);
@@ -166,13 +166,13 @@ class SocialApi {
     required void Function(int) onSuccess,
   }) async {
     try {
-      String uri = 'https://app.wamims.world/social/upload_posts.php';
-      var head = await DB().getHeaderForRow();
-      var user = await DB().getUser();
+      final String uri = 'https://app.wamims.world/social/upload_posts.php';
+      final head = await DB().getHeaderForRow();
+      final user = await DB().getUser();
 
-      print('Header ${head}');
+      print('Header $head');
 
-      var data = {
+      final data = {
         "user_id": user?.id ?? 0,
         "caption": caption,
         'title': title,
@@ -183,7 +183,7 @@ class SocialApi {
 
       final Map<String, String> fd = {};
 
-      for (var i in data.keys) {
+      for (final i in data.keys) {
         fd[i] = data[i].toString();
       }
 
@@ -194,17 +194,17 @@ class SocialApi {
           request.files.add(await http.MultipartFile.fromPath('image', mediaUrl));
         }
 
-      request.headers.addAll(head);
+      request.headers.addAll(head ?? {});
 
       request.fields.addAll(fd);
 
-      var resp = await request.send();
+      final resp = await request.send();
       final String fbudy = await resp.stream.bytesToString();
 
       respPrinter(resp.statusCode, fbudy);
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var d = jsonDecode(await fbudy);
+        final d = jsonDecode(fbudy);
         onSuccess(int.parse((d['post_id']??'0').toString())); 
       } else {
         onFailure(http.Response(fbudy, resp.statusCode));
@@ -223,18 +223,18 @@ class SocialApi {
   }) async
   {
     try {
-      String uri = 'https://app.wamims.world/public/social/follow_api.php';
-      var head = await DB().getHeaderForRow();
-      var user = await DB().getUser();
+      final String uri = 'https://app.wamims.world/public/social/follow_api.php';
+      final head = await DB().getHeaderForRow();
+      final user = await DB().getUser();
 
-      var data = {
+      final data = {
         "current_user_id": user?.id??0,
         "target_user_id": targetUserId,
       };
 
       final resp = await http.post(
         Uri.parse(uri),
-        headers: head,
+        headers: head ?? {},
         body: jsonEncode(data),
       );
 

@@ -41,7 +41,6 @@ class ShopProductsController extends GetxController {
 
       await ProductAPi().getProductsList(
         page: currentPage.value,
-        limit: 10,
         shopId: shopId,
         onError: (e) {
           if (refresh) {
@@ -109,7 +108,7 @@ class ShopProductsController extends GetxController {
   /// Load more products (pagination)
   Future<void> loadMoreProducts() async {
     if (!hasMoreData.value || isLoadingMore.value) return;
-    await loadProducts(refresh: false);
+    await loadProducts();
   }
 
   void _handleResponse(http.Response response) {

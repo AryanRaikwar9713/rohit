@@ -123,7 +123,6 @@ class SignInController extends GetxController {
           isLoading(false);
           Get.bottomSheet(
             isDismissible: false,
-            isScrollControlled: false,
             enableDrag: false,
             BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
@@ -138,7 +137,7 @@ class SignInController extends GetxController {
   }
 
   Future<void> checkIfDemoUser(
-      {bool verify = false, required VoidCallback callBack}) async {
+      {bool verify = false, required VoidCallback callBack,}) async {
     if (phoneCont.text.trim() == Constants.demoNumber) {
       verificationCode('123456');
       verifyCont.text = '123456';
@@ -190,7 +189,6 @@ class SignInController extends GetxController {
 
               Get.bottomSheet(
                 isDismissible: false,
-                isScrollControlled: false,
                 enableDrag: false,
                 BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
@@ -226,8 +224,8 @@ class SignInController extends GetxController {
             isLoading(false);
             errorSnackBar(
                 error:
-                    FirebaseAuthHandleExceptionsUtils().handleException(value));
-          });
+                    FirebaseAuthHandleExceptionsUtils().handleException(value),);
+          },);
     } catch (e) {
       isLoading(false);
       isOTPSent(false);
@@ -277,7 +275,7 @@ class SignInController extends GetxController {
   Future<void> loginAPICall(
       {required Map<String, dynamic> request,
       required bool isSocialLogin,
-      bool isNormalLogin = false}) async {
+      bool isNormalLogin = false,}) async {
     _pendingLoginRequest = Map.from(request);
     _pendingIsSocialLogin = isSocialLogin;
     _pendingIsNormalLogin = isNormalLogin;
@@ -287,7 +285,7 @@ class SignInController extends GetxController {
         .then((value) async {
       _pendingLoginRequest = null;
       handleLoginResponse(
-          isSocialLogin: isSocialLogin, isNormalLogin: isNormalLogin);
+          isSocialLogin: isSocialLogin, isNormalLogin: isNormalLogin,);
     }).catchError((e) async {
       if (e.toString().startsWith('404') ||
           (e is Map<String, dynamic> &&
@@ -325,7 +323,7 @@ class SignInController extends GetxController {
                 } else {
                   deviceLogOut(
                     device: deviceId,
-                    userId: errorData.otherDevice.first.userId.toInt(),
+                    userId: errorData.otherDevice.first.userId,
                     onSuccess: _retryPendingLogin,
                   );
                 }
@@ -362,7 +360,7 @@ class SignInController extends GetxController {
     };
 
     await loginAPICall(
-        isSocialLogin: false, request: req, isNormalLogin: isNormalLogin);
+        isSocialLogin: false, request: req, isNormalLogin: isNormalLogin,);
   }
 
   Future<void> phoneSignIn() async {
@@ -436,7 +434,6 @@ class SignInController extends GetxController {
       Get.back();
       Get.bottomSheet(
         isDismissible: false,
-        isScrollControlled: false,
         enableDrag: false,
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
@@ -486,8 +483,8 @@ class SignInController extends GetxController {
           verifyCont.clear();
           errorSnackBar(
               error:
-                  FirebaseAuthHandleExceptionsUtils().handleException(value));
-        });
+                  FirebaseAuthHandleExceptionsUtils().handleException(value),);
+        },);
   }
 
   Future<void> googleSignIn() async {
@@ -561,10 +558,10 @@ class SignInController extends GetxController {
   void handleLoginResponse(
       {String? password,
       bool isSocialLogin = false,
-      bool isNormalLogin = false}) {
+      bool isNormalLogin = false,}) {
     try {
       setValue(SharedPreferenceConst.USER_PASSWORD,
-          isSocialLogin ? "" : passwordCont.text.trim());
+          isSocialLogin ? "" : passwordCont.text.trim(),);
       setValue(SharedPreferenceConst.IS_LOGGED_IN, true);
       setValue(SharedPreferenceConst.IS_REMEMBER_ME, isRememberMe.value);
 

@@ -36,7 +36,6 @@ class ContinueWatchingItemComponent extends StatelessWidget {
         decoration: boxDecorationDefault(borderRadius: BorderRadius.circular(4), color: canvasColor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Stack(
               children: [
@@ -49,7 +48,6 @@ class ContinueWatchingItemComponent extends StatelessWidget {
                   topLeftRadius: 4,
                 ),
                 IgnorePointer(
-                  ignoring: true,
                   child: Container(
                     height: 90,
                     width: double.infinity,
@@ -97,7 +95,7 @@ class ContinueWatchingItemComponent extends StatelessWidget {
                       style: commonSecondaryTextStyle(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                    )
+                    ),
                   ],
                 ).paddingSymmetric(vertical: 8, horizontal: 8).expand(),
                 InkWell(

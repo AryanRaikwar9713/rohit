@@ -37,7 +37,7 @@ class AuthServiceApis {
   Future<String> createUser({required Map request}) async {
     final UserResponse userData = UserResponse.fromJson(await handleResponse(
         await buildHttpResponse(APIEndPoints.register,
-            request: request, method: HttpMethodType.POST)));
+            request: request, method: HttpMethodType.POST,),),);
     await storeUserData(userData);
     setValue(SharedPreferenceConst.USER_PASSWORD, request[UserKeys.password]);
     return userData.message;
@@ -45,13 +45,13 @@ class AuthServiceApis {
 
   Future<void> loginUser(
       {required Map<String, dynamic> request,
-      bool isSocialLogin = false}) async {
+      bool isSocialLogin = false,}) async {
     if (await isIqonicProduct &&
         request[UserKeys.mobile] == Constants.defaultNumber) {
       request.putIfAbsent(
           'is_demo_user',
           () => (request[UserKeys.mobile] == Constants.defaultNumber)
-              .getIntBool());
+              .getIntBool(),);
     }
     final UserResponse userData = UserResponse.fromJson(
       await handleResponse(
@@ -81,7 +81,7 @@ class AuthServiceApis {
       isCastingSupported(currentSubscription.value.planType
           .firstWhere((element) => element.slug == SubscriptionTitle.videoCast)
           .limitationValue
-          .getBoolInt());
+          .getBoolInt(),);
     } else {
       isCastingSupported(false);
     }
@@ -90,21 +90,21 @@ class AuthServiceApis {
         : currentSubscription.value.googleInAppPurchaseIdentifier;
     setValue(SharedPreferenceConst.USER_DATA, loginUserData.toJson());
     setValue(SharedPreferenceConst.USER_SUBSCRIPTION_DATA,
-        userData.userData.planDetails.toJson());
+        userData.userData.planDetails.toJson(),);
     profilePin(loginUserData.value.pin);
   }
 
   Future<ChangePasswordResponse> changePasswordApi(
-      {required Map request}) async {
+      {required Map request,}) async {
     return ChangePasswordResponse.fromJson(await handleResponse(
         await buildHttpResponse(APIEndPoints.changePassword,
-            request: request, method: HttpMethodType.POST)));
+            request: request, method: HttpMethodType.POST,),),);
   }
 
   Future<BaseResponseModel> forgotPasswordApi({required Map request}) async {
     return BaseResponseModel.fromJson(await handleResponse(
         await buildHttpResponse(APIEndPoints.forgotPassword,
-            request: request, method: HttpMethodType.POST)));
+            request: request, method: HttpMethodType.POST,),),);
   }
 
   Future<List<NotificationData>> getNotificationDetail({
@@ -118,7 +118,7 @@ class AuthServiceApis {
           await handleResponse(await buildHttpResponse(getEndPoint(
               endPoint: APIEndPoints.getNotification,
               page: page,
-              perPages: perPage))));
+              perPages: perPage,),),),);
       if (page == 1) notifications.clear();
       notifications.addAll(notificationRes.notificationData);
       lastPageCallBack
@@ -131,14 +131,14 @@ class AuthServiceApis {
 
   Future<NotificationData> clearAllNotification() async {
     return NotificationData.fromJson(await handleResponse(
-        await buildHttpResponse(APIEndPoints.clearAllNotification)));
+        await buildHttpResponse(APIEndPoints.clearAllNotification),),);
   }
 
   Future<NotificationData> removeNotification(
-      {required String notificationId}) async {
+      {required String notificationId,}) async {
     return NotificationData.fromJson(await handleResponse(
         await buildHttpResponse(
-            '${APIEndPoints.removeNotification}?id=$notificationId')));
+            '${APIEndPoints.removeNotification}?id=$notificationId',),),);
   }
 
   Future<void> clearData({bool isFromDeleteAcc = false}) async {
@@ -212,22 +212,22 @@ class AuthServiceApis {
   Future<BaseResponseModel> deviceLogoutApi({required String deviceId}) async {
     final String id = deviceId.isNotEmpty ? "?device_id=$deviceId" : "";
     return BaseResponseModel.fromJson(await handleResponse(
-        await buildHttpResponse("${APIEndPoints.deviceLogout}$id")));
+        await buildHttpResponse("${APIEndPoints.deviceLogout}$id"),),);
   }
 
   Future<BaseResponseModel> deviceLogoutApiWithoutAuth(
-      {required String deviceId, required int userId}) async {
+      {required String deviceId, required int userId,}) async {
     final List<String> params = [];
     params.add("device_id=$deviceId");
     params.add("user_id=$userId");
     return BaseResponseModel.fromJson(await handleResponse(
         await buildHttpResponse(getEndPoint(
-            endPoint: APIEndPoints.deviceLogoutNoAuth, params: params))));
+            endPoint: APIEndPoints.deviceLogoutNoAuth, params: params,),),),);
   }
 
   Future<BaseResponseModel> deleteAccountCompletely() async {
     return BaseResponseModel.fromJson(await handleResponse(
-        await buildHttpResponse(APIEndPoints.deleteUserAccount)));
+        await buildHttpResponse(APIEndPoints.deleteUserAccount),),);
   }
 
   Future<BaseResponseModel> logOutAllAPI() async {
@@ -235,17 +235,17 @@ class AuthServiceApis {
     params.add("device_id=${yourDevice.value.deviceId}");
     return BaseResponseModel.fromJson(await handleResponse(
         await buildHttpResponse(
-            getEndPoint(endPoint: APIEndPoints.logOutAll, params: params))));
+            getEndPoint(endPoint: APIEndPoints.logOutAll, params: params),),),);
   }
 
   Future<BaseResponseModel> logOutAllAPIWithoutAuth(
-      {required int userId}) async {
+      {required int userId,}) async {
     final List<String> params = [];
     params.add("device_id=${yourDevice.value.deviceId}");
     params.add("user_id=$userId");
     return BaseResponseModel.fromJson(await handleResponse(
         await buildHttpResponse(getEndPoint(
-            endPoint: APIEndPoints.logOutAllNoAuth, params: params))));
+            endPoint: APIEndPoints.logOutAllNoAuth, params: params,),),),);
   }
 
   Future<void> getAppConfigurations({
@@ -260,15 +260,17 @@ class AuthServiceApis {
       callback: () async {
         final List<String> params = [];
         if (getBoolAsync(SharedPreferenceConst.IS_LOGGED_IN) &&
-            loginUserData.value.id > -1)
+            loginUserData.value.id > -1) {
           params.add('user_id=${loginUserData.value.id}');
+        }
         if (getBoolAsync(SharedPreferenceConst.IS_LOGGED_IN) &&
-            loginUserData.value.id > -1)
+            loginUserData.value.id > -1) {
           params.add('device_id=${yourDevice.value.deviceId}');
+        }
         params.add('is_authenticated=${isLoggedIn.isTrue.getIntBool()}');
 
         await buildHttpResponse(getEndPoint(
-                endPoint: APIEndPoints.appConfiguration, params: params))
+                endPoint: APIEndPoints.appConfiguration, params: params,),)
             .then((value) async {
           await handleResponse(value).then(
             (value) async {
@@ -278,7 +280,7 @@ class AuthServiceApis {
                   .then((value) {
                 appPageList.value = value.data; // data in the observable list
                 setValue(SharedPreferenceConst.PAGE_LAST_CALL_TIME,
-                    DateTime.timestamp().millisecondsSinceEpoch);
+                    DateTime.timestamp().millisecondsSinceEpoch,);
               });
               final ConfigurationResponse configurationResponse =
                   ConfigurationResponse.fromJson(value);
@@ -295,26 +297,26 @@ class AuthServiceApis {
               if (currentSubscription.value.level > -1 &&
                   currentSubscription.value.planType.isNotEmpty &&
                   currentSubscription.value.planType.any((element) =>
-                      element.slug == SubscriptionTitle.videoCast)) {
+                      element.slug == SubscriptionTitle.videoCast,)) {
                 isCastingSupported(currentSubscription.value.planType
                     .firstWhere((element) =>
-                        element.slug == SubscriptionTitle.videoCast)
+                        element.slug == SubscriptionTitle.videoCast,)
                     .limitationValue
-                    .getBoolInt());
+                    .getBoolInt(),);
               } else {
                 isCastingSupported(false);
               }
               isSupportedDevice(configurationResponse.isDeviceSupported);
               isCastingAvailable(configurationResponse.isCastingAvailable);
               setValue(SharedPreferenceConst.IS_SUPPORTED_DEVICE,
-                  configurationResponse.isDeviceSupported);
+                  configurationResponse.isDeviceSupported,);
 
               setValue(SharedPreferenceConst.LAST_APP_CONFIGURATION_CALL_TIME,
-                  DateTime.timestamp().millisecondsSinceEpoch);
+                  DateTime.timestamp().millisecondsSinceEpoch,);
               await setValue(
-                  SharedPreferenceConst.IS_APP_CONFIGURATION_SYNCED_ONCE, true);
+                  SharedPreferenceConst.IS_APP_CONFIGURATION_SYNCED_ONCE, true,);
               setValue(SharedPreferenceConst.CONFIGURATION_RESPONSE,
-                  configurationResponse.toJson());
+                  configurationResponse.toJson(),);
               if (appConfigs.value.enableInAppPurchase.getBoolInt()) {
                 final InAppPurchaseService inAppPurchaseService =
                     Get.put(InAppPurchaseService());
@@ -339,11 +341,11 @@ class AuthServiceApis {
                 }
 
                 if (getBoolAsync(SharedPreferenceConst.IS_FIRST_TIME,
-                    defaultValue: true)) {
+                    defaultValue: true,)) {
                   await setValue(SharedPreferenceConst.IS_FIRST_TIME, false);
                   Get.offAll(() => WalkThroughScreen());
                 } else if (getBoolValueAsync(
-                        SharedPreferenceConst.IS_LOGGED_IN) ||
+                        SharedPreferenceConst.IS_LOGGED_IN,) ||
                     isLoggedIn.value) {
                   Get.offAll(() => WatchingProfileScreen(), arguments: true);
                 } else {
@@ -352,7 +354,7 @@ class AuthServiceApis {
                     () {
                       Get.offAll(
                         () => DashboardScreen(
-                            dashboardController: getDashboardController()),
+                            dashboardController: getDashboardController(),),
                         binding: BindingsBuilder(
                           () {
                             // Defer reactive updates until after build phase
@@ -389,7 +391,7 @@ class AuthServiceApis {
           (error, stackTrace) {
             errorSnackBar(error: error.toString());
             setValue(
-                SharedPreferenceConst.IS_APP_CONFIGURATION_SYNCED_ONCE, false);
+                SharedPreferenceConst.IS_APP_CONFIGURATION_SYNCED_ONCE, false,);
 
             onError?.call();
           },
@@ -410,17 +412,20 @@ class AuthServiceApis {
     if (isLoggedIn.value) {
       final http.MultipartRequest multiPartRequest =
           await getMultiPartRequest(APIEndPoints.updateProfile);
-      if (firstName.isNotEmpty)
+      if (firstName.isNotEmpty) {
         multiPartRequest.fields[UserKeys.firstName] = firstName;
-      if (lastName.isNotEmpty)
+      }
+      if (lastName.isNotEmpty) {
         multiPartRequest.fields[UserKeys.lastName] = lastName;
+      }
       if (mobile.isNotEmpty) multiPartRequest.fields[UserKeys.mobile] = mobile;
-      if (address.isNotEmpty)
+      if (address.isNotEmpty) {
         multiPartRequest.fields[UserKeys.address] = address;
+      }
 
       if (imageFile != null) {
         multiPartRequest.files.add(await http.MultipartFile.fromPath(
-            UserKeys.fileUrl, imageFile.path));
+            UserKeys.fileUrl, imageFile.path,),);
       }
 
       multiPartRequest.headers.addAll(buildHeaderTokens());

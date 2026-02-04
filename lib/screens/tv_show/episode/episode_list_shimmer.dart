@@ -24,7 +24,6 @@ class EpisodeListShimmer extends StatelessWidget {
             margin: const EdgeInsets.symmetric(vertical: 8),
             decoration: boxDecorationDefault(color: context.cardColor),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const ShimmerWidget(
@@ -34,7 +33,6 @@ class EpisodeListShimmer extends StatelessWidget {
                 ),
                 16.width,
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const ShimmerWidget(

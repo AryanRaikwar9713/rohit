@@ -20,7 +20,6 @@ class LiveHorizontalComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         viewAllWidget(
           label: movieDet.name,
@@ -40,7 +39,7 @@ class LiveHorizontalComponent extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: movieDet.channelData.length,
               itemBuilder: (context, index) {
-                ChannelModel show = movieDet.channelData[index];
+                final ChannelModel show = movieDet.channelData[index];
                 return InkWell(
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,

@@ -96,7 +96,7 @@ class AppButtonWithPricing extends StatelessWidget {
                 if (serviceImg.validate().isNotEmpty)
                   Container(
                     decoration: boxDecorationDefault(
-                        color: Colors.white, shape: BoxShape.circle),
+                        color: Colors.white, shape: BoxShape.circle,),
                     padding: const EdgeInsets.all(10),
                     child: CachedImageWidget(
                       url: serviceImg.validate(),

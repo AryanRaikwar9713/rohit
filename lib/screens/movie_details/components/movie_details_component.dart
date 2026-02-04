@@ -176,10 +176,10 @@ class MovieDetailsComponent extends StatelessWidget {
                         },
                       );
                     } else {
-                      return Offstage();
+                      return const Offstage();
                     }
                   },
-                )
+                ),
               ],
             ).paddingSymmetric(vertical: 16, horizontal: 2),
           ),
@@ -200,7 +200,6 @@ class MovieDetailsComponent extends StatelessWidget {
             deleteReviewCallback: () {
               LiveStream().emit(podPlayerPauseKey);
               Get.bottomSheet(
-                isDismissible: true,
                 isScrollControlled: false,
                 RemoveReviewComponent(
                   onRemoveTap: () {

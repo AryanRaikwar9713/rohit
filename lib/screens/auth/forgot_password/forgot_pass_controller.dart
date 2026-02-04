@@ -36,7 +36,7 @@ class ForgotPasswordController extends GetxController {
 
     isLoading(true);
     hideKeyBoardWithoutContext();
-    Map<String, dynamic> req = {
+    final Map<String, dynamic> req = {
       'email': emailCont.text.trim(),
     };
 

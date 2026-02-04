@@ -59,7 +59,7 @@ class OrderHistoryScreen extends StatelessWidget {
                 ),
                 child: const Icon(Icons.refresh_rounded, color: Colors.white, size: 20),
               ),
-              onPressed: () => controller.loadOrders(refresh: true),
+              onPressed: () => controller.loadOrders(),
               tooltip: 'Refresh',
             ),
           ],
@@ -107,7 +107,7 @@ class OrderHistoryScreen extends StatelessWidget {
                 Material(
                   borderRadius: BorderRadius.circular(14),
                   child: InkWell(
-                    onTap: () => controller.loadOrders(refresh: true),
+                    onTap: () => controller.loadOrders(),
                     borderRadius: BorderRadius.circular(14),
                     child: Ink(
                       decoration: BoxDecoration(
@@ -180,7 +180,7 @@ class OrderHistoryScreen extends StatelessWidget {
         }
 
         return RefreshIndicator(
-          onRefresh: () async => controller.loadOrders(refresh: true),
+          onRefresh: () async => controller.loadOrders(),
           color: _orderGradient.colors.first,
           backgroundColor: const Color(0xFF2A2A2A),
           child: SingleChildScrollView(
@@ -250,7 +250,7 @@ class OrderCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF1A1A1A),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFF2E2E2E), width: 1),
+        border: Border.all(color: const Color(0xFF2E2E2E)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.35),
@@ -270,15 +270,15 @@ class OrderCard extends StatelessWidget {
           // Gradient strip at top
           Container(
             height: 3,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: _orderGradient,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(14)),
             ),
           ),
           Container(
             padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
+              borderRadius: BorderRadius.vertical(),
             ),
             child: Row(
               children: [
@@ -320,7 +320,7 @@ class OrderCard extends StatelessWidget {
                         Text(
                           'Order #${order.orderNumber}',
                           style: secondaryTextStyle(
-                              size: 12, color: Colors.grey[400]),
+                              size: 12, color: Colors.grey[400],),
                         ),
                     ],
                   ),
@@ -358,12 +358,12 @@ class OrderCard extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.shopping_cart,
-                          size: 16, color: Colors.grey[400]),
+                          size: 16, color: Colors.grey[400],),
                       8.width,
                       Text(
                         '${order.itemsCount} Item${order.itemsCount != 1 ? 's' : ''}',
                         style: secondaryTextStyle(
-                            size: 14, color: Colors.grey[400]),
+                            size: 14, color: Colors.grey[400],),
                       ),
                     ],
                   ),
@@ -379,7 +379,7 @@ class OrderCard extends StatelessWidget {
                         Text(
                           'Total Amount',
                           style: secondaryTextStyle(
-                              size: 12, color: Colors.grey[400]),
+                              size: 12, color: Colors.grey[400],),
                         ),
                         4.height,
                         if (order.finalAmount != null)
@@ -401,19 +401,19 @@ class OrderCard extends StatelessWidget {
                           Text(
                             'Payment',
                             style: secondaryTextStyle(
-                                size: 12, color: Colors.grey[400]),
+                                size: 12, color: Colors.grey[400],),
                           ),
                           4.height,
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                                horizontal: 8, vertical: 4,),
                             decoration: BoxDecoration(
                               color: _getPaymentStatusColor(order.paymentStatus)
                                   .withOpacity(0.2),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
                                   color: _getPaymentStatusColor(
-                                      order.paymentStatus)),
+                                      order.paymentStatus,),),
                             ),
                             child: Text(
                               order.paymentStatus!.toUpperCase(),
@@ -439,7 +439,7 @@ class OrderCard extends StatelessWidget {
                       Text(
                         _formatPaymentMethod(order.paymentMethod!),
                         style: secondaryTextStyle(
-                            size: 12, color: Colors.grey[400]),
+                            size: 12, color: Colors.grey[400],),
                       ),
                     ],
                   ),
@@ -450,12 +450,12 @@ class OrderCard extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.calendar_today,
-                          size: 14, color: Colors.grey[400]),
+                          size: 14, color: Colors.grey[400],),
                       6.width,
                       Text(
                         'Ordered on ${_formatDate(order.createdAt!)}',
                         style: secondaryTextStyle(
-                            size: 12, color: Colors.grey[400]),
+                            size: 12, color: Colors.grey[400],),
                       ),
                     ],
                   ),
@@ -464,12 +464,12 @@ class OrderCard extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.local_shipping,
-                          size: 14, color: Colors.grey[400]),
+                          size: 14, color: Colors.grey[400],),
                       6.width,
                       Text(
                         'Est. Delivery: ${order.estimatedDelivery}',
                         style: secondaryTextStyle(
-                            size: 12, color: Colors.grey[400]),
+                            size: 12, color: Colors.grey[400],),
                       ),
                     ],
                   ),

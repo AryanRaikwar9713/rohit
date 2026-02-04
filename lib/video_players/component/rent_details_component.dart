@@ -150,7 +150,7 @@ class RentalDetailsComponent extends StatelessWidget {
                                       if (aboutDataModel.url.validate().isNotEmpty) launchUrlCustomURL(aboutDataModel.url.validate());
                                       log(aboutDataModel.url.validate());
                                     },
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -197,7 +197,7 @@ class RentalDetailsComponent extends StatelessWidget {
                 ],
               ),
             ),
-            16.height
+            16.height,
           ],
         );
       },

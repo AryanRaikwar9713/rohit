@@ -42,10 +42,10 @@ class ShimmerHome extends StatelessWidget {
                     radius: 6,
                   );
                 },
-              )
+              ),
             ],
           ).paddingSymmetric(vertical: 8, horizontal: 16),
-        )
+        ),
       ],
     );
   }

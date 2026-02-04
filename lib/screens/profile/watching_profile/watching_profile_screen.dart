@@ -1,19 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/components/app_scaffold.dart';
-import 'package:streamit_laravel/screens/profile/watching_profile/components/add_profile_component.dart';
-import 'package:streamit_laravel/screens/profile/watching_profile/components/profile_component.dart';
-import 'package:streamit_laravel/screens/profile/watching_profile/model/profile_watching_model.dart';
 import 'package:streamit_laravel/screens/profile/watching_profile/watching_profile_controller.dart';
-import 'package:streamit_laravel/utils/app_common.dart';
 import 'package:streamit_laravel/utils/colors.dart';
-import 'package:streamit_laravel/utils/common_base.dart';
-import 'package:streamit_laravel/utils/empty_error_state_widget.dart';
-import 'package:streamit_laravel/generated/assets.dart';
 
-import '../../../main.dart';
-import '../../setting/account_setting/components/logout_account_component.dart';
 
 class WatchingProfileScreen extends StatelessWidget {
   WatchingProfileScreen({super.key});

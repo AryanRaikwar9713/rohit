@@ -44,7 +44,7 @@ class AdView extends StatelessWidget {
               child: Video(
                 controller: controller.adVideoController,
                 controls: (state) => const SizedBox.shrink(),
-              )),
+              ),),
           if (controller.isAdPlaying.value && !isPipModeOn.value) ...[
             AdProgressBar(controller: controller),
           ],
@@ -145,7 +145,7 @@ class AdProgressBar extends StatelessWidget {
                     ],
                   ),
                 );
-              });
+              },);
         },
       ),
     );

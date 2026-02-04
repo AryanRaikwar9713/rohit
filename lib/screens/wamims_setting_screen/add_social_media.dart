@@ -19,7 +19,7 @@ class _AddSocialMediaState extends State<AddSocialMedia> {
     return Scaffold(
       appBar: AppBar(
         titleTextStyle: const TextStyle(
-            color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18),
+            color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18,),
         title: const Text("Other Social Media"),
       ),
 
@@ -52,8 +52,8 @@ class _AddSocialMediaState extends State<AddSocialMedia> {
             width: double.infinity,
             child: ElevatedButton(onPressed: (){
 
-            }, child: const Text("Save")),
-          )
+            }, child: const Text("Save"),),
+          ),
 
         ],
       ),
@@ -80,24 +80,24 @@ class _AddSocialMediaState extends State<AddSocialMedia> {
       child: TextField(
         decoration: InputDecoration(
 
-          prefixIcon: Container(
+          prefixIcon: SizedBox(
             width: 30,
               height:30,
-              child: Center(child: Image.asset(icon,width: 25,height: 25,color:iconColor,))),
+              child: Center(child: Image.asset(icon,width: 25,height: 25,color:iconColor,)),),
 
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: appColorPrimary)
+            borderSide: const BorderSide(color: appColorPrimary),
           ),
 
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: appColorPrimary)
+            borderSide: const BorderSide(color: appColorPrimary),
           ),
 
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Colors.white)
+            borderSide: const BorderSide(color: Colors.white),
           ),
           hintText: label,
           hintStyle: TextStyle(color: Colors.grey.shade600),

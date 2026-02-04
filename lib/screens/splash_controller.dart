@@ -69,7 +69,7 @@ class SplashScreenController extends GetxController {
           () {
             getDashboardController().onBottomTabChange(0);
           },
-        ));
+        ),);
       });
     }
   }
@@ -134,7 +134,7 @@ class SplashScreenController extends GetxController {
           () {
             getDashboardController().onBottomTabChange(0);
           },
-        ));
+        ),);
       });
     }).catchError((e) {
       setValue(SharedPreferenceConst.IS_APP_CONFIGURATION_SYNCED_ONCE, false);

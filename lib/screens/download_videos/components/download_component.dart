@@ -51,7 +51,6 @@ class DownloadComponent extends StatelessWidget {
           child: AnimatedScrollView(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
@@ -77,7 +76,7 @@ class DownloadComponent extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: downloadDet.length,
                 itemBuilder: (context, index) {
-                  DownloadQuality downloadDets = downloadDet[index];
+                  final DownloadQuality downloadDets = downloadDet[index];
                   if ((downloadDets.type == URLType.url || downloadDets.type == URLType.local) ||
                       downloadDets.url.isNotEmpty && downloadCont.checkQualitySupported(quality: downloadDets.quality, requirePlanLevel: videoModel.planId)) {
                     return DownloadCard(
@@ -91,7 +90,6 @@ class DownloadComponent extends StatelessWidget {
               ),
               24.height,
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(locale.value.onlyOnWiFi, style: secondaryTextStyle()),

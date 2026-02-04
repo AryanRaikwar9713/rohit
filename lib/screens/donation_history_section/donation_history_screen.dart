@@ -11,8 +11,7 @@ import 'package:streamit_laravel/utils/colors.dart';
 class DonationHistoryScreen extends StatelessWidget {
   final bool showRecentOnly;
 
-  const DonationHistoryScreen({Key? key, this.showRecentOnly = false})
-      : super(key: key);
+  const DonationHistoryScreen({super.key, this.showRecentOnly = false});
 
   @override
   Widget build(BuildContext context) {
@@ -29,19 +28,19 @@ class DonationHistoryScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
         ),
         bottom: PreferredSize(
-            preferredSize: Size.fromHeight(30),
+            preferredSize: const Size.fromHeight(30),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: CupertinoSearchTextField(
-                prefixIcon: Icon(Icons.search, color: Colors.white),
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                prefixIcon: const Icon(Icons.search, color: Colors.white),
+                style: const TextStyle(color: Colors.white, fontSize: 16),
                 placeholder: 'Search',
-                placeholderStyle: TextStyle(color: Colors.white),
+                placeholderStyle: const TextStyle(color: Colors.white),
                 decoration: BoxDecoration(
                     color: Colors.grey.shade700,
-                    borderRadius: BorderRadius.circular(100)),
+                    borderRadius: BorderRadius.circular(100),),
               ),
-            )),
+            ),),
         title: Text(
           'Donation History',
           style: boldTextStyle(size: 18, color: Colors.white),
@@ -82,7 +81,7 @@ class DonationHistoryScreen extends StatelessWidget {
                     backgroundColor: appColorPrimary,
                   ),
                   child: const Text('Retry',
-                      style: TextStyle(color: Colors.white)),
+                      style: TextStyle(color: Colors.white),),
                 ),
               ],
             ),
@@ -219,12 +218,12 @@ class DonationHistoryScreen extends StatelessWidget {
 
   // Compact Donation Card (for recent transactions view)
   Widget _buildCompactDonationCard(
-      Donation donation, DonationHistoryController controller) {
+      Donation donation, DonationHistoryController controller,) {
     final donationDetails = donation.donationDetails;
     final projectDetails = donation.projectDetails;
 
     // Get project image - placeholder since ProjectDetails doesn't have image
-    final projectImage = null;
+    const projectImage = null;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -309,7 +308,7 @@ class DonationHistoryScreen extends StatelessWidget {
 
   // Donation Card (Full Card)
   Widget _buildDonationCard(
-      Donation donation, DonationHistoryController controller) {
+      Donation donation, DonationHistoryController controller,) {
     final donationDetails = donation.donationDetails;
     final projectDetails = donation.projectDetails;
     final projectOwner = donation.projectOwner;
@@ -410,7 +409,7 @@ class DonationHistoryScreen extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(Icons.message,
-                      size: 16, color: Colors.white.withOpacity(0.7)),
+                      size: 16, color: Colors.white.withOpacity(0.7),),
                   8.width,
                   Expanded(
                     child: Text(
@@ -443,7 +442,7 @@ class DonationHistoryScreen extends StatelessWidget {
                         value: (projectDetails!.progressPercentage ?? 0) / 100,
                         backgroundColor: Colors.grey[800],
                         valueColor:
-                            AlwaysStoppedAnimation<Color>(appColorPrimary),
+                            const AlwaysStoppedAnimation<Color>(appColorPrimary),
                         minHeight: 6,
                       ),
                       4.height,
@@ -473,7 +472,7 @@ class DonationHistoryScreen extends StatelessWidget {
                         Text(
                           'Days Left',
                           style: secondaryTextStyle(
-                              size: 10, color: Colors.white70),
+                              size: 10, color: Colors.white70,),
                         ),
                       ],
                     ),
@@ -490,7 +489,7 @@ class DonationHistoryScreen extends StatelessWidget {
               Row(
                 children: [
                   Icon(Icons.access_time,
-                      size: 14, color: Colors.white.withOpacity(0.7)),
+                      size: 14, color: Colors.white.withOpacity(0.7),),
                   4.width,
                   Text(
                     controller.formatDate(donationDetails?.donatedAt),
@@ -512,7 +511,7 @@ class DonationHistoryScreen extends StatelessWidget {
                     style: secondaryTextStyle(
                         size: 11,
                         color:
-                            _getStatusColor(donationDetails.donationStatus!)),
+                            _getStatusColor(donationDetails.donationStatus!),),
                   ),
                 ),
             ],

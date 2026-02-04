@@ -3,7 +3,8 @@
 import 'package:country_picker/country_picker.dart';
 
 const APP_NAME = 'Wamims';
-const APP_LOVIN_SDK_KEY = 'q2SgFv2aGqCffJmPw7vLqgKFeiqw7zjY4mMZk5tA0i4g3k23JVmp4uv44zTwNC6L3YMqZQeJHVPFzLjw6NwtTY';
+const APP_LOVIN_SDK_KEY =
+    'q2SgFv2aGqCffJmPw7vLqgKFeiqw7zjY4mMZk5tA0i4g3k23JVmp4uv44zTwNC6L3YMqZQeJHVPFzLjw6NwtTY';
 const APP_MINI_LOGO_URL = 'assets/launcher_icons/wammisLogo.png';
 // const APP_MINI_LOGO_URL = '$DOMAIN_URL/img/logo/mini_logo.png';
 const APP_LOGO_URL = 'assets/launcher_icons/wammisLogo.png';
@@ -22,6 +23,10 @@ const DOMAIN_URL = "https://app.wamims.world";
 const BASE_URL = '$DOMAIN_URL/api/';
 
 const APP_APPSTORE_URL = '';
+
+// Wallet System Configuration
+const bool ENABLE_POINT_WALLET_SYSTEM =
+    false; // Set to true to enable Point Wallet tab
 
 ///LOCAL VIDEO TYPE URL
 const LOCAL_VIDEO_DOMAIN_URL = '$DOMAIN_URL/storage/streamit-laravel/';
@@ -45,15 +50,20 @@ const String payStackCurrency = "NGN";
 const String payPalSupportedCurrency = 'USD';
 //endregion
 
-//ADs
-//Live keys
-// //Android
+//ADs - Test IDs (Replace with production IDs when ready)
+//Android Test IDs
 const INTERSTITIAL_AD_ID = "ca-app-pub-3940256099942544/1033173712";
 const BANNER_AD_ID = "ca-app-pub-3940256099942544/6300978111";
+const REWARDED_AD_ID =
+    "ca-app-pub-3940256099942544/5224354917"; // AdMob Rewarded Test ID
+const NATIVE_AD_ID =
+    "ca-app-pub-3940256099942544/2247696110"; // AdMob Native Test ID
 
-// //IOS
-const IOS_INTERSTITIAL_AD_ID = "Please add your ad id here";
-const IOS_BANNER_AD_ID = "Please add your ad id here";
+//IOS Test IDs
+const IOS_INTERSTITIAL_AD_ID = "ca-app-pub-3940256099942544/4411468910";
+const IOS_BANNER_AD_ID = "ca-app-pub-3940256099942544/2934735716";
+const IOS_REWARDED_AD_ID = "ca-app-pub-3940256099942544/1712485313";
+const IOS_NATIVE_AD_ID = "ca-app-pub-3940256099942544/3986624511";
 
 //Note: For FIREBASE_SERVER_CLIENT_ID ---> Go to android/app/google-services.json
 // - Find press ctrl+F and look for "client_type": 3

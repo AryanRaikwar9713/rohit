@@ -9,11 +9,11 @@ import 'package:streamit_laravel/screens/reels/reel_response_model.dart';
 import 'package:streamit_laravel/screens/social/social_post_responce_Model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/models/vammis_profile_model.dart';
 
-respPrinter(int st, String body) {
+void respPrinter(int st, String body) {
   if (st == 200 || st == 201) {
     Logger().i(jsonDecode(body));
   } else {
-    Logger().e('${st}\n$body');
+    Logger().e('$st\n$body');
   }
 }
 
@@ -28,14 +28,14 @@ class VammisProfileApi {
     try {
       final head = await DB().getHeaderForRow();
 
-      String url =
+      final String url =
           'https://app.wamims.world/public/social/wamims_profile.php?user_id=$userId';
 
       Logger().i('Getting Vammis Profile for user: $userId');
 
       final response = await http.get(
         Uri.parse(url),
-        headers: head,
+        headers: head ?? {},
       );
 
       respPrinter(response.statusCode, response.body);
@@ -67,19 +67,19 @@ class VammisProfileApi {
   }) async {
     try {
       // String uri = 'https://app.wamims.world/api/posts/feed?offset=$page';
-      Map<String, String> head = await DB().getHeaderForRow();
-      var user = await DB().getUser();
+      final head = await DB().getHeaderForRow();
+      final user = await DB().getUser();
 
-      String uri =
+      final String uri =
           'https://app.wamims.world/social/get_posts.php?logged_in_user_id=${user?.id ?? ''}&user_id=$userId&page=$page';
 
-      var resp = await http.get(Uri.parse(uri), headers: head);
+      final resp = await http.get(Uri.parse(uri), headers: head ?? {});
 
       respPrinter(resp.statusCode, resp.body);
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var d = jsonDecode(resp.body);
-        var s = GetSocialPostResponceModel.fromJson(d);
+        final d = jsonDecode(resp.body);
+        final s = GetSocialPostResponceModel.fromJson(d);
         onSuccess(s);
       } else {
         onFailure(resp);
@@ -98,20 +98,20 @@ class VammisProfileApi {
     required void Function(GetReelsResponceModel) onSuccess,
   }) async {
     try {
-      Map<String, String> head = await DB().getHeaderForRow();
+      final head = await DB().getHeaderForRow();
 
-      var user = await DB().getUser();
+      final user = await DB().getUser();
 
-      String uri =
+      final String uri =
           'https://app.wamims.world/public/social/reels/get_reels.php?user_id=${user?.id ?? ''}&profile_user_id=$userId&page=$page&limit=10';
 
-      var resp = await http.get(Uri.parse(uri), headers: head);
+      final resp = await http.get(Uri.parse(uri), headers: head ?? {});
 
       respPrinter(resp.statusCode, resp.body);
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var d = jsonDecode(resp.body);
-        var s = GetReelsResponceModel.fromJson(d);
+        final d = jsonDecode(resp.body);
+        final s = GetReelsResponceModel.fromJson(d);
         onSuccess(s);
       } else {
         onFailure(resp);
@@ -130,13 +130,13 @@ class VammisProfileApi {
   }) async {
     try {
       final head = await DB().getHeaderForRow();
-      UserData? currentUser = await DB().getUser();
+      final UserData? currentUser = await DB().getUser();
 
-      String url = 'https://app.wamims.world/public/social/follow_api.php';
+      final String url = 'https://app.wamims.world/public/social/follow_api.php';
 
       final response = await http.post(
         Uri.parse(url),
-        headers: head,
+        headers: head ?? {},
         body: jsonEncode({
           "current_user_id": currentUser?.id ?? 0,
           "target_user_id": targetUserId,
@@ -181,7 +181,7 @@ class VammisProfileApi {
     try {
       final head = await DB().getHeaderForRow();
 
-      String url = 'https://app.wamims.world/public/social/wamims_profile.php';
+      final String url = 'https://app.wamims.world/public/social/wamims_profile.php';
 
       // If no file_url is provided, use a static string
       final fileUrlToSend = fileUrl ?? 'default_avatar.jpg';
@@ -198,7 +198,7 @@ class VammisProfileApi {
 
       final response = await http.put(
         Uri.parse(url),
-        headers: head,
+        headers: head ?? {},
         body: jsonEncode(requestBody),
       );
 
@@ -230,14 +230,14 @@ class VammisProfileApi {
     required void Function(Map<String, dynamic>) onSuccess,
   }) async {
     try {
-      String uri = 'https://app.wamims.world/public/social/wamims_profile.php';
+      final String uri = 'https://app.wamims.world/public/social/wamims_profile.php';
 
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
 
-      var request = http.MultipartRequest('POST', Uri.parse(uri));
+      final request = http.MultipartRequest('POST', Uri.parse(uri));
 
-      request.headers.addAll(head);
+      request.headers.addAll(head ?? {});
 
       // 🔥 Important Part
       request.files.add(
@@ -250,8 +250,8 @@ class VammisProfileApi {
       request.fields['user_id'] = user?.id.toString()??'';
 
       // Send request
-      var response = await request.send();
-      var body = await http.Response.fromStream(response);
+      final response = await request.send();
+      final body = await http.Response.fromStream(response);
 
       if (body.statusCode == 200) {
         final json = jsonDecode(body.body);
@@ -274,20 +274,20 @@ class VammisProfileApi {
     required void Function(GetProjectListResponcModel) onSuccess,
   }) async {
     try {
-      Map<String, String> head = await DB().getHeaderForRow();
+      final head = await DB().getHeaderForRow();
 
-      String uri =
+      final String uri =
           'https://app.wamims.world/public/social/impact/get_projects.php?user_id=$userId&page=$page&limit=10';
 
       Logger().i('Getting User Projects for user: $userId, page: $page');
 
-      var resp = await http.get(Uri.parse(uri), headers: head);
+      final resp = await http.get(Uri.parse(uri), headers: head ?? {});
 
       respPrinter(resp.statusCode, resp.body);
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var d = jsonDecode(resp.body);
-        var s = GetProjectListResponcModel.fromJson(d);
+        final d = jsonDecode(resp.body);
+        final s = GetProjectListResponcModel.fromJson(d);
         onSuccess(s);
       } else {
         onFailure(resp);

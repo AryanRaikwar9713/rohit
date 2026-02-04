@@ -94,8 +94,8 @@ List top10Icons = [
 
 String convertDate(String dateString) {
   if (dateString != "") {
-    DateTime date = DateTime.parse(dateString);
-    DateFormat formatter = DateFormat('dd/MM/yyyy');
+    final DateTime date = DateTime.parse(dateString);
+    final DateFormat formatter = DateFormat('dd/MM/yyyy');
     return formatter.format(date);
   }
   return "";
@@ -167,8 +167,8 @@ Widget viewAllWidget({
 }
 
 String getEndPoint({required String endPoint, int? perPages, int? page, List<String>? params}) {
-  String perPage = "?per_page=$perPages";
-  String pages = "&page=$page";
+  final String perPage = "?per_page=$perPages";
+  final String pages = "&page=$page";
 
   if (page != null && params.validate().isEmpty) {
     return "$endPoint$perPage$pages";
@@ -269,7 +269,6 @@ Widget rentAndPaidButton({
     shapeBorder: RoundedRectangleBorder(borderRadius: radius(4)),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const CachedImageWidget(
           url: Assets.iconsIcRent,
@@ -418,7 +417,7 @@ Future<void> handlePip({required dynamic controller, required BuildContext conte
     } else {
       try {
         await const MethodChannel("videoPlatform").invokeMethod('play', {
-          "data": controller.videoUrlInput
+          "data": controller.videoUrlInput,
           // "data": "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
           // "data": "https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4"
         });
@@ -432,7 +431,7 @@ Future<void> handlePip({required dynamic controller, required BuildContext conte
       // Set up platform channel listener for PiP mode changes
       platform.setMethodCallHandler((call) async {
         if (call.method == 'onPipModeChanged') {
-          bool newPipMode = call.arguments as bool;
+          final bool newPipMode = call.arguments as bool;
 
           // Only update if the PiP state has actually changed to prevent unnecessary rebuilds
           if (isPipModeOn.value != newPipMode) {
@@ -459,7 +458,7 @@ Future<void> handlePip({required dynamic controller, required BuildContext conte
 }
 
 List<(String, IconData, Color)> getSupportedDeviceText({bool isMobileSupported = false, bool isDesktopSupported = false, bool isTabletSupported = false}) {
-  List<(String, IconData, Color)> supportedDeviceText = [];
+  final List<(String, IconData, Color)> supportedDeviceText = [];
 
   supportedDeviceText.add(
     (
@@ -472,7 +471,7 @@ List<(String, IconData, Color)> getSupportedDeviceText({bool isMobileSupported =
     '${locale.value.laptop}${isDesktopSupported ? locale.value.supported : locale.value.notSupported}',
     isDesktopSupported ? Icons.check_circle_outline_rounded : Icons.clear,
     isDesktopSupported ? discountColor : redColor,
-  ));
+  ),);
   supportedDeviceText.add(
     (
       '${locale.value.tablet.suffixText(value: ' ')}${isTabletSupported ? locale.value.supported : locale.value.notSupported}',
@@ -525,7 +524,7 @@ List<(String, IconData, Color)> getSupportedDeviceText({bool isMobileSupported =
     }
   }
 
-  RegExp regex = RegExp(r"(?<=P|K)");
+  final RegExp regex = RegExp("(?<=P|K)");
   List<String> notSupportedParts = [];
   List<String> supportedParts = [];
   if (notSupportedText.isNotEmpty) {
@@ -596,9 +595,9 @@ Future<void> launchUrlCustomURL(String? url) async {
 }
 
 Future<void> checkApiCallIsWithinTimeSpan({bool forceSync = false, required VoidCallback callback, required String sharePreferencesKey, Duration? duration}) async {
-  DateTime currentTimeStamp = DateTime.timestamp();
-  DateTime lastSyncedTimeStamp = DateTime.fromMillisecondsSinceEpoch(getIntAsync(sharePreferencesKey, defaultValue: 0));
-  DateTime fiveMinutesLater = lastSyncedTimeStamp.add(duration ?? const Duration(minutes: 5));
+  final DateTime currentTimeStamp = DateTime.timestamp();
+  final DateTime lastSyncedTimeStamp = DateTime.fromMillisecondsSinceEpoch(getIntAsync(sharePreferencesKey));
+  final DateTime fiveMinutesLater = lastSyncedTimeStamp.add(duration ?? const Duration(minutes: 5));
 
   if (forceSync || currentTimeStamp.isAfter(fiveMinutesLater)) {
     callback.call();
@@ -616,8 +615,8 @@ DashboardController getDashboardController() {
 }
 
 bool isComingSoon(String releaseDate) {
-  DateTime now = DateTime.now();
-  DateTime releaseDateParsed = DateFormat(DateFormatConst.yyyy_MM_dd).parse(releaseDate);
+  final DateTime now = DateTime.now();
+  final DateTime releaseDateParsed = DateFormat(DateFormatConst.yyyy_MM_dd).parse(releaseDate);
   return releaseDateParsed.isAfter(now);
 }
 

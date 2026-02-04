@@ -36,7 +36,6 @@ class ProductCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(cardRadius),
           border: Border.all(
             color: const Color(0xFF2E2E2E),
-            width: 1,
           ),
           boxShadow: [
             BoxShadow(
@@ -74,13 +73,13 @@ class ProductCard extends StatelessWidget {
                         : Container(
                             width: double.infinity,
                             height: double.infinity,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  const Color(0xFF2A2A2A),
-                                  const Color(0xFF1E1E1E),
+                                  Color(0xFF2A2A2A),
+                                  Color(0xFF1E1E1E),
                                 ],
                               ),
                             ),
@@ -97,9 +96,9 @@ class ProductCard extends StatelessWidget {
                     top: 0,
                     child: Container(
                       height: 3,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         gradient: _cardGradient,
-                        borderRadius: const BorderRadius.only(
+                        borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(cardRadius),
                           topRight: Radius.circular(cardRadius),
                         ),
@@ -168,7 +167,7 @@ class ProductCard extends StatelessWidget {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.star_rounded,
                                   size: 12,
                                   color: Colors.white,

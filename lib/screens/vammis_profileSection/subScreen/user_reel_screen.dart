@@ -37,7 +37,7 @@ class _UserReelScreenState extends State<UserReelScreen> {
    _getAndController();
   }
 
-  _getAndController()
+  void _getAndController()
   {
 
   }
@@ -64,8 +64,8 @@ class _UserReelScreenState extends State<UserReelScreen> {
            },
            controller: pageController,
            children: [
-             for(Reel r in profileController.userReels)
-               ReelItemWidget(reel: r, controller: videoController)
+             for(final Reel r in profileController.userReels)
+               ReelItemWidget(reel: r, controller: videoController),
            ],
         ),
       ),

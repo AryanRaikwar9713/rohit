@@ -49,13 +49,11 @@ class SubscriptionCard extends StatelessWidget {
                     )
                   : null,
               borderRadius: BorderRadius.circular(6),
-              color: canvasColor),
+              color: canvasColor,),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   if (planDet.discountPercentage > 0)
@@ -92,7 +90,6 @@ class SubscriptionCard extends StatelessWidget {
               ),
               if (planDet.discountPercentage > 0) 8.height,
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   PriceWidget(
@@ -146,7 +143,7 @@ class SubscriptionCard extends StatelessWidget {
                     if (planDet.planType[index].status.getBoolInt()) {
                       return subscriptionBenefitsTile(planType: planDet.planType[index]).paddingBottom(8);
                     } else {
-                      return Offstage();
+                      return const Offstage();
                     }
                   },
                 ),
@@ -162,7 +159,6 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
   return Column(
     children: [
       Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CachedImageWidget(
@@ -187,11 +183,10 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
           planType.slug != SubscriptionTitle.downloadStatus &&
           planType.slug != SubscriptionTitle.videoCast &&
           planType.slug != SubscriptionTitle.ads &&
-          planType.slug != SubscriptionTitle.deviceLimit),
+          planType.slug != SubscriptionTitle.deviceLimit,),
       if (planType.slug == SubscriptionTitle.deviceLimit && planType.limitationValue.getBoolInt() && planType.limit.value.isNotEmpty)
         ULWidget(
           titleWidget: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CachedImageWidget(
@@ -212,14 +207,13 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
               ).expand(),
             ],
           ),
-          edgeInsets: EdgeInsets.only(left: 16, top: 2, bottom: 2),
-          customSymbol: SizedBox.shrink(),
-          children: [],
+          edgeInsets: const EdgeInsets.only(left: 16, top: 2, bottom: 2),
+          customSymbol: const SizedBox.shrink(),
+          children: const [],
         ),
       if (planType.slug == SubscriptionTitle.videoCast && planType.limitationValue.getBoolInt())
         ULWidget(
           titleWidget: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CachedImageWidget(
@@ -247,7 +241,6 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
       if (planType.slug == SubscriptionTitle.ads)
         ULWidget(
           titleWidget: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CachedImageWidget(
@@ -275,7 +268,6 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
       if (planType.slug == SubscriptionTitle.supportedDeviceType && planType.limitationValue.getBoolInt())
         ULWidget(
           titleWidget: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CachedImageWidget(
@@ -296,8 +288,8 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
               ).expand(),
             ],
           ),
-          edgeInsets: EdgeInsets.only(left: 16, top: 2, bottom: 2),
-          customSymbol: SizedBox.shrink(),
+          edgeInsets: const EdgeInsets.only(left: 16, top: 2, bottom: 2),
+          customSymbol: const SizedBox.shrink(),
           children: getSupportedDeviceText(
             isDesktopSupported: planType.limit.enableLaptop.toInt().getBoolInt(),
             isMobileSupported: planType.limit.enableMobile.toInt().getBoolInt(),
@@ -321,7 +313,6 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
       if (planType.slug == SubscriptionTitle.profileLimit && planType.limit.value.isNotEmpty && planType.limitationValue.getBoolInt())
         ULWidget(
           titleWidget: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CachedImageWidget(
@@ -349,7 +340,6 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
       if (planType.slug == SubscriptionTitle.downloadStatus && planType.limitationValue.getBoolInt())
         ULWidget(
           titleWidget: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CachedImageWidget(
@@ -370,13 +360,13 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
               ).expand(),
             ],
           ),
-          edgeInsets: EdgeInsets.only(left: 16, top: 2, bottom: 2),
-          customSymbol: SizedBox.shrink(),
+          edgeInsets: const EdgeInsets.only(left: 16, top: 2, bottom: 2),
+          customSymbol: const SizedBox.shrink(),
           children: [
-            if (getDownloadQuality((planType).limit).$1.isNotEmpty)
+            if (getDownloadQuality(planType.limit).$1.isNotEmpty)
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.check_circle_outline_rounded,
                     size: 12,
                     color: discountColor,
@@ -388,7 +378,7 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
             if (getDownloadQuality(planType.limit).$2.isNotEmpty)
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.clear,
                     size: 12,
                     color: appColorPrimary,
@@ -396,7 +386,7 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
                   2.width,
                   Text(getDownloadQuality(planType.limit).$2, style: secondaryTextStyle()),
                 ],
-              )
+              ),
           ],
         ),
     ],

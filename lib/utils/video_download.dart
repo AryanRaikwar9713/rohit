@@ -43,9 +43,9 @@ class DownloadManagerController extends GetxController {
     IsolateNameServer.registerPortWithName(_port!.sendPort, 'downloader_send_port');
 
     _port!.listen((dynamic data) {
-      String id = data[0];
-      int status = data[1];
-      int progress = data[2];
+      final String id = data[0];
+      final int status = data[1];
+      final int progress = data[2];
       log('DownloadManagerController: Task $id, status $status, progress $progress');
 
       downloadProgressMap[id] = progress;
@@ -74,7 +74,7 @@ class FileStorage {
   Future<String> getExternalDocumentPath() async {
     await _requestStoragePermission(); // Request permission at the start
 
-    Directory directory = await getApplicationDocumentsDirectory();
+    final Directory directory = await getApplicationDocumentsDirectory();
 
     final exPath = directory.path;
     await Directory(exPath).create(recursive: true);
@@ -82,7 +82,7 @@ class FileStorage {
   }
 
   Future<void> _requestStoragePermission() async {
-    var status = await Permission.storage.status;
+    final status = await Permission.storage.status;
     if (!status.isGranted) {
       await Permission.storage.request();
     }
@@ -205,21 +205,21 @@ class FileStorage {
   }
 
   Future<void> storeVideoMetadata(VideoPlayerModel metadata, String thumbnail) async {
-    List<String>? videoListJson = getStringListAsync('${SharedPreferenceConst.DOWNLOAD_VIDEOS}_${loginUserData.value.id}');
-    List<VideoPlayerModel> downloadVideos = videoListJson != null ? videoListJson.map((item) => VideoPlayerModel.fromJson(json.decode(item))).toList() : [];
+    final List<String>? videoListJson = getStringListAsync('${SharedPreferenceConst.DOWNLOAD_VIDEOS}_${loginUserData.value.id}');
+    final List<VideoPlayerModel> downloadVideos = videoListJson != null ? videoListJson.map((item) => VideoPlayerModel.fromJson(json.decode(item))).toList() : [];
     metadata.updateThumbnail(thumbnail.replaceAll("File:", "").trim());
     downloadVideos.add(metadata);
 
-    List<String> updatedVideoListJson = downloadVideos.map((video) => jsonEncode(video.toJson())).toList();
+    final List<String> updatedVideoListJson = downloadVideos.map((video) => jsonEncode(video.toJson())).toList();
     await setValue('${SharedPreferenceConst.DOWNLOAD_VIDEOS}_${loginUserData.value.id}', updatedVideoListJson);
   }
 
   Future<void> updateVideoMetadata(VideoPlayerModel metadata, String videoFilePath) async {
-    List<String>? videoListJson = getStringListAsync('${SharedPreferenceConst.DOWNLOAD_VIDEOS}_${loginUserData.value.id}');
-    List<VideoPlayerModel> downloadVideos = videoListJson != null ? videoListJson.map((item) => VideoPlayerModel.fromJson(json.decode(item))).toList() : [];
+    final List<String>? videoListJson = getStringListAsync('${SharedPreferenceConst.DOWNLOAD_VIDEOS}_${loginUserData.value.id}');
+    final List<VideoPlayerModel> downloadVideos = videoListJson != null ? videoListJson.map((item) => VideoPlayerModel.fromJson(json.decode(item))).toList() : [];
     metadata.updateDownloadUrl(videoFilePath.replaceAll("File:", "").trim());
     if (downloadVideos.isNotEmpty && downloadVideos.any((element) => element.id == metadata.id)) {
-      int index = downloadVideos.indexWhere((element) => element.id == metadata.id);
+      final int index = downloadVideos.indexWhere((element) => element.id == metadata.id);
       if (index > -1) {
         downloadVideos[index] = metadata;
       }
@@ -228,14 +228,14 @@ class FileStorage {
       downloadVideos.add(metadata);
     }
 
-    List<String> updatedVideoListJson = downloadVideos.map((video) => jsonEncode(video.toJson())).toList();
+    final List<String> updatedVideoListJson = downloadVideos.map((video) => jsonEncode(video.toJson())).toList();
     await setValue('${SharedPreferenceConst.DOWNLOAD_VIDEOS}_${loginUserData.value.id}', updatedVideoListJson);
   }
 
   Future<void> removeVideoById(List<int> videoIdToRemove, VoidCallback? refreshCall, {required Function(bool) loaderOnOff}) async {
     loaderOnOff.call(true);
     // Retrieve the current list of downloaded videos from shared preferences
-    List<String>? videoListJson = getStringListAsync('${SharedPreferenceConst.DOWNLOAD_VIDEOS}_${loginUserData.value.id}');
+    final List<String>? videoListJson = getStringListAsync('${SharedPreferenceConst.DOWNLOAD_VIDEOS}_${loginUserData.value.id}');
 
     if (videoListJson == null) {
       log('No videos found in shared preferences');
@@ -243,7 +243,7 @@ class FileStorage {
     }
 
     // Convert the JSON list to a list of VideoPlayerModel objects
-    List<VideoPlayerModel> downloadVideos = videoListJson.map((item) => VideoPlayerModel.fromJson(json.decode(item))).toList();
+    final List<VideoPlayerModel> downloadVideos = videoListJson.map((item) => VideoPlayerModel.fromJson(json.decode(item))).toList();
 
     // Remove the video with the specified ID
     videoIdToRemove.forEachIndexed(
@@ -270,7 +270,7 @@ class FileStorage {
     required Function(bool) loaderOnOff,
   }) async {
     loaderOnOff.call(true);
-    Map<dynamic, dynamic> req = {
+    final Map<dynamic, dynamic> req = {
       "entertainment_id": videoModel.entertainmentId,
       "is_download": isDownloaded,
       'device_id': yourDevice.value.deviceId,
@@ -362,7 +362,7 @@ Future<bool> checkIfDownloaded({
   bool isExist = false;
 
   // Retrieve the current list of downloaded videos from shared preferences
-  List<String>? videoListJson = getStringListAsync('${SharedPreferenceConst.DOWNLOAD_VIDEOS}_${loginUserData.value.id}');
+  final List<String>? videoListJson = getStringListAsync('${SharedPreferenceConst.DOWNLOAD_VIDEOS}_${loginUserData.value.id}');
 
   if (videoListJson.validate().isEmpty) {
     log('No videos found in shared preferences');
@@ -370,10 +370,10 @@ Future<bool> checkIfDownloaded({
   }
 
   // Convert the JSON list to a list of VideoPlayerModel objects
-  List<VideoPlayerModel> downloadVideos = videoListJson.validate().map((item) => VideoPlayerModel.fromJson(json.decode(item))).toList();
+  final List<VideoPlayerModel> downloadVideos = videoListJson.validate().map((item) => VideoPlayerModel.fromJson(json.decode(item))).toList();
 
   if (downloadVideos.any((element) => element.id == videoId)) {
-    VideoPlayerModel playerModel = downloadVideos.where((element) => element.id == videoId).first;
+    final VideoPlayerModel playerModel = downloadVideos.where((element) => element.id == videoId).first;
     file = File(playerModel.videoUrlInput);
     isExist = file.existsSync();
   }

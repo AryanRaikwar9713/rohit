@@ -98,7 +98,7 @@ class EditVammisProfileController extends GetxController {
         },
         onSuccess: (d) {
           toast("Profile Image Updated");
-        });
+        },);
     isUploadingImage.value = false;
   }
 
@@ -204,7 +204,7 @@ class EditVammisProfileController extends GetxController {
     try {
       // Use existing avatar URL or static string
       // As per requirement: if image is not being sent, use static string
-      String? fileUrl = currentAvatarUrl.value.isNotEmpty
+      final String? fileUrl = currentAvatarUrl.value.isNotEmpty
           ? currentAvatarUrl.value
           : 'default_avatar.jpg';
 

@@ -60,7 +60,6 @@ class SocialController extends GetxController {
       log('=== Testing API with User ID 1 (same as main call) ===');
       final CoreServiceApis coreApi = CoreServiceApis();
       final response = await coreApi.getSocialPosts(
-        page: 1,
         perPage: 10,
         userId: 1,
         onError: (s) {},
@@ -121,7 +120,7 @@ class SocialController extends GetxController {
       }, onError: (e) {
         Get.snackbar("Error", e);
         hasMoreData.value = false;
-      });
+      },);
 
       isLoading.value = false;
     } catch (e) {
@@ -163,22 +162,22 @@ class SocialController extends GetxController {
   // Post interaction methods
   Future<void> toggleLike(int postId) async {
     try {
-      SocialPost p = posts.value
+      final SocialPost p = posts.value
           .where((element) => element.postId == postId.toString())
           .first;
 
       await SocialApi().likePost(
         postId: postId,
         onError: (e) {
-          Logger().e("Error in Like Api ${e}");
+          Logger().e("Error in Like Api $e");
         },
         onFailure: (s) => _handleResponce(s),
         onSuccess: (isLiked, likeCount) {
-          var postIndex = posts.value.indexWhere(
+          final postIndex = posts.value.indexWhere(
             (element) => element.postId == postId.toString(),
           );
 
-          var post = posts.value[postIndex];
+          final post = posts.value[postIndex];
 
           post.engagement?.likesCount = likeCount;
           post.engagement?.isLiked = isLiked;
@@ -191,7 +190,7 @@ class SocialController extends GetxController {
               targetId: postId,
               contentType: "post",
               onError: (e) {
-                Logger().e("Error in Like Api ${e}");
+                Logger().e("Error in Like Api $e");
               },
               onFailure: (s) => _handleResponce(s),
             );
@@ -209,18 +208,18 @@ class SocialController extends GetxController {
         postId: postId,
         comment: comment,
         onError: (e) {
-          Logger().e("Error in Comment Api ${e}");
+          Logger().e("Error in Comment Api $e");
         },
         onFailure: (s) => _handleResponce(s),
         onSuccess: (c) {
           comments.add(c);
           comments.refresh();
 
-          int postInt = posts.indexWhere(
+          final int postInt = posts.indexWhere(
             (element) => element.postId == postId.toString(),
           );
 
-          var post = posts.value[postInt];
+          final post = posts.value[postInt];
 
           post.engagement?.commentsCount =
               (post.engagement?.commentsCount ?? 0) + 1;
@@ -235,7 +234,7 @@ class SocialController extends GetxController {
             commentId: int.parse(c.commentId ?? '0'),
             contentType: "post",
             onError: (e) {
-              Logger().e("Error in Comment Api ${e}");
+              Logger().e("Error in Comment Api $e");
             },
             onFailure: (s) => _handleResponce(s),
           );
@@ -272,7 +271,7 @@ class SocialController extends GetxController {
         title: title ?? '',
         caption: caption,
         mediaUrl: imagePath,
-        hashtags: (hashtags ?? []),
+        hashtags: hashtags ?? [],
         // onProgress: (d){
         //   Logger().i("Progress $d");
         // },
@@ -287,7 +286,7 @@ class SocialController extends GetxController {
         onSuccess: (s) async {
           isUploadingPost.value = false;
           Get.snackbar("Success", "Post Created Successfully",
-              backgroundColor: Colors.green);
+              backgroundColor: Colors.green,);
           print("post created done callin point APi");
           WalletApi().getPointsAndBolt(
               action: PointAction.postUpload,
@@ -299,7 +298,7 @@ class SocialController extends GetxController {
               },
               onFailure: (d) {
                 Logger().e("Error in Point Api $d");
-              });
+              },);
           print("post created done callin point APi");
           await refreshData();
           // Only pop if user is still on the create post screen
@@ -351,12 +350,12 @@ class SocialController extends GetxController {
     commentLoading.value = false;
   }
 
-  loadMoreComment(int postId) {
+  void loadMoreComment(int postId) {
     if (!hasMoreComment.value || commentLoading.value) return;
     getPostComment(postId);
   }
 
-  resateCommentData() {
+  void resateCommentData() {
     commentPage.value = 1;
     comments.clear();
     comments.refresh();
@@ -364,7 +363,7 @@ class SocialController extends GetxController {
     hasMoreComment.value = false;
   }
 
-  followUser(int userId) {
+  void followUser(int userId) {
     try {
       SocialApi().followUser(
         targetUserId: userId,
@@ -375,11 +374,11 @@ class SocialController extends GetxController {
           _handleResponce(s);
         },
         onSuccess: (isFollowing) {
-          posts.forEach((e) {
+          for (final e in posts) {
             if (e.user?.userId == userId.toString()) {
               e.user?.isFollowed = isFollowing;
             }
-          });
+          }
           posts.refresh();
         },
       );
@@ -390,12 +389,12 @@ class SocialController extends GetxController {
 
   // Fallback method for creating posts locally when API is not available
 
-  _handleResponce(http.Response s) {
+  void _handleResponce(http.Response s) {
     Logger().e(s.statusCode);
     Logger().e(jsonDecode(s.body));
   }
 
-  _handleError(String e) {
+  void _handleError(String e) {
     Logger().e(e);
   }
 }

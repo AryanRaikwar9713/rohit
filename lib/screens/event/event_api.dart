@@ -33,14 +33,14 @@ class Event {
       "https://app.wamims.world/public/social/shop/event_create.php",
     );
 
-    var request = http.MultipartRequest("POST", url);
+    final request = http.MultipartRequest("POST", url);
 
-    var head = await DB().getHeaderForForm();
-    request.headers.addAll(head);
+    final head = await DB().getHeaderForForm();
+    request.headers.addAll(head ?? {});
 
-    var user = await DB().getUser();
+    final user = await DB().getUser();
 
-    var data = {
+    final data = {
       "user_id": user?.id ?? 0,
       "event_title": eventTitle,
       "event_type": 'contest',
@@ -56,7 +56,7 @@ class Event {
 
     request.fields.addAll(data.map(
       (key, value) => MapEntry(key, value.toString()),
-    ));
+    ),);
 
     /// ------------ EVENT RULES ARRAY --------------
     for (int i = 0; i < eventRules.length; i++) {
@@ -65,8 +65,8 @@ class Event {
 
     /// ------------ COVER IMAGE FILE --------------
     // video file
-    var file = File(coverImage);
-    var totalBytes = await file.length();
+    final file = File(coverImage);
+    final totalBytes = await file.length();
 
     var bytesSent = 0;
 
@@ -78,9 +78,9 @@ class Event {
           sink.add(data);
         },
       ),
-    ));
+    ),);
 
-    var multipartFile = http.MultipartFile(
+    final multipartFile = http.MultipartFile(
       'cover_image',
       stream,
       totalBytes,
@@ -105,7 +105,7 @@ class Event {
 
     /// ------------- SEND REQUEST ------------------
     try {
-      var response = await request.send();
+      final response = await request.send();
       final respStr = await response.stream.bytesToString();
 
       print("akjkhsjkdf");
@@ -141,15 +141,15 @@ class Event {
   }) async
   {
     try {
-      var head = await DB().getHeaderForRow();
-      var user = await DB().getUser();
+      final head = await DB().getHeaderForRow();
+      final user = await DB().getUser();
 
-      String uri =
+      final String uri =
           "https://app.wamims.world/public/social/shop/get_events.php?user_id=${user?.id ?? 0}&page=$page&limit=10";
 
-      var resp = await http.get(
+      final resp = await http.get(
         Uri.parse(uri),
-        headers: head,
+        headers: head ?? {},
       );
 
       respPrinter(resp.statusCode, resp.body);
@@ -158,7 +158,7 @@ class Event {
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
         try {
-          var d = jsonDecode(resp.body);
+          final d = jsonDecode(resp.body);
           onSuccess(GetEventsResponcModel.fromJson(d)); // replace `d` with model
         } catch (e) {
           onError("JSON Parse Error: $e");
@@ -183,22 +183,22 @@ class Event {
   }) async
   {
     try {
-      String uri =
+      final String uri =
           "https://app.wamims.world/public/social/shop/coupon_redeem.php";
 
-      var head = await DB().getHeaderForRow();
-      var user = await DB().getUser();
+      final head = await DB().getHeaderForRow();
+      final user = await DB().getUser();
 
-      var data = {
+      final data = {
         "user_id": user?.id ?? 0,
         "shop_id": shopId,
         "event_id": eventId,
         "coupon_code": couponCode,
       };
 
-      var resp = await http.post(
+      final resp = await http.post(
         Uri.parse(uri),
-        headers: head,
+        headers: head ?? {},
         body: jsonEncode(data),
       );
 
@@ -206,10 +206,10 @@ class Event {
       // return ;
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var d = jsonDecode(resp.body);
+        final d = jsonDecode(resp.body);
 
-        bool status = d["status"] == true;
-        String msg = d["message"] ?? "";
+        final bool status = d["status"] == true;
+        final String msg = d["message"] ?? "";
 
         onSuccess(status, msg);
       } else {

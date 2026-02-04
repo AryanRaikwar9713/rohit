@@ -160,11 +160,11 @@ class ProductFilterSheet extends StatelessWidget {
             prefixIcon: Icon(Icons.search_rounded, color: Colors.grey[500]),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+              borderSide: const BorderSide(color: Color(0xFF2E2E2E)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+              borderSide: const BorderSide(color: Color(0xFF2E2E2E)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
@@ -215,7 +215,7 @@ class ProductFilterSheet extends StatelessWidget {
                     onTap: () {
                       controller.selectedCategoryId.value = category.id;
                     },
-                  )),
+                  ),),
             ],
           );
         }),
@@ -240,7 +240,6 @@ class ProductFilterSheet extends StatelessWidget {
           borderRadius: BorderRadius.circular(22),
           border: Border.all(
             color: isSelected ? Colors.transparent : const Color(0xFF3E3E3E),
-            width: 1,
           ),
           boxShadow: isSelected
               ? [
@@ -290,11 +289,11 @@ class ProductFilterSheet extends StatelessWidget {
                   hintStyle: secondaryTextStyle(size: 14, color: Colors.grey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+                    borderSide: const BorderSide(color: Color(0xFF2E2E2E)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+                    borderSide: const BorderSide(color: Color(0xFF2E2E2E)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -323,11 +322,11 @@ class ProductFilterSheet extends StatelessWidget {
                   hintStyle: secondaryTextStyle(size: 14, color: Colors.grey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+                    borderSide: const BorderSide(color: Color(0xFF2E2E2E)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+                    borderSide: const BorderSide(color: Color(0xFF2E2E2E)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -496,9 +495,9 @@ class ProductFilterSheet extends StatelessWidget {
                         ),
                       ),
                       if (isSelected)
-                        Icon(
+                        const Icon(
                           Icons.check_circle_rounded,
-                          color: const Color(0xFFFF9800),
+                          color: Color(0xFFFF9800),
                           size: 20,
                         ),
                     ],

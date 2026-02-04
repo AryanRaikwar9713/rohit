@@ -28,7 +28,6 @@ class PaymentCardComponent extends StatelessWidget {
             color: canvasColor,
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(

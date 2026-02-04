@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/app_lovin_ads/add_helper.dart';
+import 'package:streamit_laravel/components/admob_rewarded_ad_helper.dart';
 import 'package:streamit_laravel/screens/walletSection/bolt/boalt_wallet_responce_model.dart';
 import 'package:streamit_laravel/screens/walletSection/bolt/bolt_api.dart';
 import 'package:http/http.dart' as http;
@@ -26,8 +27,8 @@ class BoaltWalletController extends GetxController
 
   RxInt historyPage = 1.obs;
   
-  // Filter for transaction types
-  RxString selectedFilter = 'all'.obs; // 'all', 'ads', 'social', 'donation'
+  // Filter for transaction types - Simplified to 2 types
+  RxString selectedFilter = 'earnings'.obs; // 'earnings', 'donations'
 
 
 
@@ -40,21 +41,22 @@ class BoaltWalletController extends GetxController
 
 
 
-  _init(){
+  void _init(){
     getDashBoardData();
     getTransectiom(refresh:  true);
   }
 
 
 
-  refresh() async
+  @override
+  Future<void> refresh() async
   {
     getDashBoardData();
     getTransectiom(refresh: true);
-    selectedFilter.value = 'all'; // Reset filter on refresh
+    selectedFilter.value = 'earnings'; // Reset filter on refresh
   }
 
-  getDashBoardData() async
+  Future<void> getDashBoardData() async
   {
       // try
       //     {
@@ -77,7 +79,7 @@ class BoaltWalletController extends GetxController
   }
 
 
-  getTransectiom({bool refresh =false}) async
+  Future<void> getTransectiom({bool refresh =false}) async
   {
 
     if(refresh)
@@ -103,22 +105,22 @@ class BoaltWalletController extends GetxController
           applyFilter();
 
           allTransactions.refresh();
-        });
+        },);
 
   }
 
-  loadMore()async
+  Future<void> loadMore()async
   {
     if(hasMore.value)
       {
         historyPage.value++;
-        getTransectiom(refresh: false);
+        getTransectiom();
       }
   }
 
 
 
-  _handelResponce(http.Response resp)
+  void _handelResponce(http.Response resp)
   {
     try
     {
@@ -130,36 +132,33 @@ class BoaltWalletController extends GetxController
     }
   }
 
-  _handelError(String e)
+  void _handelError(String e)
   {
     Logger().e('Errpr $e');
     toast(e);
   }
 
-  // Filter transactions by type
+  // Filter transactions by type - Simplified to 2 types
   void applyFilter() {
-    if (selectedFilter.value == 'all') {
-      transactionList.value = allTransactions;
-    } else {
-      transactionList.value = allTransactions.where((transaction) {
-        final type = (transaction.actionType ?? '').toLowerCase();
-        switch (selectedFilter.value) {
-          case 'ads':
-            return type.contains('ad') || type.contains('reward');
-          case 'social':
-            return type.contains('like') || 
-                   type.contains('comment') || 
-                   type.contains('view') || 
-                   type.contains('upload') || 
-                   type.contains('reel') ||
-                   type.contains('post');
-          case 'donation':
-            return type.contains('donation') || type.contains('donate');
-          default:
-            return true;
-        }
-      }).toList();
-    }
+    transactionList.value = allTransactions.where((transaction) {
+      final type = (transaction.actionType ?? '').toLowerCase();
+      if (selectedFilter.value == 'earnings') {
+        // Show all earnings: ads, rewards, social activities
+        return type.contains('ad') || 
+               type.contains('reward') ||
+               type.contains('like') || 
+               type.contains('comment') || 
+               type.contains('view') || 
+               type.contains('upload') || 
+               type.contains('reel') ||
+               type.contains('post') ||
+               (transaction.boltAmount ?? 0) > 0; // Positive amounts are earnings
+      } else if (selectedFilter.value == 'donations') {
+        // Show only donations
+        return type.contains('donation') || type.contains('donate');
+      }
+      return true;
+    }).toList();
     transactionList.refresh();
   }
   
@@ -172,7 +171,7 @@ class BoaltWalletController extends GetxController
   double getAdsEarnings() {
     return allTransactions
         .where((t) => (t.actionType ?? '').toLowerCase().contains('ad') || 
-                      (t.actionType ?? '').toLowerCase().contains('reward'))
+                      (t.actionType ?? '').toLowerCase().contains('reward'),)
         .fold(0.0, (sum, t) => sum + (t.boltAmount ?? 0));
   }
   
@@ -193,7 +192,7 @@ class BoaltWalletController extends GetxController
   double getDonationSpent() {
     return allTransactions
         .where((t) => (t.actionType ?? '').toLowerCase().contains('donation') || 
-                      (t.actionType ?? '').toLowerCase().contains('donate'))
+                      (t.actionType ?? '').toLowerCase().contains('donate'),)
         .fold(0.0, (sum, t) => sum + (t.boltAmount ?? 0).abs());
   }
 
@@ -220,7 +219,6 @@ class BoaltWalletController extends GetxController
         Logger().i('Reward received, calling API...');
         // Call API to reward 0.01 bolt
         await BoltApi().watchAdRewardBolt(
-          showToast: true,
           onError: (e) {
             Logger().e('Error rewarding bolt: $e');
             toast('Failed to reward bolt: $e');
@@ -262,6 +260,68 @@ class BoaltWalletController extends GetxController
       toast('Error: $e');
       isWatchingAd.value = false;
       AdLovinHelper.setRewardCallback(null);
+    }
+  }
+
+  // Watch AdMob Ad and get reward
+  Future<void> watchAdMobForReward() async {
+    if (isWatchingAd.value) {
+      toast('Please wait, ad is loading...');
+      return;
+    }
+    
+    if (!AdMobRewardedAdHelper.isRewardedAdReady) {
+      toast('Ad is not ready yet. Please wait...');
+      AdMobRewardedAdHelper.loadRewardedAd();
+      return;
+    }
+    
+    try {
+      isWatchingAd.value = true;
+      
+      // Show AdMob rewarded ad
+      AdMobRewardedAdHelper.showRewardedAd(
+        onRewardReceived: () async {
+          Logger().i('AdMob Reward received, calling API...');
+          // Call API to reward 0.01 bolt
+          await BoltApi().watchAdRewardBolt(
+            onError: (e) {
+              Logger().e('Error rewarding bolt: $e');
+              toast('Failed to reward bolt: $e');
+              isWatchingAd.value = false;
+            },
+            onFailure: (response) {
+              Logger().e('Failed to reward bolt: ${response.statusCode}');
+              try {
+                final error = jsonDecode(response.body);
+                toast(error['message'] ?? 'Failed to reward bolt');
+              } catch (_) {
+                toast('Failed to reward bolt');
+              }
+              isWatchingAd.value = false;
+            },
+            onSuccess: (data) {
+              Logger().i('Bolt rewarded successfully: $data');
+              toast('🎉 You earned 0.01 Bolt!');
+              // Refresh wallet data
+              getDashBoardData();
+              getTransectiom(refresh: true);
+              isWatchingAd.value = false;
+            },
+          );
+        },
+      );
+      
+      // Reset after timeout
+      Future.delayed(const Duration(seconds: 60), () {
+        if (isWatchingAd.value) {
+          isWatchingAd.value = false;
+        }
+      });
+    } catch (e) {
+      Logger().e('Error watching AdMob ad: $e');
+      toast('Error: $e');
+      isWatchingAd.value = false;
     }
   }
 

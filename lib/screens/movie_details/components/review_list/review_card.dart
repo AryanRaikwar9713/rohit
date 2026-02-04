@@ -22,17 +22,15 @@ class ReviewCard extends StatelessWidget {
     if (reviewDetail.review.isEmpty || reviewDetail.rating > -1) {
       return Container(
         padding: const EdgeInsets.all(16),
-        margin: EdgeInsets.symmetric(vertical: 8),
+        margin: const EdgeInsets.symmetric(vertical: 8),
         decoration: boxDecorationDefault(
           borderRadius: BorderRadius.circular(8),
           color: canvasColor,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CachedImageWidget(
@@ -51,7 +49,6 @@ class ReviewCard extends StatelessWidget {
                 12.width,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     2.height,
                     Marquee(
@@ -71,7 +68,7 @@ class ReviewCard extends StatelessWidget {
                           ),
                           6.width,
                           Text(
-                            "${reviewDetail.rating.toString()} ${locale.value.rating}",
+                            "${reviewDetail.rating} ${locale.value.rating}",
                             style: secondaryTextStyle(size: 12, color: darkGrayTextColor, weight: FontWeight.w800),
                           ),
                         ],
@@ -133,11 +130,11 @@ class ReviewCard extends StatelessWidget {
                             color: darkGrayTextColor,
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
               ],
-            )
+            ),
           ],
         ),
       );

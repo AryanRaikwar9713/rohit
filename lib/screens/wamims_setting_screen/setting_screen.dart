@@ -49,7 +49,7 @@ class _SettingScreenState extends State<SettingScreen> {
       //
       appBar: AppBar(
         titleTextStyle: const TextStyle(
-            color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18),
+            color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18,),
         title: const Text("Settings"),
       ),
 
@@ -121,7 +121,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 } else {
                   Get.to(() => const CrateImpactProfileScreen());
                 }
-              }),
+              },),
 
           //
           _buildTile(
@@ -157,7 +157,7 @@ class _SettingScreenState extends State<SettingScreen> {
               width: 20,
             ),
             onTap: () {
-              Get.to(WalletTabManage());
+              Get.to(const WalletTabManage());
             },
           ),
 
@@ -179,22 +179,22 @@ class _SettingScreenState extends State<SettingScreen> {
               title: "Social Media",
               icon: Image.asset('assets/icons/settign/social-media.png',color: Colors.white,height: 25,),
               onTap: () {
-                Get.to(AddSocialMedia());
-              }),
+                Get.to(const AddSocialMedia());
+              },),
 
           _buildTile(
               title: "Block Accounts",
               icon: Image.asset('assets/icons/settign/block-user.png',color: Colors.white,height: 25,),
               onTap: () {
                 toast("Coming Soon");
-              }),
+              },),
 
           _buildTile(
               title: "Archive Points",
-              icon: Icon(Icons.point_of_sale),
+              icon: const Icon(Icons.point_of_sale),
               onTap: () {
                 toast("Coming Soon");
-              }),
+              },),
 
 
         ],
@@ -202,7 +202,7 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
-  _buildTile({
+  ListTile _buildTile({
     required String title,
     required Widget icon,
     String? subtitle,
@@ -217,7 +217,7 @@ class _SettingScreenState extends State<SettingScreen> {
       ),
       subtitle: subtitle != null ? Text(subtitle) : null,
       subtitleTextStyle: TextStyle(
-          color: Colors.grey[500], fontSize: 14, fontWeight: FontWeight.w400),
+          color: Colors.grey[500], fontSize: 14, fontWeight: FontWeight.w400,),
       onTap: onTap,
     );
   }

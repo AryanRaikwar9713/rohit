@@ -31,7 +31,7 @@ class MyStoryController extends GetxController
       Logger().e(e);
     }, onFail: (e){
       toast(jsonDecode(e.body)['message']);
-    });
+    },);
 
      isLoading.value = false;
   }

@@ -31,7 +31,7 @@ class GenresDetailsScreen extends StatelessWidget {
               backgroundColor: Colors.transparent,
               leading: Container(
                 alignment: Alignment.center,
-                margin: EdgeInsets.all(14),
+                margin: const EdgeInsets.all(14),
                 decoration: boxDecorationDefault(
                   shape: BoxShape.circle,
                   color: btnColor,
@@ -56,7 +56,6 @@ class GenresDetailsScreen extends StatelessWidget {
               flexibleSpace: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   return FlexibleSpaceBar(
-                    collapseMode: CollapseMode.parallax,
                     background: GenreProfileComponent(genreDetail: generDetails),
                   );
                 },

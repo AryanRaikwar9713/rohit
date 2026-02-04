@@ -91,7 +91,7 @@ class MovieListScreen extends StatelessWidget {
                           Get.to(() => MovieDetailsScreen(), arguments: posterDet);
                         },
                         isMovieList: true,
-                      )
+                      ),
                   ],
                 );
               },

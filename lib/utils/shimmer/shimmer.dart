@@ -89,7 +89,7 @@ class Shimmer extends StatefulWidget {
     this.loop = 0,
     this.enabled = true,
   }) : gradient = LinearGradient(
-            begin: Alignment.topLeft, colors: <Color>[baseColor, baseColor, highlightColor, baseColor, baseColor], stops: const <double>[0.0, 0.35, 0.5, 0.65, 1.0]);
+            begin: Alignment.topLeft, colors: <Color>[baseColor, baseColor, highlightColor, baseColor, baseColor], stops: const <double>[0.0, 0.35, 0.5, 0.65, 1.0],);
 
   @override
   ShimmerState createState() => ShimmerState();

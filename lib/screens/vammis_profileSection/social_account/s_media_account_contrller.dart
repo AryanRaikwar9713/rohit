@@ -18,15 +18,15 @@ class SocialMediaController extends GetxController
     getSocialAccount();
   }
 
-  getSocialAccount() async
+  Future<void> getSocialAccount() async
   {
     await api.getSocialMedia(onSuccess: (d){
       account.value = d.socialMedia??[];
     }, onError: (e){
-      Logger().e("Error in Api ${e}");
+      Logger().e("Error in Api $e");
     }, onFail: (d){
-      Logger().e("Failed ${d}");
-    });
+      Logger().e("Failed $d");
+    },);
 
     isLoading.value = false;
   }

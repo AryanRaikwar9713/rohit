@@ -40,15 +40,7 @@ class VammisProfileController extends GetxController {
 
   int? currentUserId;
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
   /// Load User Profile
   Future<void> loadUserProfile(int userId) async {
@@ -62,7 +54,7 @@ class VammisProfileController extends GetxController {
         onSuccess: (response) async {
           isLoading.value = false;
           profileResponse.value = response;
-          var curruntUser = await DB().getUser();
+          final curruntUser = await DB().getUser();
           ifSelfProfile.value = userId == (curruntUser?.id ?? 0);
           // Load posts, reels and projects after profile loads
           loadUserPosts(userId);
@@ -106,7 +98,7 @@ class VammisProfileController extends GetxController {
       userPosts.clear();
     }
 
-    if (!hasMorePosts.value || isLoadingPosts.value) return;
+    if (!hasMorePosts.value || isLoadingPosts.value) { return; }
 
     if(refresh)
     {
@@ -148,12 +140,12 @@ class VammisProfileController extends GetxController {
   RxBool isLoadingMore = false.obs;
 
 
-  loadMorePost() async {
+  Future<void> loadMorePost() async {
     print("load More Posr");
     if (hasMorePosts.value && !isLoadingMore.value) {
       postsPage.value++;
       isLoadingMore.value = true;
-      await loadUserPosts(currentUserId!, refresh: false);
+      await loadUserPosts(currentUserId!);
       isLoadingMore.value = false;
     }
   }
@@ -167,7 +159,7 @@ class VammisProfileController extends GetxController {
       userReels.clear();
     }
 
-    if (!hasMoreReels.value || isLoadingReels.value) return;
+    if (!hasMoreReels.value || isLoadingReels.value) { return; }
 
     isLoadingReels.value = true;
 
@@ -202,13 +194,13 @@ class VammisProfileController extends GetxController {
     }
   }
 
-  loadMoreReel() async {
+  Future<void> loadMoreReel() async {
     print("lading More Post");
     if (hasMoreReels.value && !isLoadingMore.value) {
       reelsPage.value++;
       isLoadingMore.value = true;
       print("Calling load reels");
-      await loadUserReels(currentUserId!, refresh: false);
+      await loadUserReels(currentUserId!);
       isLoadingMore.value = false;
     }
   }
@@ -222,7 +214,7 @@ class VammisProfileController extends GetxController {
       userProjects.clear();
     }
 
-    if (!hasMoreProjects.value || isLoadingProjects.value) return;
+    if (!hasMoreProjects.value || isLoadingProjects.value) { return; }
 
     isLoadingProjects.value = true;
 
@@ -257,24 +249,24 @@ class VammisProfileController extends GetxController {
     }
   }
 
-  loadMoreProjects() async {
+  Future<void> loadMoreProjects() async {
     if (hasMoreProjects.value && !isLoadingMore.value) {
       projectsPage.value++;
       isLoadingMore.value = true;
-      await loadUserProjects(currentUserId!, refresh: false);
+      await loadUserProjects(currentUserId!);
       isLoadingMore.value = false;
     }
   }
 
   /// Follow/Unfollow User
   Future<void> toggleFollow() async {
-    if (profileResponse.value?.data == null) return;
+    if (profileResponse.value?.data == null) { return; }
 
     final currentFollowStatus =
         profileResponse.value!.data!.isFollowing ?? false;
     final userId = profileResponse.value!.data!.user?.id;
 
-    if (userId == null) return;
+    if (userId == null) { return; }
 
     // Optimistic update
     profileResponse.value!.data!.isFollowing = !currentFollowStatus;
@@ -375,7 +367,7 @@ class VammisProfileController extends GetxController {
               }
               userPosts.refresh();
             },
-          )
+          ),
         },
       );
     } catch (e) {
@@ -402,7 +394,7 @@ class VammisProfileController extends GetxController {
           if (commentPage.value == 1) {
             comments.value.clear();
           }
-          comments.value.addAll((s.data?.comments ?? []));
+          comments.value.addAll(s.data?.comments ?? []);
           comments.refresh();
           commentPage.value++;
           hasMoreComment.value = s.data?.pagination?.hasNextPage ?? false;
@@ -414,7 +406,7 @@ class VammisProfileController extends GetxController {
     commentLoading.value = false;
   }
 
-  loadMoreComment(int postId) {
+  void loadMoreComment(int postId) {
     if (!hasMoreComment.value || commentLoading.value) return;
     getPostComment(postId);
   }
@@ -426,18 +418,18 @@ class VammisProfileController extends GetxController {
         postId: postId,
         comment: comment,
         onError: (e) {
-          Logger().e("Error in Comment Api ${e}");
+          Logger().e("Error in Comment Api $e");
         },
         onFailure: (s) {},
         onSuccess: (c) {
           comments.add(c);
           comments.refresh();
 
-          int postInt = userPosts.indexWhere(
+          final int postInt = userPosts.indexWhere(
             (element) => element.postId == postId.toString(),
           );
 
-          var post = userPosts.value[postInt];
+          final post = userPosts.value[postInt];
 
           post.engagement?.commentsCount =
               (post.engagement?.commentsCount ?? 0) + 1;
@@ -452,7 +444,7 @@ class VammisProfileController extends GetxController {
             commentId: int.parse(c.commentId ?? '0'),
             contentType: "post",
             onError: (e) {
-              Logger().e("Error in Comment Api ${e}");
+              Logger().e("Error in Comment Api $e");
             },
             onFailure: (s) {},
           );
@@ -463,7 +455,7 @@ class VammisProfileController extends GetxController {
     }
   }
 
-  resateCommentData() {
+  void resateCommentData() {
     commentPage.value = 1;
     comments.clear();
     comments.refresh();
@@ -471,7 +463,7 @@ class VammisProfileController extends GetxController {
     hasMoreComment.value = false;
   }
 
-  followUser(int userId) {
+  void followUser(int userId) {
     try {
       SocialApi().followUser(
         targetUserId: userId,
@@ -480,11 +472,11 @@ class VammisProfileController extends GetxController {
         },
         onFailure: (s) {},
         onSuccess: (isFollowing) {
-          userPosts.forEach((e) {
+          for (final e in userPosts) {
             if (e.user?.userId == userId.toString()) {
               e.user?.isFollowed = isFollowing;
             }
-          });
+          }
 
           userPosts.refresh();
         },
@@ -495,7 +487,7 @@ class VammisProfileController extends GetxController {
   }
 
 
-  logOut() async
+  Future<void> logOut() async
   {
 
   }

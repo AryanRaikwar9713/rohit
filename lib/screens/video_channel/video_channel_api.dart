@@ -17,17 +17,17 @@ class VideoChannelApi {
   {
     try {
 
-      String uri = 'https://app.wamims.world/public/social/channel_api.php?action=get_channel';
+      final String uri = 'https://app.wamims.world/public/social/channel_api.php?action=get_channel';
 
-      var head  = await DB().getHeaderForForm();
+      final head  = await DB().getHeaderForForm();
 
-      var response = await http.post(Uri.parse(uri), headers: head);
+      final response = await http.post(Uri.parse(uri), headers: head ?? {});
 
       respPrinter(response.statusCode, response.body);
 
       if(response.statusCode==200)
         {
-          var d = jsonDecode(response.body);
+          final d = jsonDecode(response.body);
           onSuccess(GetChannelResponceModel.fromJson(d));
         }
       else
@@ -54,27 +54,27 @@ class VideoChannelApi {
 }) async
   {
     try {
-      String uri = 'https://app.wamims.world/public/social/channel_api.php?action=create_channel';
-      var d = {
+      final String uri = 'https://app.wamims.world/public/social/channel_api.php?action=create_channel';
+      final d = {
         'channel_name':channelName,
         'description':description,
         'username':username,
       };
 
 
-      var head = await DB().getHeaderForForm();
+      final head = await DB().getHeaderForForm();
 
-      var request = http.MultipartRequest('POST', Uri.parse(uri));
+      final request = http.MultipartRequest('POST', Uri.parse(uri));
 
-      request.headers.addAll(head);
+      request.headers.addAll(head ?? {});
 
       request.fields.addAll(d);
 
       request.files.add(await http.MultipartFile.fromPath('image', channelImage));
 
-      var response = await request.send();
+      final response = await request.send();
 
-      var res = await response.stream.bytesToString();
+      final res = await response.stream.bytesToString();
 
       respPrinter(response.statusCode, res);
 

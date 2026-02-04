@@ -53,7 +53,7 @@ class GenresMoviesComponent extends StatelessWidget {
                     children: List.generate(
                       genresDetCont.genresDetailsList.length,
                       (index) {
-                        VideoPlayerModel movieDet = genresDetCont.genresDetailsList[index];
+                        final VideoPlayerModel movieDet = genresDetCont.genresDetailsList[index];
                         return PosterCardComponent(
                           height: 150,
                           width: Get.width * 0.282,

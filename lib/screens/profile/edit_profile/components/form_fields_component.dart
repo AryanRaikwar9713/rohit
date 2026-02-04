@@ -103,7 +103,7 @@ class EditFormFieldComponent extends StatelessWidget {
                 cancelText: locale.value.cancel,
                 helpText: locale.value.dateOfBirth,
                 locale: Locale(selectedLanguageDataModel?.languageCode ??
-                    getStringAsync(SELECTED_LANGUAGE_CODE)),
+                    getStringAsync(SELECTED_LANGUAGE_CODE),),
                 builder: (context, child) {
                   return Theme(
                     data: Theme.of(context).copyWith(
@@ -111,12 +111,12 @@ class EditFormFieldComponent extends StatelessWidget {
                           surface: cardColor,
                           surfaceTint: cardColor,
                           primary: appColorPrimary,
-                          onPrimary: primaryTextColor),
+                          onPrimary: primaryTextColor,),
                       hintColor: secondaryTextColor,
                       inputDecorationTheme: const InputDecorationTheme(
                         isDense: true,
                         contentPadding: EdgeInsets.only(
-                            left: 10, right: 10, top: 2, bottom: 2),
+                            left: 10, right: 10, top: 2, bottom: 2,),
                         hintStyle: TextStyle(fontSize: 16, color: Colors.white),
                         fillColor: appColorPrimary,
                       ),
@@ -149,7 +149,7 @@ class EditFormFieldComponent extends StatelessWidget {
               context,
               hintText: locale.value.gender,
               prefixIcon: commonLeadingWid(
-                      imgPath: Assets.iconsIcGender, color: secondaryTextColor)
+                      imgPath: Assets.iconsIcGender, color: secondaryTextColor,)
                   .paddingAll(14),
             ),
             textAlign: TextAlign.start,
@@ -265,13 +265,13 @@ class EditFormFieldComponent extends StatelessWidget {
                       borderRadius: BorderRadiusDirectional.zero,
                       border: Border(
                           bottom: BorderSide(
-                              color: borderColor.withValues(alpha: 0.6))),
+                              color: borderColor.withValues(alpha: 0.6),),),
                       color: appScreenBackgroundDark,
                     ),
                     child: Row(
                       children: [
                         Text(profileCont.selectedCountry.value.flagEmoji,
-                            style: primaryTextStyle(size: 20)),
+                            style: primaryTextStyle(size: 20),),
                         16.width,
                         Text(
                           profileCont.countryCode.value,
@@ -354,7 +354,7 @@ class EditFormFieldComponent extends StatelessWidget {
                   : cardDarkColor,
               textStyle: appButtonTextStyleWhite,
               shapeBorder: RoundedRectangleBorder(
-                  borderRadius: radius(defaultAppButtonRadius / 2)),
+                  borderRadius: radius(defaultAppButtonRadius / 2),),
               onTap: () {
                 if (profileCont.editProfileFormKey.currentState!.validate()) {
                   profileCont.updateProfile();

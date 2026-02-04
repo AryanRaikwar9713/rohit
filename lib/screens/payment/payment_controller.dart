@@ -91,7 +91,7 @@ class PaymentController extends GetxController {
       isLoading(false);
     }).onError((error, stackTrace) {
       isLoading(false);
-      log('Coupon List Error: ${error.toString()}');
+      log('Coupon List Error: ${error}');
     });
   }
 
@@ -333,7 +333,7 @@ class PaymentController extends GetxController {
 
   void saveSubscriptionDetails({required String transactionId, required String paymentType}) {
     isLoading(true);
-    Map<String, dynamic> request = {
+    final Map<String, dynamic> request = {
       "plan_id": selectPlan.value.planId,
       "user_id": loginUserData.value.id,
       "identifier": selectPlan.value.name.validate(),
@@ -379,7 +379,7 @@ class PaymentController extends GetxController {
       setValue(SharedPreferenceConst.USER_SUBSCRIPTION_DATA, value.data.toJson());
       setValue(SharedPreferenceConst.USER_DATA, loginUserData.toJson());
 
-      successSnackBar(value.message.toString());
+      successSnackBar(value.message);
     }).catchError((e) {
       isLoading(false);
       errorSnackBar(error: e);

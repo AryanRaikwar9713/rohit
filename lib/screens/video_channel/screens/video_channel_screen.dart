@@ -74,7 +74,7 @@ class _VideoChannelScreenState extends State<VideoChannelScreen> {
                     color: Colors.white,
                     fontSize: 20,
                     fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.bold,),
               ),
               10.height,
               Container(
@@ -93,7 +93,7 @@ class _VideoChannelScreenState extends State<VideoChannelScreen> {
                       color: Colors.white,
                       fontSize: 14,
                       fontFamily: GoogleFonts.poppins().fontFamily,
-                      fontWeight: FontWeight.bold),
+                      fontWeight: FontWeight.bold,),
                 ),
               ),
               10.height,
@@ -107,7 +107,7 @@ class _VideoChannelScreenState extends State<VideoChannelScreen> {
                       color: Colors.red,
                       fontFamily: GoogleFonts.poppins().fontFamily,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16),
+                      fontSize: 16,),
                 ),
 
               // Description
@@ -117,7 +117,7 @@ class _VideoChannelScreenState extends State<VideoChannelScreen> {
                     color: Colors.white,
                     fontSize: 16,
                     fontFamily: GoogleFonts.poppins().fontFamily,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.bold,),
               ),
             ],
           );
@@ -129,7 +129,7 @@ class _VideoChannelScreenState extends State<VideoChannelScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(Icons.video_library_outlined,
-                  size: 64, color: Colors.grey),
+                  size: 64, color: Colors.grey,),
               16.height,
               Text(
                 'No Channel Found',

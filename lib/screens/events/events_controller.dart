@@ -38,7 +38,7 @@ class EventsController extends GetxController {
         },
         onFailure: (response) {
           log(
-            "Get Events Failure: ${response?.statusCode ?? 'Unknown'} - ${response?.body ?? 'No body'}",
+            "Get Events Failure: ${response.statusCode ?? 'Unknown'} - ${response.body ?? 'No body'}",
           );
           isLoading(false);
         },

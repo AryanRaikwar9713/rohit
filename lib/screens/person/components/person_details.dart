@@ -18,7 +18,6 @@ class PersonDetailsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         if (personDet.designation.isNotEmpty) ...[16.height, Text(personDet.designation.split(',').join('  - ').capitalizeEachWord(), style: commonSecondaryTextStyle()), 8.height],
@@ -32,7 +31,6 @@ class PersonDetailsWidget extends StatelessWidget {
           20.height.visible(personDet.bio.isNotEmpty),
         ],
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const CachedImageWidget(
@@ -60,7 +58,7 @@ class PersonDetailsWidget extends StatelessWidget {
             ).expand().visible(personDet.placeOfBirth.isNotEmpty),
           ],
         ),
-        32.height
+        32.height,
       ],
     ).paddingSymmetric(horizontal: 16);
   }

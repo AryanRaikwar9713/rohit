@@ -24,7 +24,6 @@ class ChangePasswordScreen extends StatelessWidget {
         child: Form(
           key: _changePassFormKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
