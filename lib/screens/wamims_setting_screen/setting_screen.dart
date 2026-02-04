@@ -5,9 +5,14 @@ import 'package:streamit_laravel/screens/Impact-dashBoard/impact_profile_control
 import 'package:streamit_laravel/screens/Impact-dashBoard/impact_profile_screen.dart';
 import 'package:streamit_laravel/screens/dashboard/dashboard_controller.dart';
 import 'package:streamit_laravel/screens/reels/upload_reel_screen.dart';
+// TODO: Keep imports for future release - Shop feature
+// ignore: unused_import
 import 'package:streamit_laravel/screens/shops_section/shop_controller.dart';
+// ignore: unused_import
 import 'package:streamit_laravel/screens/shops_section/shop_profile_screen.dart';
+// ignore: unused_import
 import 'package:streamit_laravel/screens/shops_section/shop_registration_screen.dart';
+// ignore: unused_import
 import 'package:streamit_laravel/screens/shops_section/shop_screen.dart';
 import 'package:streamit_laravel/screens/social/create_post_screen.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/edit_vammis_profile_screen.dart';
@@ -61,25 +66,27 @@ class _SettingScreenState extends State<SettingScreen> {
           ),
 
           //
-          Obx(() {
-            if (dashboardController.isShopEnabled.value) {
-              return _buildTile(
-                  title: "Shop Dashboard",
-                  icon: Image.asset('assets/icons/settign/store.png',width: 20,color: Colors.white,),
-                  onTap: () {
-                    var shopController = (Get.isRegistered<ShopController>())
-                        ? Get.find<ShopController>()
-                        : Get.put(ShopController());
-                    if (shopController.hasShop.value) {
-                      Get.to(() => ShopProfileScreen());
-                    } else {
-                      Get.to(() => ShopRegistrationScreen());
-                    }
-                  });
-            } else {
-              return SizedBox();
-            }
-          }),
+          // TODO: Shop Dashboard - Hidden for current version, will be released in future
+          // Keep all logic intact, just hide from settings
+          // Obx(() {
+          //   if (dashboardController.isShopEnabled.value) {
+          //     return _buildTile(
+          //         title: "Shop Dashboard",
+          //         icon: Image.asset('assets/icons/settign/store.png',width: 20,color: Colors.white,),
+          //         onTap: () {
+          //           var shopController = (Get.isRegistered<ShopController>())
+          //               ? Get.find<ShopController>()
+          //               : Get.put(ShopController());
+          //           if (shopController.hasShop.value) {
+          //             Get.to(() => ShopProfileScreen());
+          //           } else {
+          //             Get.to(() => ShopRegistrationScreen());
+          //           }
+          //         });
+          //   } else {
+          //     return SizedBox();
+          //   }
+          // }),
 
           //
           _buildTile(
@@ -154,17 +161,19 @@ class _SettingScreenState extends State<SettingScreen> {
             },
           ),
 
-          Obx(() {
-            if (dashboardController.isShopEnabled.value) {
-              return _buildTile(
-                  title: "Event Participant",
-                  icon: Image.asset('assets/icons/settign/participation.png',width: 25,color: Colors.white,),
-                  subtitle: 'View all the events you have participated in',
-                  onTap: () {});
-            } else {
-              return SizedBox();
-            }
-          }),
+          // TODO: Event Participant - Hidden for current version, will be released in future
+          // Keep all logic intact, just hide from settings
+          // Obx(() {
+          //   if (dashboardController.isShopEnabled.value) {
+          //     return _buildTile(
+          //         title: "Event Participant",
+          //         icon: Image.asset('assets/icons/settign/participation.png',width: 25,color: Colors.white,),
+          //         subtitle: 'View all the events you have participated in',
+          //         onTap: () {});
+          //   } else {
+          //     return SizedBox();
+          //   }
+          // }),
 
           _buildTile(
               title: "Social Media",
