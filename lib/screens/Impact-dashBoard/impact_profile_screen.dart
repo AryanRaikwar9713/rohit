@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/screens/Impact-dashBoard/impact_profile_controller.dart';
 import 'package:streamit_laravel/screens/Impact-dashBoard/model/profileresponcemodel.dart';
@@ -136,7 +135,7 @@ class ImpactProfileScreen extends StatelessWidget {
               15.height,
 
               // Create Campaign Button (only if approved)
-              if (accountDetails?.accountStatus == 'approved')
+              if (accountDetails.accountStatus == 'approved')
                 _buildCreateCampaignButton(
                   (controller.userCampainLimitResponse.value?.data?.limits
                               ?.projectsRemaining ??
@@ -150,14 +149,14 @@ class ImpactProfileScreen extends StatelessWidget {
               16.height,
 
               // Financial Limits
-              if (accountDetails?.financialLimits != null)
-                _buildFinancialLimitsCard(accountDetails!.financialLimits!),
+              if (accountDetails.financialLimits != null)
+                _buildFinancialLimitsCard(accountDetails.financialLimits!),
 
               16.height,
 
               // Project Limits
-              if (accountDetails?.projectLimits != null)
-                _buildProjectLimitsCard(accountDetails!.projectLimits!),
+              if (accountDetails.projectLimits != null)
+                _buildProjectLimitsCard(accountDetails.projectLimits!),
 
               16.height,
 

@@ -108,16 +108,23 @@ class _ReelsScreenState extends State<ReelsScreen> {
         return PageView.builder(
           controller: _pageController,
           scrollDirection: Axis.vertical,
-          physics: PageScrollPhysics(),
+          physics: const PageScrollPhysics(),
+          // Optimize: Only build visible pages + 1 on each side
           itemCount: _controller.apiReels.length,
           onPageChanged: (index) {
-            _controller.onReelChanged(_controller.apiReels[index].id ?? 0);
+            if (index < _controller.apiReels.length) {
+              _controller.onReelChanged(_controller.apiReels[index].id ?? 0);
+            }
           },
           itemBuilder: (context, index) {
-            return ReelItemWidget(
+            // Use RepaintBoundary to optimize rebuilds
+            return RepaintBoundary(
               key: ValueKey(_controller.apiReels[index].id),
-              reel: _controller.apiReels[index],
-              controller: _controller,
+              child: ReelItemWidget(
+                key: ValueKey(_controller.apiReels[index].id),
+                reel: _controller.apiReels[index],
+                controller: _controller,
+              ),
             );
           },
         );

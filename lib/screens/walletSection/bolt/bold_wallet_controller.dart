@@ -1,9 +1,10 @@
 
-
+import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:streamit_laravel/app_lovin_ads/add_helper.dart';
 import 'package:streamit_laravel/screens/walletSection/bolt/boalt_wallet_responce_model.dart';
 import 'package:streamit_laravel/screens/walletSection/bolt/bolt_api.dart';
 import 'package:http/http.dart' as http;
@@ -21,8 +22,12 @@ class BoaltWalletController extends GetxController
 
 
   RxList<BolTransection> transactionList = <BolTransection>[].obs;
+  RxList<BolTransection> allTransactions = <BolTransection>[].obs; // Store all transactions
 
   RxInt historyPage = 1.obs;
+  
+  // Filter for transaction types
+  RxString selectedFilter = 'all'.obs; // 'all', 'ads', 'social', 'donation'
 
 
 
@@ -46,6 +51,7 @@ class BoaltWalletController extends GetxController
   {
     getDashBoardData();
     getTransectiom(refresh: true);
+    selectedFilter.value = 'all'; // Reset filter on refresh
   }
 
   getDashBoardData() async
@@ -85,15 +91,18 @@ class BoaltWalletController extends GetxController
 
           if(historyPage.value==1)
             {
-              transactionList.value = d.data?.transactions??[];
+              allTransactions.value = d.data?.transactions??[];
             }
           else
             {
-              transactionList.addAll(d.data?.transactions??[]);
+              allTransactions.addAll(d.data?.transactions??[]);
             }
           hasMore.value = d.data?.pagination?.hasNext??false;
+          
+          // Apply filter
+          applyFilter();
 
-          transactionList.refresh();
+          allTransactions.refresh();
         });
 
   }
@@ -127,6 +136,133 @@ class BoaltWalletController extends GetxController
     toast(e);
   }
 
+  // Filter transactions by type
+  void applyFilter() {
+    if (selectedFilter.value == 'all') {
+      transactionList.value = allTransactions;
+    } else {
+      transactionList.value = allTransactions.where((transaction) {
+        final type = (transaction.actionType ?? '').toLowerCase();
+        switch (selectedFilter.value) {
+          case 'ads':
+            return type.contains('ad') || type.contains('reward');
+          case 'social':
+            return type.contains('like') || 
+                   type.contains('comment') || 
+                   type.contains('view') || 
+                   type.contains('upload') || 
+                   type.contains('reel') ||
+                   type.contains('post');
+          case 'donation':
+            return type.contains('donation') || type.contains('donate');
+          default:
+            return true;
+        }
+      }).toList();
+    }
+    transactionList.refresh();
+  }
+  
+  void setFilter(String filter) {
+    selectedFilter.value = filter;
+    applyFilter();
+  }
+  
+  // Calculate total earnings by type
+  double getAdsEarnings() {
+    return allTransactions
+        .where((t) => (t.actionType ?? '').toLowerCase().contains('ad') || 
+                      (t.actionType ?? '').toLowerCase().contains('reward'))
+        .fold(0.0, (sum, t) => sum + (t.boltAmount ?? 0));
+  }
+  
+  double getSocialEarnings() {
+    return allTransactions
+        .where((t) {
+          final type = (t.actionType ?? '').toLowerCase();
+          return type.contains('like') || 
+                 type.contains('comment') || 
+                 type.contains('view') || 
+                 type.contains('upload') || 
+                 type.contains('reel') ||
+                 type.contains('post');
+        })
+        .fold(0.0, (sum, t) => sum + (t.boltAmount ?? 0));
+  }
+  
+  double getDonationSpent() {
+    return allTransactions
+        .where((t) => (t.actionType ?? '').toLowerCase().contains('donation') || 
+                      (t.actionType ?? '').toLowerCase().contains('donate'))
+        .fold(0.0, (sum, t) => sum + (t.boltAmount ?? 0).abs());
+  }
 
+  // Watch Ad and get reward
+  RxBool isWatchingAd = false.obs;
+
+  Future<void> watchAdForReward() async {
+    if (isWatchingAd.value) {
+      toast('Please wait, ad is loading...');
+      return;
+    }
+    
+    if (!AdLovinHelper.isRewardedReady) {
+      toast('Ad is not ready yet. Please wait...');
+      AdLovinHelper.loadRewarded();
+      return;
+    }
+    
+    try {
+      isWatchingAd.value = true;
+      
+      // Set reward callback before showing ad
+      AdLovinHelper.setRewardCallback(() async {
+        Logger().i('Reward received, calling API...');
+        // Call API to reward 0.01 bolt
+        await BoltApi().watchAdRewardBolt(
+          showToast: true,
+          onError: (e) {
+            Logger().e('Error rewarding bolt: $e');
+            toast('Failed to reward bolt: $e');
+            isWatchingAd.value = false;
+          },
+          onFailure: (response) {
+            Logger().e('Failed to reward bolt: ${response.statusCode}');
+            try {
+              final error = jsonDecode(response.body);
+              toast(error['message'] ?? 'Failed to reward bolt');
+            } catch (_) {
+              toast('Failed to reward bolt');
+            }
+            isWatchingAd.value = false;
+          },
+          onSuccess: (data) {
+            Logger().i('Bolt rewarded successfully: $data');
+            toast('🎉 You earned 0.01 Bolt!');
+            // Refresh wallet data
+            getDashBoardData();
+            getTransectiom(refresh: true);
+            isWatchingAd.value = false;
+          },
+        );
+      });
+      
+      // Show rewarded ad
+      AdLovinHelper.showRewarded();
+      
+      // Reset callback after timeout (if ad doesn't complete)
+      Future.delayed(const Duration(seconds: 60), () {
+        if (isWatchingAd.value) {
+          AdLovinHelper.setRewardCallback(null);
+          isWatchingAd.value = false;
+        }
+      });
+    } catch (e) {
+      Logger().e('Error watching ad: $e');
+      toast('Error: $e');
+      isWatchingAd.value = false;
+      AdLovinHelper.setRewardCallback(null);
+    }
+  }
 
 }

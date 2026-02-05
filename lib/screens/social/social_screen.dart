@@ -15,6 +15,7 @@ import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_s
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/story_controller.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/view_story_screen.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_api.dart';
+import 'package:streamit_laravel/screens/walletSection/wallet_tab_manage.dart';
 import 'package:streamit_laravel/utils/constants.dart';
 import 'package:streamit_laravel/utils/mohit/vammis_profile_avtar.dart';
 import '../../utils/colors.dart';
@@ -183,6 +184,21 @@ class _SocialScreenState extends State<SocialScreen>
                           ),
                         ),
                       ],
+                    ),
+                    4.width,
+                    // Wallet Icon - Watch Ads & Earn Bolts
+                    IconButton(
+                      onPressed: () {
+                        Get.to(() => const WalletTabManage());
+                      },
+                      icon: const Icon(
+                        Icons.account_balance_wallet,
+                        color: Colors.white,
+                        size: 26,
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      tooltip: 'Wallet - Watch Ads & Earn Bolts',
                     ),
                     4.width,
                     // Search icon

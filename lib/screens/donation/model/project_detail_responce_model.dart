@@ -121,22 +121,32 @@ class ProjectDetail {
     this.accountHolderName,
   });
 
+  // Helper function to safely convert to int
+  static int? _toInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is bool) return value ? 1 : 0;
+    if (value is String) return int.tryParse(value);
+    if (value is double) return value.toInt();
+    return null;
+  }
+
   factory ProjectDetail.fromJson(Map<String, dynamic> json) => ProjectDetail(
-    id: json["id"],
+    id: _toInt(json["id"]),
     title: json["title"],
     description: json["description"],
     fundingGoal: double.parse((json["funding_goal"]??'0').toString()),
     fundingRaised: double.parse((json["funding_raised"]??'0').toString()),
     progressPercentage: double.parse((json["progress_percentage"]??'0').toString()),
-    daysRemaining: json["days_remaining"],
-    durationDays: json["duration_days"],
+    daysRemaining: _toInt(json["days_remaining"]),
+    durationDays: _toInt(json["duration_days"]),
     location: json["location"],
-    isFeatured: json["is_featured"],
-    isVerified: json["is_verified"],
-    viewsCount: json["views_count"],
-    donorsCount: json["donors_count"],
-    likesCount: json["likes_count"],
-    commentsCount: json["comments_count"],
+    isFeatured: json["is_featured"] is bool ? json["is_featured"] : (json["is_featured"] == 1 || json["is_featured"] == "1"),
+    isVerified: json["is_verified"] is bool ? json["is_verified"] : (json["is_verified"] == 1 || json["is_verified"] == "1"),
+    viewsCount: _toInt(json["views_count"]),
+    donorsCount: _toInt(json["donors_count"]),
+    likesCount: _toInt(json["likes_count"]),
+    commentsCount: _toInt(json["comments_count"]),
     createdAt: json["created_at"] == null ? null : DateTime.tryParse(json["created_at"]),
     startDate: json["start_date"] == null ? null : DateTime.tryParse(json["start_date"]),
     endDate: json["end_date"] == null ? null : DateTime.tryParse(json["end_date"]),
@@ -199,8 +209,18 @@ class Category {
     this.icon,
   });
 
+  // Helper function to safely convert to int
+  static int? _toInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is bool) return value ? 1 : 0;
+    if (value is String) return int.tryParse(value);
+    if (value is double) return value.toInt();
+    return null;
+  }
+
   factory Category.fromJson(Map<String, dynamic> json) => Category(
-    id: json["id"],
+    id: _toInt(json["id"]),
     name: json["name"],
     icon: json["icon"],
   );
@@ -229,8 +249,18 @@ class Creator {
     this.accountType,
   });
 
+  // Helper function to safely convert to int
+  static int? _toInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is bool) return value ? 1 : 0;
+    if (value is String) return int.tryParse(value);
+    if (value is double) return value.toInt();
+    return null;
+  }
+
   factory Creator.fromJson(Map<String, dynamic> json) => Creator(
-    id: json["id"],
+    id: _toInt(json["id"]),
     username: json["username"],
     firstName: json["first_name"],
     lastName: json["last_name"],
@@ -290,13 +320,23 @@ class RecentDonation {
     this.isAnonymous,
   });
 
+  // Helper function to safely convert to int
+  static int? _toInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is bool) return value ? 1 : 0;
+    if (value is String) return int.tryParse(value);
+    if (value is double) return value.toInt();
+    return null;
+  }
+
   factory RecentDonation.fromJson(Map<String, dynamic> json) => RecentDonation(
-    id: json["id"],
+    id: _toInt(json["id"]),
     amount: json["amount"]?.toDouble(),
     avatar: json["avatar"],
     username: json["username"],
-    donatedAt: json["donated_at"] == null ? null : DateTime.parse(json["donated_at"]),
-    isAnonymous: json["is_anonymous"],
+    donatedAt: json["donated_at"] == null ? null : DateTime.tryParse(json["donated_at"].toString()),
+    isAnonymous: _toInt(json["is_anonymous"]),
   );
 
   Map<String, dynamic> toJson() => {

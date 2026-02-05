@@ -110,7 +110,7 @@ class SplashScreenController extends GetxController {
 
     appNotSynced(!getBoolAsync(SharedPreferenceConst.IS_APP_CONFIGURATION_SYNCED_ONCE));
 
-    await AuthServiceApis().getAppConfigurations(
+    final Future<void> configFuture = AuthServiceApis().getAppConfigurations(
       forceSync: true,
       isFromSplashScreen: true,
       onError: () {
@@ -127,7 +127,6 @@ class SplashScreenController extends GetxController {
       }
       isLoading(false);
       appNotSynced(false);
-      
       // Navigate to dashboard after successful configuration load
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Get.offAll(() => DashboardScreen(dashboardController: getDashboardController()), binding: BindingsBuilder(
@@ -136,11 +135,24 @@ class SplashScreenController extends GetxController {
           },
         ));
       });
-    }).catchError((e) {
+    });
+
+    // Agar API 25 sec me complete na ho to reload dikhao
+    Future<void>.delayed(
+      const Duration(seconds: 25),
+      () {
+        if (isLoading.value) {
+          isLoading(false);
+          appNotSynced(true);
+          setValue(SharedPreferenceConst.IS_APP_CONFIGURATION_SYNCED_ONCE, false);
+        }
+      },
+    );
+
+    await configFuture.catchError((e) {
       setValue(SharedPreferenceConst.IS_APP_CONFIGURATION_SYNCED_ONCE, false);
       isLoading(false);
       appNotSynced(true);
-      throw e;
     });
   }
 

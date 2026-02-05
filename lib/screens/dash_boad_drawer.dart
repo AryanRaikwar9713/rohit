@@ -5,8 +5,12 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/components/app_logo_widget.dart';
 import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/dashboard/dashboard_controller.dart';
+// TODO: Keep imports for future release - Shop feature
+// ignore: unused_import
 import 'package:streamit_laravel/screens/shops_section/shop_controller.dart';
+// ignore: unused_import
 import 'package:streamit_laravel/screens/shops_section/shop_profile_screen.dart';
+// ignore: unused_import
 import 'package:streamit_laravel/screens/shops_section/shop_registration_screen.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_controller.dart';
 import 'package:streamit_laravel/screens/video_channel/screens/create_channel_screen.dart';
@@ -17,6 +21,7 @@ import 'package:streamit_laravel/screens/z%20drawer_sub_screen/drawer_sub_projec
 import 'package:streamit_laravel/screens/z%20drawer_sub_screen/drawer_sub_reels.dart';
 import 'package:streamit_laravel/screens/z%20drawer_sub_screen/drawer_sub_social.dart';
 import 'package:streamit_laravel/screens/z%20drawer_sub_screen/notice_board_screen.dart';
+import 'package:streamit_laravel/screens/walletSection/wallet_tab_manage.dart';
 
 class DashBoardDrawer extends StatefulWidget {
   const DashBoardDrawer({super.key});
@@ -125,26 +130,28 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                     // Get.to(const );
                   }),
 
-              if (dashboardController.isShopEnabled.value) ...[
-                //
-                _buildTileItem(
-                    icon: const Icon(
-                      Icons.shopping_bag,
-                      color: Colors.white,
-                    ),
-                    title: "Shop",
-                    onTap: () async {
-                      var shopController = Get.put(ShopController());
-                      await shopController.loadShopProfile();
-                      if (shopController.hasShop.value) {
-                        Get.to(() => const ShopProfileScreen());
-                      } else {
-                        Get.to(() => const ShopRegistrationScreen());
-                      }
-                    }),
+              // TODO: Shop - Hidden for current version, will be released in future
+              // Keep all logic intact, just hide from drawer
+              // if (dashboardController.isShopEnabled.value) ...[
+              //   //
+              //   _buildTileItem(
+              //       icon: const Icon(
+              //         Icons.shopping_bag,
+              //         color: Colors.white,
+              //       ),
+              //       title: "Shop",
+              //       onTap: () async {
+              //         var shopController = Get.put(ShopController());
+              //         await shopController.loadShopProfile();
+              //         if (shopController.hasShop.value) {
+              //           Get.to(() => const ShopProfileScreen());
+              //         } else {
+              //           Get.to(() => const ShopRegistrationScreen());
+              //         }
+              //       }),
 
-                //
-              ],
+              //   //
+              // ],
 
               //
               _buildTileItem(
@@ -166,6 +173,17 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                   title: "Notice Board",
                   onTap: () {
                     Get.to(const NoticeBoardScreen());
+                  }),
+
+              // Wallet - Watch Ads & Earn Bolts
+              _buildTileItem(
+                  icon: const Icon(
+                    Icons.account_balance_wallet,
+                    color: Colors.white,
+                  ),
+                  title: "💵 Wallet",
+                  onTap: () {
+                    Get.to(() => const WalletTabManage());
                   }),
 
               //

@@ -26,10 +26,16 @@ class DonationProject{
       final head = await DB().getHeaderForRow();
       UserData? user = await DB().getUser();
 
+      // Validate project_id
+      if (projectId <= 0) {
+        onError("Invalid project ID");
+        return;
+      }
+
       var body = jsonEncode({
         "user_id": user?.id ?? 0,
         "project_id": projectId,
-        "bolt_amount": boltAmount,
+        "bolt_amount": boltAmount.toString(),
         "message": message,
         "is_anonymous": 0,
       });
@@ -61,7 +67,7 @@ class DonationProject{
     required void Function(String error) onError,
   }) async {
     final String url =
-        "http://app.wamims.world/public/social/impact/get_projects_fixed.php?action=get_project_details&project_id=$projectId";
+        "https://app.wamims.world/public/social/impact/get_projects_fixed.php?action=get_project_details&project_id=$projectId";
 
     try {
       final head = await DB().getHeaderForRow();

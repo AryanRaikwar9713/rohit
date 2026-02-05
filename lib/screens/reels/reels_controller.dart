@@ -1,13 +1,11 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:streamit_laravel/screens/walletSection/bolt/bolt_api.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_api.dart';
 
 import 'reel_comment_response_model.dart';
@@ -246,13 +244,14 @@ class ReelsController extends GetxController {
     hasMoreComment.value = false;
   }
 
-  // Video Player Methods (keeping existing functionality)
+  // Video Player Methods (optimized with preloading)
   void onReelChanged(int reelId) {
     if (!isClosed) {
       currentReelId.value = reelId;
     }
 
     try {
+      // Pause all videos except current
       videoControllers.forEach((key, value) {
         try {
           if (key == reelId) {
@@ -264,6 +263,7 @@ class ReelsController extends GetxController {
       });
     } catch (_) {}
 
+    // Initialize current video if not already initialized
     if (videoControllers.containsKey(reelId)) {
       try {
         videoControllers[reelId]?.play();
@@ -272,16 +272,96 @@ class ReelsController extends GetxController {
       initializeVideo(reelId);
     }
 
+    // Preload next 2-3 videos for smooth scrolling
+    _preloadAdjacentVideos(reelId);
+
+    // Load more reels if near end
     try {
       final reelIndex = apiReels.indexWhere(
         (element) => element.id == reelId,
       );
-      if (reelIndex >= 0 &&
-          (apiReels.length - reelIndex) < 10 &&
-          reelIndex % 10 > 7) {
-        loadMoreReels();
+      if (reelIndex >= 0) {
+        // Load more when 3 reels remaining
+        if ((apiReels.length - reelIndex) <= 3 && hasMoreData.value) {
+          loadMoreReels();
+        }
       }
     } catch (_) {}
+
+    // Dispose videos that are far away (memory optimization)
+    _disposeDistantVideos(reelId);
+  }
+
+  // Preload adjacent videos for smooth playback
+  void _preloadAdjacentVideos(int currentReelId) {
+    try {
+      final currentIndex = apiReels.indexWhere((e) => e.id == currentReelId);
+      if (currentIndex < 0) return;
+
+      // Preload next 2-3 videos
+      for (int i = 1; i <= 3 && (currentIndex + i) < apiReels.length; i++) {
+        final nextReel = apiReels[currentIndex + i];
+        final nextReelId = nextReel.id;
+        if (nextReelId != null && !videoControllers.containsKey(nextReelId)) {
+          _preloadVideo(nextReelId);
+        }
+      }
+    } catch (e) {
+      Logger().w('Error preloading videos: $e');
+    }
+  }
+
+  // Preload video without playing
+  void _preloadVideo(int reelId) {
+    try {
+      final reelIndex = apiReels.indexWhere((e) => e.id == reelId);
+      if (reelIndex < 0) return;
+      final reel = apiReels[reelIndex];
+      if (reel.content?.videoUrl == null) return;
+
+      final player = getVideoController(reelId);
+      if (player != null) {
+        player.open(Media(reel.content!.videoUrl!));
+        // Don't play, just prepare
+        player.pause();
+      }
+    } catch (e) {
+      Logger().w('Error preloading video $reelId: $e');
+    }
+  }
+
+  // Dispose videos that are far from current (keep only 5 videos in memory)
+  void _disposeDistantVideos(int currentReelId) {
+    try {
+      final currentIndex = apiReels.indexWhere((e) => e.id == currentReelId);
+      if (currentIndex < 0) return;
+
+      final videosToKeep = <int>{};
+      // Keep current and next 2, previous 2
+      for (int i = -2; i <= 3; i++) {
+        final index = currentIndex + i;
+        if (index >= 0 && index < apiReels.length) {
+          final reelId = apiReels[index].id;
+          if (reelId != null) {
+            videosToKeep.add(reelId);
+          }
+        }
+      }
+
+      // Dispose videos not in keep list
+      final videosToDispose = <int>[];
+      videoControllers.forEach((reelId, player) {
+        if (!videosToKeep.contains(reelId)) {
+          videosToDispose.add(reelId);
+        }
+      });
+
+      for (final reelId in videosToDispose) {
+        disposeVideo(reelId);
+      }
+    } catch (e) {
+      Logger().w('Error disposing distant videos: $e');
+    }
   }
 
   void togglePlayPause() {
@@ -298,6 +378,7 @@ class ReelsController extends GetxController {
 
   Player? getVideoController(int reelId) {
     if (!videoControllers.containsKey(reelId)) {
+      // Configure player for better performance
       final player = Player();
       videoControllers[reelId] = player;
     }
@@ -318,9 +399,12 @@ class ReelsController extends GetxController {
       final reelIndex = apiReels.indexWhere((e) => e.id == reelId);
       if (reelIndex < 0) return;
       final reel = apiReels[reelIndex];
-      if (reel.content?.videoUrl == null) return;
+      if (reel.content?.videoUrl == null || reel.content!.videoUrl!.isEmpty) return;
+      
       final player = getVideoController(reelId);
       if (player != null) {
+        // Set buffer size for better performance
+        player.setPlaylistMode(PlaylistMode.none);
         player.open(Media(reel.content!.videoUrl!));
         player.play();
       }

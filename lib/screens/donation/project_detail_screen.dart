@@ -65,10 +65,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                   children: [
                     // 🖼 Main Image
 
-                    ClipRRect(
+                      ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: Image.network(
-                        detail.value?.mainImage ?? '',
+                        detail.value.mainImage ?? '',
                         height: 220,
                         width: double.infinity,
                         fit: BoxFit.cover,
@@ -93,12 +93,12 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    if (detail.value?.category != null)
+                    if (detail.value.category != null)
                       Row(
                         children: [
                           const SizedBox(width: 6),
                           Text(
-                            detail.value?.category?.name ?? '',
+                            detail.value.category?.name ?? '',
                             style: const TextStyle(
                                 color: Colors.white54,
                                 fontWeight: FontWeight.w900,
@@ -109,43 +109,134 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
 
                     const SizedBox(height: 16),
 
-                    // 💰 Funding Progress (gradient)
+                    // 💰 Funding Progress (gradient) - GoFundMe style
                     Container(
-                      padding: const EdgeInsets.all(14),
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade900.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade800),
+                        gradient: LinearGradient(
+                          colors: [
+                            _appGradient.colors.first.withOpacity(0.15),
+                            _appGradient.colors.last.withOpacity(0.1),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: _appGradient.colors.first.withOpacity(0.3),
+                          width: 1.5,
+                        ),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Progress percentage
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               ShaderMask(
                                 shaderCallback: (b) => _appGradient.createShader(b),
                                 child: Text(
-                                  "Raised: ${detail.value.fundingRaised ?? 0} Bolts",
-                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                                  "${(detail.value.progressPercentage ?? 0).toStringAsFixed(1)}%",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                              Text("Goal: ${detail.value.fundingGoal ?? 0} Bolts",
-                                  style: const TextStyle(color: Colors.white54)),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: _appGradient.colors.first.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.people, size: 16, color: _appGradient.colors.first),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      "${detail.value.donorsCount ?? 0} donors",
+                                      style: TextStyle(
+                                        color: _appGradient.colors.first,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 16),
+                          // Progress bar
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(12),
                             child: SizedBox(
-                              height: 10,
-                              child: LinearProgressIndicator(
-                                value: (detail.value.progressPercentage ?? 0) / 100,
-                                backgroundColor: Colors.grey.shade800,
-                                valueColor: AlwaysStoppedAnimation<Color>(_appGradient.colors.first),
-                                minHeight: 10,
+                              height: 14,
+                              child: ShaderMask(
+                                shaderCallback: (bounds) => _appGradient.createShader(bounds),
+                                child: LinearProgressIndicator(
+                                  value: ((detail.value.progressPercentage ?? 0) / 100).clamp(0.0, 1.0),
+                                  backgroundColor: Colors.grey.shade800,
+                                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                                  minHeight: 14,
+                                ),
                               ),
                             ),
+                          ),
+                          const SizedBox(height: 16),
+                          // Amount details
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Raised",
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  ShaderMask(
+                                    shaderCallback: (b) => _appGradient.createShader(b),
+                                    child: Text(
+                                      "\$${(detail.value.fundingRaised ?? 0).toStringAsFixed(2)}",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    "Goal",
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "\$${(detail.value.fundingGoal ?? 0).toStringAsFixed(2)}",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -717,11 +808,11 @@ class _DonatSheet extends StatelessWidget {
   final TextEditingController amountController;
   final TextEditingController messageController;
   final ProjectDetailController controller;
-  _DonatSheet(
-      {required this.messageController,
-      required this.amountController,
-      required this.controller,
-      super.key});
+  _DonatSheet({
+    required this.messageController,
+    required this.amountController,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -847,22 +938,78 @@ class _DonatSheet extends StatelessWidget {
                   child: Material(
                     borderRadius: BorderRadius.circular(14),
                     child: InkWell(
-                      onTap: () {
-                        if (amountController.text.trim().isEmpty ||
-                            messageController.text.trim().isEmpty) {
+                      onTap: () async {
+                        final amountText = amountController.text.trim();
+                        final messageText = messageController.text.trim();
+                        
+                        if (amountText.isEmpty) {
                           Get.snackbar(
                             "Error",
-                            "Please enter an amount and message",
+                            "Please enter an amount",
                             backgroundColor: Colors.redAccent.withOpacity(0.8),
                             colorText: Colors.white,
+                            duration: const Duration(seconds: 2),
                           );
                           return;
                         }
-                        controller.donate(
-                          double.parse(amountController.text.trim()),
-                          messageController.text.trim(),
-                        );
+                        
+                        final amount = double.tryParse(amountText);
+                        if (amount == null || amount <= 0) {
+                          Get.snackbar(
+                            "Error",
+                            "Please enter a valid amount",
+                            backgroundColor: Colors.redAccent.withOpacity(0.8),
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 2),
+                          );
+                          return;
+                        }
+                        
+                        if (messageText.isEmpty) {
+                          Get.snackbar(
+                            "Error",
+                            "Please enter a message",
+                            backgroundColor: Colors.redAccent.withOpacity(0.8),
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 2),
+                          );
+                          return;
+                        }
+                        
+                        // Validate project ID before proceeding
+                        final projectId = controller.projectId ?? controller.detail.value.id;
+                        if (projectId == null || projectId <= 0) {
+                          Get.snackbar(
+                            "Error",
+                            "Invalid project. Please refresh and try again.",
+                            backgroundColor: Colors.redAccent.withOpacity(0.8),
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 3),
+                          );
+                          Navigator.pop(context);
+                          // Refresh project using stored ID
+                          final refreshId = controller.projectId ?? controller.detail.value.id;
+                          if (refreshId != null && refreshId > 0) {
+                            controller.getProject(refreshId);
+                          }
+                          return;
+                        }
+                        
                         Navigator.pop(context);
+                        // Show loading
+                        Get.dialog(
+                          const Center(
+                            child: CircularProgressIndicator(color: Color(0xFFFF9800)),
+                          ),
+                          barrierDismissible: false,
+                        );
+                        
+                        await controller.donate(amount, messageText);
+                        
+                        // Close loading
+                        if (Get.isDialogOpen ?? false) {
+                          Get.back();
+                        }
                       },
                       borderRadius: BorderRadius.circular(14),
                       child: Ink(
