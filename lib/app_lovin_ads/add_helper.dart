@@ -97,17 +97,37 @@ class AdLovinHelper {
           // Retry after 3 seconds
           Future.delayed(Duration(seconds: 3), loadRewarded);
         },
-        onAdReceivedRewardCallback: (MaxAd ad, MaxReward reward) {},
+        onAdReceivedRewardCallback: (MaxAd ad, MaxReward reward) {
+          print("✅ Reward Received: ${reward.label} - ${reward.amount}");
+          // Call reward callback if set
+          if (_onRewardReceived != null) {
+            _onRewardReceived!();
+          }
+        },
         onAdHiddenCallback: (MaxAd ad) {
           print("Rewarded CLOSED");
           isRewardedReady = false;
           loadRewarded();
         },
-        onAdDisplayedCallback: (MaxAd ad) {},
-        onAdDisplayFailedCallback: (MaxAd ad, MaxError error) {},
-        onAdClickedCallback: (MaxAd ad) {},
+        onAdDisplayedCallback: (MaxAd ad) {
+          print("Rewarded Displayed");
+        },
+        onAdDisplayFailedCallback: (MaxAd ad, MaxError error) {
+          print("Rewarded Display Failed: ${error.message}");
+        },
+        onAdClickedCallback: (MaxAd ad) {
+          print("Rewarded Clicked");
+        },
       ),
     );
+  }
+
+  // Callback for when reward is received
+  static VoidCallback? _onRewardReceived;
+
+  // Set callback for reward received
+  static void setRewardCallback(VoidCallback? callback) {
+    _onRewardReceived = callback;
   }
 
   static void loadRewarded() {

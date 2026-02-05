@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/screens/Impact-dashBoard/campaign_api.dart';
 import 'package:streamit_laravel/screens/Impact-dashBoard/model/campain_cat_responce_model.dart';
 import 'package:streamit_laravel/screens/donation/campainApi.dart';
@@ -7,8 +8,9 @@ import 'package:streamit_laravel/screens/donation/model/get_project_list_responc
 
 class DonationController extends GetxController {
   // Observable variables
-
   RxInt page = 1.obs;
+  RxBool hasMorePages = true.obs;
+  RxBool isLoadingMore = false.obs;
 
   RxList<Project> projectList = <Project>[].obs;
   RxBool loading = true.obs;
@@ -50,33 +52,69 @@ class DonationController extends GetxController {
 
 
   getProjectlist({bool refresh = false}) async {
-    try{
+    try {
+      if (refresh) {
+        page.value = 1;
+        hasMorePages.value = true;
+        loading.value = true;
+      } else {
+        if (!hasMorePages.value || isLoadingMore.value) return;
+        isLoadingMore.value = true;
+      }
 
-      if(refresh)
-        {
-          page.value= 1;
-        }
+      final currentPage = page.value;
+      await DonationProject().getImpactProjects(
+        page: currentPage,
+        onSuccess: (d) {
+          final projects = d.data?.projects ?? [];
+          final pagination = d.data?.pagination;
 
-      await DonationProject().getImpactProjects(page: 1, onSuccess: (d){
-        if(page.value==1)
-          {
-            projectList.value = d.data?.projects??[];
+          if (currentPage == 1) {
+            projectList.value = projects;
+          } else {
+            projectList.addAll(projects);
           }
-        else
-          {
-            projectList.addAll(d.data?.projects??[]);
+
+          // Update pagination info
+          if (pagination != null) {
+            hasMorePages.value = pagination.hasNextPage ?? false;
+            if (pagination.hasNextPage == true && pagination.currentPage != null) {
+              // Increment page for next load
+              page.value = pagination.currentPage! + 1;
+            } else {
+              hasMorePages.value = false;
+            }
+          } else {
+            // Fallback: if no pagination info, assume no more pages if returned list is empty
+            hasMorePages.value = projects.isNotEmpty;
+            if (projects.isNotEmpty && currentPage == 1) {
+              page.value = 2; // Assume there might be more
+            }
           }
-        projectList.refresh();
-        }, onError: (d){
-        Logger().e(d);
-      });
-    }
-    catch(e)
-    {
+
+          projectList.refresh();
+          loading.value = false;
+          isLoadingMore.value = false;
+        },
+        onError: (d) {
+          Logger().e(d);
+          loading.value = false;
+          isLoadingMore.value = false;
+          toast('Failed to load projects');
+        },
+      );
+    } catch (e) {
       Logger().e(e);
+      loading.value = false;
+      isLoadingMore.value = false;
+      toast('Error loading projects');
     }
-    loading.value = false;
+  }
 
+  /// Load more projects (for pagination)
+  Future<void> loadMoreProjects() async {
+    if (!hasMorePages.value || isLoadingMore.value || loading.value) return;
+    await getProjectlist(refresh: false);
   }
 
   /// Fetch categories from API (for filter chips)

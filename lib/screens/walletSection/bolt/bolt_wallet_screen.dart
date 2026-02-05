@@ -197,6 +197,133 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
 
               const SizedBox(height: 20),
 
+              // Ads Earning Section
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Obx(() => Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.orange.shade700.withOpacity(0.3),
+                        Colors.yellow.shade600.withOpacity(0.2),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Colors.orange.withOpacity(0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Ads Earnings",
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            "${controller.getAdsEarnings().toStringAsFixed(2)} 🪙",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // Watch Ads Button
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: controller.isWatchingAd.value ? null : () => controller.watchAdForReward(),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.yellow.shade400,
+                                  Colors.orange.shade500,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.orange.withOpacity(0.4),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (controller.isWatchingAd.value)
+                                  const SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.black,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                else
+                                  const Icon(Icons.play_circle_outline, color: Colors.black, size: 20),
+                                const SizedBox(width: 8),
+                                Text(
+                                  controller.isWatchingAd.value ? 'Loading...' : 'Watch Ad',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Filter Chips
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Obx(() => SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _buildFilterChip('All', 'all', controller.selectedFilter.value, () => controller.setFilter('all')),
+                      const SizedBox(width: 8),
+                      _buildFilterChip('Ads', 'ads', controller.selectedFilter.value, () => controller.setFilter('ads')),
+                      const SizedBox(width: 8),
+                      _buildFilterChip('Social', 'social', controller.selectedFilter.value, () => controller.setFilter('social')),
+                      const SizedBox(width: 8),
+                      _buildFilterChip('Donation', 'donation', controller.selectedFilter.value, () => controller.setFilter('donation')),
+                    ],
+                  ),
+                )),
+              ),
+
+              const SizedBox(height: 15),
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Row(
@@ -296,6 +423,44 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                 },
               ))
             ],
+          ),
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildFilterChip(String label, String value, String selected, VoidCallback onTap) {
+    final isSelected = selected == value;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+            gradient: isSelected
+                ? const LinearGradient(
+                    colors: [
+                      Color(0xff232526),
+                      Color(0xff414345),
+                    ],
+                  )
+                : null,
+            color: isSelected ? null : Colors.white.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isSelected ? Colors.white.withOpacity(0.3) : Colors.white.withOpacity(0.2),
+              width: 1,
+            ),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            ),
           ),
         ),
       ),

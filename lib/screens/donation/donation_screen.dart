@@ -786,10 +786,12 @@ class ImpactDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<DonationController>(
-      init: DonationController(),
-      builder: (controller) {
-        return Scaffold(
+    // Initialize controller if not already registered
+    final DonationController controller = Get.isRegistered<DonationController>()
+        ? Get.find<DonationController>()
+        : Get.put(DonationController());
+    
+    return Scaffold(
           backgroundColor: const Color(0xFF0D0D0F),
           body: SafeArea(
             child: Padding(
@@ -896,8 +898,25 @@ class ImpactDashboardScreen extends StatelessWidget {
                         color: appColorPrimary,
                         child: ListView.builder(
                           padding: const EdgeInsets.only(top: 10, bottom: 20),
-                          itemCount: list.length,
+                          itemCount: list.length + (controller.hasMorePages.value ? 1 : 0),
                           itemBuilder: (context, index) {
+                            // Load more indicator at the end
+                            if (index == list.length) {
+                              if (controller.isLoadingMore.value) {
+                                return const Padding(
+                                  padding: EdgeInsets.all(20),
+                                  child: Center(
+                                    child: CircularProgressIndicator(color: appColorPrimary),
+                                  ),
+                                );
+                              }
+                              // Trigger load more when near end
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                controller.loadMoreProjects();
+                              });
+                              return const SizedBox.shrink();
+                            }
+                            
                             final project = list[index];
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -916,8 +935,6 @@ class ImpactDashboardScreen extends StatelessWidget {
             ),
           ),
         );
-      },
-    );
   }
 
   static Widget _divider() {
@@ -934,9 +951,11 @@ class ImpactDashboardScreen extends StatelessWidget {
     final imageUrl = project.projectImages != null && project.projectImages!.isNotEmpty
         ? project.projectImages!.first
         : 'https://images.unsplash.com/photo-1546182990-dffeafbe841d';
-    final raised = project.fundingRaised ?? 0;
-    final goal = project.fundingGoal ?? 0;
-    final percent = (project.fundingPercentage ?? 0) / 100;
+    final raised = project.fundingRaised ?? 0.0;
+    final goal = project.fundingGoal ?? 0.0;
+    final percent = ((project.fundingPercentage ?? 0) / 100).clamp(0.0, 1.0);
+    final donorsCount = project.donorsCount ?? 0;
+    final daysRemaining = project.daysRemaining ?? 0;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -983,59 +1002,96 @@ class ImpactDashboardScreen extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 6),
-                RichText(
-                  text: TextSpan(
-                    style: const TextStyle(fontSize: 12, color: Colors.white),
-                    children: [
-                      TextSpan(
-                        text: '\$${raised.toStringAsFixed(0)} ',
-                        style: const TextStyle(
-                          color: Colors.white,
+                const SizedBox(height: 8),
+                // Funding info - GoFundMe style
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ShaderMask(
+                            shaderCallback: (bounds) => appGradient.createShader(bounds),
+                            child: Text(
+                              '\$${raised.toStringAsFixed(0)}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'raised of \$${goal.toStringAsFixed(0)}',
+                            style: TextStyle(
+                              color: Colors.grey.shade400,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: appGradient.colors.first.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        '${(percent * 100).toStringAsFixed(0)}%',
+                        style: TextStyle(
+                          color: appGradient.colors.first,
+                          fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      TextSpan(
-                        text: 'of ',
-                        style: TextStyle(color: Colors.grey.shade400),
-                      ),
-                      TextSpan(
-                        text: '\$${goal} goal',
-                        style: TextStyle(color: Colors.grey.shade400),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      '${(percent * 100).toStringAsFixed(0)}%',
-                      style: TextStyle(color: Colors.grey.shade400),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 3),
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: SizedBox(
-                      height: 6,
-                      child: ShaderMask(
-                        shaderCallback: (Rect bounds) {
-                          return appGradient.createShader(bounds);
-                        },
-                        child: LinearProgressIndicator(
-                          value: percent.clamp(0.0, 1.0),
-                          backgroundColor: Colors.white12,
-                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
+                // Progress bar
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: SizedBox(
+                    height: 8,
+                    child: ShaderMask(
+                      shaderCallback: (Rect bounds) {
+                        return appGradient.createShader(bounds);
+                      },
+                      child: LinearProgressIndicator(
+                        value: percent,
+                        backgroundColor: Colors.white12,
+                        valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                        minHeight: 8,
                       ),
                     ),
                   ),
+                ),
+                const SizedBox(height: 8),
+                // Stats row
+                Row(
+                  children: [
+                    Icon(Icons.people, size: 14, color: Colors.grey.shade400),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$donorsCount donors',
+                      style: TextStyle(
+                        color: Colors.grey.shade400,
+                        fontSize: 11,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Icon(Icons.access_time, size: 14, color: Colors.grey.shade400),
+                    const SizedBox(width: 4),
+                    Text(
+                      daysRemaining > 0 ? '$daysRemaining days left' : 'Ended',
+                      style: TextStyle(
+                        color: Colors.grey.shade400,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 10),
                 Align(
