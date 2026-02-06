@@ -8,8 +8,9 @@ import 'loader_widget.dart';
 class Body extends StatelessWidget {
   final Widget child;
   final RxBool isLoading;
+  final Color? loaderColor;
 
-  const Body({super.key, required this.isLoading, required this.child});
+  const Body({super.key, required this.isLoading, required this.child, this.loaderColor});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class Body extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           child,
-          Obx(() => const LoaderWidget().center().visible(isLoading.value || adsLoader.value)),
+          Obx(() => LoaderWidget(loaderColor: loaderColor).center().visible(isLoading.value || adsLoader.value)),
         ],
       ),
     );

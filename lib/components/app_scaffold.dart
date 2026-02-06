@@ -21,6 +21,7 @@ class AppScaffold extends StatelessWidget {
   final Widget body;
   final Color? scaffoldBackgroundColor;
   final RxBool? isLoading;
+  final Color? loaderColor;
   final Widget? bottomNavBar;
   final Widget? fabWidget;
   final bool hasLeadingWidget;
@@ -45,6 +46,7 @@ class AppScaffold extends StatelessWidget {
     //
     required this.body,
     this.isLoading,
+    this.loaderColor,
     //
     this.bottomNavBar,
     this.fabWidget,
@@ -79,6 +81,7 @@ class AppScaffold extends StatelessWidget {
       backgroundColor: scaffoldBackgroundColor ?? context.scaffoldBackgroundColor,
       body: Body(
         isLoading: isLoading ?? false.obs,
+        loaderColor: loaderColor,
         child: body,
       ),
       bottomNavigationBar: bottomNavBar,

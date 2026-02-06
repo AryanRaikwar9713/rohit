@@ -205,7 +205,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                   ShaderMask(
                                     shaderCallback: (b) => _appGradient.createShader(b),
                                     child: Text(
-                                      "\$${(detail.value.fundingRaised ?? 0).toStringAsFixed(2)}",
+                                      "🪙 ${(detail.value.fundingRaised ?? 0).toStringAsFixed(2)}",
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 20,
@@ -227,7 +227,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    "\$${(detail.value.fundingGoal ?? 0).toStringAsFixed(2)}",
+                                    "🪙 ${(detail.value.fundingGoal ?? 0).toStringAsFixed(2)}",
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 20,

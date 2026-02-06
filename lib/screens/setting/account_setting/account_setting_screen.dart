@@ -36,6 +36,7 @@ class AccountSettingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppScaffold(
       isLoading: settingController.isLoading,
+      loaderColor: Colors.white,
       scaffoldBackgroundColor: appScreenBackgroundDark,
       appBartitleText: locale.value.accountSettings,
       body: Obx(
