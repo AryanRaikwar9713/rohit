@@ -105,6 +105,7 @@ class SignInController extends GetxController {
   }
 
   Future<void> isDemoUser({bool verify = false}) async {
+    if (Get.isBottomSheetOpen ?? false) return;
     isLoading(true);
 
     Future.delayed(
@@ -115,6 +116,10 @@ class SignInController extends GetxController {
           isLoading(false);
           phoneSignIn();
         } else {
+          if (Get.isBottomSheetOpen ?? false) {
+            isLoading(false);
+            return;
+          }
           isOTPSent(true);
           verificationId('');
           mobileNo(phoneCont.text);
@@ -165,6 +170,10 @@ class SignInController extends GetxController {
   }
 
   Future<void> onLoginPressed() async {
+    // Prevent multiple taps: do not open OTP sheet again if already open or request in progress
+    if (isLoading.value) return;
+    if (Get.isBottomSheetOpen ?? false) return;
+
     isLoading(true);
     isOTPSent(false);
     final firebaseAuthUtil = FirebaseAuthUtil();
@@ -184,6 +193,8 @@ class SignInController extends GetxController {
               Get.back(); // Close current bottom sheet first
             }
             Future.delayed(const Duration(milliseconds: 200), () {
+              // Open OTP sheet only once (in case multiple onCodeSent fired)
+              if (Get.isBottomSheetOpen ?? false) return;
               if (phoneCont.text.trim() != Constants.demoNumber) {
                 resetOTPState();
               }
@@ -320,7 +331,7 @@ class SignInController extends GetxController {
                 // Loading dialog UPAR dikhne ke liye (client request)
                 Get.dialog(
                   Center(
-                    child: CircularProgressIndicator(color: appColorPrimary),
+                    child: CircularProgressIndicator(color: Colors.white),
                   ),
                   barrierDismissible: false,
                 );

@@ -145,7 +145,7 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  "${controller.dashboardData.value.data?.wallet?.totalBolt ?? 0} 🪙",
+                                  "_ 🪙",
                                   style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 32,
@@ -156,11 +156,9 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                             ),
                           ),
                           const SizedBox(width: 10),
-                          cardDecoration("Conversion Rate",
-                              '${controller.dashboardData.value.data?.wallet?.conversionRate ?? 0} 🔁'),
+                          cardDecoration("Conversion Rate", '_ 🔁'),
                           const SizedBox(width: 8),
-                          cardDecoration("Bolt Value",
-                              '${controller.dashboardData.value.data?.wallet?.inrValue ?? 0} Bolts')
+                          cardDecoration("Bolt Value", '_ Bolts')
                         ],
                       ),
                       const Spacer(),
@@ -174,18 +172,11 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                         child: Row(
                           children: [
                             Text(
-                              "Your Balance: ",
+                              "Your Balance: _ bolts _ = _ _ Bolts _",
                               style: TextStyle(
                                   color: Colors.white.withOpacity(0.9),
                                   fontWeight: FontWeight.w600,
                                   fontSize: 14),
-                            ),
-                            Text(
-                              "${controller.dashboardData.value.data?.wallet?.displayValue ?? 0} Bolts",
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w800),
                             ),
                           ],
                         ),
