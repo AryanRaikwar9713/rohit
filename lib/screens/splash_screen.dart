@@ -31,32 +31,34 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkLocationPermission() async {
-    // Keep checking until permission is granted
+    const Duration maxWait = Duration(seconds: 20);
+    final DateTime start = DateTime.now();
+
+    void proceed() {
+      if (widget.link == true) {
+        splashController.handleDeepLinking(deepLink: widget.deepLink);
+      } else {
+        splashController.init(showLoader: true);
+      }
+    }
+
     while (mounted) {
+      if (DateTime.now().difference(start) > maxWait) {
+        setState(() => _locationPermissionChecked = true);
+        proceed();
+        return;
+      }
       final LocationApi locationApi = LocationApi();
       final bool hasPermission =
           await locationApi.checkMandatoryLocationPermission(context);
 
       if (hasPermission) {
-        setState(() {
-          _locationPermissionChecked = true;
-        });
-        // Proceed with app initialization only after permission is granted
-        if (widget.link == true) {
-          splashController.handleDeepLinking(deepLink: widget.deepLink);
-        } else {
-          splashController.init(showLoader: true);
-        }
-        break; // Exit loop when permission is granted
-      } else {
-        // Permission not granted - wait and check again
-        setState(() {
-          _locationPermissionChecked = true;
-        });
-        // Wait before re-checking (give user time to enable location/permission)
-        await Future.delayed(const Duration(seconds: 2));
-        // Loop will continue and check again
+        setState(() => _locationPermissionChecked = true);
+        proceed();
+        return;
       }
+      setState(() => _locationPermissionChecked = true);
+      await Future.delayed(const Duration(seconds: 2));
     }
   }
 
@@ -77,6 +79,11 @@ class _SplashScreenState extends State<SplashScreen> {
               height: 160,
               width: 160,
               fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => Icon(
+                Icons.image_not_supported_outlined,
+                size: 80,
+                color: Colors.grey[600],
+              ),
             ),
             if (!_locationPermissionChecked)
               const LoaderWidget().center()

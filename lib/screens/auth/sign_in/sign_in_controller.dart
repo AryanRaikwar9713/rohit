@@ -315,6 +315,13 @@ class SignInController extends GetxController {
               onLogout: (logoutAll, deviceId, deviceName) {
                 Get.back();
                 Get.back();
+                // Loading dialog UPAR dikhne ke liye (client request)
+                Get.dialog(
+                  Center(
+                    child: CircularProgressIndicator(color: appColorPrimary),
+                  ),
+                  barrierDismissible: false,
+                );
                 if (logoutAll) {
                   logOutAll(
                     errorData.otherDevice.first.userId,
@@ -603,6 +610,7 @@ class SignInController extends GetxController {
       if (Get.isBottomSheetOpen ?? false) Get.back();
     }).whenComplete(() {
       isLoading(false);
+      if (Get.isDialogOpen ?? false) Get.back();
     });
   }
 
@@ -619,6 +627,7 @@ class SignInController extends GetxController {
       errorSnackBar(error: e);
     }).whenComplete(() {
       isLoading(false);
+      if (Get.isDialogOpen ?? false) Get.back();
     });
   }
 }
