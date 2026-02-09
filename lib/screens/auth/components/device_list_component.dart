@@ -38,7 +38,6 @@ class DeviceListComponent extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 30, top: 16, right: 16, left: 16),
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     locale.value.otherDevices,

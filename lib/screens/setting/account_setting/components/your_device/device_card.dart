@@ -24,7 +24,6 @@ class DeviceCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

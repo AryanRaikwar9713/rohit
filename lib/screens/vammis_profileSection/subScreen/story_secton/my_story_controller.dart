@@ -26,7 +26,7 @@ class MyStoryController extends GetxController
     print("Getting Storyis");
     isLoading.value = true;
      await StoryApi().getOwnStories(onSuccess: (d){
-       activeStories.value = d.activeStories!;
+       activeStories.value = d.activeStories ?? [];
        }, onError: (e){
       Logger().e(e);
     }, onFail: (e){

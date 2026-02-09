@@ -142,7 +142,6 @@ class ComingSoonComponent extends StatelessWidget {
                 ),
                 12.height,
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
                       comingSoonDet.seasonName,

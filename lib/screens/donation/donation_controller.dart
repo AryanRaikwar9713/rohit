@@ -25,6 +25,16 @@ class DonationController extends GetxController {
     if (selectedCategoryId.value == null) return projectList;
     return projectList.where((p) => p.category?.id == selectedCategoryId.value).toList();
   }
+
+  /// Only categories that have at least one project - no dummy/blank categories
+  List<Datum> get categoriesWithProjects {
+    if (projectList.isEmpty) return [];
+    final categoryIdsWithProjects = projectList
+        .where((p) => p.category?.id != null)
+        .map((p) => p.category!.id!)
+        .toSet();
+    return categories.where((c) => categoryIdsWithProjects.contains(c.id)).toList();
+  }
   
   @override
   void onInit() {

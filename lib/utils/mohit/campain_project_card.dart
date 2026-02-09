@@ -13,7 +13,7 @@ class CampaignProjectCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final double brds = 5;
+    const double brds = 5;
 
     final imageUrl =
     project.projectImages != null && project.projectImages!.isNotEmpty

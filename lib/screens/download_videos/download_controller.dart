@@ -141,7 +141,6 @@ class DownloadController extends GetxController {
 
   Future<void> handleRemoveFromDownload(BuildContext context) async {
     Get.bottomSheet(
-      isScrollControlled: false,
       enableDrag: false,
       BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),

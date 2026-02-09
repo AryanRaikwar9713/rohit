@@ -51,7 +51,6 @@ class DownloadComponent extends StatelessWidget {
           child: AnimatedScrollView(
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     locale.value.selectDownloadQuality,

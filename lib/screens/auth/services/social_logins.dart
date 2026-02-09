@@ -26,11 +26,13 @@ class GoogleSignInAuthService {
     );
 
     final UserCredential authResult = await FirebaseAuth.instance.signInWithCredential(credential);
-    final User user = authResult.user!;
+    final User? user = authResult.user;
+    if (user == null) return null;
 
     assert(!user.isAnonymous);
 
-    final User currentUser = FirebaseAuth.instance.currentUser!;
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return null;
     assert(user.uid == currentUser.uid);
 
     try {
@@ -71,7 +73,12 @@ class GoogleSignInAuthService {
 
       switch (result.status) {
         case AuthorizationStatus.authorized:
-          final appleIdCredential = result.credential!;
+          final appleIdCredential = result.credential;
+          if (appleIdCredential == null ||
+              appleIdCredential.identityToken == null ||
+              appleIdCredential.authorizationCode == null) {
+            throw locale.value.signInFailed;
+          }
           final oAuthProvider = OAuthProvider('apple.com');
           final credential = oAuthProvider.credential(
             idToken: String.fromCharCodes(appleIdCredential.identityToken!),
@@ -79,10 +86,12 @@ class GoogleSignInAuthService {
           );
 
           final authResult = await auth.signInWithCredential(credential);
-          final User user = authResult.user!;
+          final User? user = authResult.user;
+          if (user == null) throw locale.value.signInFailed;
           assert(!user.isAnonymous);
 
-          final User currentUser = auth.currentUser!;
+          final User? currentUser = auth.currentUser;
+          if (currentUser == null) throw locale.value.signInFailed;
           assert(user.uid == currentUser.uid);
 
           log('CURRENTUSER: $currentUser');

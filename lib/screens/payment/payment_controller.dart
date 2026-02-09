@@ -91,7 +91,7 @@ class PaymentController extends GetxController {
       isLoading(false);
     }).onError((error, stackTrace) {
       isLoading(false);
-      log('Coupon List Error: ${error}');
+      log('Coupon List Error: $error');
     });
   }
 

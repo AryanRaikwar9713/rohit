@@ -329,7 +329,7 @@ class SignInController extends GetxController {
                 Get.safeBack();
                 // Loading dialog UPAR dikhne ke liye (client request)
                 Get.dialog(
-                  Center(
+                  const Center(
                     child: CircularProgressIndicator(color: Colors.white),
                   ),
                   barrierDismissible: false,

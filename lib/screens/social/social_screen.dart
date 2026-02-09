@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:streamit_laravel/app_lovin_ads/add_helper.dart';
+import 'package:streamit_laravel/ads/components/admob_banner_widget.dart';
 import 'package:streamit_laravel/components/admob_native_ad_widget.dart';
 import 'package:streamit_laravel/screens/dash_boad_drawer.dart';
 import 'package:streamit_laravel/screens/notificationSection/notification_screen.dart';
@@ -15,6 +15,7 @@ import 'package:streamit_laravel/screens/social/social_search_screen.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/get_story_responce_model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/story_controller.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/view_story_screen.dart';
+import 'package:streamit_laravel/configs.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_api.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_tab_manage.dart';
 import 'package:streamit_laravel/utils/constants.dart';
@@ -102,26 +103,15 @@ class _SocialScreenState extends State<SocialScreen>
                 bottom: false,
                 child: Row(
                   children: [
-                    // Left logo + text
-                    Row(
-                      children: [
-                        Image.asset(
-                          'assets/launcher_icons/wammisLogo.png',
-                          height: 32,
-                          width: 32,
-                          fit: BoxFit.contain,
-                        ),
-                        8.width,
-                        Text(
-                          'WAMIMS',
-                          style: GoogleFonts.poppins(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            letterSpacing: 0.8,
-                          ),
-                        ),
-                      ],
+                    // Title only (no logo for v1)
+                    Text(
+                      'WAMIMS',
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: 0.8,
+                      ),
                     ),
                     const Spacer(),
                     // Megaphone icon (campaign icon)
@@ -407,14 +397,15 @@ class _SocialScreenState extends State<SocialScreen>
                               ),
                             );
 
-                            WalletApi().getPointsAndBolt(
-                                action: PointAction.postView,
-                                getBolt: false,
-                                targetId: int.parse(
-                                    controller.posts[i].postId ?? '0',),
-                                contentType: "post",
-                                onError: onError,
-                                onFailure: (d) {},);
+                            if (ENABLE_POINT_EARNINGS_SYSTEM)
+                              WalletApi().getPointsAndBolt(
+                                  action: PointAction.postView,
+                                  getBolt: false,
+                                  targetId: int.parse(
+                                      controller.posts[i].postId ?? '0',),
+                                  contentType: "post",
+                                  onError: onError,
+                                  onFailure: (d) {},);
                           },
                           onSare: () async {
                             Clipboard.setData(const ClipboardData(
@@ -602,8 +593,8 @@ class _SocialScreenState extends State<SocialScreen>
               ],
             ),
           ),
-          // AppLovin Banner Ad
-          AdLovinHelper.bannerWidget(),
+          // AdMob Banner (more reliable when AppLovin ms.applvn.com is blocked)
+          const AdMobBannerWidget(),
         ],
       ),
     );

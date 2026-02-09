@@ -57,7 +57,7 @@ class BoltApi {
   }) async {
     final user = await DB().getUser();
     await _postBolt(
-      url: 'https://app.wamims.world/public/social/bolt/social_like_bolt.php',
+      url: 'https://app.wamims.world/public/social/ads/social_like_bolt.php',
       body: {
         "user_id": user?.id ?? 0,
         "post_id": postId,
@@ -191,6 +191,7 @@ class BoltApi {
   }
 
   /// 🔹 Watch Ad Reward Bolt (0.01 bolt for watching rewarded ad)
+  /// API: public/social/ads/watch_ad_reward_bolt.php
   Future<void> watchAdRewardBolt({
     required void Function(String) onError,
     required void Function(http.Response) onFailure,
@@ -199,11 +200,13 @@ class BoltApi {
   }) async {
     final user = await DB().getUser();
     await _postBolt(
-      url: 'https://app.wamims.world/public/social/bolt/watch_ad_reward_bolt.php',
+      url:
+          'https://app.wamims.world/public/social/ads/watch_ad_reward_bolt.php',
       body: {
         "user_id": user?.id ?? 0,
         "ad_type": "rewarded",
         "bolt_amount": 0.01,
+        "ad_source": "admob",
       },
       onError: onError,
       onFailure: onFailure,
