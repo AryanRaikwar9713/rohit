@@ -64,7 +64,7 @@ class ContinueWatchingListScreen extends StatelessWidget {
                       builder: (context, constraints) {
                         return AnimatedScrollView(
                           padding: const EdgeInsets.only(bottom: 120, left: 16, right: 16),
-                          physics: AlwaysScrollableScrollPhysics(),
+                          physics: const AlwaysScrollableScrollPhysics(),
                           refreshIndicatorColor: appColorPrimary,
                           children: [
                             AnimatedWrap(
@@ -91,7 +91,7 @@ class ContinueWatchingListScreen extends StatelessWidget {
                           },
                           onSwipeRefresh: () async {
                             continueWatchingListCont.page(1);
-                            return await continueWatchingListCont.getContinueWatchMovieList(showLoader: false);
+                            return continueWatchingListCont.getContinueWatchMovieList(showLoader: false);
                           },
                         );
                       },
@@ -100,7 +100,7 @@ class ContinueWatchingListScreen extends StatelessWidget {
           ),
         ),
         onRefresh: () {
-          return continueWatchingListCont.getContinueWatchMovieList(showLoader: true);
+          return continueWatchingListCont.getContinueWatchMovieList();
         },
       ),
     );
@@ -108,7 +108,6 @@ class ContinueWatchingListScreen extends StatelessWidget {
 
   Future<void> handleRemoveFromContinueWatchClick(List<VideoPlayerModel> continueWatchingList, int index, BuildContext context) async {
     Get.bottomSheet(
-      isDismissible: true,
       isScrollControlled: false,
       enableDrag: false,
       BackdropFilter(

@@ -60,11 +60,11 @@ class ChooseOptionScreen extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      const Color(0xFF1a1510),
+                      Color(0xFF1a1510),
                       appScreenBackgroundDark,
                     ],
                   ),
@@ -82,7 +82,6 @@ class ChooseOptionScreen extends StatelessWidget {
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ShaderMask(
                       shaderCallback: (b) => _chooseOptionGradient.createShader(b),
@@ -94,7 +93,7 @@ class ChooseOptionScreen extends StatelessWidget {
                     ).paddingSymmetric(horizontal: 16),
                     12.height,
                     Text(
-                      locale.value.optionDesp.toString(),
+                      locale.value.optionDesp,
                       textAlign: TextAlign.center,
                       style: secondaryTextStyle(size: 14),
                     ).paddingSymmetric(horizontal: 16),

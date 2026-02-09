@@ -201,7 +201,7 @@ class PersonDetailScreen extends StatelessWidget {
                   ],
                 ),
               )
-            : Offstage(),
+            : const Offstage(),
       ),
     );
   }

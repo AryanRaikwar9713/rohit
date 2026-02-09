@@ -14,7 +14,7 @@ import 'package:streamit_laravel/video_players/model/video_model.dart';
 class SliderController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isWatchListLoading = false.obs;
-  Rx<PageController> sliderPageController = PageController(initialPage: 0).obs;
+  Rx<PageController> sliderPageController = PageController().obs;
   Rx<Future<RxList<SliderModel>>> getBannerList = Future(() => RxList<SliderModel>()).obs;
   RxList<SliderModel> bannerList = RxList();
   Rx<SliderModel> currentSliderPage = SliderModel(data: VideoPlayerModel()).obs;
@@ -76,7 +76,7 @@ class SliderController extends GetxController {
   Future<void> updateWatchList() async {
     Get.isRegistered<ProfileController>() ? Get.find<ProfileController>() : Get.put(ProfileController());
 
-    WatchListController controller = Get.isRegistered<WatchListController>() ? Get.find<WatchListController>() : Get.put(WatchListController());
+    final WatchListController controller = Get.isRegistered<WatchListController>() ? Get.find<WatchListController>() : Get.put(WatchListController());
     controller.getWatchList(showLoader: false);
   }
 }

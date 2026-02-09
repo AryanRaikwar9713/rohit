@@ -49,13 +49,12 @@ class SelectedPlanComponent extends StatelessWidget {
                       size: 12,
                       weight: FontWeight.w600,
                       color: darkGrayTextColor,
-                      fontStyle: FontStyle.italic),
+                      fontStyle: FontStyle.italic,),
                 ),
             ],
           ).expand(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               PriceWidget(
                 price: isRent ? videoPlayerModel?.discountedPrice.validate().toDouble() ?? 0.0 : price,
@@ -70,7 +69,7 @@ class SelectedPlanComponent extends StatelessWidget {
                   weight: FontWeight.w500,
                   color: darkGrayTextColor,
                 ),
-              )
+              ),
             ],
           ),
         ],

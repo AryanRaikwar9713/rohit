@@ -20,12 +20,12 @@ class WalletApi {
   }) async {
     try {
       final head = await DB().getHeaderForRow();
-      UserData? userId = await DB().getUser();
+      final UserData? userId = await DB().getUser();
 
-      String url =
+      final String url =
           'https://app.wamims.world/social/get_wallet.php?action=summary&user_id=${userId?.id ?? 0}';
 
-      final response = await http.get(Uri.parse(url), headers: head);
+      final response = await http.get(Uri.parse(url), headers: head ?? {});
 
       respPrinter(response.statusCode, response.body);
 
@@ -52,10 +52,10 @@ class WalletApi {
     bool showToast = true, // Add parameter to control toast
   }) async {
     try {
-      String uri =
+      final String uri =
           'https://app.wamims.world/public/social/point/index.php?action=$action';
       final head = await DB().getHeaderForRow();
-      UserData? userId = await DB().getUser();
+      final UserData? userId = await DB().getUser();
 
       print("Getting Coine");
 
@@ -95,7 +95,7 @@ class WalletApi {
         body = {
           "user_id": userId?.id,
           "reels_id": targetId,
-          "watch_duration": 30
+          "watch_duration": 30,
         };
       } else if (action == PointAction.postUpload) {
         body = {
@@ -120,7 +120,7 @@ class WalletApi {
       Logger().i(body);
       final response = await http.post(
         Uri.parse(uri),
-        headers: head,
+        headers: head ?? {},
         body: jsonEncode(body),
       );
 
@@ -131,7 +131,7 @@ class WalletApi {
           final data = jsonDecode(response.body);
           if (data['message'].contains("Points earned for") && showToast) {
             toast(
-                "Earn ${data['data']['points_symbol']} ${data['data']['points_earned']}");
+                "Earn ${data['data']['points_symbol']} ${data['data']['points_earned']}",);
           }
           if (onDone != null && data['data']['points_earned'] != null) {
             onDone(data['data']['points_earned'].toDouble());
@@ -173,10 +173,10 @@ class WalletApi {
 
         print("Getting Points");
 
-        String uri =
+        final String uri =
             'https://app.wamims.world/public/social/point/index.php?action=$action';
         final head = await DB().getHeaderForRow();
-        UserData? userId = await DB().getUser();
+        final UserData? userId = await DB().getUser();
 
         Map<String, dynamic> body;
         if (action == PointAction.like) {
@@ -213,7 +213,7 @@ class WalletApi {
           body = {
             "user_id": userId?.id,
             "reels_id": targetId,
-            "watch_duration": duration > 0 ? duration : 30
+            "watch_duration": duration > 0 ? duration : 30,
           };
         } else if (action == PointAction.postUpload) {
           body = {
@@ -237,7 +237,7 @@ class WalletApi {
 
         final pointsResponse = await http.post(
           Uri.parse(uri),
-          headers: head,
+          headers: head ?? {},
           body: jsonEncode(body),
         );
 
@@ -367,8 +367,8 @@ class WalletApi {
 
       // Show combined toast if any points or bolt earned
       if (pointsSuccess || boltSuccess) {
-        List<String> messages = [];
-        if (pointsSuccess && pointsEarned != null && pointsEarned! > 0) {
+        final List<String> messages = [];
+        if (pointsSuccess && pointsEarned != null && pointsEarned > 0) {
           messages.add("Earn ${pointsSymbol ?? ''} $pointsEarned");
         }
         if (boltSuccess && boltEarned != null && boltEarned! > 0) {
@@ -377,7 +377,7 @@ class WalletApi {
         if (messages.isNotEmpty) {
 
           Get.snackbar("Points Earn", messages.join(" | "),snackPosition: SnackPosition.TOP,backgroundColor: greenColor,
-          duration: Duration(milliseconds: 1500));
+          duration: const Duration(milliseconds: 1500),);
         }
       }
     } catch (e) {
@@ -400,7 +400,7 @@ class WalletApi {
 
       final response = await http.get(
         Uri.parse(url),
-        headers: head,
+        headers: head ?? {},
       );
 
       respPrinter(response.statusCode, response.body);
@@ -408,7 +408,7 @@ class WalletApi {
       if (response.statusCode == 200) {
         try {
           onSuccess(
-              PointsHistoryResponceModel.fromJson(jsonDecode(response.body)));
+              PointsHistoryResponceModel.fromJson(jsonDecode(response.body)),);
         } catch (e) {
           onError("Response parsing failed: $e");
         }

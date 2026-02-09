@@ -34,7 +34,6 @@ class ShimmerComingSoon extends StatelessWidget {
                     ).paddingOnly(bottom: 16),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Row(children: [
                           const ShimmerWidget(
@@ -42,13 +41,13 @@ class ShimmerComingSoon extends StatelessWidget {
                             width: 70,
                             radius: 6,
                           ).paddingOnly(left: 16),
-                        ]),
+                        ],),
                         const Spacer(),
                         const ShimmerWidget(
                           height: Constants.shimmerTextSize,
                           width: 110,
                           radius: 6,
-                        ).paddingOnly(right: 16)
+                        ).paddingOnly(right: 16),
                       ],
                     ),
                     8.height,
@@ -59,7 +58,6 @@ class ShimmerComingSoon extends StatelessWidget {
                     ).paddingOnly(left: 16),
                     24.height,
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const ShimmerWidget(

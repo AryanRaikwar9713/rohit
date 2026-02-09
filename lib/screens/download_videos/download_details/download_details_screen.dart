@@ -17,9 +17,7 @@ class DownloadDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppScaffoldNew(
-      hasLeadingWidget: true,
       isLoading: false.obs,
-      hideAppBar: false,
       topBarBgColor: appScreenBackgroundDark,
       scaffoldBackgroundColor: appScreenBackgroundDark,
       body: VideoPlayersComponent(

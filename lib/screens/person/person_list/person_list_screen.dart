@@ -108,7 +108,7 @@ class PersonListScreen extends StatelessWidget {
                       },
                       onSwipeRefresh: () async {
                         personListCont.page(1);
-                        return await personListCont.getPersonDetails(showLoader: false);
+                        return personListCont.getPersonDetails(showLoader: false);
                       },
                     ),
             );

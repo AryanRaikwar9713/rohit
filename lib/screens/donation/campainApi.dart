@@ -24,7 +24,7 @@ class DonationProject{
 
     try {
       final head = await DB().getHeaderForRow();
-      UserData? user = await DB().getUser();
+      final UserData? user = await DB().getUser();
 
       // Validate project_id
       if (projectId <= 0) {
@@ -32,7 +32,7 @@ class DonationProject{
         return;
       }
 
-      var body = jsonEncode({
+      final body = jsonEncode({
         "user_id": user?.id ?? 0,
         "project_id": projectId,
         "bolt_amount": boltAmount.toString(),
@@ -40,16 +40,16 @@ class DonationProject{
         "is_anonymous": 0,
       });
 
-      var response = await http.post(
+      final response = await http.post(
         Uri.parse(url),
-        headers: head,
+        headers: head ?? {},
         body: body,
       );
 
       respPrinter(response.statusCode, response.body);
 
       if (response.statusCode == 200) {
-        var jsonRes = jsonDecode(response.body);
+        final jsonRes = jsonDecode(response.body);
         onSuccess(jsonRes);
       } else {
         onFailure(response);
@@ -72,15 +72,15 @@ class DonationProject{
     try {
       final head = await DB().getHeaderForRow();
 
-      var response = await http.get(
+      final response = await http.get(
         Uri.parse(url),
-        headers: head,
+        headers: head ?? {},
       );
 
       respPrinter(response.statusCode, response.body);
 
       if (response.statusCode == 200) {
-        var jsonRes = jsonDecode(response.body);
+        final jsonRes = jsonDecode(response.body);
         onSuccess(ProjectDetailResponcModel.fromJson(jsonRes));
       } else {
         onError("Server Error: ${response.statusCode}");
@@ -104,20 +104,20 @@ class DonationProject{
 
     try {
       final head = await DB().getHeaderForRow();
-      var user = await DB().getUser();
+      final user = await DB().getUser();
 
       final String url =
           "https://app.wamims.world/public/social/impact/donation_history.php?user_id=${user?.id}&page=$page&limit=10";
 
-      var response = await http.get(
+      final response = await http.get(
         Uri.parse(url),
-        headers: head,
+        headers: head ?? {},
       );
 
       respPrinter(response.statusCode, response.body);
 
       if (response.statusCode == 200) {
-        var jsonRes = jsonDecode(response.body);
+        final jsonRes = jsonDecode(response.body);
         onSuccess(DonationHistoryReponceModel.fromJson(jsonRes));
       } else {
         onError("Server Error: ${response.statusCode}");
@@ -140,7 +140,7 @@ class DonationProject{
 
     try {
 
-      var head = await DB().getHeaderForRow();
+      final head = await DB().getHeaderForRow();
 
       final response = await http.get(
         url,

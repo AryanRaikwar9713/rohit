@@ -55,7 +55,7 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                   colors: [
                 Colors.grey.shade900,
                 Colors.blueGrey.shade900,
-              ])),
+              ],),),
           child: Column(
             children: [
               50.height, const AppMinLogoWidget(),
@@ -81,18 +81,18 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                             },
                             child: const Center(
                               child: CircularProgressIndicator(),
-                            )),
-                        barrierDismissible: false);
+                            ),),
+                        barrierDismissible: false,);
                     await c.getChannel();
                     Navigator.pop(context);
 
                     // Check if channel exists - if yes show profile, if no show create screen
                     if (c.hasChannel.value) {
-                      Get.to(VideoChannelScreen());
+                      Get.to(const VideoChannelScreen());
                     } else {
-                      Get.to(CreateVideoChannelScreen());
+                      Get.to(const CreateVideoChannelScreen());
                     }
-                  }),
+                  },),
 
               //Reels
               _buildTileItem(
@@ -103,7 +103,7 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                   title: "Reels",
                   onTap: () {
                     Get.to(const DrawerSubReels());
-                  }),
+                  },),
 
               //Reels
               _buildTileItem(
@@ -114,7 +114,7 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                   title: "Posts",
                   onTap: () {
                     Get.to(const DrawerSubSocial());
-                  }),
+                  },),
 
               _buildTileItem(
                   icon: const Icon(
@@ -123,12 +123,12 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                   ),
                   title: "Impact",
                   onTap: () async {
-                    var controller = Get.put(VammisProfileController());
-                    var user = await DB().getUser();
+                    final controller = Get.put(VammisProfileController());
+                    final user = await DB().getUser();
                     controller.loadUserProfile(user?.id ?? 0);
                     Get.to(const DrawerSubProjectScreen());
                     // Get.to(const );
-                  }),
+                  },),
 
               // TODO: Shop - Hidden for current version, will be released in future
               // Keep all logic intact, just hide from drawer
@@ -162,7 +162,7 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                   title: "My Followers",
                   onTap: () {
                     Get.to(const DrawerSubFollowers());
-                  }),
+                  },),
 
               //
               _buildTileItem(
@@ -173,7 +173,7 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                   title: "Notice Board",
                   onTap: () {
                     Get.to(const NoticeBoardScreen());
-                  }),
+                  },),
 
               // Wallet - Watch Ads & Earn Bolts
               _buildTileItem(
@@ -184,7 +184,7 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                   title: "💵 Wallet",
                   onTap: () {
                     Get.to(() => const WalletTabManage());
-                  }),
+                  },),
 
               //
               _buildTileItem(
@@ -193,7 +193,7 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                     color: Colors.white,
                   ),
                   title: "LogOut",
-                  onTap: () {}),
+                  onTap: () {},),
             ],
           ),
         ),
@@ -201,7 +201,7 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
     );
   }
 
-  _buildTileItem({
+  ListTile _buildTileItem({
     required String title,
     Widget? icon,
     required Function()? onTap,
@@ -213,7 +213,7 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
           color: Colors.white,
           fontWeight: FontWeight.bold,
           fontSize: 16,
-          letterSpacing: 2.5),
+          letterSpacing: 2.5,),
       onTap: onTap,
     );
   }

@@ -52,8 +52,8 @@ class RazorPayService {
       'currency': await isIqonicProduct ? commonSupportedCurrency : appCurrency.value.currencyCode,
       'prefill': {'contact': loginUserData.value.mobile, 'email': loginUserData.value.email},
       'external': {
-        'wallets': ['paytm']
-      }
+        'wallets': ['paytm'],
+      },
     };
     try {
       razorPay.open(options);

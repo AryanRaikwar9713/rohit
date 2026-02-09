@@ -31,9 +31,9 @@ class ImpactProfileController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   // State Variables
-  var isLoading = false.obs;
-  var accountType = 'personal'.obs;
-  var errorMessage = ''.obs;
+  RxBool isLoading = false.obs;
+  RxString accountType = 'personal'.obs;
+  RxString errorMessage = ''.obs;
 
   // Image Picker
   final ImagePicker _imagePicker = ImagePicker();
@@ -49,7 +49,7 @@ class ImpactProfileController extends GetxController {
   // Profile Data
   Rx<ImpactProfileResponce?> profileResponse = Rx<ImpactProfileResponce?>(null);
   Rx<UserCampainLimitResponcModel?> userCampainLimitResponse = Rx<UserCampainLimitResponcModel?>(null);
-  var isCheckingAccount = false.obs;
+  RxBool isCheckingAccount = false.obs;
 
   @override
   void onInit() {
@@ -237,7 +237,7 @@ class ImpactProfileController extends GetxController {
     if (addressLine1Controller.text.trim().isEmpty) {
       toast(accountType.value == 'personal'
           ? 'Please enter your address'
-          : 'Please enter organization address');
+          : 'Please enter organization address',);
       return false;
     }
 
@@ -367,7 +367,7 @@ class ImpactProfileController extends GetxController {
             {
               ImpactProfileApi().chekUserCampainLimit(onSuccess: (d){
                 userCampainLimitResponse.value = d;
-              }, onError: onError);
+              }, onError: onError,);
             }
         },
         onError: (error) {

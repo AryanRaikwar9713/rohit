@@ -25,12 +25,10 @@ class RecentSearchScreen extends StatelessWidget {
       scaffoldBackgroundColor: appScreenBackgroundDark,
       topBarBgColor: transparentColor,
       appBartitleText: locale.value.recentSearch,
-      hasLeadingWidget: true,
       actions: [
         TextButton(
           onPressed: () {
             Get.bottomSheet(
-              isDismissible: true,
               isScrollControlled: true,
               enableDrag: false,
               BackdropFilter(
@@ -62,7 +60,7 @@ class RecentSearchScreen extends StatelessWidget {
             ...List.generate(
               searchController.searchListData.length,
               (index) {
-                SearchData searchItem = searchController.searchListData[index];
+                final SearchData searchItem = searchController.searchListData[index];
                 return InkWell(
                   onTap: () {
                     searchController.searchCont.text = searchItem.searchQuery;
@@ -83,16 +81,13 @@ class RecentSearchScreen extends StatelessWidget {
                       ),
                       20.width,
                       Marquee(
-                        direction: Axis.horizontal,
                         textDirection: TextDirection.ltr,
-                        animationDuration: const Duration(milliseconds: 5000),
-                        pauseDuration: const Duration(milliseconds: 2000),
                         directionMarguee: DirectionMarguee.oneDirection,
                         child: Text(
                           searchItem.searchQuery,
                           style: primaryTextStyle(),
                         ),
-                      ).expand()
+                      ).expand(),
                     ],
                   ).paddingSymmetric(vertical: 8, horizontal: 4),
                 );
@@ -105,7 +100,7 @@ class RecentSearchScreen extends StatelessWidget {
               title: locale.value.noRecentSearches,
               retryText: "",
               imageWidget: const EmptyStateWidget(),
-            ).paddingSymmetric(horizontal: 16)
+            ).paddingSymmetric(horizontal: 16),
         ],
       ),
     );

@@ -76,7 +76,7 @@ class VideoDetailsController extends GetxController {
             element.type.toLowerCase() == URLType.youtube.toLowerCase() ||
             element.type.toLowerCase() == URLType.vimeo.toLowerCase() ||
             element.type.toLowerCase() == URLType.hls.toLowerCase() ||
-            element.type.toLowerCase() == URLType.file.toLowerCase());
+            element.type.toLowerCase() == URLType.file.toLowerCase(),);
       }
       checkIfAlreadyDownloaded();
       movieData.value.isPurchased = value.data.isPurchased;
@@ -99,8 +99,8 @@ class VideoDetailsController extends GetxController {
   }
 
   Future<void> addLike() async {
-    int isLike = movieDetailsResp.value.isLiked ? 0 : 1;
-    movieDetailsResp.value.isLiked = isLike.getBoolInt() ? true : false;
+    final int isLike = movieDetailsResp.value.isLiked ? 0 : 1;
+    movieDetailsResp.value.isLiked = isLike.getBoolInt();
     movieDetailsResp.refresh();
     hideKeyBoardWithoutContext();
     CoreServiceApis().likeMovie(
@@ -113,7 +113,7 @@ class VideoDetailsController extends GetxController {
     ).then((value) async {
       await getMovieDetail(showLoader: false);
     }).catchError((e) {
-      movieDetailsResp.value.isLiked = isLike.getBoolInt() ? false : true;
+      movieDetailsResp.value.isLiked = !isLike.getBoolInt();
     });
   }
 
@@ -133,9 +133,9 @@ class VideoDetailsController extends GetxController {
       ).then((value) async {
         await getMovieDetail(showLoader: false);
         successSnackBar(locale.value.addedToWatchList);
-        ProfileController profileCont = Get.put(ProfileController());
+        final ProfileController profileCont = Get.put(ProfileController());
         profileCont.getProfileDetail(showLoader: false);
-        WatchListController watchListCont = Get.put(WatchListController());
+        final WatchListController watchListCont = Get.put(WatchListController());
         watchListCont.getWatchList(showLoader: false);
       }).catchError((e) {
         movieDetailsResp.value.isWatchList = false;
@@ -146,9 +146,9 @@ class VideoDetailsController extends GetxController {
       CoreServiceApis().deleteFromWatchlist(idList: [movieDetailsResp.value.id]).then((value) async {
         await getMovieDetail(showLoader: false);
         successSnackBar(locale.value.removedFromWatchList);
-        ProfileController profileCont = Get.put(ProfileController());
+        final ProfileController profileCont = Get.put(ProfileController());
         profileCont.getProfileDetail(showLoader: false);
-        WatchListController watchListCont = Get.put(WatchListController());
+        final WatchListController watchListCont = Get.put(WatchListController());
         watchListCont.getWatchList(showLoader: false);
       }).catchError((e) {
         movieDetailsResp.value.isWatchList = true;
@@ -171,7 +171,6 @@ class VideoDetailsController extends GetxController {
 
   void download() {
     Get.bottomSheet(
-      isDismissible: true,
       isScrollControlled: false,
       enableDrag: false,
       BackdropFilter(
@@ -230,18 +229,18 @@ class VideoDetailsController extends GetxController {
         (movieDetailsResp.value.downloadType != URLType.url && movieDetailsResp.value.downloadType != URLType.local)) {
       showDownload(false);
     }
-    bool downloaded = await checkIfDownloaded(videoId: movieDetailsResp.value.id);
+    final bool downloaded = await checkIfDownloaded(videoId: movieDetailsResp.value.id);
     isDownloaded(downloaded);
   }
 
   Future openBottomSheetForFCCastAvailableDevices(BuildContext context) async {
-    VideoPlayerModel videoModel = getVideoPlayerResp(movieData.value.toJson());
+    final VideoPlayerModel videoModel = getVideoPlayerResp(movieData.value.toJson());
     Get.bottomSheet(
       isDismissible: false,
       AvailableDevicesForCast(
         onTap: (p1) {
           Get.back();
-          FCCast cast = Get.find();
+          final FCCast cast = Get.find();
           cast.setChromeCast(
             videoURL: videoModel.videoUrlInput,
             device: p1,

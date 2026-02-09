@@ -26,7 +26,7 @@ class FollowerController extends GetxController
 
   RxBool loading = true.obs;
 
-  initData() async
+  Future<void> initData() async
   {
     await getFollowers();
     await getFollowings();
@@ -34,30 +34,30 @@ class FollowerController extends GetxController
   }
 
 
-  followOrUnfollow(int userId)
+  void followOrUnfollow(int userId)
   {
     SocialApi().followUser(
         targetUserId: userId, onError: (e){}, onFailure: (d){}, onSuccess: (d){
           _updateFolloser(userId, d);
-    });
+    },);
   }
 
-  _updateFolloser(int userId,bool isFollowing) async
+  Future<void> _updateFolloser(int userId,bool isFollowing) async
   {
-    followingList.forEach((element) {
+    for (final element in followingList) {
       if(element.id==userId)
         {
           element.isFollowing = isFollowing;
         }
-    },);
+    }
 
 
-    followersList.forEach((element) {
+    for (final element in followersList) {
       if(element.id==userId)
       {
         element.isFollowing = isFollowing;
       }
-    },);
+    }
 
     followersList.refresh();
     followingList.refresh();
@@ -86,7 +86,7 @@ class FollowerController extends GetxController
     }, onFail: (d){
       Logger().e('failed to get folowes \n${d.statusCode}\n${d.body}');
 
-    });
+    },);
    }
    catch(e)
     {
@@ -124,7 +124,7 @@ class FollowerController extends GetxController
             hasMoreFollowing.value = d.meta?.pagination?.hasNextPage??false;
           }, onFail: (e){
             Logger().e("Faild To get\n${e.statusCode} \n${e.body}");
-          });
+          },);
         }
         catch (e)
     {
@@ -145,9 +145,9 @@ class FollowerController extends GetxController
   }
 
 
-  selectUser(int userid)
+  void selectUser(int userid)
   {
-    print("User ${userid}");
+    print("User $userid");
     if(selectedUsers.contains(userid))
       {
         print("user id select removing");
@@ -166,7 +166,7 @@ class FollowerController extends GetxController
 
 
 
-  cleareData()
+  void cleareData()
   {
     followersList.clear();
     followingList.clear();

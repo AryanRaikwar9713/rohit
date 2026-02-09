@@ -44,8 +44,8 @@ class VammisProfileScreen extends StatefulWidget {
     required this.userId,
     required this.isOwnProfile,
     required this.popButton,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<VammisProfileScreen> createState() => _VammisProfileScreenState();
@@ -127,7 +127,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                 onPressed: () => Get.back(),
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
               )
-            : SizedBox(),
+            : const SizedBox(),
         title: Obx(() {
           final user = controller.profileResponse.value?.data?.user;
           final name = user?.username ??
@@ -151,14 +151,14 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                 onPressed: () {
                   Get.to(() => const SettingScreen());
                 },
-                icon: const Icon(Icons.settings, color: Colors.white)),
+                icon: const Icon(Icons.settings, color: Colors.white),),
 
           if (widget.isOwnProfile)
             IconButton(
                 onPressed: () {
                   Get.to(() => const CreateStoryScreen());
                 },
-                icon: const Icon(Icons.add_circle_rounded, color: Colors.white)),
+                icon: const Icon(Icons.add_circle_rounded, color: Colors.white),),
         ],
       ),
 
@@ -196,7 +196,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                     backgroundColor: appColorPrimary,
                   ),
                   child: const Text('Retry',
-                      style: TextStyle(color: Colors.white)),
+                      style: TextStyle(color: Colors.white),),
                 ),
               ],
             ),
@@ -244,7 +244,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
   }
 
   Widget _buildProfileHeader(
-      vammis_model.VammisProfile profile, VammisProfileController controller) {
+      vammis_model.VammisProfile profile, VammisProfileController controller,) {
     return Container(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -284,14 +284,14 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                           child: Blur(
                             child: Container(
                               clipBehavior: Clip.hardEdge,
-                              margin: EdgeInsetsGeometry.symmetric(horizontal: 50),
+                              margin: const EdgeInsetsGeometry.symmetric(horizontal: 50),
                               decoration:const BoxDecoration(
                                 shape: BoxShape.circle,
 
                               ),
                               child: Hero(
                                   tag: 'profileImage',
-                                  child: Image.network(imageUrl ?? '')),
+                                  child: Image.network(imageUrl ?? ''),),
                             ),
                           ),
                         );
@@ -299,7 +299,6 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                     );
                   }
                 },
-                story: false,
               ),
 
               const SizedBox(width: 20),
@@ -369,7 +368,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                   // Show donations given only for own profile
                   if (profile.stats?.donationsGiven != null)
                     _buildStatItem(
-                      '${profile.stats!.donationsGiven!.toStringAsFixed(0)}',
+                      profile.stats!.donationsGiven!.toStringAsFixed(0),
                       'Donated',
                     ),
                 ] else ...[
@@ -460,7 +459,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                   ),
                 ),
               ),
-            )
+            ),
           ] else ...[
             Row(
               children: [
@@ -503,7 +502,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                 ),
               ],
             ),
-          ]
+          ],
         ],
       ),
     );
@@ -529,7 +528,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
   }
 
   Widget _buildFollowButton(
-      vammis_model.VammisProfile profile, VammisProfileController controller) {
+      vammis_model.VammisProfile profile, VammisProfileController controller,) {
     final isFollowing = profile.isFollowing ?? false;
 
     if (widget.isOwnProfile) {
@@ -656,7 +655,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
               else
                 Text(
                   label,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.grey,
                     fontWeight: FontWeight.normal,
                     fontSize: 14,
@@ -728,14 +727,13 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
         crossAxisCount: 3,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
-        childAspectRatio: 1,
       ),
       itemCount: controller.userPosts.length,
       itemBuilder: (context, index) {
         final post = controller.userPosts[index];
         return GestureDetector(
           onTap: () {
-            Get.to(UserPostViewScreen());
+            Get.to(const UserPostViewScreen());
           },
           child: Container(
             decoration: BoxDecoration(
@@ -743,7 +741,6 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: _profileGradient.colors.first.withOpacity(0.3),
-                width: 1,
               ),
               boxShadow: [
                 BoxShadow(
@@ -860,7 +857,6 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: _profileGradient.colors.first.withOpacity(0.3),
-                width: 1,
               ),
               boxShadow: [
                 BoxShadow(
@@ -971,7 +967,6 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: _profileGradient.colors.first.withOpacity(0.35),
-              width: 1,
             ),
             boxShadow: [
               BoxShadow(
@@ -1034,24 +1029,24 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
 
   // Social Links Section
   Widget _buildSocialLinksSection(vammis_model.User user) {
-    List<Widget> links = [];
+    final List<Widget> links = [];
 
     if (user.facebookLink != null && user.facebookLink.toString().isNotEmpty) {
       links.add(_buildSocialLink(
-          Icons.facebook, 'Facebook', user.facebookLink.toString()));
+          Icons.facebook, 'Facebook', user.facebookLink.toString(),),);
     }
     if (user.instagramLink != null &&
         user.instagramLink.toString().isNotEmpty) {
       links.add(_buildSocialLink(
-          Icons.camera_alt, 'Instagram', user.instagramLink.toString()));
+          Icons.camera_alt, 'Instagram', user.instagramLink.toString(),),);
     }
     if (user.twitterLink != null && user.twitterLink.toString().isNotEmpty) {
       links.add(_buildSocialLink(
-          Icons.alternate_email, 'Twitter', user.twitterLink.toString()));
+          Icons.alternate_email, 'Twitter', user.twitterLink.toString(),),);
     }
     if (user.dribbbleLink != null && user.dribbbleLink.toString().isNotEmpty) {
       links.add(_buildSocialLink(
-          Icons.palette, 'Dribbble', user.dribbbleLink.toString()));
+          Icons.palette, 'Dribbble', user.dribbbleLink.toString(),),);
     }
 
     if (links.isEmpty) return const SizedBox.shrink();
@@ -1174,7 +1169,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
 
   // Recent Activities Section (Only for own profile)
   Widget _buildRecentActivitiesSection(
-      List<vammis_model.RecentActivity> activities) {
+      List<vammis_model.RecentActivity> activities,) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -1210,7 +1205,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                             Text(
                               activity.title!,
                               style: primaryTextStyle(
-                                  size: 14, color: Colors.white),
+                                  size: 14, color: Colors.white,),
                             ),
                           if (activity.description != null &&
                               activity.description!.isNotEmpty) ...[
@@ -1218,7 +1213,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                             Text(
                               activity.description!,
                               style: secondaryTextStyle(
-                                  size: 12, color: Colors.white70),
+                                  size: 12, color: Colors.white70,),
                             ),
                           ],
                           if (activity.createdAt != null) ...[
@@ -1226,7 +1221,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                             Text(
                               _formatDate(activity.createdAt!),
                               style: secondaryTextStyle(
-                                  size: 11, color: Colors.white54),
+                                  size: 11, color: Colors.white54,),
                             ),
                           ],
                         ],
@@ -1234,7 +1229,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                     ),
                   ],
                 ),
-              )),
+              ),),
         ],
       ),
     );
@@ -1342,7 +1337,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
             10.height,
             Row(
               children: [
-                for(SocialMediaAccount a in c.account)
+                for(final SocialMediaAccount a in c.account)
                   GestureDetector(
                     onTap: (){launchUrl(Uri.parse(a.url??''));},
                     child: Container(
@@ -1355,9 +1350,9 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                         color: Colors.white,
                         border: Border.all(color: Colors.white),
                       ),
-                      child: Image.asset(mediaIcons[a.platform]??'')
+                      child: Image.asset(mediaIcons[a.platform]??''),
                     ),
-                  )
+                  ),
               ],
             ),
           ],
@@ -1385,7 +1380,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
         {
           return ElevatedButton(onPressed: (){
             myStoryController?.getMyStory();
-          }, child: Text("test"));
+          }, child: const Text("test"),);
           return const SizedBox();
         }
       else
@@ -1397,7 +1392,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                children: [
                  Padding(
                    padding: const EdgeInsetsGeometry.symmetric(horizontal: 10,vertical: 5),
-                     child: Text("Story",style: TextStyle(color: Colors.white,fontSize: 16,fontFamily: GoogleFonts.poppins().fontFamily),)),
+                     child: Text("Story",style: TextStyle(color: Colors.white,fontSize: 16,fontFamily: GoogleFonts.poppins().fontFamily),),),
                  10.height,
                  SingleChildScrollView(
                    scrollDirection: Axis.horizontal,
@@ -1407,7 +1402,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
 
-                      for(ActiveStory s in myStoryController?.activeStories??[])
+                      for(final ActiveStory s in myStoryController?.activeStories??[])
                         GestureDetector(
                           onTap: (){
                             Get.to(MyStoryScreen(storyId: s.id.toString(),controller: myStoryController!));
@@ -1437,7 +1432,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                         if(kDebugMode)
                           IconButton(onPressed: (){
                             myStoryController?.getMyStory();
-                          }, icon: const Icon(Icons.refresh))
+                          }, icon: const Icon(Icons.refresh),),
 
                     ],),
                              ),

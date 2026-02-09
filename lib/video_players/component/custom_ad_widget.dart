@@ -59,7 +59,7 @@ class _CustomAdWidgetState extends State<CustomAdWidget> {
                 child: InkWell(
                   onTap: () {
                     if (ad.redirectUrl?.isNotEmpty ?? false) {
-                      launchUrlCustomURL(ad.redirectUrl!);
+                      launchUrlCustomURL(ad.redirectUrl);
                     }
                   },
                   borderRadius: BorderRadius.circular(12),
@@ -99,7 +99,7 @@ class _CustomAdWidgetState extends State<CustomAdWidget> {
             GestureDetector(
               onTap: () {
                 if (ad.redirectUrl?.isNotEmpty ?? false) {
-                  launchUrlCustomURL(ad.redirectUrl!);
+                  launchUrlCustomURL(ad.redirectUrl);
                 }
               },
               child: AdPlayer(
@@ -141,7 +141,7 @@ class _CustomAdWidgetState extends State<CustomAdWidget> {
                         child: Text(locale.value.lblSkip, style: const TextStyle(color: black, fontWeight: FontWeight.w500)),
                       ),
                     ),
-                  )),
+                  ),),
           ],
         ),
       );

@@ -39,7 +39,6 @@ class OTPVerifyComponent extends StatelessWidget {
         children: [
           SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -60,7 +59,6 @@ class OTPVerifyComponent extends StatelessWidget {
                 AppTextField(
                   textFieldType: TextFieldType.USERNAME,
                   controller: verificationCont.verifyCont,
-                  isValidationRequired: true,
                   errorThisFieldRequired: 'Enter OTP',
                   textStyle: primaryTextStyle(letterSpacing: 6),
                   maxLength: 6,
@@ -99,7 +97,6 @@ class OTPVerifyComponent extends StatelessWidget {
                 10.height,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       locale.value.didntGetTheOTP,

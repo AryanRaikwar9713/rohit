@@ -16,19 +16,19 @@ class SocialMediaApi {
   }) async {
     try {
 
-      var user = await DB().getUser();
-      String uri =
+      final user = await DB().getUser();
+      final String uri =
           'https://app.wamims.world/public/social/social_media_api.php'
           '?action=get_social_media'
           '&current_user_id=${user?.id}';
 
-      var head = await DB().getHeaderForForm();
+      final head = await DB().getHeaderForForm();
 
-      var resp = await http.get(Uri.parse(uri), headers: head);
+      final resp = await http.get(Uri.parse(uri), headers: head ?? {});
       respPrinter(resp.statusCode, resp.body);
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var data = jsonDecode(resp.body);
+        final data = jsonDecode(resp.body);
         onSuccess(GetSocialMediaAccountResponceModel.fromJson(data));
       } else {
         onFail(resp);
@@ -48,12 +48,12 @@ class SocialMediaApi {
     required void Function(http.Response) onFail,
   }) async {
     try {
-      var head = await DB().getHeaderForForm();
-      var user = await DB().getUser();
+      final head = await DB().getHeaderForForm();
+      final user = await DB().getUser();
 
-      var resp = await http.post(
+      final resp = await http.post(
         Uri.parse('https://app.wamims.world/public/social/social_media_api.php'),
-        headers: head,
+        headers: head ?? {},
         body: {
           'action': 'add_social_media',
           'current_user_id': user?.id,

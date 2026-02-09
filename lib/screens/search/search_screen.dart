@@ -29,7 +29,6 @@ class SearchScreen extends StatelessWidget {
       scaffoldBackgroundColor: appScreenBackgroundDark,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           SearchTextFieldComponent().paddingSymmetric(horizontal: 16, vertical: 16),
@@ -46,7 +45,7 @@ class SearchScreen extends StatelessWidget {
                   retryText: locale.value.reload,
                   imageWidget: const ErrorStateWidget(),
                   onRetry: () {
-                    searchCont.getSearchMovieDetail(showLoader: true);
+                    searchCont.getSearchMovieDetail();
                   },
                 );
               },

@@ -12,7 +12,7 @@ const LinearGradient _editProfileGradient = LinearGradient(
 );
 
 class EditVammisProfileScreen extends StatelessWidget {
-  const EditVammisProfileScreen({Key? key}) : super(key: key);
+  const EditVammisProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class EditVammisProfileScreen extends StatelessWidget {
                     ? null
                     : () => controller.updateProfile(),
                 child: controller.isLoading.value
-                    ? Text(
+                    ? const Text(
                         'Save',
                         style: TextStyle(
                           color: Colors.grey,
@@ -49,7 +49,7 @@ class EditVammisProfileScreen extends StatelessWidget {
                       )
                     : ShaderMask(
                         shaderCallback: (b) => _editProfileGradient.createShader(b),
-                        child: Text(
+                        child: const Text(
                           'Save',
                           style: TextStyle(
                             color: Colors.white,
@@ -58,7 +58,7 @@ class EditVammisProfileScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-              )),
+              ),),
         ],
       ),
       body: Obx(() {
@@ -129,7 +129,7 @@ class EditVammisProfileScreen extends StatelessWidget {
                             if(controller.isUploadingImage.value)
                               Container(
                                 color: Colors.black.withOpacity(.2),
-                                  child: const Center(child: CircularProgressIndicator(),))
+                                  child: const Center(child: CircularProgressIndicator(),),),
                           ],
                         ),
                       );
@@ -284,7 +284,7 @@ class EditVammisProfileScreen extends StatelessWidget {
                               'Save Changes',
                               textAlign: TextAlign.center,
                               style: boldTextStyle(size: 16, color: Colors.black),
-                            )),
+                            ),),
                     ),
                   ),
                 ),

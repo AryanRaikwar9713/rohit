@@ -69,7 +69,7 @@ class ComingSoonDetailScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
             if (!comingSoonCont.isFullScreenEnable.value)
@@ -132,7 +132,7 @@ class ComingSoonDetailScreen extends StatelessWidget {
 
   Widget getRemindIcon() {
     try {
-      return Lottie.asset(Assets.lottieRemind, height: 24, repeat: comingSoonData.isRemind.getBoolInt() ? false : true);
+      return Lottie.asset(Assets.lottieRemind, height: 24, repeat: !comingSoonData.isRemind.getBoolInt());
     } catch (e) {
       return const CachedImageWidget(
         url: Assets.iconsIcBell,

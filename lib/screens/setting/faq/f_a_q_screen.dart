@@ -25,10 +25,9 @@ class FAQScreen extends StatelessWidget {
       isLoading: settingController.isLoading,
       body: Obx(
         () => AnimatedScrollView(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          padding: EdgeInsets.only(bottom: 60, top: 16, left: 16, right: 16),
+          padding: const EdgeInsets.only(bottom: 60, top: 16, left: 16, right: 16),
           refreshIndicatorColor: appColorPrimary,
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           onSwipeRefresh: () {
             settingController.page(1);
             return settingController.getFAQListAPI();
@@ -60,7 +59,7 @@ class FAQScreen extends StatelessWidget {
                 (e) {
                   return FAQCard(faqData: e);
                 },
-              )
+              ),
           ],
         ),
       ),

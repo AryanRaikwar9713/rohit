@@ -69,7 +69,7 @@ class LocationMonitor {
     try {
       overlayState = Overlay.maybeOf(context);
     } catch (_) {}
-    overlayState ??= Get.key?.currentState?.overlay;
+    overlayState ??= Get.key.currentState?.overlay;
 
     if (overlayState == null) {
       _isOverlayShowing = false;
@@ -167,7 +167,7 @@ class _LocationBlockingOverlayState extends State<_LocationBlockingOverlay> {
                         color: appColorPrimary.withOpacity(0.2),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.location_off,
                         size: 50,
                         color: appColorPrimary,
@@ -175,7 +175,7 @@ class _LocationBlockingOverlayState extends State<_LocationBlockingOverlay> {
                     ),
                     const SizedBox(height: 32),
                     // Title
-                    Text(
+                    const Text(
                       'Location Required',
                       style: TextStyle(
                         fontSize: 24,
@@ -219,12 +219,12 @@ class _LocationBlockingOverlayState extends State<_LocationBlockingOverlay> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: appColorPrimary,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 32, vertical: 16),
+                            horizontal: 32, vertical: 16,),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Open Location Settings',
                         style: TextStyle(
                           fontSize: 16,

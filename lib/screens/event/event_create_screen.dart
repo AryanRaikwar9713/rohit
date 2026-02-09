@@ -35,7 +35,7 @@ class EventCreateScreen extends StatelessWidget {
                 onPressed:
                     controller.isCreating.value ? null : () => Get.back(),
                 icon: const Icon(Icons.close, color: Colors.white),
-              )),
+              ),),
           title: Text(
             'Create Event',
             style: boldTextStyle(size: 18, color: Colors.white),
@@ -67,14 +67,14 @@ class EventCreateScreen extends StatelessWidget {
                   value: controller.uploadProgress.value,
                   strokeWidth: 3,
                   backgroundColor: Colors.grey[800],
-                  valueColor: AlwaysStoppedAnimation<Color>(appColorPrimary),
-                )),
+                  valueColor: const AlwaysStoppedAnimation<Color>(appColorPrimary),
+                ),),
           ),
           32.height,
           Obx(() => Text(
                 '${(controller.uploadProgress.value * 100).toInt()}%',
                 style: boldTextStyle(size: 24, color: Colors.white),
-              )),
+              ),),
           16.height,
           Text(
             'Creating event...',
@@ -82,7 +82,7 @@ class EventCreateScreen extends StatelessWidget {
           ),
           8.height,
           Text(
-            'Please don\'t close the app',
+            "Please don't close the app",
             style: secondaryTextStyle(size: 14, color: Colors.grey),
           ),
         ],
@@ -91,7 +91,7 @@ class EventCreateScreen extends StatelessWidget {
   }
 
   Widget _buildEventForm(
-      EventCreateController controller, BuildContext context) {
+      EventCreateController controller, BuildContext context,) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -113,12 +113,12 @@ class EventCreateScreen extends StatelessWidget {
           _builDropDown<String?>(
             label: 'Select Event Type',
               items:[
-            for(MapEntry v in controller.eventTypeMap.entries)
+            for(final MapEntry v in controller.eventTypeMap.entries)
               DropdownMenuItem(
-                  value:v.key, child: Text(v.value))
+                  value:v.key, child: Text(v.value),),
           ], value: controller.selectedEventType.value, onChanged: (d){
             controller.selectedEventType.value = d??'';
-          }),
+          },),
           16.height,
 
           // Description
@@ -141,7 +141,7 @@ class EventCreateScreen extends StatelessWidget {
                       onChanged: (d) {
                         controller.startDateController.value = d;
                       },
-                      label: "Start Time")),
+                      label: "Start Time",),),
               10.width,
 
               //
@@ -152,8 +152,8 @@ class EventCreateScreen extends StatelessWidget {
                     onChanged: (d) {
                       controller.endDateController.value = d;
                     },
-                    label: "End Time"),
-              )
+                    label: "End Time",),
+              ),
             ],
           ),
           16.height,
@@ -167,7 +167,7 @@ class EventCreateScreen extends StatelessWidget {
                   controller.resultDateController.value = d;
                 },
                 value: controller.resultDateController.value,
-                label: 'Result Date'),
+                label: 'Result Date',),
           ),
           16.height,
 
@@ -257,11 +257,11 @@ class EventCreateScreen extends StatelessWidget {
                     },
                     child: Container(
                       padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.red,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.close, color: Colors.white, size: 20),
+                      child: const Icon(Icons.close, color: Colors.white, size: 20),
                     ),
                   ),
                 ),
@@ -278,14 +278,13 @@ class EventCreateScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: Colors.grey[700]!,
-                  style: BorderStyle.solid,
                   width: 2,
                 ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.add_photo_alternate_outlined,
                     color: appColorPrimary,
                     size: 48,
@@ -401,9 +400,9 @@ class EventCreateScreen extends StatelessWidget {
         required String label,
         required List<DropdownMenuItem<T>> items,
         required T value,
-      required Function(T?) onChanged}) {
+      required Function(T?) onChanged,}) {
     return DropdownButtonFormField<T>(
-      style: TextStyle(color: Colors.white,fontSize: 16),
+      style: const TextStyle(color: Colors.white,fontSize: 16),
       decoration: InputDecoration(
 
         filled: true,
@@ -425,8 +424,8 @@ class EventCreateScreen extends StatelessWidget {
           style: primaryTextStyle(size: 16, color: Colors.white),
         ),
       ),
-      value: value,
-        items: items, onChanged: onChanged);
+      initialValue: value,
+        items: items, onChanged: onChanged,);
   }
 
   Widget _buildTextField({
@@ -462,7 +461,7 @@ class EventCreateScreen extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: appColorPrimary),
+              borderSide: const BorderSide(color: appColorPrimary),
             ),
             filled: true,
             fillColor: Colors.grey[900],
@@ -499,7 +498,6 @@ class EventCreateScreen extends StatelessWidget {
                       primary: appColorPrimary,
                       onPrimary: Colors.white,
                       surface: Colors.grey[900]!,
-                      onSurface: Colors.white,
                     ),
                   ),
                   child: child!,
@@ -517,7 +515,6 @@ class EventCreateScreen extends StatelessWidget {
                         primary: appColorPrimary,
                         onPrimary: Colors.white,
                         surface: Colors.grey[900]!,
-                        onSurface: Colors.white,
                       ),
                     ),
                     child: child!,
@@ -556,7 +553,7 @@ class EventCreateScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                Icon(
+                const Icon(
                   Icons.calendar_today,
                   color: Colors.grey,
                 ),
@@ -574,7 +571,7 @@ class EventCreateScreen extends StatelessWidget {
     required BuildContext context,
     required Function(DateTime?) onChanged,
   }) {
-    var month = {
+    final month = {
       1: 'January',
       2: 'February',
       3: 'March',
@@ -591,10 +588,10 @@ class EventCreateScreen extends StatelessWidget {
 
     return GestureDetector(
       onTap: () async {
-        var d = await showDatePicker(
+        final d = await showDatePicker(
             context: context,
             firstDate: DateTime.now(),
-            lastDate: DateTime(5000));
+            lastDate: DateTime(5000),);
         onChanged(d);
       },
       child: Container(
@@ -608,18 +605,18 @@ class EventCreateScreen extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
-                    fontWeight: FontWeight.w900),
+                    fontWeight: FontWeight.w900,),
               ),
               5.height,
               if (value == null) ...[
                 Text(
                   'Select $label',
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w600),
-                )
+                  style: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w600,),
+                ),
               ] else ...[
                 Text(
                   '${value.day} ${month[value.month]}\n${value.year}',
@@ -627,11 +624,11 @@ class EventCreateScreen extends StatelessWidget {
                   style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
-                      fontWeight: FontWeight.w900),
+                      fontWeight: FontWeight.w900,),
                 ),
-              ]
+              ],
             ],
-          )),
+          ),),
     );
   }
 
@@ -745,7 +742,7 @@ class EventCreateScreen extends StatelessWidget {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: appColorPrimary),
+                    borderSide: const BorderSide(color: appColorPrimary),
                   ),
                   filled: true,
                   fillColor: Colors.grey[900],
@@ -782,7 +779,7 @@ class EventCreateScreen extends StatelessWidget {
               final index = entry.key;
               final rule = entry.value;
               return Container(
-                margin: EdgeInsets.only(bottom: 8),
+                margin: const EdgeInsets.only(bottom: 8),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.grey[900],
@@ -799,7 +796,7 @@ class EventCreateScreen extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () => controller.removeEventRule(index),
-                      child: Icon(
+                      child: const Icon(
                         Icons.close,
                         color: Colors.red,
                         size: 20,
@@ -915,7 +912,7 @@ class EventCreateScreen extends StatelessWidget {
               final index = entry.key;
               final prize = entry.value;
               return Container(
-                margin: EdgeInsets.only(bottom: 8),
+                margin: const EdgeInsets.only(bottom: 8),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.grey[900],
@@ -936,14 +933,14 @@ class EventCreateScreen extends StatelessWidget {
                           Text(
                             'Type: ${prize['prize_type']} | Value: ${prize['prize_value']}',
                             style: secondaryTextStyle(
-                                size: 12, color: Colors.grey),
+                                size: 12, color: Colors.grey,),
                           ),
                         ],
                       ),
                     ),
                     GestureDetector(
                       onTap: () => controller.removePrize(index),
-                      child: Icon(
+                      child: const Icon(
                         Icons.close,
                         color: Colors.red,
                         size: 20,

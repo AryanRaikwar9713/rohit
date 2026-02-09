@@ -5,13 +5,13 @@ import 'package:logger/logger.dart';
 import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/shops_section/model/user_order_history_model.dart';
 
-respPrinter(int st, String body) {
+void respPrinter(int st, String body) {
   if (st == 200 || st == 201) {
     Logger().i(jsonDecode(body));
   } else {
     if(body.isNotEmpty)
       {
-        Logger().e('${st}\n$body');
+        Logger().e('$st\n$body');
       }
   }
 }
@@ -38,8 +38,8 @@ class OrderApi {
         "https://app.wamims.world/public/social/shopping/product_order.php",
       );
 
-      var head = await DB().getHeaderForRow();
-      var user = await DB().getUser();
+      final head = await DB().getHeaderForRow();
+      final user = await DB().getUser();
 
       // Prepare request body
       final Map<String, dynamic> requestBody = {
@@ -62,7 +62,7 @@ class OrderApi {
       final response = await http.post(
         uri,
         headers: {
-          ...head,
+          ...?head,
           'Content-Type': 'application/json',
         },
         body: jsonEncode(requestBody),
@@ -91,19 +91,19 @@ class OrderApi {
   }) async {
     try {
 
-      var user = await DB().getUser();
-      var url = Uri.parse(
+      final user = await DB().getUser();
+      final url = Uri.parse(
         "https://app.wamims.world/public/social/shopping/product_order.php?user_id=${user?.id}",
       );
 
-      var headers = await DB().getHeaderForRow();
+      final headers = await DB().getHeaderForRow();
 
-      var response = await http.get(url, headers: headers);
+      final response = await http.get(url, headers: headers ?? {});
 
       respPrinter(response.statusCode, response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        var data = jsonDecode(response.body);
+        final data = jsonDecode(response.body);
         onSuccess(UserOrderHistorytReponceModel.fromJson(data));
       } else {
         onFailure(response);

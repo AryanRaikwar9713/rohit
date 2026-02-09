@@ -8,11 +8,11 @@ class WamimsNotificationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        titleTextStyle: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),
+        titleTextStyle: const TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),
         title: const Text("Notifications"),
       ),
       
-      body: Center(
+      body: const Center(
         child: Text("No Notifications",style: TextStyle(color: Colors.white,fontSize: 20),),
       ),
     );

@@ -25,15 +25,15 @@ class _DrawerSubProjectScreenState extends State<DrawerSubProjectScreen> {
     myInit();
   }
 
-  myInit() async
+  Future<void> myInit() async
   {
     controller = Get.put(VammisProfileController());
-    var user = await DB().getUser();
+    final user = await DB().getUser();
     userId = user?.id??0;
     controller.loadUserProjects(userId);
   }
 
-  addScrollListner()
+  void addScrollListner()
   {
     _scrollController.addListener((){
       if(_scrollController.position.pixels==_scrollController.position.maxScrollExtent)
@@ -66,7 +66,7 @@ class _DrawerSubProjectScreenState extends State<DrawerSubProjectScreen> {
         return ListView.builder(
           itemCount: controller.userProjects.length,
           itemBuilder: (context, index) {
-            var p = controller.userProjects[index];
+            final p = controller.userProjects[index];
             return CampaignProjectCard(project: p);
           },
         );

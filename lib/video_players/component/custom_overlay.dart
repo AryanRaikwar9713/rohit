@@ -124,7 +124,6 @@ class _CustomPodPlayerControlOverlayState extends State<CustomPodPlayerControlOv
                         position: widget.position,
                         duration: widget.duration,
                         adBreaks: widget.adBreaks,
-                        isAdPlaying: false,
                         onSeek: (duration) {
                           widget.onSeek(duration);
                           _onUserInteraction();

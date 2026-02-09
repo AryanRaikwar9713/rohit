@@ -42,12 +42,12 @@ class AppTheme {
         
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Colors.white,width: 1),
+          borderSide: const BorderSide(color: Colors.white),
         ),
 
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Colors.white,width: 1),
+          borderSide: const BorderSide(color: Colors.white),
         ),
         
         enabledBorder: OutlineInputBorder(
@@ -86,7 +86,7 @@ class AppTheme {
         unselectedLabelStyle: TextStyle(
           color: Colors.white.withOpacity(.5),
           fontWeight: FontWeight.w700,
-          fontSize: 16
+          fontSize: 16,
         ),
 
 
@@ -94,12 +94,12 @@ class AppTheme {
         labelStyle: const TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.w700,
-          fontSize: 16
+          fontSize: 16,
         ),
         indicator: BoxDecoration(
           borderRadius: BorderRadius.circular(100),
           color: appColorPrimary,
-        )
+        ),
       ),
       radioTheme: RadioThemeData(
         fillColor: WidgetStateProperty.all(appColorPrimary),
@@ -148,14 +148,14 @@ class AppTheme {
       ),
 
       checkboxTheme: CheckboxThemeData(
-        checkColor: WidgetStatePropertyAll(Colors.white),
-        fillColor: WidgetStatePropertyAll(appColorPrimary),
+        checkColor: const WidgetStatePropertyAll(Colors.white),
+        fillColor: const WidgetStatePropertyAll(appColorPrimary),
         // overlayColor: WidgetStatePropertyAll(appColorPrimary),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadiusGeometry.circular(3),
 
         ),
-        side:BorderSide(color: appColorPrimary,width: 1)
+        side:const BorderSide(color: appColorPrimary),
 
 
       ),

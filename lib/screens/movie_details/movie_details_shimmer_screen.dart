@@ -14,10 +14,8 @@ class MovieDetailsShimmerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Wrap(
-          direction: Axis.horizontal,
           children: List.generate(4, (index) {
             return const ShimmerWidget(
               height: 130,
@@ -32,11 +30,9 @@ class MovieDetailsShimmerScreen extends StatelessWidget {
             return Container(
                     decoration: boxDecorationDefault(color: context.cardColor),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const ShimmerWidget(
@@ -62,7 +58,7 @@ class MovieDetailsShimmerScreen extends StatelessWidget {
                               height: Constants.shimmerTextSize,
                               width: 90,
                               radius: 6,
-                            ).paddingOnly(right: 16)
+                            ).paddingOnly(right: 16),
                           ],
                         ),
                         16.height,
@@ -78,7 +74,7 @@ class MovieDetailsShimmerScreen extends StatelessWidget {
                           radius: 6,
                         ).paddingOnly(right: 16),
                       ],
-                    ).paddingOnly(bottom: 16, top: 16, left: 8))
+                    ).paddingOnly(bottom: 16, top: 16, left: 8),)
                 .paddingOnly(top: 8, bottom: 8);
           },
         ),

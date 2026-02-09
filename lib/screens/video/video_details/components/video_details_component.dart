@@ -79,7 +79,7 @@ class VideoDetailsComponent extends StatelessWidget {
                           ? Stack(
                               alignment: Alignment.center,
                               children: [
-                                LoaderWidget(
+                                const LoaderWidget(
                                   size: 30,
                                   loaderColor: appColorPrimary,
                                 ),
@@ -89,7 +89,7 @@ class VideoDetailsComponent extends StatelessWidget {
                                       '${movieDetailCont.downloadPercentage.value}'.suffixText(value: '%'),
                                       style: primaryTextStyle(color: appColorPrimary, size: 10),
                                     ),
-                                  )
+                                  ),
                               ],
                             )
                           : null,
@@ -112,7 +112,7 @@ class VideoDetailsComponent extends StatelessWidget {
                       },
                     );
                   } else {
-                    return Offstage();
+                    return const Offstage();
                   }
                 },
               ),
@@ -186,7 +186,7 @@ class VideoDetailsComponent extends StatelessWidget {
                       },
                     );
                   } else {
-                    return Offstage();
+                    return const Offstage();
                   }
                 },
               ),

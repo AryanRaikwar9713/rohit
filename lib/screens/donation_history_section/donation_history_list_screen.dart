@@ -11,7 +11,7 @@ import 'package:streamit_laravel/utils/colors.dart';
 import 'package:streamit_laravel/utils/constants.dart';
 
 class DonationHistoryListScreen extends StatelessWidget {
-  const DonationHistoryListScreen({Key? key}) : super(key: key);
+  const DonationHistoryListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +69,7 @@ class DonationHistoryListScreen extends StatelessWidget {
                     backgroundColor: appColorPrimary,
                   ),
                   child: const Text('Retry',
-                      style: TextStyle(color: Colors.white)),
+                      style: TextStyle(color: Colors.white),),
                 ),
               ],
             ),
@@ -129,7 +129,7 @@ class DonationHistoryListScreen extends StatelessWidget {
 
   // Donation Card (Full Card)
   Widget _buildDonationCard(
-      Donation donation, DonationHistoryController controller) {
+      Donation donation, DonationHistoryController controller,) {
     final donationDetails = donation.donationDetails;
     final projectDetails = donation.projectDetails;
     final projectOwner = donation.projectOwner;
@@ -148,10 +148,10 @@ class DonationHistoryListScreen extends StatelessWidget {
           // Project Title and Owner
           GestureDetector(
             onTap: ()async{
-              var u = await DB().getUser();
+              final u = await DB().getUser();
               Get.to(VammisProfileScreen(
                 popButton: true,
-                  userId: projectOwner?.userId??0, isOwnProfile: u?.id==projectOwner?.userId));
+                  userId: projectOwner?.userId??0, isOwnProfile: u?.id==projectOwner?.userId,),);
             },
             child: Row(
               children: [
@@ -196,7 +196,6 @@ class DonationHistoryListScreen extends StatelessWidget {
                 ),
                 // Donation Amount
                 IgnorePointer(
-                  ignoring: true,
                   child: Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -241,7 +240,7 @@ class DonationHistoryListScreen extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(Icons.message,
-                      size: 16, color: Colors.white.withOpacity(0.7)),
+                      size: 16, color: Colors.white.withOpacity(0.7),),
                   8.width,
                   Expanded(
                     child: Text(
@@ -274,7 +273,7 @@ class DonationHistoryListScreen extends StatelessWidget {
                         value: (projectDetails!.progressPercentage ?? 0) / 100,
                         backgroundColor: Colors.grey[800],
                         valueColor:
-                            AlwaysStoppedAnimation<Color>(appColorPrimary),
+                            const AlwaysStoppedAnimation<Color>(appColorPrimary),
                         minHeight: 6,
                       ),
                       4.height,
@@ -304,7 +303,7 @@ class DonationHistoryListScreen extends StatelessWidget {
                         Text(
                           'Days Left',
                           style: secondaryTextStyle(
-                              size: 10, color: Colors.white70),
+                              size: 10, color: Colors.white70,),
                         ),
                       ],
                     ),
@@ -320,7 +319,7 @@ class DonationHistoryListScreen extends StatelessWidget {
               Row(
                 children: [
                   Icon(Icons.access_time,
-                      size: 14, color: Colors.white.withOpacity(0.7)),
+                      size: 14, color: Colors.white.withOpacity(0.7),),
                   4.width,
                   Text(
                     controller.formatDate(donationDetails?.donatedAt),
@@ -328,9 +327,9 @@ class DonationHistoryListScreen extends StatelessWidget {
                   ),
                   10.width,
                   IconButton(onPressed: (){
-                    Clipboard.setData(ClipboardData(text: Constants.DUMMY_SHARE_LINK));
+                    Clipboard.setData(const ClipboardData(text: Constants.DUMMY_SHARE_LINK));
                     toast("Url Copied");
-                  }, icon: Icon(Icons.share))
+                  }, icon: const Icon(Icons.share),),
                 ],
               ),
               if (donationDetails?.donationStatus != null)
@@ -347,7 +346,7 @@ class DonationHistoryListScreen extends StatelessWidget {
                     style: secondaryTextStyle(
                         size: 11,
                         color:
-                            _getStatusColor(donationDetails.donationStatus!)),
+                            _getStatusColor(donationDetails.donationStatus!),),
                   ),
                 ),
             ],

@@ -67,8 +67,7 @@ class ProductDetailsScreen extends StatelessWidget {
                         : () {
                             Get.to(() => OrderFormScreen(
                                   product: product,
-                                  quantity: 1,
-                                ));
+                                ),);
                           },
                     borderRadius: BorderRadius.circular(14),
                     child: Ink(
@@ -91,7 +90,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.shopping_cart_rounded,
                             color: Colors.white,
                             size: 22,
@@ -123,7 +122,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(Icons.arrow_back_ios_new,
-                        color: Colors.white, size: 18),
+                        color: Colors.white, size: 18,),
                   ),
                   onPressed: () => Get.back(),
                 ),
@@ -208,7 +207,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       Container(
                         margin: const EdgeInsets.only(bottom: 14),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 8),
+                            horizontal: 14, vertical: 8,),
                         decoration: BoxDecoration(
                           gradient: _detailsGradient,
                           borderRadius: BorderRadius.circular(24),
@@ -223,7 +222,7 @@ class ProductDetailsScreen extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const Icon(Icons.star_rounded,
-                                size: 18, color: Colors.white),
+                                size: 18, color: Colors.white,),
                             8.width,
                             Text(
                               'Featured Product',
@@ -273,7 +272,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         border: Border.all(
-                                            color: const Color(0xFF3E3E3E)),
+                                            color: const Color(0xFF3E3E3E),),
                                       ),
                                       child: ClipOval(
                                         child: CachedNetworkImage(
@@ -298,19 +297,19 @@ class ProductDetailsScreen extends StatelessWidget {
                                         Text(
                                           'Sold by',
                                           style: secondaryTextStyle(
-                                              size: 12, color: Colors.grey[400]),
+                                              size: 12, color: Colors.grey[400],),
                                         ),
                                         4.height,
                                         Text(
                                           product.shop!.name ?? 'Shop Name',
                                           style: boldTextStyle(
-                                              size: 16, color: Colors.white),
+                                              size: 16, color: Colors.white,),
                                         ),
                                       ],
                                     ),
                                   ),
                                   const Icon(Icons.arrow_forward_ios_rounded,
-                                      size: 16, color: Colors.grey),
+                                      size: 16, color: Colors.grey,),
                                 ],
                               ),
                               Positioned(
@@ -341,7 +340,7 @@ class ProductDetailsScreen extends StatelessWidget {
                               child: Text(
                                 '${product.price!.toStringAsFixed(2)} Bolts',
                                 style: boldTextStyle(
-                                    size: 28, color: Colors.white),
+                                    size: 28, color: Colors.white,),
                               ),
                             ),
                           if (product.comparePrice != null &&
@@ -361,7 +360,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                 10.width,
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 4),
+                                      horizontal: 10, vertical: 4,),
                                   decoration: BoxDecoration(
                                     color: discountColor.withOpacity(0.25),
                                     borderRadius: BorderRadius.circular(8),
@@ -369,7 +368,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                   child: Text(
                                     '${((product.comparePrice! - (product.price ?? 0)) / product.comparePrice! * 100).toStringAsFixed(0)}% OFF',
                                     style: boldTextStyle(
-                                        size: 12, color: discountColor),
+                                        size: 12, color: discountColor,),
                                   ),
                                 ),
                               ],
@@ -383,12 +382,12 @@ class ProductDetailsScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     const Icon(Icons.check_circle_rounded,
-                                        size: 20, color: Colors.green),
+                                        size: 20, color: Colors.green,),
                                     8.width,
                                     Text(
                                       'In Stock (${product.quantity} available)',
                                       style: primaryTextStyle(
-                                          size: 14, color: Colors.green),
+                                          size: 14, color: Colors.green,),
                                     ),
                                   ],
                                 )
@@ -396,12 +395,12 @@ class ProductDetailsScreen extends StatelessWidget {
                                 Row(
                                   children: [
                                     const Icon(Icons.cancel_rounded,
-                                        size: 20, color: Colors.red),
+                                        size: 20, color: Colors.red,),
                                     8.width,
                                     Text(
                                       'Out of Stock',
                                       style: primaryTextStyle(
-                                          size: 14, color: Colors.red),
+                                          size: 14, color: Colors.red,),
                                     ),
                                   ],
                                 ),
@@ -415,7 +414,7 @@ class ProductDetailsScreen extends StatelessWidget {
                         product.category!.name != null)
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 8),
+                            horizontal: 14, vertical: 8,),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(24),
                           border: Border.all(
@@ -431,7 +430,7 @@ class ProductDetailsScreen extends StatelessWidget {
                               shaderCallback: (bounds) =>
                                   _detailsGradient.createShader(bounds),
                               child: const Icon(Icons.category_rounded,
-                                  size: 18, color: Colors.white),
+                                  size: 18, color: Colors.white,),
                             ),
                             8.width,
                             ShaderMask(
@@ -440,7 +439,7 @@ class ProductDetailsScreen extends StatelessWidget {
                               child: Text(
                                 product.category!.name!,
                                 style: primaryTextStyle(
-                                    size: 14, color: Colors.white),
+                                    size: 14, color: Colors.white,),
                               ),
                             ),
                           ],
@@ -460,7 +459,7 @@ class ProductDetailsScreen extends StatelessWidget {
                             child: Text(
                               product.shortDescription!,
                               style: primaryTextStyle(
-                                  size: 14, color: Colors.grey[300]),
+                                  size: 14, color: Colors.grey[300],),
                             ),
                           ),
                           16.height,
@@ -476,7 +475,7 @@ class ProductDetailsScreen extends StatelessWidget {
                           Text(
                             product.description!,
                             style: primaryTextStyle(
-                                size: 14, color: Colors.grey[300]),
+                                size: 14, color: Colors.grey[300],),
                           ),
                           16.height,
                         ],
@@ -517,12 +516,11 @@ class ProductDetailsScreen extends StatelessWidget {
                           SizedBox(
                             height: 200,
                             child: PageView.builder(
-                              scrollDirection: Axis.horizontal,
                               itemCount: product.imageGallery!.length,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () async {
-                                    var pageContrller =
+                                    final pageContrller =
                                         PageController(initialPage: index);
                                     await showDialog(
                                       context: context,
@@ -531,7 +529,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                           controller: pageContrller,
                                           children: product.imageGallery!
                                               .map((image) =>
-                                                  CachedImageWidget(url: image))
+                                                  CachedImageWidget(url: image),)
                                               .toList(),
                                         ),
                                       ),
@@ -544,7 +542,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(14),
                                       border: Border.all(
-                                          color: const Color(0xFF3E3E3E)),
+                                          color: const Color(0xFF3E3E3E),),
                                       boxShadow: [
                                         BoxShadow(
                                           color: const Color(0xFFFF9800)
@@ -610,7 +608,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                       color: variant.isDefault == true
                                           ? const Color(0xFFFF9800)
                                           : const Color(0xFF2E2E2E),
-                                      width: variant.isDefault == true ? 2 : 1),
+                                      width: variant.isDefault == true ? 2 : 1,),
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -621,13 +619,13 @@ class ProductDetailsScreen extends StatelessWidget {
                                           child: Text(
                                             variant.name ?? 'Variant',
                                             style: boldTextStyle(
-                                                size: 16, color: Colors.white),
+                                                size: 16, color: Colors.white,),
                                           ),
                                         ),
                                         if (variant.isDefault == true)
                                           Container(
                                             padding: const EdgeInsets.symmetric(
-                                                horizontal: 10, vertical: 4),
+                                                horizontal: 10, vertical: 4,),
                                             decoration: BoxDecoration(
                                               gradient: _detailsGradient,
                                               borderRadius:
@@ -637,7 +635,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                               'Default',
                                               style: boldTextStyle(
                                                   size: 10,
-                                                  color: Colors.white),
+                                                  color: Colors.white,),
                                             ),
                                           ),
                                       ],
@@ -650,7 +648,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                         child: Text(
                                           'Price: ${variant.price!.toStringAsFixed(2)} Bolts',
                                           style: primaryTextStyle(
-                                              size: 14, color: Colors.white),
+                                              size: 14, color: Colors.white,),
                                         ),
                                       ),
                                     if (variant.options != null) ...[
@@ -660,14 +658,14 @@ class ProductDetailsScreen extends StatelessWidget {
                                           'Size: ${variant.options!.size}',
                                           style: secondaryTextStyle(
                                               size: 12,
-                                              color: Colors.grey[400]),
+                                              color: Colors.grey[400],),
                                         ),
                                       if (variant.options!.color != null)
                                         Text(
                                           'Color: ${variant.options!.color}',
                                           style: secondaryTextStyle(
                                               size: 12,
-                                              color: Colors.grey[400]),
+                                              color: Colors.grey[400],),
                                         ),
                                     ],
                                     if (variant.quantity != null) ...[
@@ -676,12 +674,12 @@ class ProductDetailsScreen extends StatelessWidget {
                                         'Stock: ${variant.quantity}',
                                         style: secondaryTextStyle(
                                             size: 12,
-                                            color: Colors.grey[400]),
+                                            color: Colors.grey[400],),
                                       ),
                                     ],
                                   ],
                                 ),
-                              )),
+                              ),),
                         ],
                       ),
                     16.height,
@@ -697,18 +695,18 @@ class ProductDetailsScreen extends StatelessWidget {
                             children: product.tags!.map((tag) {
                               return Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 14, vertical: 8),
+                                    horizontal: 14, vertical: 8,),
                                 decoration: BoxDecoration(
                                   color: const Color(0xFF1A1A1A),
                                   borderRadius: BorderRadius.circular(24),
                                   border: Border.all(
                                       color: const Color(0xFFFF9800)
-                                          .withOpacity(0.5)),
+                                          .withOpacity(0.5),),
                                 ),
                                 child: Text(
                                   tag,
                                   style: secondaryTextStyle(
-                                      size: 12, color: Colors.grey[300]),
+                                      size: 12, color: Colors.grey[300],),
                                 ),
                               );
                             }).toList(),
@@ -762,9 +760,9 @@ class ProductDetailsScreen extends StatelessWidget {
             top: 0,
             child: Container(
               height: 3,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: _detailsGradient,
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(14),
                   topRight: Radius.circular(14),
                 ),

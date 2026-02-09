@@ -24,20 +24,20 @@ class VideoChannelController extends GetxController
 
 
 
-  getChannel() async
+  Future<void> getChannel() async
   {
     loading.value = true;
     try {
       await api.getChannel(onSuccess: (r){
-        this.hasChannel.value = r.hasChannel??false;
-        this.channel.value = r.channel;
+        hasChannel.value = r.hasChannel??false;
+        channel.value = r.channel;
         loading.value = false;
       }, onError: (e){
         loading.value = false;
       }, onFail: (e){
         toast("Failed To get Channel ${e.statusCode}");
         loading.value = false;
-      });
+      },);
 
 
     } catch (e) {

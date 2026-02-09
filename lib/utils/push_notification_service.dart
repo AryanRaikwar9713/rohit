@@ -14,12 +14,9 @@ import 'constants.dart';
 class PushNotificationService {
   Future<void> initFirebaseMessaging() async {
     try {
-      NotificationSettings settings =
+      final NotificationSettings settings =
           await FirebaseMessaging.instance.requestPermission(
-        alert: true,
         badge: true,
-        provisional: false,
-        sound: true,
       );
 
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
@@ -28,10 +25,10 @@ class PushNotificationService {
         registerNotificationListeners();
 
         FirebaseMessaging.onBackgroundMessage(
-            firebaseMessagingBackgroundHandler);
+            firebaseMessagingBackgroundHandler,);
 
         FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-            alert: true, badge: true, sound: true);
+            alert: true, badge: true, sound: true,);
 
         // Subscribe to topic with error handling to prevent app from hanging
         try {
@@ -123,7 +120,7 @@ class PushNotificationService {
     try {
       await FirebaseMessaging.instance
           .subscribeToTopic(
-              "${FirebaseMsgConst.userWithUnderscoreKey}${loginUserData.value.id}")
+              "${FirebaseMsgConst.userWithUnderscoreKey}${loginUserData.value.id}",)
           .then((value) {
         log("${FirebaseMsgConst.topicSubscribed}${FirebaseMsgConst.userWithUnderscoreKey}${loginUserData.value.id}");
       }).catchError((error) {
@@ -140,7 +137,7 @@ class PushNotificationService {
     try {
       await FirebaseMessaging.instance
           .unsubscribeFromTopic(
-              '${FirebaseMsgConst.userWithUnderscoreKey}${loginUserData.value.id}')
+              '${FirebaseMsgConst.userWithUnderscoreKey}${loginUserData.value.id}',)
           .whenComplete(() {
         log("${FirebaseMsgConst.topicUnSubscribed}${FirebaseMsgConst.userWithUnderscoreKey}${loginUserData.value.id}");
       }).catchError((error) {
@@ -154,10 +151,10 @@ class PushNotificationService {
   }
 
   Future<void> handleNotificationClick(RemoteMessage message,
-      {bool isForeGround = false}) async {
+      {bool isForeGround = false,}) async {
     if (message.data['url'] != null && message.data['url'] is String) {
       commonLaunchUrl(message.data['url'],
-          launchMode: LaunchMode.externalApplication);
+          launchMode: LaunchMode.externalApplication,);
     }
     printLogsNotificationData(message);
     if (isForeGround) {
@@ -165,7 +162,7 @@ class PushNotificationService {
           currentTimeStamp(),
           message.notification!.title.validate(),
           message.notification!.body.validate(),
-          message);
+          message,);
     } else {
       try {
         if (message.data.containsKey(FirebaseMsgConst.additionalDataKey)) {
@@ -190,14 +187,14 @@ class PushNotificationService {
         handleNotificationClick(message, isForeGround: true);
       }, onError: (e) {
         log("${FirebaseMsgConst.onMessageListen} $e");
-      });
+      },);
 
       // replacement for onResume: When the app is in the background and opened directly from the push notification.
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
         handleNotificationClick(message);
       }, onError: (e) {
         log("${FirebaseMsgConst.onMessageOpened} $e");
-      });
+      },);
 
       // workaround for onLaunch: When the app is completely closed (not in the background) and opened directly from the push notification
       FirebaseMessaging.instance.getInitialMessage().then(
@@ -207,44 +204,42 @@ class PushNotificationService {
         }
       }, onError: (e) {
         log("${FirebaseMsgConst.onGetInitialMessage} $e");
-      });
+      },);
     }).onError((error, stackTrace) {
       log("${FirebaseMsgConst.onGetInitialMessage} $error");
     });
   }
 
-  void showNotification(
-      int id, String title, String message, RemoteMessage remoteMessage) async {
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  Future<void> showNotification(
+      int id, String title, String message, RemoteMessage remoteMessage,) async {
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
 
-    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+    final androidPlatformChannelSpecifics = const AndroidNotificationDetails(
       FirebaseMsgConst.notificationChannelIdKey,
       FirebaseMsgConst.notificationChannelNameKey,
       importance: Importance.high,
       visibility: NotificationVisibility.public,
-      autoCancel: true,
-      playSound: true,
       priority: Priority.high,
       color: appColorPrimary,
       colorized: true,
       icon: '@drawable/ic_stat_ic_notification',
     );
 
-    var darwinPlatformChannelSpecifics = const DarwinNotificationDetails(
+    final darwinPlatformChannelSpecifics = const DarwinNotificationDetails(
       presentSound: true,
       presentBanner: true,
       presentBadge: true,
     );
 
-    var platformChannelSpecifics = NotificationDetails(
+    final platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: darwinPlatformChannelSpecifics,
       macOS: darwinPlatformChannelSpecifics,
     );
 
     flutterLocalNotificationsPlugin.show(
-        id, title, message, platformChannelSpecifics);
+        id, title, message, platformChannelSpecifics,);
   }
 
   void printLogsNotificationData(RemoteMessage message) {

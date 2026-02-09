@@ -24,7 +24,6 @@ class PersonCard extends StatelessWidget {
           radius: 6,
         ),
         IgnorePointer(
-          ignoring: true,
           child: Container(
             height: height ?? 140,
             width: width ?? 100,
@@ -46,7 +45,7 @@ class PersonCard extends StatelessWidget {
             textAlign: TextAlign.center,
             style: boldTextStyle(size: 12, color: white),
           ),
-        )
+        ),
       ],
     );
   }

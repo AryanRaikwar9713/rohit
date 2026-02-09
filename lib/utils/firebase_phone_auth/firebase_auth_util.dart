@@ -50,7 +50,7 @@ class FirebaseAuthUtil {
   }
 
   Future<void> verifyOTPCode({required String verificationId, required String verificationCode, required ValueChanged<User> onVerificationSuccess, required ValueChanged<String> onCodeVerificationFailed}) async {
-    AuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: verificationCode);
+    final AuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: verificationCode);
     log("Verification ==> $verificationCode & $verificationId");
     await firebaseAuth.signInWithCredential(credential).then((value) {
       if (value.user != null) {
@@ -63,7 +63,7 @@ class FirebaseAuthUtil {
           .handleException(
             FirebaseAuthException(code: error.toString().contains("firebase_auth/invalid-verification-code") ? "invalid-verification-code" : error.toString(), message: error.toString()),
           )
-          .toString());
+          ,);
     });
   }
 

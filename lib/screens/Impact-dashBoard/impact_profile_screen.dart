@@ -5,10 +5,97 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/screens/Impact-dashBoard/impact_profile_controller.dart';
 import 'package:streamit_laravel/screens/Impact-dashBoard/model/profileresponcemodel.dart';
 import 'package:streamit_laravel/screens/Impact-dashBoard/create_campaign_screen.dart';
+import 'package:streamit_laravel/screens/Impact-dashBoard/crate_impact_profile_screen.dart';
+import 'package:streamit_laravel/screens/donation/donation_screen.dart';
 import 'package:streamit_laravel/utils/colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:streamit_laravel/utils/mohit/vammis_profile_avtar.dart';
-import 'package:streamit_laravel/utils/shimmer/shimmer.dart';
+import 'package:streamit_laravel/screens/walletSection/wallet_tab_manage.dart';
+
+void _showImpactMenu(BuildContext context, ImpactProfileController controller) {
+  final hasAccount = controller.profileResponse.value?.data?.hasAccount == true;
+  final isApproved = controller.profileResponse.value?.data?.accountDetails?.accountStatus == 'approved';
+
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.grey.shade900,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (ctx) => SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Impact',
+              style: boldTextStyle(size: 18, color: Colors.white),
+            ),
+            8.height,
+            ListTile(
+              leading: const Icon(Icons.add_circle_outline, color: appColorPrimary),
+              title: Text(
+                hasAccount ? 'Edit Impact Profile' : 'Create Impact Profile',
+                style: const TextStyle(color: Colors.white),
+              ),
+              onTap: () {
+                Navigator.pop(ctx);
+                final f = Get.to(() => const CrateImpactProfileScreen());
+                f?.then((_) => controller.checkImpactAccount());
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.campaign, color: appColorPrimary),
+              title: Text(
+                'Create Campaign / Project',
+                style: const TextStyle(color: Colors.white),
+              ),
+              subtitle: Text(
+                isApproved ? 'Start a new campaign' : (hasAccount ? 'Account pending approval' : 'Create profile first'),
+                style: TextStyle(color: Colors.white70, fontSize: 12),
+              ),
+              onTap: () {
+                Navigator.pop(ctx);
+                if (isApproved) {
+                  Get.to(() => const CreateCampaignScreen());
+                } else {
+                  toast(hasAccount ? 'Account pending approval' : 'Create Impact Profile first');
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.explore, color: appColorPrimary),
+              title: const Text(
+                'Browse Projects & Donate',
+                style: TextStyle(color: Colors.white),
+              ),
+              onTap: () {
+                Navigator.pop(ctx);
+                Get.to(() => const ImpactDashboardScreen());
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.person, color: appColorPrimary),
+              title: const Text(
+                'My Impact Profile',
+                style: TextStyle(color: Colors.white),
+              ),
+              subtitle: const Text(
+                'View dashboard (this page)',
+                style: TextStyle(color: Colors.white70, fontSize: 12),
+              ),
+              onTap: () {
+                Navigator.pop(ctx);
+                controller.checkImpactAccount();
+              },
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
 
 class ImpactProfileScreen extends StatelessWidget {
   const ImpactProfileScreen({super.key});
@@ -39,12 +126,24 @@ class ImpactProfileScreen extends StatelessWidget {
           style: boldTextStyle(size: 20, color: Colors.white),
         ),
         centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.white, size: 22),
+        actionsIconTheme: const IconThemeData(color: Colors.white, size: 22),
         actions: [
+          // Impact menu
           IconButton(
-            onPressed: () {
-              controller.checkImpactAccount();
-            },
-            icon: const Icon(Icons.refresh, color: Colors.white),
+            onPressed: () => _showImpactMenu(context, controller),
+            icon: const Icon(Icons.dashboard_customize, color: Colors.white, size: 22),
+            tooltip: 'Impact – Create profile, campaigns, browse projects',
+          ),
+          IconButton(
+            onPressed: () => Get.to(() => const WalletTabManage()),
+            icon: const Icon(Icons.account_balance_wallet, color: Colors.white, size: 22),
+            tooltip: 'Wallet',
+          ),
+          IconButton(
+            onPressed: () => controller.checkImpactAccount(),
+            icon: const Icon(Icons.refresh, color: Colors.white, size: 22),
+            tooltip: 'Refresh',
           ),
         ],
       ),
@@ -93,26 +192,62 @@ class ImpactProfileScreen extends StatelessWidget {
         final profileData = controller.profileResponse.value;
         if (profileData == null || profileData.data?.hasAccount != true) {
           return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.account_circle_outlined,
-                  size: 80,
-                  color: Colors.white.withOpacity(0.5),
-                ),
-                16.height,
-                Text(
-                  'No Impact Profile Found',
-                  style: boldTextStyle(size: 20, color: Colors.white),
-                ),
-                8.height,
-                Text(
-                  'Create your impact profile to get started',
-                  style: secondaryTextStyle(size: 14, color: Colors.white70),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.account_circle_outlined,
+                    size: 80,
+                    color: Colors.white.withOpacity(0.5),
+                  ),
+                  16.height,
+                  Text(
+                    'No Impact Profile Found',
+                    style: boldTextStyle(size: 20, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                  8.height,
+                  Text(
+                    'Create your impact profile to start raising funds and managing projects.',
+                    style: secondaryTextStyle(size: 14, color: Colors.white70),
+                    textAlign: TextAlign.center,
+                  ),
+                  24.height,
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      await Get.to(() => const CrateImpactProfileScreen());
+                      controller.checkImpactAccount();
+                    },
+                    icon: const Icon(Icons.add_circle_outline, color: Colors.white),
+                    label: const Text(
+                      'Create Impact Profile',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: appColorPrimary,
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  12.height,
+                  TextButton.icon(
+                    onPressed: () => _showImpactMenu(context, controller),
+                    icon: Icon(Icons.menu, color: appColorPrimary, size: 20),
+                    label: Text(
+                      'More options',
+                      style: TextStyle(color: appColorPrimary, fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         }
@@ -227,14 +362,13 @@ class ImpactProfileScreen extends StatelessWidget {
           Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black,
-                  blurRadius: 12
-                )
+                  blurRadius: 12,
+                ),
               ],
-              gradient: const LinearGradient(
+              gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [Color(0xff232526), Color(0xff414345)],
@@ -249,7 +383,7 @@ class ImpactProfileScreen extends StatelessWidget {
                     placeholder: (context, url) => const Center(
                       child: CircularProgressIndicator(color: appColorPrimary),
                     ),
-                    errorWidget: (context, url, error) => Icon(
+                    errorWidget: (context, url, error) => const Icon(
                       Icons.image_not_supported_outlined,
                       color: Colors.grey,
                     ),
@@ -258,11 +392,11 @@ class ImpactProfileScreen extends StatelessWidget {
           ),
 
           Align(
-            alignment: Alignment(0, 1.8),
+            alignment: const Alignment(0, 1.8),
             child: WamimsProfileAvtar(
                 image: accountDetails.media?.profileImage??'',
             ),
-          )
+          ),
 
         ],
       ),
@@ -283,8 +417,8 @@ class ImpactProfileScreen extends StatelessWidget {
             BoxShadow(
               color: Colors.black.withOpacity(0.5),
               blurRadius: 4,
-              offset: const Offset(0, 2)
-            )
+              offset: const Offset(0, 2),
+            ),
           ],
         ),
         child: Column(
@@ -358,7 +492,7 @@ class ImpactProfileScreen extends StatelessWidget {
           colors: [statusColor.withOpacity(0.2), statusColor.withOpacity(0.1)],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: statusColor.withOpacity(0.3), width: 1),
+        border: Border.all(color: statusColor.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -424,14 +558,14 @@ class ImpactProfileScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.grey.shade900,
         borderRadius: BorderRadius.circular(5),
-        border: Border.all(color: Colors.grey.withOpacity(0.1), width: 1),
+        border: Border.all(color: Colors.grey.withOpacity(0.1)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(.5),
             blurRadius: 4,
             offset: const Offset(0, 2),
-          )
-        ]
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -453,7 +587,7 @@ class ImpactProfileScreen extends StatelessWidget {
           LinearProgressIndicator(
             value: percentage / 100,
             backgroundColor: Colors.grey[800],
-            valueColor: AlwaysStoppedAnimation<Color>(appColorPrimary),
+            valueColor: const AlwaysStoppedAnimation<Color>(appColorPrimary),
             minHeight: 8,
             borderRadius: BorderRadius.circular(4),
           ),
@@ -497,14 +631,14 @@ class ImpactProfileScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.grey.shade900,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.withOpacity(0.1), width: 1),
+        border: Border.all(color: Colors.grey.withOpacity(0.1)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(.5),
             blurRadius: 4,
             offset: const Offset(0, 2),
-          )
-        ]
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -526,7 +660,7 @@ class ImpactProfileScreen extends StatelessWidget {
           LinearProgressIndicator(
             value: percentage / 100,
             backgroundColor: Colors.grey[800],
-            valueColor: AlwaysStoppedAnimation<Color>(appColorPrimary),
+            valueColor: const AlwaysStoppedAnimation<Color>(appColorPrimary),
             minHeight: 8,
             borderRadius: BorderRadius.circular(4),
           ),
@@ -582,8 +716,8 @@ class ImpactProfileScreen extends StatelessWidget {
             color: Colors.black.withOpacity(.5),
             blurRadius: 2,
             offset: const Offset(0,2 ),
-          )
-        ]
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -642,7 +776,7 @@ class ImpactProfileScreen extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.05), width: 1),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.35),
@@ -655,7 +789,7 @@ class ImpactProfileScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Impact at a Glance',
-              style: boldTextStyle(size: 18, color: Colors.white)),
+              style: boldTextStyle(size: 18, color: Colors.white),),
           12.height,
           Row(
             children: [
@@ -796,9 +930,8 @@ class ImpactProfileScreen extends StatelessWidget {
       BarChartData(
         maxY: maxY == 0 ? 1 : maxY * 1.1,
         gridData: FlGridData(
-          show: true,
           drawVerticalLine: false,
-          getDrawingHorizontalLine: (value) => FlLine(
+          getDrawingHorizontalLine: (value) => const FlLine(
             color: Colors.white12,
             strokeWidth: 1,
             dashArray: [4, 4],
@@ -837,9 +970,9 @@ class ImpactProfileScreen extends StatelessWidget {
             ),
           ),
           rightTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              const AxisTitles(),
           topTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              const AxisTitles(),
         ),
         barGroups: List.generate(
           data.length,
@@ -917,7 +1050,7 @@ class ImpactProfileScreen extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.05), width: 1),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.35),
@@ -927,7 +1060,6 @@ class ImpactProfileScreen extends StatelessWidget {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Align(
             alignment: Alignment.topLeft,
@@ -936,38 +1068,38 @@ class ImpactProfileScreen extends StatelessWidget {
               style: boldTextStyle(size: 18, color: Colors.white),
             ),
           ),
-          16.height,
+          12.height,
           if (accountDetails?.contactInfo != null) ...[
             _buildDetailRow(
-              Icons.person,
+              Icons.person_outline,
               'Name',
               accountDetails!.contactInfo!.fullName ?? 'N/A',
             ),
-            12.height,
+            8.height,
             _buildDetailRow(
-              Icons.email,
+              Icons.email_outlined,
               'Email',
               accountDetails.contactInfo!.email ?? 'N/A',
             ),
-            12.height,
+            8.height,
             _buildDetailRow(
-              Icons.phone,
+              Icons.phone_outlined,
               'Phone',
               accountDetails.contactInfo!.phone ?? 'N/A',
             ),
-            12.height,
+            8.height,
           ],
           if (accountDetails?.fundingPurpose != null) ...[
             _buildDetailRow(
-              Icons.account_balance_wallet,
+              Icons.account_balance_wallet_outlined,
               'Funding Purpose',
               accountDetails!.fundingPurpose!,
             ),
-            12.height,
+            8.height,
           ],
           if (accountDetails?.dates?.createdAt != null) ...[
             _buildDetailRow(
-              Icons.calendar_today,
+              Icons.calendar_today_outlined,
               'Created At',
               _formatDate(accountDetails!.dates!.createdAt!),
             ),
@@ -978,62 +1110,42 @@ class ImpactProfileScreen extends StatelessWidget {
   }
 
   Widget _buildDetailRow(IconData icon, String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Shimmer(
-          enabled: false,
-
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.grey.shade900,
-            Colors.white,
-            ],
-          ),
-          child: Icon(icon, color: appColorPrimary, size: 40,
-          shadows: [
-            Shadow(
-              color: Colors.red,
-              blurRadius: 0,
-            )
-          ],),
-        ),
-        12.width,
-        Text(
-          label,
-          style: secondaryTextStyle(size: 12, color: Colors.white70),
-        ),
-        4.height,
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xff414f5e),
-                    Color(0xff28323d),
-                  ]),
-              borderRadius: BorderRadius.circular(3),
-              border:
-                  Border.all(color: Colors.white.withOpacity(0.2), width: 1),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(.5),
-                  blurRadius: 4,
-                  spreadRadius: 0,
-                  offset: const Offset(0, 2),
-                )
-              ]),
-          child: Text(
-            value,
-            style: primaryTextStyle(
-                size: 14, color: Colors.white, weight: FontWeight.w700),
-          ),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isNarrow = constraints.maxWidth < 320;
+        final iconSize = isNarrow ? 18.0 : 20.0;
+        final textSize = isNarrow ? 12.0 : 13.0;
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, color: appColorPrimary, size: iconSize),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    style: secondaryTextStyle(size: 11, color: Colors.white60),
+                  ),
+                  2.height,
+                  Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: textSize,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

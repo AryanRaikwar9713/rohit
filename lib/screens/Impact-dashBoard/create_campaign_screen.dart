@@ -30,16 +30,16 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
   }
 
 
-  void autoFillLocation() async
+  Future<void> autoFillLocation() async
   {
     try{
-      var api = LocationApi();
-      Placemark? place = await api.getUserPlacemark();
-      Position? location = await api.getUserLocation();
+      final api = LocationApi();
+      final Placemark? place = await api.getUserPlacemark();
+      final Position? location = await api.getUserLocation();
 
       if(place!=null)
         {
-          String address = "${place.name}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.country}";
+          final String address = "${place.name}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.country}";
           controller.locationController.text = address;
         }
       if(location!=null)
@@ -152,7 +152,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                               icon: Icons.attach_money,
                               keyboardType:
                                   const TextInputType.numberWithOptions(
-                                      decimal: true),
+                                      decimal: true,),
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'Required';
@@ -215,7 +215,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                               icon: Icons.my_location,
                               keyboardType:
                                   const TextInputType.numberWithOptions(
-                                      decimal: true),
+                                      decimal: true,),
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'Required';
@@ -233,7 +233,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                               icon: Icons.my_location,
                               keyboardType:
                                   const TextInputType.numberWithOptions(
-                                      decimal: true),
+                                      decimal: true,),
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'Required';
@@ -246,7 +246,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                           IconButton(
                             onPressed: controller.getCurrentLocation,
                             icon: const Icon(Icons.gps_fixed,
-                                color: appColorPrimary),
+                                color: appColorPrimary,),
                             tooltip: 'Get Current Location',
                           ),
                         ],
@@ -299,7 +299,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
       ),
       child: Column(
         children: [
-          Icon(
+          const Icon(
             Icons.campaign,
             size: 48,
             color: appColorPrimary,
@@ -330,7 +330,6 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
           borderRadius: BorderRadius.circular(15),
           border: Border.all(
             color: Colors.white.withOpacity(0.1),
-            width: 1,
           ),
         ),
         child: Column(
@@ -376,7 +375,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                          horizontal: 16, vertical: 12,),
                       decoration: BoxDecoration(
                         gradient: isSelected
                             ? const LinearGradient(
@@ -503,7 +502,6 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
             borderRadius: BorderRadius.circular(15),
             border: Border.all(
               color: Colors.white.withOpacity(0.1),
-              width: 1,
             ),
           ),
           child: Column(
@@ -565,7 +563,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                           controller.tags.length,
                           (index) => Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
+                                horizontal: 12, vertical: 8,),
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
                                 colors: [Color(0xff232526), Color(0xff414345)],
@@ -573,7 +571,6 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                 color: appColorPrimary,
-                                width: 1,
                               ),
                             ),
                             child: Row(
@@ -582,7 +579,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                                 Text(
                                   controller.tags[index],
                                   style: primaryTextStyle(
-                                      size: 14, color: Colors.white),
+                                      size: 14, color: Colors.white,),
                                 ),
                                 8.width,
                                 GestureDetector(
@@ -619,7 +616,6 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
             borderRadius: BorderRadius.circular(15),
             border: Border.all(
               color: Colors.white.withOpacity(0.1),
-              width: 1,
             ),
           ),
           child: Column(
@@ -635,7 +631,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                   TextButton.icon(
                     onPressed: controller.pickProjectImages,
                     icon: const Icon(Icons.add_photo_alternate,
-                        color: appColorPrimary, size: 20),
+                        color: appColorPrimary, size: 20,),
                     label: Text(
                       'Add Images',
                       style: primaryTextStyle(size: 14, color: appColorPrimary),
@@ -656,7 +652,6 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: Colors.grey[700]!,
-                              style: BorderStyle.solid,
                               width: 2,
                             ),
                           ),
@@ -672,7 +667,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                               Text(
                                 'Add project images',
                                 style: secondaryTextStyle(
-                                    size: 14, color: Colors.grey),
+                                    size: 14, color: Colors.grey,),
                               ),
                             ],
                           ),
@@ -686,7 +681,6 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                           crossAxisCount: 3,
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 12,
-                          childAspectRatio: 1,
                         ),
                         itemCount: controller.projectImages.length,
                         itemBuilder: (context, index) {
@@ -744,7 +738,6 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
             borderRadius: BorderRadius.circular(15),
             border: Border.all(
               color: Colors.white.withOpacity(0.1),
-              width: 1,
             ),
           ),
           child: Column(
@@ -760,7 +753,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                   TextButton.icon(
                     onPressed: controller.pickProjectDocuments,
                     icon: const Icon(Icons.upload_file,
-                        color: appColorPrimary, size: 20),
+                        color: appColorPrimary, size: 20,),
                     label: Text(
                       'Add PDFs',
                       style: primaryTextStyle(size: 14, color: appColorPrimary),
@@ -781,7 +774,6 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: Colors.grey[700]!,
-                              style: BorderStyle.solid,
                               width: 2,
                             ),
                           ),
@@ -797,7 +789,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                               Text(
                                 'Upload PDF documents',
                                 style: secondaryTextStyle(
-                                    size: 14, color: Colors.grey),
+                                    size: 14, color: Colors.grey,),
                               ),
                             ],
                           ),
@@ -817,7 +809,6 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: Colors.grey[700]!,
-                                width: 1,
                               ),
                             ),
                             child: Row(
@@ -843,7 +834,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                                       Text(
                                         document.path.split('/').last,
                                         style: primaryTextStyle(
-                                            size: 14, color: Colors.white),
+                                            size: 14, color: Colors.white,),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -851,7 +842,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                                       Text(
                                         'PDF Document',
                                         style: secondaryTextStyle(
-                                            size: 12, color: Colors.grey),
+                                            size: 12, color: Colors.grey,),
                                       ),
                                     ],
                                   ),
@@ -860,7 +851,7 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                                   onPressed: () =>
                                       controller.removeProjectDocument(index),
                                   icon: const Icon(Icons.close,
-                                      color: Colors.red),
+                                      color: Colors.red,),
                                 ),
                               ],
                             ),

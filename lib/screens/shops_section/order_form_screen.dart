@@ -40,9 +40,9 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
   String _selectedPaymentMethod = 'cash_on_delivery';
 
   // Use same address checkbox
-  bool _useSameAddress = true;
+  final bool _useSameAddress = true;
 
-  bool _addNewAddress = false;
+  final bool _addNewAddress = false;
 
   List<IngAddress> _preAddress = [];
   IngAddress? _selectedAddress;
@@ -277,7 +277,6 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.green,
             colorText: Colors.white,
-            duration: const Duration(seconds: 3),
           );
           if (_selectedAddress == null) {
             DB().addNewAddress(IngAddress.fromJson(shippingAddress));
@@ -303,8 +302,8 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
     }
   }
 
-  _setUserAddress() async {
-    var d = await LocationApi().getUserPlacemark();
+  Future<void> _setUserAddress() async {
+    final d = await LocationApi().getUserPlacemark();
     setState(() {
       _shippingCityController.text = d?.locality ?? '';
       _shippingStateController.text = d?.administrativeArea ?? '';
@@ -489,9 +488,9 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
             top: 0,
             child: Container(
               height: 3,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: _orderFormGradient,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(14)),
               ),
             ),
           ),
@@ -607,9 +606,9 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
             top: 0,
             child: Container(
               height: 3,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: _orderFormGradient,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(14)),
               ),
             ),
           ),
@@ -663,7 +662,7 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
 
   Widget _buildShippingAddressFields() {
     if (_selectedAddress != null) {
-      return SizedBox();
+      return const SizedBox();
     }
 
     return Container(
@@ -685,9 +684,9 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
             top: 0,
             child: Container(
               height: 3,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: _orderFormGradient,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(14)),
               ),
             ),
           ),
@@ -870,7 +869,7 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
 
   Widget _buildPreviouseAddress() {
     if (_preAddress.isEmpty) {
-      return SizedBox();
+      return const SizedBox();
     }
 
     return Container(
@@ -885,9 +884,9 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
           if (kDebugMode)
             Text(
               '${_selectedAddress?.toJson()}',
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-          for (var d in _preAddress)
+          for (final d in _preAddress)
             GestureDetector(
               onTap: () {
                 _selectedAddress = d;
@@ -899,14 +898,14 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                 controlAffinity: ListTileControlAffinity.trailing,
                 title: Text(
                   "${d.name}",
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
-                      fontWeight: FontWeight.bold),
+                      fontWeight: FontWeight.bold,),
                 ),
                 subtitle: Text(
                   "${d.addressLine1} ${d.addressLine2} ${d.city} ${d.state} ${d.country}\nPincode :- ${d.postalCode}\nPhone No :- ${d.phone}",
-                  style: TextStyle(color: Colors.white, fontSize: 14),
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
                 groupValue: _selectedAddress?.toJson().toString(),
               ),
@@ -914,7 +913,7 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
           if (_selectedAddress != null)
             Container(
               width: double.infinity,
-              margin: EdgeInsetsGeometry.symmetric(vertical: 5),
+              margin: const EdgeInsetsGeometry.symmetric(vertical: 5),
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
@@ -929,13 +928,13 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                       setState(() {});
                     }
                   },
-                  child: Text(
+                  child: const Text(
                     'Add New Address',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                  )),
+                        fontWeight: FontWeight.bold,),
+                  ),),
             ),
         ],
       ),
@@ -944,7 +943,7 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
 
   Widget _buildBillingAddressFields() {
     if (_selectedAddress != null) {
-      return SizedBox();
+      return const SizedBox();
     }
 
     return Container(
@@ -1121,11 +1120,11 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+          borderSide: const BorderSide(color: Color(0xFF2E2E2E)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: const Color(0xFF2E2E2E)),
+          borderSide: const BorderSide(color: Color(0xFF2E2E2E)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

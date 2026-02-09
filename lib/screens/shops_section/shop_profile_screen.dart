@@ -51,7 +51,7 @@ class ShopProfileScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.store_outlined, size: 100, color: Colors.grey),
+                const Icon(Icons.store_outlined, size: 100, color: Colors.grey),
                 20.height,
                 Text(
                   'No Shop Data',
@@ -154,7 +154,7 @@ class ShopProfileScreen extends StatelessWidget {
 
                         Text(
                           "${shopData.id}",
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ),
 
                         // Shop Name and Status
@@ -503,9 +503,9 @@ class ShopProfileScreen extends StatelessWidget {
                 top: 0,
                 child: Container(
                   height: 3,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     gradient: _shopProfileGradient,
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(14)),
                   ),
                 ),
               ),

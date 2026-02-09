@@ -34,7 +34,6 @@ class GenresCard extends StatelessWidget {
           radius: 6,
         ),
         IgnorePointer(
-          ignoring: true,
           child: Container(
             height: height ?? 120,
             width: width ?? 100,
@@ -62,7 +61,7 @@ class GenresCard extends StatelessWidget {
               ),
             ),
           ),
-        )
+        ),
       ],
     );
   }

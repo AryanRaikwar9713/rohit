@@ -16,7 +16,7 @@ class _DrawerSubReelsState extends State<DrawerSubReels> {
 
   late VammisProfileController profileController;
   late int userId;
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
 
 
@@ -28,10 +28,10 @@ class _DrawerSubReelsState extends State<DrawerSubReels> {
   }
 
 
-  myInit() async
+  Future<void> myInit() async
   {
     profileController = Get.put(VammisProfileController());
-    var user  = await DB().getUser();
+    final user  = await DB().getUser();
     userId = user?.id??0;
     profileController.loadUserReels(userId,refresh: true,);
     addScrollListener();
@@ -55,11 +55,11 @@ class _DrawerSubReelsState extends State<DrawerSubReels> {
 
       //
       appBar: AppBar(
-        title: Text("Reel"),
+        title: const Text("Reel"),
         actions: [
           IconButton(onPressed: (){
             Get.to(const UploadReelScreen());
-          }, icon: const Icon(Icons.add))
+          }, icon: const Icon(Icons.add),),
         ],
       ),
 
@@ -78,7 +78,7 @@ class _DrawerSubReelsState extends State<DrawerSubReels> {
           {
             return Center(child: ElevatedButton(onPressed: (){
               Get.to(const UploadReelScreen());
-            }, child: const Text("Upload Reel")),);
+            }, child: const Text("Upload Reel"),),);
           }
 
 
@@ -92,20 +92,20 @@ class _DrawerSubReelsState extends State<DrawerSubReels> {
             padding: const EdgeInsetsGeometry.symmetric(vertical: 20,horizontal: 5),
             gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,
             mainAxisExtent: MediaQuery.of(context).size.height*.4,
-            mainAxisSpacing: 5,crossAxisSpacing: 5),
+            mainAxisSpacing: 5,crossAxisSpacing: 5,),
             itemCount: profileController.userReels.length,
             // itemCount: 9,
             itemBuilder: (context, index) {
-               var reel = profileController.userReels[index];
+               final reel = profileController.userReels[index];
               return GestureDetector(
                 onTap: (){
                   Get.to(UserReelScreen(reelId: reel.id??0));
                 },
-                child: Container(
+                child: SizedBox(
                   width: double.infinity,
                   height: double.infinity,
                   // color: Colors.red,
-                    child: Image.network(reel.content?.thumbnailUrl??'',fit: BoxFit.cover,)),
+                    child: Image.network(reel.content?.thumbnailUrl??'',fit: BoxFit.cover,),),
               );
             },
           ),

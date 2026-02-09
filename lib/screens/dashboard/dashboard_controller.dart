@@ -125,17 +125,17 @@ class DashboardController extends GetxController {
           title: 'Social',
           icon: Icons.people_outline,
           activeIcon: Icons.people,
-          type: BottomItem.social.name),
+          type: BottomItem.social.name,),
       BottomBarItem(
           title: 'Reels',
           icon: Icons.play_circle_outline,
           activeIcon: Icons.play_circle,
-          type: BottomItem.reels.name),
+          type: BottomItem.reels.name,),
       BottomBarItem(
           title: 'Impact',
           icon: Icons.favorite_outline,
           activeIcon: Icons.favorite,
-          type: BottomItem.donation.name),
+          type: BottomItem.donation.name,),
     ];
 
     // TODO: Shop and Events - Hidden for current version, will be released in future
@@ -189,7 +189,7 @@ class DashboardController extends GetxController {
           title: locale.value.profile,
           icon: Icons.person_outline,
           activeIcon: Icons.person,
-          type: BottomItem.profile.name),
+          type: BottomItem.profile.name,),
     );
 
     bottomNavItems.value = items;
@@ -201,7 +201,7 @@ class DashboardController extends GetxController {
     }
 
     final int upperBound = math.max(bottomNavItems.length - 1, 0);
-    final int safeIndex = previousIndex.clamp(0, upperBound).toInt();
+    final int safeIndex = previousIndex.clamp(0, upperBound);
     if (safeIndex != currentIndex.value) {
       currentIndex(safeIndex);
     }
@@ -213,7 +213,7 @@ class DashboardController extends GetxController {
   void addScreenAtPosition(int index, Widget screenWidget) {
     if (screen.length <= index) {
       screen.addAll(
-          List.generate(index - screen.length + 1, (_) => const SizedBox()));
+          List.generate(index - screen.length + 1, (_) => const SizedBox()),);
     }
 
     if (screen[index].runtimeType != screenWidget.runtimeType) {
@@ -389,8 +389,7 @@ class DashboardController extends GetxController {
       await AuthServiceApis()
           .getAppConfigurations(
               forceSync: !getBoolAsync(
-                  SharedPreferenceConst.IS_APP_CONFIGURATION_SYNCED_ONCE,
-                  defaultValue: false))
+                  SharedPreferenceConst.IS_APP_CONFIGURATION_SYNCED_ONCE,),)
           .then(
         (value) {
           onBottomTabChange(0);
@@ -456,7 +455,7 @@ class DashboardController extends GetxController {
       // Check startDate
       if (ad.startDate != null) {
         final adStartDay = DateTime(
-            ad.startDate!.year, ad.startDate!.month, ad.startDate!.day);
+            ad.startDate!.year, ad.startDate!.month, ad.startDate!.day,);
         if (adStartDay.isAfter(today)) return false;
       }
       if (ad.endDate != null) {
@@ -469,7 +468,9 @@ class DashboardController extends GetxController {
       // if (ad.endDate != null && now.isAfter(ad.endDate!)) return false;
       if (ad.type != 'image' && ad.type != 'video') return false;
       if (targetContentType != null &&
-          ad.targetContentType != targetContentType) return false;
+          ad.targetContentType != targetContentType) {
+        return false;
+      }
       if (ad.targetCategories != null && ad.targetCategories!.isNotEmpty) {
         try {
           final cats = ad.targetCategories!

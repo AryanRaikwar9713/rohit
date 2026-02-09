@@ -88,7 +88,7 @@ class BottomNavigationWrapper extends StatelessWidget {
           end: Alignment.bottomRight,
         ).createShader(bounds),
         child: navBar.customIcon != null 
-            ? CustomStreamButton()
+            ? const CustomStreamButton()
             : Icon(
                 navBar.activeIcon,
                 color: Colors.white,
@@ -96,7 +96,7 @@ class BottomNavigationWrapper extends StatelessWidget {
               ),
       ),
       icon: navBar.customIcon != null
-          ? CustomStreamButton()
+          ? const CustomStreamButton()
           : Icon(
               navBar.icon,
               color: iconColor,

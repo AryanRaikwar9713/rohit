@@ -103,7 +103,7 @@ class SearchScreenController extends GetxController {
         } /*else if (searchCont.text.length == 3) {
           searchValue("");
         }*/
-      });
+      },);
     }
   }
 
@@ -134,10 +134,10 @@ class SearchScreenController extends GetxController {
 
   ///Get search List
   Future<void> getSearchList() async {
-    if (getStringAsync(SharedPreferenceConst.POPULAR_MOVIE, defaultValue: '').isNotEmpty) {
-      String defaultData = getStringAsync(SharedPreferenceConst.POPULAR_MOVIE);
-      ListResponse list = ListResponse.fromJson((jsonDecode(defaultData)));
-      defaultPopularList = CategoryListModel(showViewAll: false, sectionType: list.name.validate(), data: list.data);
+    if (getStringAsync(SharedPreferenceConst.POPULAR_MOVIE).isNotEmpty) {
+      final String defaultData = getStringAsync(SharedPreferenceConst.POPULAR_MOVIE);
+      final ListResponse list = ListResponse.fromJson(jsonDecode(defaultData));
+      defaultPopularList = CategoryListModel(sectionType: list.name.validate(), data: list.data);
     }
 
     if (isLoggedIn.isTrue) {

@@ -50,7 +50,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
   int likeCount = 0;
   int commentCount = 0;
 
-  _initData() {
+  void _initData() {
     isLike = widget.reel.interactions?.isLiked ?? false;
     likeCount = widget.reel.stats?.likesCount ?? 0;
     commentCount = widget.reel.stats?.commentsCount ?? 0;
@@ -88,7 +88,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
     ).animate(CurvedAnimation(
       parent: _heartAnimationController,
       curve: Curves.elasticOut,
-    ));
+    ),);
   }
 
   Duration watchTime = Duration.zero;
@@ -96,9 +96,9 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
 
   bool coineGet = false;
 
-  _videoListener(Duration p) {
+  void _videoListener(Duration p) {
     if (!mounted) return;
-    Duration sub = p - prePosition;
+    final Duration sub = p - prePosition;
     watchTime = watchTime + sub;
     prePosition = p;
     if (watchTime.inSeconds == 5 && !coineGet) {
@@ -112,7 +112,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
           onError: (d) {
             Logger().e(d);
           },
-          onFailure: (d) {});
+          onFailure: (d) {},);
     }
   }
 
@@ -174,7 +174,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
 
   void _onDoubleTap() {
     if (!Get.isRegistered<ReelsController>()) return;
-    var reelId = int.tryParse(widget.reel.id?.toString() ?? '0') ?? 0;
+    final reelId = int.tryParse(widget.reel.id?.toString() ?? '0') ?? 0;
     if (!(widget.reel.interactions?.isLiked ?? false)) {
       widget.controller.toggleLikeReel(reelId);
     }
@@ -329,7 +329,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                     isLiked: isLiked,
                     likeCount: likeCount,
                     onLike: () async {
-                      var reelId = widget.reel.id ?? 0;
+                      final reelId = widget.reel.id ?? 0;
                       widget.controller.toggleLikeReel(reelId);
                       _likeAnimationController.forward().then((_) {
                         _likeAnimationController.reverse();
@@ -361,7 +361,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                     // widget.controller.shareReel(0);
                     Clipboard.setData(const ClipboardData(
                         text:
-                            "https://play.google.com/store/apps/details?id=com.anytimeott.live"));
+                            "https://play.google.com/store/apps/details?id=com.anytimeott.live",),);
                     toast("Url Copied");
                   },
                 ),
@@ -410,7 +410,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                           Get.to(() => VammisProfileScreen(
                               popButton: true,
                               userId: userId,
-                              isOwnProfile: value?.id == widget.reel.user?.id));
+                              isOwnProfile: value?.id == widget.reel.user?.id,),);
                         });
                       },
                       child: Text(
@@ -440,7 +440,6 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: isFollowing ? Colors.transparent : Colors.white,
-                                width: 1,
                               ),
                               borderRadius: BorderRadius.circular(4),
                               gradient: isFollowing
@@ -466,7 +465,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                                   end: Alignment.bottomRight,
                                 ).createShader(bounds);
                               },
-                              child: Text(
+                              child: const Text(
                                 'Connected',
                                 style: TextStyle(
                                   fontSize: 14,
@@ -475,7 +474,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                                 ),
                               ),
                             )
-                                : Text(
+                                : const Text(
                               'Connect',
                               style: TextStyle(
                                 color: Colors.white,
@@ -488,7 +487,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                       );
                     }),
                     const SizedBox(width: 10),
-                    const CustomStreamButton()
+                    const CustomStreamButton(),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -553,7 +552,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                           end: Alignment.bottomRight,
                         ).createShader(bounds);
                       },
-                      child: Icon(
+                      child: const Icon(
                         CupertinoIcons.music_note_2,
                         size: 16,
                         color: Colors.white, // IMPORTANT: White रखें
@@ -597,11 +596,11 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                         children: [
                           Text(
                             c.apiReels.length.toString(),
-                            style: TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white),
                           ),
                           Text(
                             c.currentReelId.value.toString(),
-                            style: TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ],
                       ),
@@ -609,7 +608,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                   ),
                 );
               },
-            )
+            ),
         ],
       ),
     );
@@ -627,7 +626,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
               Get.to(() => VammisProfileScreen(
                   popButton: true,
                   userId: userId,
-                  isOwnProfile: value?.id == widget.reel.user?.id));
+                  isOwnProfile: value?.id == widget.reel.user?.id,),);
             });
           },
           child: Container(
@@ -779,7 +778,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
     );
   }
 
-  void _showCommentBottomSheet() async {
+  Future<void> _showCommentBottomSheet() async {
     if (!Get.isRegistered<ReelsController>()) return;
     final controller = Get.find<ReelsController>();
     controller.getReelComments(widget.reel.id ?? 0);

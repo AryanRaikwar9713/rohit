@@ -55,7 +55,6 @@ class WatchListController extends GetxController {
 
   Future<void> handleRemoveFromWatchClick(BuildContext context) async {
     Get.bottomSheet(
-      isDismissible: true,
       isScrollControlled: true,
       enableDrag: false,
       BackdropFilter(
@@ -89,8 +88,8 @@ class WatchListController extends GetxController {
   }
 
   Future<void> updateWatchList(List<int> idList) async {
-    ProfileController profileCont = Get.find<ProfileController>();
-    HomeController homeController = Get.find<HomeController>();
+    final ProfileController profileCont = Get.find<ProfileController>();
+    final HomeController homeController = Get.find<HomeController>();
     profileCont.getProfileDetail();
     homeController.getDashboardDetail();
 

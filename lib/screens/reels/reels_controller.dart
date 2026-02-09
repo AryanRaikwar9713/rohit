@@ -34,7 +34,7 @@ class ReelsController extends GetxController {
 
   @override
   void onClose() {
-    for (var player in videoControllers.values) {
+    for (final player in videoControllers.values) {
       try {
         player.dispose();
       } catch (_) {}
@@ -46,7 +46,7 @@ class ReelsController extends GetxController {
 
   // Load reels from real API
   Future<void> loadReelsFromApi(
-      {bool refresh = false, bool loadingMore = false}) async {
+      {bool refresh = false, bool loadingMore = false,}) async {
     try {
       if (refresh) {
         currentPage.value = 1;
@@ -69,6 +69,11 @@ class ReelsController extends GetxController {
           }
           hasMoreData.value = response.data?.pagination?.hasMore ?? false;
           currentPage.value++;
+          
+          // Preload first 3 videos immediately after loading
+          if (currentPage.value == 2) { // First page loaded
+            _preloadInitialVideos();
+          }
         },
         onFailure: (response) {
           Logger().e('Failed to load reels: ${response.statusCode}');
@@ -98,20 +103,20 @@ class ReelsController extends GetxController {
   // Like reel API integration
   Future<void> toggleLikeReel(int reelId) async {
     try {
-      var reelIndex = apiReels.indexWhere(
+      final reelIndex = apiReels.indexWhere(
         (element) => element.id == reelId,
       );
 
       await ReelsApi().likeReel(
         reelId: reelId,
         onError: (e) {
-          Logger().e("Error in Like Api ${e}");
+          Logger().e("Error in Like Api $e");
         },
         onFailure: (s) => _handleResponse(s),
         onSuccess: (isLiked, likeCount) {
           // Update apiReels if reel exists there
           if (reelIndex != -1) {
-            var reel = apiReels[reelIndex];
+            final reel = apiReels[reelIndex];
             reel.stats?.likesCount = likeCount;
             reel.interactions?.isLiked = isLiked;
             apiReels[reelIndex] = reel;
@@ -122,11 +127,11 @@ class ReelsController extends GetxController {
           if (Get.isRegistered<VammisProfileController>()) {
             try {
               final profileController = Get.find<VammisProfileController>();
-              var userReelIndex = profileController.userReels.indexWhere(
+              final userReelIndex = profileController.userReels.indexWhere(
                 (element) => element.id == reelId,
               );
               if (userReelIndex != -1) {
-                var userReel = profileController.userReels[userReelIndex];
+                final userReel = profileController.userReels[userReelIndex];
                 userReel.stats?.likesCount = likeCount;
                 userReel.interactions?.isLiked = isLiked;
                 profileController.userReels[userReelIndex] = userReel;
@@ -143,7 +148,7 @@ class ReelsController extends GetxController {
             getBolt: false,
             contentType: "reel",
             onError: (e) {
-              Logger().e("Error in Like Api ${e}");
+              Logger().e("Error in Like Api $e");
             },
             onFailure: (s) => _handleResponse(s),
           );
@@ -164,7 +169,7 @@ class ReelsController extends GetxController {
         reelId: reelId,
         comment: comment,
         onError: (e) {
-          Logger().e("Error in Comment Api ${e}");
+          Logger().e("Error in Comment Api $e");
         },
         onFailure: (s) => _handleResponse(s),
         onSuccess: (comment) async{
@@ -181,7 +186,7 @@ class ReelsController extends GetxController {
             getBolt: false,
             contentType: "reel",
             onError: (e) {
-              Logger().e("Error in Comment Api ${e}");
+              Logger().e("Error in Comment Api $e");
             },
             onFailure: (s) => _handleResponse(s),
           );
@@ -292,18 +297,43 @@ class ReelsController extends GetxController {
     _disposeDistantVideos(reelId);
   }
 
-  // Preload adjacent videos for smooth playback
+  // Preload initial videos when reels are first loaded
+  void _preloadInitialVideos() {
+    try {
+      // Preload first 3 videos immediately
+      for (int i = 0; i < 3 && i < apiReels.length; i++) {
+        final reel = apiReels[i];
+        final reelId = reel.id;
+        if (reelId != null && !videoControllers.containsKey(reelId)) {
+          _preloadVideo(reelId);
+        }
+      }
+    } catch (e) {
+      Logger().w('Error preloading initial videos: $e');
+    }
+  }
+
+  // Preload adjacent videos for smooth playback (improved - preload more)
   void _preloadAdjacentVideos(int currentReelId) {
     try {
       final currentIndex = apiReels.indexWhere((e) => e.id == currentReelId);
       if (currentIndex < 0) return;
 
-      // Preload next 2-3 videos
-      for (int i = 1; i <= 3 && (currentIndex + i) < apiReels.length; i++) {
+      // Preload next 4-5 videos for faster serve (increased from 3)
+      for (int i = 1; i <= 5 && (currentIndex + i) < apiReels.length; i++) {
         final nextReel = apiReels[currentIndex + i];
         final nextReelId = nextReel.id;
         if (nextReelId != null && !videoControllers.containsKey(nextReelId)) {
           _preloadVideo(nextReelId);
+        }
+      }
+      
+      // Also preload previous 1-2 videos for smooth back navigation
+      for (int i = 1; i <= 2 && (currentIndex - i) >= 0; i++) {
+        final prevReel = apiReels[currentIndex - i];
+        final prevReelId = prevReel.id;
+        if (prevReelId != null && !videoControllers.containsKey(prevReelId)) {
+          _preloadVideo(prevReelId);
         }
       }
     } catch (e) {
@@ -311,19 +341,27 @@ class ReelsController extends GetxController {
     }
   }
 
-  // Preload video without playing
+  // Preload video without playing (optimized for faster loading)
   void _preloadVideo(int reelId) {
     try {
       final reelIndex = apiReels.indexWhere((e) => e.id == reelId);
       if (reelIndex < 0) return;
       final reel = apiReels[reelIndex];
-      if (reel.content?.videoUrl == null) return;
+      if (reel.content?.videoUrl == null || reel.content!.videoUrl!.isEmpty) return;
+
+      // Check if already loading or loaded
+      if (videoControllers.containsKey(reelId)) {
+        return; // Already initialized
+      }
 
       final player = getVideoController(reelId);
       if (player != null) {
+        // Set buffer size for better performance
+        player.setPlaylistMode(PlaylistMode.none);
+        // Open and prepare video (don't play)
         player.open(Media(reel.content!.videoUrl!));
-        // Don't play, just prepare
         player.pause();
+        print('✅ Preloaded video for reel $reelId');
       }
     } catch (e) {
       Logger().w('Error preloading video $reelId: $e');
@@ -444,22 +482,22 @@ class ReelsController extends GetxController {
           _handleResponse(s);
         },
         onSuccess: (isFollowing) {
-          apiReels.forEach((e) {
+          for (final e in apiReels) {
             if (e.user?.id == userId) {
               e.user?.isFollowing = isFollowing;
             }
-          });
+          }
           apiReels.refresh();
 
           // Also update VammisProfileController.userReels if reels exist there
           if (Get.isRegistered<VammisProfileController>()) {
             try {
               final profileController = Get.find<VammisProfileController>();
-              profileController.userReels.forEach((e) {
+              for (final e in profileController.userReels) {
                 if (e.user?.id == userId) {
                   e.user?.isFollowing = isFollowing;
                 }
-              });
+              }
               profileController.userReels.refresh();
             } catch (e) {
               Logger().e("Error updating userReels follow: $e");
@@ -493,7 +531,7 @@ class ReelsController extends GetxController {
 
 
 
-  _handleResponse(http.Response s) {
+  void _handleResponse(http.Response s) {
     Logger().e(s.statusCode);
     Logger().e(jsonDecode(s.body));
   }

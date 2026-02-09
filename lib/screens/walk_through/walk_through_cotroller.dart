@@ -22,6 +22,6 @@ class WalkThroughController extends GetxController {
   }
 
   Future<void> init() async {
-    pageController(PageController(initialPage: 0));
+    pageController(PageController());
   }
 }

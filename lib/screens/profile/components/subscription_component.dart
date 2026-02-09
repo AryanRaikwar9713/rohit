@@ -37,7 +37,6 @@ class SubscriptionComponent extends StatelessWidget {
           16.width,
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Marquee(

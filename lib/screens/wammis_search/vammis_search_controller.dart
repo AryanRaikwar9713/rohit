@@ -18,7 +18,7 @@ class VammisSearchController extends GetxController {
 
   RxList<Result> search = <Result>[].obs;
 
-  getSearch() async {
+  Future<void> getSearch() async {
     search.value = [];
     if (searchController.value.text.isEmpty) {
       searching.value = false;
@@ -63,7 +63,7 @@ class VammisSearchController extends GetxController {
             decoration: BoxDecoration(
               color: cardBackgroundBlackDark,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[800]!, width: 1),
+              border: Border.all(color: Colors.grey[800]!),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.3),
@@ -81,12 +81,12 @@ class VammisSearchController extends GetxController {
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     border: Border(
-                      bottom: BorderSide(color: Colors.grey[800]!, width: 1),
+                      bottom: BorderSide(color: Colors.grey[800]!),
                     ),
                   ),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.search,
                         color: appColorPrimary,
                         size: 20,
@@ -104,7 +104,7 @@ class VammisSearchController extends GetxController {
                       if (search.isNotEmpty)
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
+                              horizontal: 8, vertical: 4,),
                           decoration: BoxDecoration(
                             color: appColorPrimary.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(12),
@@ -202,11 +202,11 @@ class _SearchResultCard extends StatelessWidget {
     return InkWell(
       onTap: () async {
         if (result.contentType == 'user') {
-          var user = await DB().getUser();
+          final user = await DB().getUser();
           Get.to(VammisProfileScreen(
             popButton: true,
               userId: result.contentId ?? 0,
-              isOwnProfile: user?.id == result.contentId));
+              isOwnProfile: user?.id == result.contentId,),);
         }
         if (result.contentType == 'project') {
           Get.to(ProjectDetailScreen(id: result.contentId ?? 0));
@@ -215,11 +215,10 @@ class _SearchResultCard extends StatelessWidget {
       child: Container(
         height: 80, // Fixed height for consistency
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.transparent,
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Image/Icon based on contentType
             _buildContentImage(),
@@ -237,7 +236,7 @@ class _SearchResultCard extends StatelessWidget {
   }
 
   Widget _buildContentImage() {
-    final size = 56.0; // Slightly smaller to fit in fixed height
+    const size = 56.0; // Slightly smaller to fit in fixed height
 
     if (result.contentType == 'user') {
       // User profile image - circular
@@ -359,7 +358,7 @@ class _SearchResultCard extends StatelessWidget {
         return Row(
           children: [
             if (extraData?.followersCount != null) ...[
-              Icon(Icons.people, size: 12, color: secondaryTextColor),
+              const Icon(Icons.people, size: 12, color: secondaryTextColor),
               const SizedBox(width: 4),
               Text(
                 '${_formatCount(extraData!.followersCount!)} followers',
@@ -376,16 +375,16 @@ class _SearchResultCard extends StatelessWidget {
               Icon(Icons.favorite, size: 12, color: Colors.red[400]),
               const SizedBox(width: 4),
               Text(
-                '${_formatCount(extraData!.likesCount!)}',
+                _formatCount(extraData!.likesCount!),
                 style: secondaryTextStyle(size: 11, color: secondaryTextColor),
               ),
               const SizedBox(width: 12),
             ],
             if (extraData?.commentsCount != null) ...[
-              Icon(Icons.comment, size: 12, color: secondaryTextColor),
+              const Icon(Icons.comment, size: 12, color: secondaryTextColor),
               const SizedBox(width: 4),
               Text(
-                '${_formatCount(extraData!.commentsCount!)}',
+                _formatCount(extraData!.commentsCount!),
                 style: secondaryTextStyle(size: 11, color: secondaryTextColor),
               ),
             ],
@@ -396,8 +395,8 @@ class _SearchResultCard extends StatelessWidget {
         return Row(
           children: [
             if (extraData?.viewsCount != null) ...[
-              Icon(Icons.play_circle_outline,
-                  size: 12, color: secondaryTextColor),
+              const Icon(Icons.play_circle_outline,
+                  size: 12, color: secondaryTextColor,),
               const SizedBox(width: 4),
               Text(
                 '${_formatCount(extraData!.viewsCount!)} views',
@@ -411,7 +410,7 @@ class _SearchResultCard extends StatelessWidget {
         return Row(
           children: [
             if (extraData?.fundingPercentage != null) ...[
-              Icon(Icons.trending_up, size: 12, color: appColorPrimary),
+              const Icon(Icons.trending_up, size: 12, color: appColorPrimary),
               const SizedBox(width: 4),
               Text(
                 '${extraData!.fundingPercentage}% funded',

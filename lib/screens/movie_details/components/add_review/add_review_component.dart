@@ -35,8 +35,8 @@ class AddReviewComponent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                ((movieDetailCont is MovieDetailsController ? (movieDetailCont.movieDetailsResp.value.yourReview.review.isNotEmpty || movieDetailCont.movieDetailsResp.value.yourReview.rating > 0) : false) ||
-                        ((movieDetailCont is TvShowController) ? movieDetailCont.tvShowDetail.value.yourReview.review.isNotEmpty || (movieDetailCont).tvShowDetail.value.yourReview.rating > 0 : false))
+                ((movieDetailCont is MovieDetailsController && (movieDetailCont.movieDetailsResp.value.yourReview.review.isNotEmpty || movieDetailCont.movieDetailsResp.value.yourReview.rating > 0)) ||
+                        ((movieDetailCont is TvShowController) && (movieDetailCont.tvShowDetail.value.yourReview.review.isNotEmpty || movieDetailCont.tvShowDetail.value.yourReview.rating > 0)))
                     ? locale.value.yourReview
                     : isMovie
                         ? locale.value.rateThisMovie
@@ -72,7 +72,6 @@ class AddReviewComponent extends StatelessWidget {
             children: [
               RatingBarWidget(
                 size: 24,
-                allowHalfRating: false,
                 activeColor: goldColor,
                 inActiveColor: darkGrayTextColor,
                 rating: movieDetCont.ratingVal.value,
@@ -115,12 +114,12 @@ class AddReviewComponent extends StatelessWidget {
             ],
           ).visible(
             !(movieDetCont.isEdit.isFalse &&
-                ((movieDetailCont is MovieDetailsController ? (movieDetailCont.movieDetailsResp.value.yourReview.review.isNotEmpty || movieDetailCont.movieDetailsResp.value.yourReview.rating > 0) : false) ||
-                    ((movieDetailCont is TvShowController) ? ((movieDetailCont).tvShowDetail).value.yourReview.review.isNotEmpty || (movieDetailCont).tvShowDetail.value.yourReview.rating > 0 : false))),
+                ((movieDetailCont is MovieDetailsController && (movieDetailCont.movieDetailsResp.value.yourReview.review.isNotEmpty || movieDetailCont.movieDetailsResp.value.yourReview.rating > 0)) ||
+                    ((movieDetailCont is TvShowController) && (movieDetailCont.tvShowDetail.value.yourReview.review.isNotEmpty || movieDetailCont.tvShowDetail.value.yourReview.rating > 0)))),
           ),
           Obx(
             () => ReviewCard(
-              reviewDetail: (movieDetailCont is MovieDetailsController) ? (movieDetailCont).movieDetailsResp.value.yourReview : (movieDetailCont as TvShowController).tvShowDetail.value.yourReview,
+              reviewDetail: (movieDetailCont is MovieDetailsController) ? movieDetailCont.movieDetailsResp.value.yourReview : (movieDetailCont as TvShowController).tvShowDetail.value.yourReview,
               isLoggedInUser: true,
               editCallback: () {
                 LiveStream().emit(podPlayerPauseKey);
@@ -139,8 +138,8 @@ class AddReviewComponent extends StatelessWidget {
               },
             ).paddingTop(8).visible(((movieDetailCont is MovieDetailsController) || (movieDetailCont is TvShowController)) &&
                 movieDetCont.isEdit.isFalse &&
-                ((movieDetailCont is MovieDetailsController ? (movieDetailCont.movieDetailsResp.value.yourReview.review.isNotEmpty || movieDetailCont.movieDetailsResp.value.yourReview.rating > 0) : false) ||
-                    ((movieDetailCont is TvShowController) ? movieDetailCont.tvShowDetail.value.yourReview.review.isNotEmpty || (movieDetailCont).tvShowDetail.value.yourReview.rating > 0 : false))),
+                ((movieDetailCont is MovieDetailsController && (movieDetailCont.movieDetailsResp.value.yourReview.review.isNotEmpty || movieDetailCont.movieDetailsResp.value.yourReview.rating > 0)) ||
+                    ((movieDetailCont is TvShowController) && (movieDetailCont.tvShowDetail.value.yourReview.review.isNotEmpty || movieDetailCont.tvShowDetail.value.yourReview.rating > 0))),),
           ),
         ],
       ).paddingSymmetric(horizontal: 10, vertical: 12),

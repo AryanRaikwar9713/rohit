@@ -76,7 +76,7 @@ class PersonWiseMovies extends StatelessWidget {
                         children: List.generate(
                           personCont.originalMovieList.length,
                           (index) {
-                            VideoPlayerModel movieDet = personCont.originalMovieList[index];
+                            final VideoPlayerModel movieDet = personCont.originalMovieList[index];
                             return InkWell(
                               onTap: () {},
                               child: PosterCardComponent(

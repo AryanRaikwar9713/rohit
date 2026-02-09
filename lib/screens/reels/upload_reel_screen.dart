@@ -68,13 +68,13 @@ class _UploadReelScreenState extends State<UploadReelScreen>
         backgroundColor: Colors.transparent,
         appBar: _buildAppBar(),
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
                 Colors.black,
-                const Color(0xFF0f0d0a),
+                Color(0xFF0f0d0a),
               ],
             ),
           ),
@@ -104,7 +104,7 @@ class _UploadReelScreenState extends State<UploadReelScreen>
             onPressed: _controller.isUploading.value
                 ? null
                 : () => _controller.cancelUpload(),
-          )),
+          ),),
       title: ShaderMask(
         shaderCallback: (bounds) => _uploadReelGradient.createShader(bounds),
         child: const Text(
@@ -247,7 +247,6 @@ class _UploadReelScreenState extends State<UploadReelScreen>
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: const Color(0xFFFF9800).withValues(alpha: 0.25),
-                  width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -304,12 +303,12 @@ class _UploadReelScreenState extends State<UploadReelScreen>
               color: const Color(0xFFFF9800).withValues(alpha: 0.5),
               width: 1.5,
             ),
-            gradient: LinearGradient(
+            gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                const Color(0xFF1a1510),
-                const Color(0xFF0f0d0a),
+                Color(0xFF1a1510),
+                Color(0xFF0f0d0a),
               ],
             ),
             boxShadow: [
@@ -325,7 +324,7 @@ class _UploadReelScreenState extends State<UploadReelScreen>
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: _uploadReelGradient,
                 ),
@@ -354,7 +353,7 @@ class _UploadReelScreenState extends State<UploadReelScreen>
         children: [
           Container(
             padding: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
               gradient: _uploadReelGradient,
             ),
@@ -569,7 +568,7 @@ class _UploadReelScreenState extends State<UploadReelScreen>
               ),
             ],
           ],
-        ));
+        ),);
   }
 
   Widget _buildHashtagsField() {
@@ -634,7 +633,7 @@ class _UploadReelScreenState extends State<UploadReelScreen>
                 children: _controller.hashtags
                     .map((hashtag) => Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
+                              horizontal: 12, vertical: 6,),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
@@ -668,12 +667,12 @@ class _UploadReelScreenState extends State<UploadReelScreen>
                               ),
                             ],
                           ),
-                        ))
+                        ),)
                     .toList(),
               ),
             ],
           ],
-        ));
+        ),);
   }
 
   Widget _buildVideoInfo() {
@@ -684,7 +683,6 @@ class _UploadReelScreenState extends State<UploadReelScreen>
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: const Color(0xFFFF9800).withValues(alpha: 0.2),
-              width: 1,
             ),
           ),
           child: Column(
@@ -722,7 +720,7 @@ class _UploadReelScreenState extends State<UploadReelScreen>
               ),
             ],
           ),
-        ));
+        ),);
   }
 
   Widget _buildUploadProgress() {
@@ -739,7 +737,7 @@ class _UploadReelScreenState extends State<UploadReelScreen>
                   strokeWidth: 4,
                   backgroundColor: const Color(0xFF1a1510),
                   valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFF9800)),
-                )),
+                ),),
           ),
           const SizedBox(height: 32),
 
@@ -751,12 +749,12 @@ class _UploadReelScreenState extends State<UploadReelScreen>
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
-              )),
+              ),),
           const SizedBox(height: 16),
 
            Obx(() => Text(
             (_controller.uploadProgress.value==1)?'Please wait your video is processing...':'Uploading your reel...',
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 16,
             ),
@@ -764,7 +762,7 @@ class _UploadReelScreenState extends State<UploadReelScreen>
           const SizedBox(height: 8),
 
           Text(
-            'Please don\'t close the app',
+            "Please don't close the app",
             style: TextStyle(
               color: Colors.grey[400],
               fontSize: 14,
@@ -799,7 +797,7 @@ class _UploadReelScreenState extends State<UploadReelScreen>
             ListTile(
               leading: const Icon(Icons.photo_library, color: Colors.white),
               title: const Text('Choose from Gallery',
-                  style: TextStyle(color: Colors.white)),
+                  style: TextStyle(color: Colors.white),),
               onTap: () {
                 Navigator.pop(context);
                 _controller.pickVideoFromGallery();
@@ -808,7 +806,7 @@ class _UploadReelScreenState extends State<UploadReelScreen>
             ListTile(
               leading: const Icon(Icons.camera_alt, color: Colors.white),
               title: const Text('Record New Video',
-                  style: TextStyle(color: Colors.white)),
+                  style: TextStyle(color: Colors.white),),
               onTap: () {
                 Navigator.pop(context);
                 _controller.pickVideoFromCamera();

@@ -32,7 +32,7 @@ class _UserPostViewScreenState extends State<UserPostViewScreen> {
     scrollController.addListener((){onScroll();});
   }
 
-  onScroll()
+  void onScroll()
   {
     if(scrollController.position.pixels==scrollController.position.maxScrollExtent)
       {
@@ -59,16 +59,16 @@ class _UserPostViewScreenState extends State<UserPostViewScreen> {
             itemCount: controller.userPosts.length,
             itemBuilder: (context, index){
             
-            SocialPost p = controller.userPosts.value[index];
+            final SocialPost p = controller.userPosts.value[index];
             
             return  SocialPostCard(
               profilenavigation: false,
               post:p,
 
-              onFollowTap: ()async{
-                await controller.followUser(int.parse(
+              onFollowTap: () async {
+                controller.followUser(int.parse(
                     p.user?.userId ??
-                        '0'));
+                        '0',),);
               },
 
               //Like
@@ -97,7 +97,7 @@ class _UserPostViewScreenState extends State<UserPostViewScreen> {
                                 .imageUrl ??
                                 '',
                             fit: BoxFit.contain,
-                          )),
+                          ),),
                     ),
                   ),
                 );
@@ -107,7 +107,7 @@ class _UserPostViewScreenState extends State<UserPostViewScreen> {
               //Comment
               onComment: ()async{
                 controller.getPostComment(int.parse(
-                    p.postId ?? '0'));
+                    p.postId ?? '0',),);
                 await showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
@@ -115,7 +115,7 @@ class _UserPostViewScreenState extends State<UserPostViewScreen> {
                   builder: (context) => _CommentBottomSheet(
                     postId: int.parse(
                         p.postId ??
-                            '0'),
+                            '0',),
                   ),
                 );
                 controller.resateCommentData();
@@ -126,7 +126,7 @@ class _UserPostViewScreenState extends State<UserPostViewScreen> {
               onSare: ()async{
                 Clipboard.setData(const ClipboardData(
                     text:
-                    "https://play.google.com/store/apps/details?id=com.anytimeott.live"));
+                    "https://play.google.com/store/apps/details?id=com.anytimeott.live",),);
                 toast("Url Copied");
               },
             );
@@ -143,7 +143,7 @@ class _UserPostViewScreenState extends State<UserPostViewScreen> {
 
 class _CommentBottomSheet extends StatefulWidget {
   final int postId;
-  _CommentBottomSheet({required this.postId});
+  const _CommentBottomSheet({required this.postId});
 
   @override
   State<_CommentBottomSheet> createState() => _CommentBottomSheetState();
@@ -204,9 +204,9 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                       "Comments",
                       style: boldTextStyle(size: 18, color: Colors.white),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     IconButton(
-                      icon: Icon(Icons.close, color: Colors.white),
+                      icon: const Icon(Icons.close, color: Colors.white),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ],
@@ -217,10 +217,10 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
 
               // Comments List
               if (controller.commentLoading.value)
-                Expanded(
+                const Expanded(
                     child: Center(
                       child: CircularProgressIndicator(),
-                    ))
+                    ),)
               else
                 Expanded(
                   child: controller.comments.isEmpty
@@ -231,38 +231,38 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                         Text(
                           "No Comments",
                           style: secondaryTextStyle(
-                              size: 14, color: Colors.grey),
+                              size: 14, color: Colors.grey,),
                         ),
                         if (kDebugMode) ...[
                           Obx(
                                 () => Text(
                               controller.comments.length.toString(),
-                              style: TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                             ),
                           ),
                           Obx(
                                 () => Text(
                               controller.commentPage.value.toString(),
-                              style: TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                             ),
                           ),
-                        ]
+                        ],
                       ],
                     ),
                   )
                       : ListView.builder(
                     controller: _scrollController,
                     padding:
-                    EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                    const EdgeInsets.symmetric(vertical: 8),
                     itemCount: controller.comments.length,
                     itemBuilder: (context, index) {
-                      SocialPostComment comment = controller.comments[index];
+                      final SocialPostComment comment = controller.comments[index];
 
                       // return Text("${c.toJson()}",style: TextStyle(color: Colors.white),);
 
                       return Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
+                            horizontal: 16, vertical: 8,),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -392,12 +392,12 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                     BoxShadow(
                       color: Colors.black.withOpacity(0.2),
                       blurRadius: 4,
-                      offset: Offset(0, -2),
+                      offset: const Offset(0, -2),
                     ),
                   ],
                 ),
                 child: TextField(
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   controller: _commentController,
                   decoration: InputDecoration(
                     filled: true,
@@ -413,11 +413,11 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                       icon: const Icon(Icons.send, color: appColorPrimary),
                       onPressed: () async {
                         if (_commentController.text.isEmpty) return;
-                        var controller = (Get.isRegistered<VammisProfileController>())
+                        final controller = (Get.isRegistered<VammisProfileController>())
                             ? Get.find<VammisProfileController>()
                             : Get.put(VammisProfileController());
                         await controller.commentOnPost(
-                            widget.postId, _commentController.text.trim());
+                            widget.postId, _commentController.text.trim(),);
                         _commentController.clear();
                       },
                     ),

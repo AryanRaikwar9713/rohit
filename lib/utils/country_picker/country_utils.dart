@@ -1,7 +1,7 @@
 import 'country_list.dart';
 
 CountryModel? getCountryByDialCode(String dialCode) {
-  RegExp regExp = RegExp(r'\[([^\]]+)\]');
+  final RegExp regExp = RegExp(r'\[([^\]]+)\]');
 
   final index = countryCodes.indexWhere((country) => regExp.firstMatch((country as CountryModel).displayName)!.group(1) == dialCode);
   if (index < 0) return null;
@@ -15,12 +15,12 @@ CountryModel? getCountryByIsoCode(String isoCode) {
 }
 
 bool validatePhoneNumber(String phoneNumber, String dialCode) {
-  CountryModel? country = getCountryByDialCode(dialCode);
+  final CountryModel? country = getCountryByDialCode(dialCode);
   if (country == null) return false;
-  int length = phoneNumber.length;
-  int tempLength = country.fullExampleWithPlusSign.replaceFirst('+${country.e164Cc}', '').length;
-  bool lengthValid = length == tempLength;
-  bool startingDigitsValid = country.startWithDigit.isEmpty || country.startWithDigit.any((digits) => phoneNumber.startsWith(digits));
+  final int length = phoneNumber.length;
+  final int tempLength = country.fullExampleWithPlusSign.replaceFirst('+${country.e164Cc}', '').length;
+  final bool lengthValid = length == tempLength;
+  final bool startingDigitsValid = country.startWithDigit.isEmpty || country.startWithDigit.any((digits) => phoneNumber.startsWith(digits));
   return lengthValid && startingDigitsValid;
 }
 
@@ -29,9 +29,9 @@ int getValidPhoneNumberLength(CountryModel country) {
 }
 
 bool validatePhoneNumberByCountry(String phoneNumber, CountryModel country) {
-  int length = phoneNumber.length;
-  int tempLength = country.fullExampleWithPlusSign.replaceFirst('+${country.e164Cc}', '').length;
-  bool lengthValid = length == tempLength;
-  bool startingDigitsValid = country.startWithDigit.isEmpty || country.startWithDigit.any((digits) => phoneNumber.startsWith(digits));
+  final int length = phoneNumber.length;
+  final int tempLength = country.fullExampleWithPlusSign.replaceFirst('+${country.e164Cc}', '').length;
+  final bool lengthValid = length == tempLength;
+  final bool startingDigitsValid = country.startWithDigit.isEmpty || country.startWithDigit.any((digits) => phoneNumber.startsWith(digits));
   return lengthValid && startingDigitsValid;
 }

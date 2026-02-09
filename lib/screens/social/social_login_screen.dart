@@ -57,7 +57,7 @@ class SocialLoginScreen extends StatelessWidget {
                 Get.to(() => SignInScreen(), arguments: true)?.then((value) {
                   if (value == true) {
                     Get.offAll(() => DashboardScreen(
-                        dashboardController: getDashboardController()));
+                        dashboardController: getDashboardController(),),);
                   }
                 });
                 Get.lazyPut(() => HomeController());

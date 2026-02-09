@@ -23,10 +23,9 @@ class SubscriptionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      hasLeadingWidget: true,
       isLoading: false.obs,
       scaffoldBackgroundColor: appScreenBackgroundDark,
-      appBarTitle: CachedImageWidget(
+      appBarTitle: const CachedImageWidget(
         url: Assets.iconsIcIcon,
         height: 34,
         width: 34,
@@ -34,7 +33,7 @@ class SubscriptionScreen extends StatelessWidget {
       body: RefreshIndicator(
         color: appColorPrimary,
         onRefresh: () async {
-          return await subscriptionCont.getSubscriptionDetails();
+          return subscriptionCont.getSubscriptionDetails();
         },
         child: Obx(
           () => SnapHelperWidget(
@@ -54,9 +53,8 @@ class SubscriptionScreen extends StatelessWidget {
             },
             onSuccess: (res) {
               return AnimatedScrollView(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                padding: EdgeInsets.only(bottom: 30),
+                padding: const EdgeInsets.only(bottom: 30),
                 refreshIndicatorColor: appColorPrimary,
                 children: [
                   14.height,
@@ -87,7 +85,7 @@ class SubscriptionScreen extends StatelessWidget {
       bottomNavBar: Obx(() => PriceComponent(
             launchDashboard: launchDashboard,
             subscriptionCont: subscriptionCont,
-          ).visible(subscriptionCont.selectPlan.value.name.isNotEmpty)),
+          ).visible(subscriptionCont.selectPlan.value.name.isNotEmpty),),
     );
   }
 }

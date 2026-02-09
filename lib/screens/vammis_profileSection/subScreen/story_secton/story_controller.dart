@@ -22,7 +22,7 @@ class StoryContrller extends GetxController
           "mediaUrl": "https://picsum.photos/id/1015/600/900",
           "duration": 5,
           "isViewed": false,
-          "createdAt": "2025-12-18T10:30:00"
+          "createdAt": "2025-12-18T10:30:00",
         },
         {
           "storyId": "s2",
@@ -30,9 +30,9 @@ class StoryContrller extends GetxController
           "mediaUrl": "https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4",
           "duration": 0,
           "isViewed": false,
-          "createdAt": "2025-12-18T10:35:00"
+          "createdAt": "2025-12-18T10:35:00",
         }
-      ]
+      ],
     },
     {
       "userId": "u2",
@@ -45,7 +45,7 @@ class StoryContrller extends GetxController
           "mediaUrl": "https://picsum.photos/id/1025/600/900",
           "duration": 6,
           "isViewed": true,
-          "createdAt": "2025-12-18T09:10:00"
+          "createdAt": "2025-12-18T09:10:00",
         },
         {
           "storyId": "s4",
@@ -53,9 +53,9 @@ class StoryContrller extends GetxController
           "mediaUrl": "https://picsum.photos/id/1035/600/900",
           "duration": 5,
           "isViewed": true,
-          "createdAt": "2025-12-18T09:12:00"
+          "createdAt": "2025-12-18T09:12:00",
         }
-      ]
+      ],
     },
     {
       "userId": "u3",
@@ -68,9 +68,9 @@ class StoryContrller extends GetxController
           "mediaUrl": "https://sample-videos.com/video321/mp4/720/sample_720p_1mb.mp4",
           "duration": 0,
           "isViewed": false,
-          "createdAt": "2025-12-18T08:00:00"
+          "createdAt": "2025-12-18T08:00:00",
         }
-      ]
+      ],
     }
   ];
 
@@ -89,15 +89,15 @@ class StoryContrller extends GetxController
   final api = StoryApi();
 
 
-  setStoryPageController()
+  void setStoryPageController()
   {
     // selectedUserId.value = storyList[0].userId??'';
     // selectedStoryId.value = storyList[0].stories?[0].storyId??'';
-    userPageController = PageController(initialPage:  0);
-    storyPageController = PageController(initialPage: 0);
+    userPageController = PageController();
+    storyPageController = PageController();
   }
 
-  loadStory() async
+  Future<void> loadStory() async
   {
     try
     {
@@ -108,7 +108,7 @@ class StoryContrller extends GetxController
 
       }, onError: onError, onFail: (d){
         Logger().e("Feaild To get Sotry ${d.statusCode}");
-      });
+      },);
     }
     catch(e)
 {
@@ -118,20 +118,20 @@ class StoryContrller extends GetxController
     isLoading.value = false;
   }
 
-  onUserChage(int userId)
+  void onUserChage(int userId)
   {
     selectedUserId.value = userId;
     isLastUser.value = userId==(storyList.last.user?.id??0);
-    int userInd = storyList.indexWhere((element) => element.user?.id==selectedUserId.value,);
+    final int userInd = storyList.indexWhere((element) => element.user?.id==selectedUserId.value,);
     isLastStory.value =  storyList[userInd].stories?.length==1;
   }
 
-  onStoryChange(int storyId,int userId)
+  void onStoryChange(int storyId,int userId)
   {
     selectedStoryId.value = storyId;
     selectedUserId.value = userId;
     isLastUser.value = storyList.last.user?.id==selectedUserId.value;
-    int userInd = storyList.indexWhere((element) => element.user?.id==selectedUserId.value,);
+    final int userInd = storyList.indexWhere((element) => element.user?.id==selectedUserId.value,);
     isLastStory.value =  storyList[userInd].stories?.last.id==storyId;
     print('selectedUserId $selectedUserId');
     print('selectedStoryId $selectedStoryId');
@@ -141,7 +141,7 @@ class StoryContrller extends GetxController
 
   
   
-  nextStory()
+  void nextStory()
   {
     print('$selectedUserId $selectedStoryId');
 
@@ -168,13 +168,13 @@ class StoryContrller extends GetxController
   }
   
   
-  prevStory()
+  void prevStory()
   {
     
   }
 
 
-  reset()
+  void reset()
   {
     selectedStoryId.value = 0;
     selectedUserId.value = 0;

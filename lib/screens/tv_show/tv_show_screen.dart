@@ -81,7 +81,7 @@ class TvShowScreen extends StatelessWidget {
                         retryText: locale.value.reload,
                         imageWidget: const ErrorStateWidget(),
                         onRetry: () {
-                          tvShowController.getTvShowDetail(showLoader: true);
+                          tvShowController.getTvShowDetail();
                         },
                       ).visible(tvShowController.isLoading.value);
                     },

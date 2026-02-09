@@ -22,11 +22,11 @@ class DB {
     }
     else
       {
-        var db = await SharedPreferences.getInstance();
-        var d = db.getString(SharedPreferenceConst.USER_DATA);
+        final db = await SharedPreferences.getInstance();
+        final d = db.getString(SharedPreferenceConst.USER_DATA);
         if (d != null && d.isNotEmpty) {
-          UserData userData = UserData.fromJson(jsonDecode(d));
-          String userToken = userData.apiToken;
+          final UserData userData = UserData.fromJson(jsonDecode(d));
+          final String userToken = userData.apiToken;
           _userData = userData;
           return userToken;
         } else {
@@ -45,7 +45,7 @@ class DB {
       }
     else
       {
-        var db = await SharedPreferences.getInstance();
+        final db = await SharedPreferences.getInstance();
         _isuseLogIn = db.getBool(SharedPreferenceConst.IS_LOGGED_IN) ?? false;
         return _isuseLogIn!;
       }
@@ -60,10 +60,10 @@ class DB {
         return _userData;
       }
 
-    var db = await SharedPreferences.getInstance();
-    var d = db.getString(SharedPreferenceConst.USER_DATA);
+    final db = await SharedPreferences.getInstance();
+    final d = db.getString(SharedPreferenceConst.USER_DATA);
     if (d != null && d.isNotEmpty) {
-      UserData userData = UserData.fromJson(jsonDecode(d));
+      final UserData userData = UserData.fromJson(jsonDecode(d));
       _userData = userData;
       return _userData;
     } else {
@@ -73,7 +73,7 @@ class DB {
   }
 
   //get UserHeader for Row data
-  getHeaderForRow() async
+  Future<Map<String, String>?> getHeaderForRow() async
 {
   if(_rowHeader!=null)
     {
@@ -89,7 +89,7 @@ class DB {
     }
 }
 
-  getHeaderForForm() async
+  Future<Map<String, String>?> getHeaderForForm() async
   {
     if(_formHeader!=null)
     {
@@ -105,11 +105,11 @@ class DB {
   }
 
 
-  addNewAddress(IngAddress address) async
+  Future<void> addNewAddress(IngAddress address) async
   {
     List<IngAddress> addressList = [];
-    var db = await SharedPreferences.getInstance();
-    var d = db.getString(SharedPreferenceConst.USER_ORDER_ADDRESS);
+    final db = await SharedPreferences.getInstance();
+    final d = db.getString(SharedPreferenceConst.USER_ORDER_ADDRESS);
     if (d != null && d.isNotEmpty) {
       addressList = List<IngAddress>.from(jsonDecode(d));
     }
@@ -119,11 +119,11 @@ class DB {
 
   Future<List<IngAddress>> getUserAddress() async
   {
-    List<IngAddress> addressList = [];
-    var db = await SharedPreferences.getInstance();
-    var d = db.getString(SharedPreferenceConst.USER_ORDER_ADDRESS);
+    final List<IngAddress> addressList = [];
+    final db = await SharedPreferences.getInstance();
+    final d = db.getString(SharedPreferenceConst.USER_ORDER_ADDRESS);
     if (d != null && d.isNotEmpty) {
-      var dataLsit = jsonDecode(d);
+      final dataLsit = jsonDecode(d);
       dataLsit.forEach((element) {
         addressList.add(IngAddress.fromJson(element));
       });

@@ -53,7 +53,7 @@ class WatchListScreen extends StatelessWidget {
             ),
           ).visible(watchListCont.watchList.isNotEmpty),
         ),
-        16.width
+        16.width,
       ],
       body: RefreshIndicator(
         color: appColorPrimary,
@@ -258,7 +258,7 @@ class WatchListScreen extends StatelessWidget {
                   ],
                 ),
               ),
-            )
+            ),
         ],
       ),
     );
