@@ -156,11 +156,14 @@ class SocialApi {
     }
   }
 
+  /// API: Backend should store [showDonateButton] per post and return it in get_posts as "show_donate_button" (1/0 or bool).
+  /// When true, app shows Donate button on that post in feed; when false, Donate button is hidden.
   Future<void> createPost({
     required String title,
     required String caption,
     String? mediaUrl,
     required List<String> hashtags,
+    bool showDonateButton = false,
     required void Function(String) onError,
     required void Function(http.Response) onFailure,
     required void Function(int) onSuccess,
@@ -178,6 +181,7 @@ class SocialApi {
         'title': title,
         'hashtags': hashtags.join(','),
         'location': 'Bhopal',
+        'show_donate_button': showDonateButton ? '1' : '0',
       };
       Logger().i(data);
 

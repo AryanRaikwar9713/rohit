@@ -30,6 +30,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   final bool _isPosting = false;
   List<String> hashtags = [];
   final hashTagController = TextEditingController();
+  bool _switchOne = false;
 
   @override
   void initState() {
@@ -181,6 +182,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         imagePath: _selectedImage?.path,
         hashtags: hashtags,
         caption: _captionController.text.trim(),
+        showDonateButton: _switchOne,
       );
     } else {
       toast("Please fill all fields", print: true);
@@ -194,6 +196,61 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  /// Same as image: dark green banner, green checkmark box, "Your account is approved and active"
+  Widget _buildAccountApprovedBanner() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A3D2C),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: const Color(0xFF3CC46F),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.check,
+              color: Colors.white,
+              size: 28,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Your account is approved and active',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'You can create projects and receive funding.',
+                  style: TextStyle(
+                    color: Colors.grey[400],
+                    fontSize: 13,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -578,6 +635,25 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               fontSize: 16,
                             ),
                           ),
+                        ),
+                      ),
+                      
+                      const SizedBox(height: 24),
+                      
+                      // Two boxes at bottom
+                      _buildAccountApprovedBanner(),
+                      const SizedBox(height: 24),
+                      
+                      // Single toggle - left side, gradient theme when on
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Switch(
+                          value: _switchOne,
+                          onChanged: (v) => setState(() => _switchOne = v),
+                          activeTrackColor: Colors.orange.shade400,
+                          activeColor: Colors.white,
+                          inactiveTrackColor: Colors.grey.shade700,
+                          inactiveThumbColor: Colors.grey.shade400,
                         ),
                       ),
                       
