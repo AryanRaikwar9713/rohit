@@ -254,7 +254,7 @@ class User {
     this.fullName,
     this.profileImage,
     this.isFollowed,
-    this.hasYouTubeChannel
+    this.hasYouTubeChannel,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(

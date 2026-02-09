@@ -30,7 +30,7 @@ class GenresListScreen extends StatelessWidget {
         () => RefreshIndicator(
           color: appColorPrimary,
           onRefresh: () async {
-            return await genresCont.getGenresDetails();
+            return genresCont.getGenresDetails();
           },
           child: SnapHelperWidget(
             future: genresCont.getOriginalGenresFuture.value,
@@ -65,7 +65,7 @@ class GenresListScreen extends StatelessWidget {
                             children: List.generate(
                               genresCont.originalGenresList.length,
                               (index) {
-                                GenreModel genresDet = genresCont.originalGenresList[index];
+                                final GenreModel genresDet = genresCont.originalGenresList[index];
                                 return InkWell(
                                   onTap: () {
                                     Get.to(GenresDetailsScreen(generDetails: genresDet));
@@ -88,7 +88,7 @@ class GenresListScreen extends StatelessWidget {
                         },
                         onSwipeRefresh: () async {
                           genresCont.page(1);
-                          return await genresCont.getGenresDetails(showLoader: false);
+                          return genresCont.getGenresDetails(showLoader: false);
                         },
                       ),
               );

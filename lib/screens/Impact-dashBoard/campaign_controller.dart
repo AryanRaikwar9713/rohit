@@ -24,11 +24,11 @@ class CampaignController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   // State Variables
-  var isLoading = false.obs;
-  var isFetchingCategories = false.obs;
-  var errorMessage = ''.obs;
-  var selectedCategoryId = Rx<int?>(null);
-  var selectedCategoryName = Rx<String?>(null);
+  RxBool isLoading = false.obs;
+  RxBool isFetchingCategories = false.obs;
+  RxString errorMessage = ''.obs;
+  Rx<int?> selectedCategoryId = Rx<int?>(null);
+  Rx<String?> selectedCategoryName = Rx<String?>(null);
 
   // Categories
   RxList<Datum> categories = <Datum>[].obs;
@@ -140,7 +140,7 @@ class CampaignController extends GetxController {
       );
 
       if (result != null && result.files.isNotEmpty) {
-        for (var file in result.files) {
+        for (final file in result.files) {
           if (file.path != null) {
             projectDocuments.add(File(file.path!));
           }

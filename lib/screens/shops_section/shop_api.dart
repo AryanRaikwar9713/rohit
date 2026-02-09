@@ -9,11 +9,11 @@ import 'package:streamit_laravel/screens/auth/model/login_response.dart';
 import 'package:streamit_laravel/screens/shops_section/model/get_shop_profile_model.dart';
 import 'package:streamit_laravel/screens/shops_section/model/shop_category_responce_model.dart';
 
-respPrinter(int st, String body) {
+void respPrinter(int st, String body) {
   if (st == 200 || st == 201) {
     Logger().i(jsonDecode(body));
   } else {
-    Logger().e('${st}\n$body');
+    Logger().e('$st\n$body');
   }
 }
 
@@ -25,19 +25,19 @@ class ShopApi {
     required void Function(ShopProfileResponceModel) onSuccess,
   }) async {
     try {
-      Map<String, String> head = await DB().getHeaderForRow();
-      UserData? userData = await DB().getUser();
+      final head = await DB().getHeaderForRow();
+      final UserData? userData = await DB().getUser();
 
-      String uri =
+      final String uri =
           'https://app.wamims.world/public/social/shopping/shop_register.php?user_id=${userData?.id ?? 0}';
 
-      var resp = await http.get(Uri.parse(uri), headers: head);
+      final resp = await http.get(Uri.parse(uri), headers: head ?? {});
 
       respPrinter(resp.statusCode, resp.body);
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var d = jsonDecode(resp.body);
-        var s = ShopProfileResponceModel.fromJson(d);
+        final d = jsonDecode(resp.body);
+        final s = ShopProfileResponceModel.fromJson(d);
         onSuccess(s);
       } else {
         onFailure(resp);
@@ -70,12 +70,12 @@ class ShopApi {
     required void Function(ShopProfileResponceModel) onSuccess,
   }) async {
     try {
-      String uri =
+      final String uri =
           'https://app.wamims.world/public/social/shopping/shop_register.php';
-      var head = await DB().getHeaderForRow();
-      var user = await DB().getUser();
+      final head = await DB().getHeaderForRow();
+      final user = await DB().getUser();
 
-      var data = {
+      final data = {
         "user_id": user?.id ?? 0,
         "shop_name": shopName,
         "description": description,
@@ -94,12 +94,12 @@ class ShopApi {
 
       Logger().i(data);
 
-      Map<String, String> fd = {};
-      for (var i in data.keys) {
+      final Map<String, String> fd = {};
+      for (final i in data.keys) {
         fd[i] = data[i].toString();
       }
 
-      var request = http.MultipartRequest("POST", Uri.parse(uri));
+      final request = http.MultipartRequest("POST", Uri.parse(uri));
 
       // Calculate total bytes for progress tracking
       int totalBytes = 0;
@@ -125,8 +125,8 @@ class ShopApi {
               sink.add(data);
             },
           ),
-        ));
-        var logoFile = http.MultipartFile(
+        ),);
+        final logoFile = http.MultipartFile(
           'logo',
           logoStream,
           logoLength,
@@ -148,8 +148,8 @@ class ShopApi {
               sink.add(data);
             },
           ),
-        ));
-        var coverFile = http.MultipartFile(
+        ),);
+        final coverFile = http.MultipartFile(
           'cover_image',
           coverStream,
           coverLength,
@@ -159,16 +159,16 @@ class ShopApi {
       }
 
       request.fields.addAll(fd);
-      request.headers.addAll(head);
+      request.headers.addAll(head ?? {});
 
-      var resp = await request.send();
-      String body = await resp.stream.bytesToString();
+      final resp = await request.send();
+      final String body = await resp.stream.bytesToString();
 
       respPrinter(resp.statusCode, body);
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var d = jsonDecode(body);
-        var s = ShopProfileResponceModel.fromJson(d);
+        final d = jsonDecode(body);
+        final s = ShopProfileResponceModel.fromJson(d);
         onSuccess(s);
       } else {
         onFailure(http.Response(body, resp.statusCode));
@@ -185,18 +185,18 @@ class ShopApi {
     required void Function(ShopCategoryReponceModel) onSuccess,
   }) async {
     try {
-      Map<String, String> head = await DB().getHeaderForRow();
+      final head = await DB().getHeaderForRow();
 
-      String uri =
+      final String uri =
           'https://app.wamims.world/public/social/shopping/get_shop_categories.php';
 
-      var resp = await http.get(Uri.parse(uri), headers: head);
+      final resp = await http.get(Uri.parse(uri), headers: head ?? {});
 
       respPrinter(resp.statusCode, resp.body);
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var d = jsonDecode(resp.body);
-        var s = ShopCategoryReponceModel.fromJson(d);
+        final d = jsonDecode(resp.body);
+        final s = ShopCategoryReponceModel.fromJson(d);
         onSuccess(s);
       } else {
         onFailure(resp);

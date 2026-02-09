@@ -12,7 +12,6 @@ class DownloadMovieDetailsComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         16.height,
         Text(movieDetail.name, style: boldTextStyle(size: 22, color: white)),

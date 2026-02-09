@@ -22,7 +22,6 @@ class ShimmerSubscriptionList extends StatelessWidget {
               return Container(
                 decoration: boxDecorationDefault(color: context.cardColor),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const ShimmerWidget(
@@ -45,7 +44,6 @@ class ShimmerSubscriptionList extends StatelessWidget {
                     16.height,
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         const ShimmerWidget(
                           height: Constants.shimmerTextSize,
@@ -63,7 +61,6 @@ class ShimmerSubscriptionList extends StatelessWidget {
                     8.height,
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         const ShimmerWidget(
                           height: Constants.shimmerTextSize,

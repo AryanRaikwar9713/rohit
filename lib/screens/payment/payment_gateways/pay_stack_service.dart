@@ -22,14 +22,14 @@ class PayStackService {
 
   Future checkout() async {
     loaderOnOff(true);
-    int price = totalAmount.toInt() * 100;
-    Charge charge = Charge()
+    final int price = totalAmount.toInt() * 100;
+    final Charge charge = Charge()
       ..amount = price
       ..reference = 'ref_${DateTime.now().millisecondsSinceEpoch}'
       ..email = loginUserData.value.email
       ..currency = await isIqonicProduct ? payStackCurrency : appCurrency.value.currencyCode;
 
-    CheckoutResponse response = await payStackPlugin.checkout(
+    final CheckoutResponse response = await payStackPlugin.checkout(
       Get.context!,
       method: CheckoutMethod.card,
       charge: charge,

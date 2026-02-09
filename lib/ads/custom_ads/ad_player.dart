@@ -56,7 +56,7 @@ class _AdPlayerState extends State<AdPlayer> {
     if (!widget.videoUrl.isYoutubeLink) {
       _player = Player(
         configuration: PlayerConfiguration(
-          muted: widget.isFromPlayerAd ? false : isMuted.value,
+          muted: !widget.isFromPlayerAd && isMuted.value,
         ),
       );
 

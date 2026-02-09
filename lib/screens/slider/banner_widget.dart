@@ -51,7 +51,7 @@ class BannerWidget extends StatelessWidget {
                 retryText: locale.value.reload,
                 imageWidget: const ErrorStateWidget(),
                 onRetry: () async {
-                  return await sliderController.getBanner(type: sliderController.sliderType.value);
+                  return sliderController.getBanner(type: sliderController.sliderType.value);
                 },
               ).center(),
             );
@@ -63,7 +63,7 @@ class BannerWidget extends StatelessWidget {
           ).paddingOnly(bottom: 22),
           onSuccess: (data) {
             if (sliderController.bannerList.isEmpty && !sliderController.isLoading.value) {
-              return Offstage();
+              return const Offstage();
             }
             return Column(
               children: [
@@ -77,7 +77,7 @@ class BannerWidget extends StatelessWidget {
                         children: List.generate(
                           sliderController.bannerList.length,
                           (index) {
-                            SliderModel data = sliderController.bannerList[index];
+                            final SliderModel data = sliderController.bannerList[index];
                             return Stack(
                               children: [
                                 CachedImageWidget(
@@ -99,7 +99,6 @@ class BannerWidget extends StatelessWidget {
                                   },
                                 ),
                                 IgnorePointer(
-                                  ignoring: true,
                                   child: Container(
                                     height: Get.height * 0.56,
                                     width: Get.width,
@@ -141,7 +140,6 @@ class BannerWidget extends StatelessWidget {
                       right: 16,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const CachedImageWidget(
                             url: Assets.iconsIcIcon,
@@ -150,7 +148,7 @@ class BannerWidget extends StatelessWidget {
                           ),
                           const Spacer(),
                           const SubscribeCard(),
-                          12.width
+                          12.width,
                         ],
                       ),
                     ),
@@ -183,7 +181,6 @@ class BannerWidget extends StatelessWidget {
       left: 0,
       right: 0,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (data.genres.isNotEmpty)
@@ -198,7 +195,6 @@ class BannerWidget extends StatelessWidget {
           8.height,
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 data.releaseDate.isNotEmpty ? DateTime.parse(data.releaseDate).year.toString() : "",
@@ -250,7 +246,6 @@ class BannerWidget extends StatelessWidget {
           Obx(
             () => Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 if (type != VideoType.liveTv)
                   CustomIconButton(
@@ -258,7 +253,7 @@ class BannerWidget extends StatelessWidget {
                     iconHeight: 16,
                     iconWidth: 16,
                     iconColor: data.isWatchList ? white : iconColor,
-                    padding: EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
                     buttonColor: data.isWatchList ? appColorPrimary : buttonColor,
                     onTap: () {
                       doIfLogin(
@@ -276,7 +271,6 @@ class BannerWidget extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                   color: appColorPrimary,
                   shapeBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                  enabled: true,
                   onTap: () {
                     if (type == VideoType.tvshow) {
                       Get.to(() => TvShowScreen(), arguments: data);
@@ -290,7 +284,6 @@ class BannerWidget extends StatelessWidget {
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const CachedImageWidget(
                         url: Assets.iconsIcPlay,

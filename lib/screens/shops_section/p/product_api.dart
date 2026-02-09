@@ -8,11 +8,11 @@ import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/shops_section/model/product_category_responce_model.dart';
 import 'package:streamit_laravel/screens/shops_section/model/product_list_responce_model.dart';
 
-respPrinter(int st, String body) {
+void respPrinter(int st, String body) {
   if (st == 200 || st == 201) {
     Logger().i(jsonDecode(body));
   } else {
-    Logger().e('${st}\n$body');
+    Logger().e('$st\n$body');
   }
 }
 
@@ -27,11 +27,11 @@ class ProductAPi {
         "https://app.wamims.world/public/social/shopping/get_product_categories.php",
       );
 
-      var head = await DB().getHeaderForRow();
+      final head = await DB().getHeaderForRow();
 
       final response = await http.get(
         uri,
-        headers: head,
+        headers: head ?? {},
       );
 
       if (response.statusCode == 200) {
@@ -71,8 +71,9 @@ class ProductAPi {
 
       // Add only non-null filters
       if (shopId != null) queryParams["shop_id"] = shopId.toString();
-      if (categoryId != null)
+      if (categoryId != null) {
         queryParams["category_id"] = categoryId.toString();
+      }
       if (search != null) queryParams["search"] = search;
       if (minPrice != null) queryParams["min_price"] = minPrice.toString();
       if (maxPrice != null) queryParams["max_price"] = maxPrice.toString();
@@ -89,11 +90,11 @@ class ProductAPi {
       );
       print('asf');
 
-      var head = await DB().getHeaderForRow();
+      final head = await DB().getHeaderForRow();
 
       final response = await http.get(
         uri,
-        headers: head,
+        headers: head ?? {},
       );
 
       respPrinter(response.statusCode, response.body);
@@ -133,14 +134,14 @@ class ProductAPi {
   }) async
   {
     try {
-      var uri = Uri.parse(
+      final uri = Uri.parse(
         "https://app.wamims.world/social/shopping/shop_product_create.php",
       );
 
-      var head = await DB().getHeaderForForm();
-      var user = await DB().getUser();
+      final head = await DB().getHeaderForForm();
+      final user = await DB().getUser();
 
-      var request = http.MultipartRequest("POST", uri);
+      final request = http.MultipartRequest("POST", uri);
 
       // Add form fields
       request.fields.addAll({
@@ -166,7 +167,7 @@ class ProductAPi {
         totalBytes += await featuredImage.length();
       }
       if (imageGallery != null) {
-        for (var image in imageGallery) {
+        for (final image in imageGallery) {
           totalBytes += await image.length();
         }
       }
@@ -189,7 +190,7 @@ class ProductAPi {
             ),
           ),
         );
-        var featuredFile = http.MultipartFile(
+        final featuredFile = http.MultipartFile(
           'featured_image',
           featuredStream,
           featuredLength,
@@ -204,7 +205,7 @@ class ProductAPi {
       // Add gallery images with progress tracking
       if (imageGallery != null) {
         for (int i=0;i<imageGallery.length; i++) {
-          var image = imageGallery[i];
+          final image = imageGallery[i];
           final imageLength = await image.length();
           final imageStream = http.ByteStream(
             image.openRead().transform(
@@ -219,7 +220,7 @@ class ProductAPi {
               ),
             ),
           );
-          var imageFile = http.MultipartFile(
+          final imageFile = http.MultipartFile(
             'image_gallery[]',
             imageStream,
             imageLength,
@@ -229,15 +230,15 @@ class ProductAPi {
         }
       }
 
-      request.headers.addAll(head);
+      request.headers.addAll(head ?? {});
 
-      var resp = await request.send();
-      String body = await resp.stream.bytesToString();
+      final resp = await request.send();
+      final String body = await resp.stream.bytesToString();
 
       respPrinter(resp.statusCode, body);
 
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        var d = jsonDecode(body);
+        final d = jsonDecode(body);
         onSuccess(d);
       } else {
         onFailure(http.Response(body, resp.statusCode));

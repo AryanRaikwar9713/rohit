@@ -15,7 +15,7 @@ class LiveCategoryListComponent extends StatelessWidget {
       listAnimationType: ListAnimationType.FadeIn,
       itemCount: liveCategoryList.length,
       itemBuilder: (context, index) {
-        CategoryData category = liveCategoryList[index];
+        final CategoryData category = liveCategoryList[index];
         return LiveHorizontalComponent(movieDet: category);
       },
     );

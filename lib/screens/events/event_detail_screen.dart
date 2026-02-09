@@ -33,7 +33,6 @@ class EventDetailScreen extends StatelessWidget {
         scaffoldBackgroundColor: appScreenBackgroundDark,
         topBarBgColor: transparentColor,
         appBartitleText: '',
-        hasLeadingWidget: true,
         body: Stack(
           children: [
             // Hero Image with Gradient
@@ -45,7 +44,7 @@ class EventDetailScreen extends StatelessWidget {
               child: Container(
                 decoration: const BoxDecoration(
                   color: appScreenBackgroundDark,
-                  borderRadius: const BorderRadius.only(
+                  borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
@@ -195,7 +194,6 @@ class EventDetailScreen extends StatelessWidget {
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           border: Border.all(
             color: _eventDetailGradient.colors.first.withOpacity(0.4),
-            width: 1,
           ),
           boxShadow: [
             BoxShadow(
@@ -349,7 +347,6 @@ class EventDetailScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: _eventDetailGradient.colors.first.withOpacity(0.5),
-                  width: 1,
                 ),
               ),
               child: Row(
@@ -422,7 +419,6 @@ class EventDetailScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: color.withOpacity(0.3),
-          width: 1,
         ),
       ),
       child: Column(
@@ -465,7 +461,6 @@ class EventDetailScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: Colors.grey[800]!,
-          width: 1,
         ),
       ),
       child: Row(
@@ -522,7 +517,7 @@ class EventDetailScreen extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.person_outline,
-                          size: 14, color: Colors.grey[400]),
+                          size: 14, color: Colors.grey[400],),
                       const SizedBox(width: 6),
                       Text(
                         event.shopOwnerName ?? '',
@@ -551,7 +546,6 @@ class EventDetailScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: Colors.grey[800]!,
-          width: 1,
         ),
       ),
       child: Column(
@@ -573,7 +567,6 @@ class EventDetailScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: _eventDetailGradient.colors.first.withOpacity(0.4),
-                    width: 1,
                   ),
                 ),
                 child: ShaderMask(
@@ -618,7 +611,6 @@ class EventDetailScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: _eventDetailGradient.colors.first.withOpacity(0.35),
-          width: 1,
         ),
       ),
       child: Column(
@@ -640,7 +632,6 @@ class EventDetailScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: _eventDetailGradient.colors.first.withOpacity(0.4),
-                    width: 1,
                   ),
                 ),
                 child: ShaderMask(
@@ -760,7 +751,6 @@ class EventDetailScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: _eventDetailGradient.colors.first.withOpacity(0.35),
-          width: 1,
         ),
       ),
       child: Column(
@@ -782,7 +772,6 @@ class EventDetailScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: _eventDetailGradient.colors.first.withOpacity(0.4),
-                    width: 1,
                   ),
                 ),
                 child: ShaderMask(
@@ -868,7 +857,6 @@ class EventDetailScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: color.withOpacity(0.3),
-          width: 1,
         ),
       ),
       child: Column(
@@ -898,7 +886,6 @@ class EventDetailScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: _eventDetailGradient.colors.first.withOpacity(0.35),
-          width: 1,
         ),
       ),
       child: Column(
@@ -920,7 +907,6 @@ class EventDetailScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: _eventDetailGradient.colors.first.withOpacity(0.4),
-                    width: 1,
                   ),
                 ),
                 child: ShaderMask(
@@ -943,7 +929,6 @@ class EventDetailScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: _eventDetailGradient.colors.first.withOpacity(0.25),
-                width: 1,
               ),
             ),
             child: Text(
@@ -1125,14 +1110,13 @@ class EventDetailScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: _eventDetailGradient.colors.last.withOpacity(0.4),
-                            width: 1,
                           ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(Icons.attach_money,
-                                size: 12, color: _eventDetailGradient.colors.last),
+                                size: 12, color: _eventDetailGradient.colors.last,),
                             const SizedBox(width: 4),
                             Text(
                               prize.prizeValue ?? '',

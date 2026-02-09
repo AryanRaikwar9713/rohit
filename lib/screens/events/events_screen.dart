@@ -54,7 +54,6 @@ class _EventsScreenState extends State<EventsScreen> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: _eventsGradient.colors.first.withOpacity(0.4),
-                  width: 1,
                 ),
                 color: Colors.grey.withOpacity(0.15),
               ),
@@ -104,7 +103,7 @@ class _EventsScreenState extends State<EventsScreen> {
                     ScrollViewKeyboardDismissBehavior.onDrag,
                 onSwipeRefresh: () async {
                   eventsController.getEvents(
-                      showLoader: false, isRefresh: true);
+                      showLoader: false, isRefresh: true,);
                   return Future.delayed(const Duration(seconds: 2));
                 },
                 onNextPage: () async {

@@ -16,12 +16,12 @@ class PayPalService {
     required Function(bool) loderOnOFF,
   }) async {
     loderOnOFF(true);
-    String payPalClientId = appConfigs.value.paypalPay.paypalClientid;
-    String secretKey = appConfigs.value.paypalPay.paypalSecretkey;
+    final String payPalClientId = appConfigs.value.paypalPay.paypalClientid;
+    final String secretKey = appConfigs.value.paypalPay.paypalSecretkey;
     log('PAYPALCLIENTID: $payPalClientId');
     log('SECRETKEY: $secretKey');
     PaypalCheckout(
-      sandboxMode: (!kReleaseMode || await isIqonicProduct),
+      sandboxMode: !kReleaseMode || await isIqonicProduct,
       clientId: payPalClientId,
       secretKey: secretKey,
       returnURL: "junedr375.github.io/junedr375-payment/",
@@ -31,7 +31,7 @@ class PayPalService {
           "amount": {
             "total": totalAmount,
             "currency": await isIqonicProduct ? payPalSupportedCurrency : appCurrency.value.currencyCode,
-            "details": {"subtotal": totalAmount, "shipping": '0', "shipping_discount": 0}
+            "details": {"subtotal": totalAmount, "shipping": '0', "shipping_discount": 0},
           },
           "description": 'Name: ${loginUserData.value.firstName} - Email: ${loginUserData.value.email}',
         }

@@ -48,10 +48,9 @@ class _AvailableDevicesForCastState extends State<AvailableDevicesForCast> {
         color: appScreenBackgroundDark,
       ),
       child: AnimatedScrollView(
-        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         listAnimationType: commonListAnimationType,
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         children: <Widget>[
           Row(
             children: [
@@ -74,7 +73,7 @@ class _AvailableDevicesForCastState extends State<AvailableDevicesForCast> {
                         child: Text(locale.value.retry, style: secondaryTextStyle()),
                       ).onTap(() => cast.startDiscovery()).visible(!cast.isSearchingForDevice.value);
                     },
-                  )
+                  ),
                 ],
               ),
               const Spacer(),
@@ -87,7 +86,7 @@ class _AvailableDevicesForCastState extends State<AvailableDevicesForCast> {
                   Icons.close,
                   color: iconColor,
                 ),
-              )
+              ),
             ],
           ),
           StreamBuilder<List<GoogleCastDevice>>(
@@ -109,7 +108,7 @@ class _AvailableDevicesForCastState extends State<AvailableDevicesForCast> {
                   itemCount: devices.length,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
-                    GoogleCastDevice device = devices[index];
+                    final GoogleCastDevice device = devices[index];
                     return ListTile(
                       selectedTileColor: appColorPrimary,
                       tileColor: context.cardColor,

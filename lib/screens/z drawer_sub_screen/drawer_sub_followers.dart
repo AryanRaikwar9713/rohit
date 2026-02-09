@@ -20,7 +20,7 @@ class _DrawerSubFollowersState extends State<DrawerSubFollowers> {
     myInit();
   }
 
-  myInit() {
+  void myInit() {
     _followerController = Get.put(FollowerController());
     _followerController.initData();
   }
@@ -48,7 +48,7 @@ class _DrawerSubFollowersState extends State<DrawerSubFollowers> {
                 Tab(
                   text: 'Following',
                 ),
-              ]),
+              ],),
         ),
 
         //
@@ -147,7 +147,7 @@ class _DrawerSubFollowersState extends State<DrawerSubFollowers> {
               _followerController.followOrUnfollow(data.id??0);
             },
             child:
-                Text((data.isFollowing ?? false) ? 'Connect' : 'Disconnect')),
+                Text((data.isFollowing ?? false) ? 'Connect' : 'Disconnect'),),
       ),
     );
   }

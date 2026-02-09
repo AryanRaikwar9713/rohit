@@ -18,7 +18,6 @@ class RateComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -35,12 +34,10 @@ class RateComponent extends StatelessWidget {
             color: cardDarkColor,
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(locale.value.shareYourThoughtsWithUs, style: boldTextStyle(color: white)),
                   5.height,
@@ -61,7 +58,6 @@ class RateComponent extends StatelessWidget {
               ).expand(),
               20.width,
               const Align(
-                alignment: Alignment.center,
                 child: CachedImageWidget(
                   url: Assets.imagesIcRating,
                   width: 120,

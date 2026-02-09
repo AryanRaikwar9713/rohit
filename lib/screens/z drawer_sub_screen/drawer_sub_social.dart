@@ -14,7 +14,7 @@ class DrawerSubSocial extends StatefulWidget {
 class _DrawerSubSocialState extends State<DrawerSubSocial> {
   late VammisProfileController profileController;
   late int userId;
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -23,9 +23,9 @@ class _DrawerSubSocialState extends State<DrawerSubSocial> {
     myInit();
   }
 
-  myInit() async {
+  Future<void> myInit() async {
     profileController = Get.put(VammisProfileController());
-    var user = await DB().getUser();
+    final user = await DB().getUser();
     userId = user?.id ?? 0;
     profileController.loadUserPosts(
       userId,
@@ -66,9 +66,9 @@ class _DrawerSubSocialState extends State<DrawerSubSocial> {
           return Center(
             child: ElevatedButton(
                 onPressed: () {
-                  Get.to(CreatePostScreen());
+                  Get.to(const CreatePostScreen());
                 },
-                child: const Text("Upload Post")),
+                child: const Text("Upload Post"),),
           );
         }
         return RefreshIndicator(
@@ -77,9 +77,9 @@ class _DrawerSubSocialState extends State<DrawerSubSocial> {
               controller: _scrollController,
                 gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3,
                 mainAxisSpacing: 5,crossAxisSpacing: 5,
-                mainAxisExtent: MediaQuery.of(context).size.height*.25),
+                mainAxisExtent: MediaQuery.of(context).size.height*.25,),
               itemBuilder: (context, index) {
-                  var post = profileController.userPosts[index];
+                  final post = profileController.userPosts[index];
 
                 return Container(
                   color: Colors.red,
@@ -89,7 +89,7 @@ class _DrawerSubSocialState extends State<DrawerSubSocial> {
             ),
             onRefresh: () async {
               profileController.loadUserPosts(userId, refresh: true);
-            });
+            },);
       }),
     );
   }

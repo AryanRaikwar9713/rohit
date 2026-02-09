@@ -34,7 +34,6 @@ class PersonProfileWidget extends StatelessWidget {
           alignment: Alignment.topCenter,
         ),
         IgnorePointer(
-          ignoring: true,
           child: Container(
             height: Get.height * 0.61,
             width: double.infinity,

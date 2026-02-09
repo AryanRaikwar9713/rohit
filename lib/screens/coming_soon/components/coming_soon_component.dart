@@ -54,7 +54,6 @@ class ComingSoonComponent extends StatelessWidget {
                 left: 12,
                 right: 0,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
@@ -143,14 +142,13 @@ class ComingSoonComponent extends StatelessWidget {
                 ),
                 12.height,
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
                       comingSoonDet.seasonName,
                       style: commonSecondaryTextStyle(),
-                    ).visible(comingSoonDet.seasonName.toString().isNotEmpty),
-                    24.width.visible(comingSoonDet.seasonName.toString().isNotEmpty),
+                    ).visible(comingSoonDet.seasonName.isNotEmpty),
+                    24.width.visible(comingSoonDet.seasonName.isNotEmpty),
                     const CachedImageWidget(
                       url: Assets.iconsIcTranslate,
                       height: 14,
@@ -188,7 +186,7 @@ class ComingSoonComponent extends StatelessWidget {
 
   Widget getRemindIcon() {
     try {
-      return Lottie.asset(Assets.lottieRemind, height: 24, repeat: comingSoonDet.isRemind.getBoolInt() ? false : true);
+      return Lottie.asset(Assets.lottieRemind, height: 24, repeat: !comingSoonDet.isRemind.getBoolInt());
     } catch (e) {
       return const CachedImageWidget(
         url: Assets.iconsIcBell,

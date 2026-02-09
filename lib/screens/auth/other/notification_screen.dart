@@ -72,7 +72,7 @@ class NotificationScreen extends StatelessWidget {
                   },
                 ).paddingSymmetric(horizontal: 32).paddingBottom(Get.height * 0.1),
                 itemBuilder: (context, index) {
-                  NotificationData notification = notificationScreenController.notificationDetail[index];
+                  final NotificationData notification = notificationScreenController.notificationDetail[index];
                   return GestureDetector(
                     onTap: () {
                       /* if (notification.data.notificationDetail.id > 0) {
@@ -90,7 +90,6 @@ class NotificationScreen extends StatelessWidget {
                       children: [
                         8.height,
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
                               decoration: boxDecorationDefault(color: white, shape: BoxShape.circle),
@@ -145,14 +144,14 @@ class NotificationScreen extends StatelessWidget {
                     notificationScreenController.page(notificationScreenController.page.value + 1);
                     notificationScreenController.isLoading(true);
                     notificationScreenController.init();
-                    return await Future.delayed(const Duration(seconds: 2), () {
+                    return Future.delayed(const Duration(seconds: 2), () {
                       notificationScreenController.isLoading(false);
                     });
                   }
                 },
                 onSwipeRefresh: () async {
                   notificationScreenController.page(1);
-                  return await notificationScreenController.init();
+                  return notificationScreenController.init();
                 },
               );
             },

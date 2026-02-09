@@ -102,7 +102,7 @@ class VideoListScreen extends StatelessWidget {
                 },
               );
             },
-          )
+          ),
         ],
       ),
     );

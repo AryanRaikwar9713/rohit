@@ -36,7 +36,7 @@ class VideoDetailsShimmerScreen extends StatelessWidget {
               radius: 6,
             );
           },
-        )
+        ),
       ],
     ).paddingSymmetric(horizontal: 8);
   }

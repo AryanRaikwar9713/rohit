@@ -21,7 +21,6 @@ class GenreComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         viewAllWidget(
           label: genresDetails.name,
@@ -48,7 +47,7 @@ class GenreComponent extends StatelessWidget {
             }
             return InkWell(
               onTap: () {
-                GenresDetailsController genDetCont = Get.put(GenresDetailsController());
+                final GenresDetailsController genDetCont = Get.put(GenresDetailsController());
                 genDetCont.genresId(movie.id);
                 genDetCont.getGenresDetails();
                 Get.to(() => GenresDetailsScreen(generDetails: movie));

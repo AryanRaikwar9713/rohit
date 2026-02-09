@@ -128,9 +128,8 @@ class _CountryListViewState extends State<CustomCountryListView> {
       children: <Widget>[
         const SizedBox(height: 10),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 0),
+          padding: const EdgeInsets.symmetric(horizontal: 14),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
@@ -150,7 +149,7 @@ class _CountryListViewState extends State<CustomCountryListView> {
                     size: 20,
                     fill: 1,
                     color: white,
-                  ))
+                  ),),
             ],
           ),
         ),
@@ -192,7 +191,6 @@ class _CountryListViewState extends State<CustomCountryListView> {
                   subTitleTextStyle: primaryTextStyle(size: 12, color: darkGrayTextColor),
                   titleTextStyle: boldTextStyle(size: 16, color: white),
                   imageWidget: const ErrorStateWidget(),
-                  onRetry: null,
                 ).paddingBottom(32),
               ],
               ..._filteredList.map<Widget>((country) => _listRow(country)),

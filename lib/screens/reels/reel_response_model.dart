@@ -320,11 +320,11 @@ class User {
   };
 
 
-  var d =
+  Map<String, Object> d =
   {
     "content_type":'user',
     'content_id':21,
     'Content_title':'tittle',
-    'Content_description':'discription'
+    'Content_description':'discription',
   };
 }

@@ -44,7 +44,7 @@ class LanguageScreen extends StatelessWidget {
                 decoration: boxDecorationDefault(shape: BoxShape.circle),
                 child: const Icon(Icons.check, size: 15, color: Colors.black),
               ).visible(
-                  selectedLanguageCode.value == data.languageCode.validate()),
+                  selectedLanguageCode.value == data.languageCode.validate(),),
             ),
             splashColor: appColorPrimary.withValues(alpha: 0.2),
             borderRadius: 8,
@@ -52,11 +52,11 @@ class LanguageScreen extends StatelessWidget {
             onTap: () async {
               await setValue(SELECTED_LANGUAGE_CODE, data.languageCode);
               selectedLanguageDataModel = data;
-              BaseLanguage temp = await const AppLocalizations()
+              final BaseLanguage temp = await const AppLocalizations()
                   .load(Locale(data.languageCode.validate()));
               locale = temp.obs;
               setValueToLocal(
-                  SELECTED_LANGUAGE_CODE, data.languageCode.validate());
+                  SELECTED_LANGUAGE_CODE, data.languageCode.validate(),);
               isRTL(Constants.rtlLanguage.contains(data.languageCode));
               selectedLanguageCode(data.languageCode.validate());
               Get.updateLocale(Locale(data.languageCode.validate()));

@@ -933,7 +933,7 @@ final List<Map<String, dynamic>> countryCodes = [
     "full_example_with_plus_sign": "+201001234567",
     "display_name_no_e164_cc": "Egypt (EG)",
     "e164_key": "20-EG-0",
-    "startingDigits": ["1"]
+    "startingDigits": ["1"],
   },
   {
     "e164_cc": "503",

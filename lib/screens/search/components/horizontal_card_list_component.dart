@@ -42,10 +42,10 @@ class HorizontalCardListComponent extends StatelessWidget {
                 ),
                 HorizontalList(
                   itemCount: searchController.searchListData.take(5).length,
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   wrapAlignment: WrapAlignment.start,
                   itemBuilder: (context, index) {
-                    SearchData searchData = searchController.searchListData[index];
+                    final SearchData searchData = searchController.searchListData[index];
                     return Stack(
                       clipBehavior: Clip.none,
                       children: [
@@ -67,10 +67,7 @@ class HorizontalCardListComponent extends StatelessWidget {
                                 ).cornerRadiusWithClipRRect(3).paddingSymmetric(horizontal: 4, vertical: 4),
                                 6.width,
                                 Marquee(
-                                  direction: Axis.horizontal,
                                   textDirection: TextDirection.ltr,
-                                  animationDuration: const Duration(milliseconds: 5000),
-                                  pauseDuration: const Duration(milliseconds: 2000),
                                   directionMarguee: DirectionMarguee.oneDirection,
                                   child: Text(
                                     searchData.searchQuery,
@@ -98,7 +95,7 @@ class HorizontalCardListComponent extends StatelessWidget {
                               fit: BoxFit.cover,
                             ),
                           ),
-                        )
+                        ),
                       ],
                     );
                   },

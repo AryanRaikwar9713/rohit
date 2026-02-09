@@ -38,12 +38,12 @@ class _CreateVideoChannelScreenState extends State<CreateVideoChannelScreen> {
               } else {
                 pageController.previousPage(
                     duration: const Duration(milliseconds: 100),
-                    curve: Curves.linear);
+                    curve: Curves.linear,);
               }
             },
 
             //
-            icon: const Icon(Icons.arrow_back)),
+            icon: const Icon(Icons.arrow_back),),
         //
         title: const Text('Create Channel'),
       ),
@@ -62,13 +62,13 @@ class _CreateVideoChannelScreenState extends State<CreateVideoChannelScreen> {
                   if (channelImage != null) {
                     pageController.nextPage(
                         duration: const Duration(milliseconds: 100),
-                        curve: Curves.linear);
+                        curve: Curves.linear,);
                   }
                 } else {
                   createVideoChannel();
                 }
               },
-              child: Text((pageIndex == 0) ? "Next" : 'Create'))),
+              child: Text((pageIndex == 0) ? "Next" : 'Create'),),),
 
       //
       body: PageView(
@@ -111,7 +111,7 @@ class _CreateVideoChannelScreenState extends State<CreateVideoChannelScreen> {
                   image: (channelImage != null)
                       ? DecorationImage(
                           image: FileImage(File(channelImage!)),
-                          fit: BoxFit.cover)
+                          fit: BoxFit.cover,)
                       : null,
                   border: Border.all(color: Colors.white, width: 2),
                 ),
@@ -124,7 +124,7 @@ class _CreateVideoChannelScreenState extends State<CreateVideoChannelScreen> {
                     // : Image.file(File(channelImage!),
                     //     : Image.file(File(channelImage!),
                     // fit: BoxFit.cover,),
-                    : SizedBox()),
+                    : const SizedBox(),),
           ),
           24.height,
 
@@ -135,7 +135,7 @@ class _CreateVideoChannelScreenState extends State<CreateVideoChannelScreen> {
                 fontFamily: GoogleFonts.poppins().fontFamily,
                 color: Colors.white,
                 fontSize: 16,
-                fontWeight: FontWeight.bold),
+                fontWeight: FontWeight.bold,),
           ),
 
           35.height,
@@ -143,7 +143,7 @@ class _CreateVideoChannelScreenState extends State<CreateVideoChannelScreen> {
           ElevatedButton(
               onPressed: _selectProfileImage,
               child: Text(
-                  (channelImage == null) ? "Select Image" : 'Change Image'))
+                  (channelImage == null) ? "Select Image" : 'Change Image',),),
         ],
       ),
     );
@@ -162,7 +162,7 @@ class _CreateVideoChannelScreenState extends State<CreateVideoChannelScreen> {
             controller: channelNameController,
             style: TextStyle(
                 color: Colors.white,
-                fontFamily: GoogleFonts.poppins().fontFamily),
+                fontFamily: GoogleFonts.poppins().fontFamily,),
             decoration: const InputDecoration(hintText: 'Channel Name'),
           ),
 
@@ -175,11 +175,11 @@ class _CreateVideoChannelScreenState extends State<CreateVideoChannelScreen> {
 
             style: TextStyle(
                 color: Colors.white,
-                fontFamily: GoogleFonts.poppins().fontFamily),
+                fontFamily: GoogleFonts.poppins().fontFamily,),
             decoration: const InputDecoration(
               hintText: 'Channel Description',
             ),
-          )
+          ),
         ],
       ),
     );
@@ -188,7 +188,7 @@ class _CreateVideoChannelScreenState extends State<CreateVideoChannelScreen> {
 
   //
   Future<void> _selectProfileImage() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     print("Select  image Result");
     if (image != null) {
       channelImage = image.path;
@@ -206,12 +206,12 @@ class _CreateVideoChannelScreenState extends State<CreateVideoChannelScreen> {
       }
     else
       {
-        var username = await DB().getUser();
+        final username = await DB().getUser();
 
         showDialog(context: context, builder: (context) => WillPopScope(
           onWillPop: ()async{return false;},
-            child: const Center(child: CircularProgressIndicator(),)),
-        barrierDismissible: false);
+            child: const Center(child: CircularProgressIndicator(),),),
+        barrierDismissible: false,);
 
         await VideoChannelApi().createVideoChanel(
             channelImage: channelImage!,
@@ -225,7 +225,7 @@ class _CreateVideoChannelScreenState extends State<CreateVideoChannelScreen> {
             onError: onError,
             onFail: (d){
               toast("Failed To create channel With status ${d.statusCode}");
-            });
+            },);
 
         Navigator.pop(context);
 

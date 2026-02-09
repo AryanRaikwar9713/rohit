@@ -35,13 +35,13 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
               appScreenBackgroundDark,
-              const Color(0xFF0f0d0a),
+              Color(0xFF0f0d0a),
             ],
           ),
         ),
@@ -104,7 +104,6 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
             color: _addStoryGradient.colors.first.withValues(alpha: 0.3),
-            width: 1,
           ),
           boxShadow: [
             BoxShadow(
@@ -115,7 +114,6 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
           ],
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: TextFormField(
@@ -177,7 +175,7 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
           ),
           onWillPop: () async {
             return false;
-          }),
+          },),
     );
 
     //
@@ -191,10 +189,11 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
         onError: onError,
         onFail: (d) {
           toast("Failed To create Story with ${d.statusCode}");
-        });
+        },);
 
     //
     Navigator.pop(context);
+    return;
   }
 
   Widget _buildBody() {
@@ -295,7 +294,6 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: _addStoryGradient.colors.first.withValues(alpha: 0.2),
-                width: 1,
               ),
             ),
             child: Row(
@@ -370,12 +368,11 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
     );
   }
 
-  _selectimage() async {
-    var reselt = await FilePicker.platform.pickFiles(
-        allowMultiple: false,
+  Future<void> _selectimage() async {
+    final reselt = await FilePicker.platform.pickFiles(
         allowCompression: true,
         type: FileType.custom,
-        allowedExtensions: ['jpg', 'png', 'jpeg', 'mp4']);
+        allowedExtensions: ['jpg', 'png', 'jpeg', 'mp4'],);
 
     if (reselt != null) {
       mediaUrl = reselt.files.first.path;

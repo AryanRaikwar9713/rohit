@@ -15,7 +15,7 @@ class SubscriptionHistoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: boxDecorationDefault(
         borderRadius: radius(4),
         color: context.cardColor,
@@ -39,7 +39,6 @@ class SubscriptionHistoryCard extends StatelessWidget {
           ).expand(),
           16.width,
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               PriceWidget(
                 price: planDet.totalAmount,
@@ -49,7 +48,7 @@ class SubscriptionHistoryCard extends StatelessWidget {
               if (getSubscriptionPlanStatus(planDet.status).isNotEmpty) 16.width,
               if (getSubscriptionPlanStatus(planDet.status).isNotEmpty)
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   decoration: boxDecorationDefault(
                     borderRadius: radius(4),
                     color: planDet.status == SubscriptionStatus.cancel ? appColorPrimary.withValues(alpha: 0.4) : discountColor.withValues(alpha: 0.4),
@@ -61,9 +60,9 @@ class SubscriptionHistoryCard extends StatelessWidget {
                       style: primaryTextStyle(size: 14),
                     ),
                   ),
-                )
+                ),
             ],
-          )
+          ),
         ],
       ),
     );

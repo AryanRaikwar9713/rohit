@@ -77,7 +77,6 @@ class SocialIconWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: _socialAuthGradient.colors.first.withOpacity(0.45),
-              width: 1,
             ),
           ),
           child: Row(
@@ -93,7 +92,7 @@ class SocialIconWidget extends StatelessWidget {
               Text(
                 text.validate(),
                 style: commonW500PrimaryTextStyle(color: primaryTextColor),
-              )
+              ),
             ],
           ),
         ),

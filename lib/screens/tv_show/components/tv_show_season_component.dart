@@ -31,7 +31,7 @@ class TvShowSeasonComponent extends StatelessWidget {
             itemCount: tvShowController.tvShowDetail.value.tvShowLinks.length,
             padding: EdgeInsets.zero,
             itemBuilder: (context, index) {
-              SeasonModel seasonData = tvShowController.tvShowDetail.value.tvShowLinks[index];
+              final SeasonModel seasonData = tvShowController.tvShowDetail.value.tvShowLinks[index];
               if (seasonData.episodes.validate().isNotEmpty) {
                 return InkWell(
                   onTap: () async {
@@ -69,7 +69,7 @@ class TvShowSeasonComponent extends StatelessWidget {
                 retryText: locale.value.reload,
                 imageWidget: const ErrorStateWidget(),
                 onRetry: () {
-                  tvShowController.getTvShowDetail(showLoader: true);
+                  tvShowController.getTvShowDetail();
                 },
               );
             },
@@ -83,7 +83,7 @@ class TvShowSeasonComponent extends StatelessWidget {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: tvShowController.isViewAll.isTrue ? tvShowController.episodeList.length : (tvShowController.episodeList.length > 4 ? 4 : tvShowController.episodeList.length),
                       itemBuilder: (context, index) {
-                        EpisodeModel episode = tvShowController.episodeList[index];
+                        final EpisodeModel episode = tvShowController.episodeList[index];
                         return InkWell(
                           splashColor: appColorPrimary.withAlpha(50),
                           onTap: () {
@@ -119,7 +119,6 @@ class TvShowSeasonComponent extends StatelessWidget {
                                   ),
                                   if (episode.id == tvShowController.selectedEpisode.value.id)
                                     IgnorePointer(
-                                      ignoring: true,
                                       child: Container(
                                         width: Get.width,
                                         height: 80,
@@ -174,7 +173,7 @@ class TvShowSeasonComponent extends StatelessWidget {
               );
             },
           ),
-        )
+        ),
       ],
     );
   }

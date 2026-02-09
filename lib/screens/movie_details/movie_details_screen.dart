@@ -24,14 +24,13 @@ class MovieDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppScaffoldNew(
-      hasLeadingWidget: true,
       isLoading: movieDetCont.isLoading,
       scaffoldBackgroundColor: appScreenBackgroundDark,
       topBarBgColor: Colors.transparent,
       body: RefreshIndicator(
         color: appColorPrimary,
         onRefresh: () async {
-          return await movieDetCont.getMovieDetail();
+          return movieDetCont.getMovieDetail();
         },
         child: Obx(
           () {

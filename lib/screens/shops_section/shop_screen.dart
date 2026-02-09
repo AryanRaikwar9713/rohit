@@ -69,8 +69,6 @@ class ShopScreen extends StatelessWidget {
                     _shopGradient.colors.last.withOpacity(0.5),
                     Colors.transparent,
                   ],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
                 ),
               ),
             ),
@@ -111,7 +109,7 @@ class ShopScreen extends StatelessWidget {
                           ),
                         ),
                     ],
-                  )),
+                  ),),
               onPressed: () {
                 showModalBottomSheet(
                   context: context,
@@ -259,7 +257,7 @@ class ShopScreen extends StatelessWidget {
             product: controller.products[index],
             onTap: () {
               Get.to(() =>
-                  ProductDetailsScreen(product: controller.products[index]));
+                  ProductDetailsScreen(product: controller.products[index]),);
             },
           ),
         ),

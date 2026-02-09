@@ -25,7 +25,7 @@ class BoltApi {
 
       final response = await http.post(
         Uri.parse(url),
-        headers: head,
+        headers: head ?? {},
         body: jsonEncode(body),
       );
 
@@ -220,19 +220,19 @@ class BoltApi {
     required void Function(BoltWalletApiResponce data) onSuccess,
   }) async {
     // try {
-    var user = await DB().getUser();
+    final user = await DB().getUser();
 
-    String url =
+    final String url =
         'https://app.wamims.world/public/social/bolt/bolt_wallet.php?user_id=${user?.id}&action=dashboard';
-    var head =
+    final head =
         await DB().getHeaderForRow(); // agar tu header function use karta hai
 
-    var response = await http.get(Uri.parse(url), headers: head);
+    final response = await http.get(Uri.parse(url), headers: head ?? {});
 
     respPrinter(response.statusCode, response.body);
 
     if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
+      final data = jsonDecode(response.body);
       onSuccess(BoltWalletApiResponce.fromJson(data));
     } else {
       onFailure(response);
@@ -249,16 +249,16 @@ class BoltApi {
     required void Function(BoltTrasectionApiResponce r) onSuccess,
   }) async {
     try {
-      var head = await DB().getHeaderForRow();
-      var user = await DB().getUser();
+      final head = await DB().getHeaderForRow();
+      final user = await DB().getUser();
 
-      String url =
+      final String url =
           'https://app.wamims.world/public/social/bolt/bolt_wallet.php?user_id=${user?.id}&action=transactions&page=$page&limit=10';
 
-      var response = await http.get(Uri.parse(url), headers: head);
+      final response = await http.get(Uri.parse(url), headers: head ?? {});
 
       if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
+        final data = jsonDecode(response.body);
         onSuccess(BoltTrasectionApiResponce.fromJson(data));
       } else {
         onFailure(response);

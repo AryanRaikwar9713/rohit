@@ -36,7 +36,7 @@ class ReviewListScreen extends StatelessWidget {
       body: RefreshIndicator(
         color: appColorPrimary,
         onRefresh: () async {
-          return await reviewCont.getReviewDetails();
+          return reviewCont.getReviewDetails();
         },
         child: Obx(
           () => SnapHelperWidget(
@@ -77,7 +77,7 @@ class ReviewListScreen extends StatelessWidget {
                       onSwipeRefresh: () async {
                         reviewCont.page(1);
                         reviewCont.getReviewDetails(showLoader: false);
-                        return await Future.delayed(const Duration(seconds: 2));
+                        return Future.delayed(const Duration(seconds: 2));
                       },
                       onNextPage: () async {
                         if (!reviewCont.isLastPage.value) {
@@ -87,7 +87,7 @@ class ReviewListScreen extends StatelessWidget {
                         }
                       },
                       itemBuilder: (ctx, index) {
-                        ReviewModel reviewDetail = reviewCont.reviewList[index];
+                        final ReviewModel reviewDetail = reviewCont.reviewList[index];
                         return ReviewCard(
                           reviewDetail: reviewDetail,
                           isLoggedInUser: reviewDetail.userId == loginUserData.value.id,
@@ -105,7 +105,6 @@ class ReviewListScreen extends StatelessWidget {
                           },
                           deleteCallback: () {
                             Get.bottomSheet(
-                              isDismissible: true,
                               isScrollControlled: false,
                               enableDrag: false,
                               BackdropFilter(
@@ -122,7 +121,7 @@ class ReviewListScreen extends StatelessWidget {
                         ).paddingSymmetric(horizontal: 16);
                       },
                     ),
-                    LoaderWidget(isBlurBackground: false).center().visible(reviewCont.isLoading.value),
+                    const LoaderWidget().center().visible(reviewCont.isLoading.value),
                   ],
                 ),
               );
@@ -143,7 +142,6 @@ class ReviewListScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Obx(
@@ -165,7 +163,6 @@ class ReviewListScreen extends StatelessWidget {
                         color: canvasColor,
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Icon(reviewCont.isEdit.isTrue ? Icons.close : Icons.mode_edit_outlined, size: 12, color: white),
@@ -173,7 +170,7 @@ class ReviewListScreen extends StatelessWidget {
                           Text(reviewCont.isEdit.isTrue ? locale.value.close : locale.value.edit.toUpperCase(),
                               style: boldTextStyle(
                                 size: 12,
-                              )),
+                              ),),
                         ],
                       ),
                     ),

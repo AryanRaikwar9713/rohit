@@ -42,7 +42,7 @@ class HomeScreen extends StatelessWidget {
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               onSwipeRefresh: () async {
                 return homeScreenController.init(
-                    forceSync: true, showLoader: true, forceConfigSync: true);
+                    forceSync: true, showLoader: true, forceConfigSync: true,);
               },
               children: [
                 Obx(
@@ -62,7 +62,7 @@ class HomeScreen extends StatelessWidget {
                           imageWidget: const ErrorStateWidget(),
                           onRetry: () async {
                             homeScreenController.init(
-                                forceSync: true, showLoader: true);
+                                forceSync: true, showLoader: true,);
                           },
                         ).center(),
                       );
@@ -74,14 +74,14 @@ class HomeScreen extends StatelessWidget {
                           SliderComponent(homeScreenCont: homeScreenController)
                               .visible(homeScreenController.dashboardDetail
                                       .value.slider?.isNotEmpty ??
-                                  false),
+                                  false,),
                           ContinueWatchComponent(
                             continueWatchList: homeScreenController
                                 .dashboardDetail.value.continueWatch,
                           ).visible(appConfigs.value.enableContinueWatch &&
                               appConfigs.value.isLogin &&
                               (homeScreenController.dashboardDetail.value
-                                  .continueWatch.isNotEmpty)),
+                                  .continueWatch.isNotEmpty),),
                           CategoryListComponent(
                             categoryList: homeScreenController.sectionList,
                           ),
@@ -122,7 +122,7 @@ class HomeScreen extends StatelessWidget {
                                           ),
                                         ],
                                       ).paddingSymmetric(
-                                          vertical: 8, horizontal: 16),
+                                          vertical: 8, horizontal: 16,),
                                     ),
                                   )
                                 : const Offstage(),

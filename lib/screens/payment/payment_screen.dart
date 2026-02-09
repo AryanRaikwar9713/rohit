@@ -71,11 +71,10 @@ class PaymentScreen extends StatelessWidget {
             removeAppliedCoupon();
             Get.back();
           },
-          icon: Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white, size: 20),
+          icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white, size: 20),
         ),
         body: Obx(() {
           return AnimatedScrollView(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SelectedPlanComponent(
                 planDetails: paymentCont.selectPlan.value,
@@ -87,7 +86,6 @@ class PaymentScreen extends StatelessWidget {
                 24.height,
                 viewAllWidget(
                   label: locale.value.coupons,
-                  showViewAll: true,
                   isSymmetricPaddingEnable: false,
                   iconButton: InkWell(
                     splashColor: appColorPrimary.withValues(alpha: 0.4),
@@ -142,12 +140,12 @@ class PaymentScreen extends StatelessWidget {
                                       selectedPlanId: paymentCont.selectPlan.value.planId.toString(),
                                     );
                                   },
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.clear,
                                     size: 18,
                                     color: appColorPrimary,
                                   ),
-                                ).paddingOnly(right: 8) else Offstage(),
+                                ).paddingOnly(right: 8) else const Offstage(),
                           TextButton(
                             onPressed: () {
                               hideKeyboard(context);
@@ -212,7 +210,7 @@ class PaymentScreen extends StatelessWidget {
                               itemCount: paymentCont.couponListClassCont.couponList.take(2).length,
                               listAnimationType: commonListAnimationType,
                               itemBuilder: (context, index) {
-                                CouponDataModel couponData = paymentCont.couponListClassCont.couponList[index];
+                                final CouponDataModel couponData = paymentCont.couponListClassCont.couponList[index];
                                 final isLast = index == paymentCont.couponListClassCont.couponList.take(2).length - 1;
 
                                 if (paymentCont.couponListClassCont.appliedCouponData.value.code == couponData.code) {
@@ -262,7 +260,7 @@ class PaymentScreen extends StatelessWidget {
                         retryText: locale.value.reload,
                         imageWidget: const EmptyStateWidget(),
                         onRetry: () {
-                          paymentCont.getPayment(showLoader: true); // Retry fetching payment methods
+                          paymentCont.getPayment(); // Retry fetching payment methods
                         },
                       ).center();
                     } else {

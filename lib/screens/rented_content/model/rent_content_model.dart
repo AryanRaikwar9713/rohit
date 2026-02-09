@@ -48,7 +48,7 @@ class PayPerView {
       tvshows: json['tvshows'] is List
           ? List<VideoPlayerModel
       >.from(json['tvshows'].map((x) => VideoPlayerModel
-          .fromJson(x)))
+          .fromJson(x),),)
           : [],
       videos: json['videos'] is List
           ? List<VideoPlayerModel>.from(json['videos'].map((x) => VideoPlayerModel.fromJson(x)))
@@ -58,7 +58,7 @@ class PayPerView {
           : [],
       episodes: json['episodes'] is List
           ? List<VideoPlayerModel>.from(
-          json['episodes'].map((x) => VideoPlayerModel.fromJson(x)))
+          json['episodes'].map((x) => VideoPlayerModel.fromJson(x)),)
           : [],
     );
   }

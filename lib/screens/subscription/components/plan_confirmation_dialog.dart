@@ -47,7 +47,6 @@ class PlanConfirmationDialog extends StatelessWidget {
           32.height,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               OutlinedButton(
                 style: const ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(side: BorderSide(color: appColorPrimary), borderRadius: BorderRadius.all(Radius.circular(10))))),

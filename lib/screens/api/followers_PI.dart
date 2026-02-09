@@ -22,14 +22,14 @@ class FollowersApi {
     try
         {
 
-          String uri ='https://app.wamims.world/public/social/followers_following_list_api.php';
+          final String uri ='https://app.wamims.world/public/social/followers_following_list_api.php';
 
-          var head = await DB().getHeaderForRow();
-          var user = await DB().getUser();
+          final head = await DB().getHeaderForRow();
+          final user = await DB().getUser();
 
           Logger().i(head);
 
-          var data  = {
+          final data  = {
             "action": "get_followers",
             "token": '${user?.apiToken}',
             "page": page,
@@ -43,7 +43,7 @@ class FollowersApi {
 
 
 
-          var resp = await http.post(Uri.parse(uri),headers:head,
+          final resp = await http.post(Uri.parse(uri),headers:head,
            body: jsonEncode(data),);
           respPrinter(resp.statusCode, resp.body);
 
@@ -78,14 +78,14 @@ class FollowersApi {
     try
     {
 
-      String uri ='https://app.wamims.world/public/social/followers_following_list_api.php';
+      final String uri ='https://app.wamims.world/public/social/followers_following_list_api.php';
 
-      var head = await DB().getHeaderForRow();
-      var user = await DB().getUser();
+      final head = await DB().getHeaderForRow();
+      final user = await DB().getUser();
 
       Logger().i(head);
 
-      var data  = {
+      final data  = {
         "action": "get_following",
         "token": '${user?.apiToken}',
         "page": page,
@@ -99,7 +99,7 @@ class FollowersApi {
 
 
 
-      var resp = await http.post(Uri.parse(uri),headers:head,
+      final resp = await http.post(Uri.parse(uri),headers:head,
         body: jsonEncode(data),);
       respPrinter(resp.statusCode, resp.body);
 

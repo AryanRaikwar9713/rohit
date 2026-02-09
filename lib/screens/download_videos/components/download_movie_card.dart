@@ -20,7 +20,6 @@ class DownloadMovieCard extends StatelessWidget {
       width: double.infinity,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           CachedImageWidget(
             url: movieDetails.thumbnailImage.replaceAll("'", ""),
@@ -32,7 +31,6 @@ class DownloadMovieCard extends StatelessWidget {
           12.width,
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Marquee(
@@ -76,7 +74,7 @@ class DownloadMovieCard extends StatelessWidget {
                     movieDetails.hasDownloadError ? Assets.iconsIcPending : Assets.iconsIcDownloaded,
                     color: white,
                   ),
-                ).center()
+                ).center(),
         ],
       ),
     );

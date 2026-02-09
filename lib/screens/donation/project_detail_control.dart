@@ -48,7 +48,7 @@ class ProjectDetailController extends GetxController
             loading.value = false;
             Logger().e("Error loading project: $e");
             toast('Failed to load project: $e');
-          });
+          },);
     } catch (e) {
       loading.value = false;
       Logger().e("Exception loading project: $e");
@@ -77,7 +77,7 @@ class ProjectDetailController extends GetxController
         return;
       }
 
-      Logger().i("Donating ${amount} bolts to project ${projectIdToUse}");
+      Logger().i("Donating $amount bolts to project $projectIdToUse");
       
       await DonationProject().donateToImpactProject(
         projectId: projectIdToUse,

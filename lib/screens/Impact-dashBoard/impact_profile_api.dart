@@ -34,17 +34,17 @@ class ImpactProfileApi {
   }) async {
     try {
       final head = await DB().getHeaderForRow();
-      UserData? userId = await DB().getUser();
+      final UserData? userId = await DB().getUser();
 
-      String url =
+      final String url =
           'https://app.wamims.world/public/social/impact/create_crowdfunding_account.php';
 
       Logger().i('Creating Impact Profile for user: ${userId?.id}');
 
-      var request = http.MultipartRequest('POST', Uri.parse(url));
+      final request = http.MultipartRequest('POST', Uri.parse(url));
 
       // Add headers
-      request.headers.addAll(head);
+      request.headers.addAll(head ?? {});
 
       // Add form fields
       request.fields['user_id'] = (userId?.id ?? 0).toString();
@@ -88,7 +88,7 @@ class ImpactProfileApi {
       // Add supporting images
       if (supportingImages != null && supportingImages.isNotEmpty) {
         for (int i = 0; i < supportingImages.length; i++) {
-          var image = supportingImages[i];
+          final image = supportingImages[i];
           if (image.existsSync()) {
             request.files.add(
               await http.MultipartFile.fromPath(
@@ -145,16 +145,16 @@ class ImpactProfileApi {
   }) async {
     try {
       final head = await DB().getHeaderForRow();
-      UserData? userId = await DB().getUser();
+      final UserData? userId = await DB().getUser();
 
-      String url =
+      final String url =
           'https://app.wamims.world/public/social/impact/check_account.php?user_id=${userId?.id ?? 0}';
 
       Logger().i('Checking Impact Account for user: ${userId?.id}');
 
       final response = await http.get(
         Uri.parse(url),
-        headers: head,
+        headers: head ?? {},
       );
 
       respPrinter(response.statusCode, response.body);
@@ -184,15 +184,15 @@ class ImpactProfileApi {
 
     try {
       final head = await DB().getHeaderForRow();
-      UserData? userId = await DB().getUser();
+      final UserData? userId = await DB().getUser();
 
 
-      var response = await http.post(Uri.parse(url),headers: head,body: jsonEncode({
+      final response = await http.post(Uri.parse(url),headers: head ?? {},body: jsonEncode({
         "user_id": userId?.id ?? 0,
-      }));
+      }),);
 
       if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
+        final data = jsonDecode(response.body);
         onSuccess(UserCampainLimitResponcModel.fromJson(data));
       } else {
         onError("Server Error: ${response.statusCode}");

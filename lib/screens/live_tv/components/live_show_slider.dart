@@ -40,7 +40,6 @@ class LiveShowSliderComponent extends StatelessWidget {
                           children: [
                             CachedImageWidget(url: data.posterImage.validate(), width: double.infinity, height: double.infinity, fit: BoxFit.cover).onTap(() {}),
                             IgnorePointer(
-                              ignoring: true,
                               child: Container(
                                 height: 340,
                                 width: double.infinity,
@@ -83,7 +82,7 @@ class LiveShowSliderComponent extends StatelessWidget {
               currentDotWidth: 6,
               dotSize: 6,
             ),
-          32.height
+          32.height,
         ],
       ),
     );

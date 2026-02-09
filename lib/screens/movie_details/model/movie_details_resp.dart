@@ -144,15 +144,11 @@ class MovieDetailModel {
       watchedTime: json['watched_time'] is String ? json['watched_time'] : "",
       releaseDate: json['release_date'] is String ? json['release_date'] : "",
       releaseYear: json['release_year'] is int ? json['release_year'] : -1,
-      isRestricted: json['is_restricted'] is int
-          ? json['is_restricted'] == 0
-              ? false
-              : true
-          : false,
+      isRestricted: json['is_restricted'] is int && ((!json['is_restricted'] == 0)),
       videoUploadType: json['video_upload_type'] is String ? json['video_upload_type'] : "",
       videoUrlInput: json['video_url_input'] is String ? json['video_url_input'] : "",
       isDownload: json['is_download'] is bool ? json['is_download'] : false,
-      downloadStatus: json['download_status'] is int ? (json['download_status'] as int).getBoolInt() : false,
+      downloadStatus: json['download_status'] is int && (json['download_status'] as int).getBoolInt(),
       downloadType: json['download_type'] is String ? json['download_type'] : "",
       enableQuality: json['enable_quality'] is int ? json['enable_quality'] : -1,
       downloadUrl: json['download_url'] is String ? json['download_url'] : "",
@@ -160,8 +156,8 @@ class MovieDetailModel {
       downloadQuality: json['download_quality'] is List ? List<DownloadQuality>.from(json['download_quality'].map((x) => DownloadQuality.fromJson(x))) : [],
       posterImage: json['poster_image'] is String ? json['poster_image'] : "",
       thumbnailImage: json['thumbnail_image'] is String ? json['thumbnail_image'] : "",
-      isWatchList: json['is_watch_list'] is int ? (json['is_watch_list'] as int).getBoolInt() : false,
-      isLike: json['is_likes'] is int ? (json['is_likes'] as int).getBoolInt() : false,
+      isWatchList: json['is_watch_list'] is int && (json['is_watch_list'] as int).getBoolInt(),
+      isLike: json['is_likes'] is int && (json['is_likes'] as int).getBoolInt(),
       genres: json['genres'] is List ? List<GenreModel>.from(json['genres'].map((x) => GenreModel.fromJson(x))) : [],
       plans: json['plans'] is List ? List<SubscriptionPlanModel>.from(json['plans'].map((x) => SubscriptionPlanModel.fromJson(x))) : [],
       reviews: json['reviews'] is List ? List<ReviewModel>.from(json['reviews'].map((x) => ReviewModel.fromJson(x))) : [],

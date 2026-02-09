@@ -14,7 +14,7 @@ class LiveTVController extends GetxController {
   Rx<Future<LiveChannelDashboardResponse>> getLiveDashboardFuture = Future(() => LiveChannelDashboardResponse(data: LiveChannelModel())).obs;
   Rx<LiveChannelDashboardResponse> liveDashboard = LiveChannelDashboardResponse(data: LiveChannelModel()).obs;
 
-  Rx<PageController> sliderCont = PageController(initialPage: 0).obs;
+  Rx<PageController> sliderCont = PageController().obs;
   RxInt _currentPage = 0.obs;
   Rx<Timer> timer = Timer(Duration.zero, () {}).obs;
 

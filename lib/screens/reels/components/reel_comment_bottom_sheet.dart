@@ -42,7 +42,7 @@ class _ReelCommentBottomSheetState extends State<ReelCommentBottomSheet>
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeInOut,
-    ));
+    ),);
 
     _animationController.forward();
 
@@ -67,7 +67,7 @@ class _ReelCommentBottomSheetState extends State<ReelCommentBottomSheet>
       builder: (context, child) {
         return Transform.translate(
           offset: Offset(
-              0, _slideAnimation.value * MediaQuery.of(context).size.height),
+              0, _slideAnimation.value * MediaQuery.of(context).size.height,),
           child: Container(
             height: MediaQuery.of(context).size.height * 0.75,
             decoration: const BoxDecoration(
@@ -139,16 +139,16 @@ class _ReelCommentBottomSheetState extends State<ReelCommentBottomSheet>
 
   Widget _buildCommentsList() {
     return Obx(() {
-      var controller = Get.find<ReelsController>();
+      final controller = Get.find<ReelsController>();
       
       if(controller.commentLoading.value)
         {
-          return Center(child: CircularProgressIndicator(),);
+          return const Center(child: CircularProgressIndicator(),);
         }
       
       if(controller.comments.isEmpty)
         {
-          return Center(child: Text("No comments"),);
+          return const Center(child: Text("No comments"),);
         }
       
       return ListView.builder(
@@ -223,7 +223,7 @@ class _ReelCommentBottomSheetState extends State<ReelCommentBottomSheet>
                 Row(
                   children: [
                     Text(
-    '${comment.user?.fullName??''}',
+    comment.user?.fullName??'',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -437,7 +437,7 @@ class _ReelCommentBottomSheetState extends State<ReelCommentBottomSheet>
 
   void _addComment(String text) {
     print("ajkshf");
-    var controller = Get.find<ReelsController>();
+    final controller = Get.find<ReelsController>();
     controller.addCommentOnReel(reelId: widget.reel.id??0,comment: text);
     _commentController.clear();
   }

@@ -38,10 +38,6 @@ class DonationController extends GetxController {
 
 
   
-  @override
-  void onClose() {
-    super.onClose();
-  }
   
   void _initializeData() {
     getProjectlist(refresh: true);
@@ -51,7 +47,7 @@ class DonationController extends GetxController {
 
 
 
-  getProjectlist({bool refresh = false}) async {
+  Future<void> getProjectlist({bool refresh = false}) async {
     try {
       if (refresh) {
         page.value = 1;
@@ -113,8 +109,8 @@ class DonationController extends GetxController {
 
   /// Load more projects (for pagination)
   Future<void> loadMoreProjects() async {
-    if (!hasMorePages.value || isLoadingMore.value || loading.value) return;
-    await getProjectlist(refresh: false);
+    if (!hasMorePages.value || isLoadingMore.value || loading.value) { return; }
+    await getProjectlist();
   }
 
   /// Fetch categories from API (for filter chips)

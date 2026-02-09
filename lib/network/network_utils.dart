@@ -30,7 +30,7 @@ Map<String, String> buildHeaderTokens({
     extraKeys.putIfAbsent('isAirtelMoney', () => false);
   }
 
-  Map<String, String> header = {
+  final Map<String, String> header = {
     HttpHeaders.cacheControlHeader: 'no-cache',
     'Access-Control-Allow-Headers': '*',
     'Access-Control-Allow-Origin': '*',
@@ -105,7 +105,7 @@ Future<Response> buildHttpResponse(
 
     if (isLoggedIn.value && response.statusCode == 401 && !endPoint.startsWith('http')) {
       return await reGenerateToken().then((value) async {
-        return await buildHttpResponse(
+        return buildHttpResponse(
           endPoint,
           method: method,
           request: request,
@@ -120,13 +120,13 @@ Future<Response> buildHttpResponse(
     }
   } on Exception catch (e) {
     if (e is SocketException) {
-      log('SocketException: ${e.toString()}');
+      log('SocketException: ${e}');
       throw errorInternetNotAvailable;
     } else if (e is TimeoutException) {
-      log('TimeoutException: ${e.toString()}');
+      log('TimeoutException: ${e}');
       throw locale.value.gatewayTimeout;
     } else {
-      log('Unknown Exception: ${e.toString()}');
+      log('Unknown Exception: ${e}');
       throw errorSomethingWentWrong;
     }
   }
@@ -149,7 +149,7 @@ Future handleResponse(
 
   if (response.statusCode.isSuccessful()) {
     if (response.body.trim().isJson()) {
-      Map body = jsonDecode(response.body.trim());
+      final Map body = jsonDecode(response.body.trim());
 
       if (body.containsKey('status')) {
         if (isFlutterWave.validate()) {
@@ -172,7 +172,7 @@ Future handleResponse(
       throw errorSomethingWentWrong;
     }
   } else if (response.statusCode == 400) {
-    BaseResponseModel baseResponseModel = BaseResponseModel.fromJson(jsonDecode(response.body.trim()));
+    final BaseResponseModel baseResponseModel = BaseResponseModel.fromJson(jsonDecode(response.body.trim()));
     if (baseResponseModel.message.isNotEmpty) {
       throw baseResponseModel.message;
     } else {
@@ -191,11 +191,11 @@ Future handleResponse(
   } else if (response.statusCode == 504) {
     throw locale.value.gatewayTimeout;
   } else {
-    Map body = jsonDecode(response.body.trim());
+    final Map body = jsonDecode(response.body.trim());
     if (body.containsKey('status') && body['status']) {
       return body;
     } else {
-      Map<String, dynamic> errorData = {
+      final Map<String, dynamic> errorData = {
         'status_code': response.statusCode,
         "response": body,
         "message": body['message'] ?? body['error'] ?? errorSomethingWentWrong,
@@ -207,7 +207,7 @@ Future handleResponse(
 
 //region CommonFunctions
 Future<Map<String, String>> getMultipartFields({required Map<String, dynamic> val}) async {
-  Map<String, String> data = {};
+  final Map<String, String> data = {};
 
   val.forEach((key, value) {
     data[key] = '$value';
@@ -217,12 +217,12 @@ Future<Map<String, String>> getMultipartFields({required Map<String, dynamic> va
 }
 
 Future<MultipartRequest> getMultiPartRequest(String endPoint, {String? baseUrl}) async {
-  String url = baseUrl ?? buildBaseUrl(endPoint).toString();
+  final String url = baseUrl ?? buildBaseUrl(endPoint).toString();
   return MultipartRequest('POST', Uri.parse(url));
 }
 
 Future<void> sendMultiPartRequest(MultipartRequest multiPartRequest, {Function(dynamic)? onSuccess, Function(String, Response)? onError}) async {
-  http.Response response = await http.Response.fromStream(await multiPartRequest.send());
+  final http.Response response = await http.Response.fromStream(await multiPartRequest.send());
   apiPrint(
     url: multiPartRequest.url.toString(),
     headers: jsonEncode(multiPartRequest.headers),
@@ -273,7 +273,7 @@ Future<void> sendMultiPartRequest(MultipartRequest multiPartRequest, {Function(d
 }
 
 Future<List<MultipartFile>> getMultipartImages2({required List<XFile> files, required String name}) async {
-  List<MultipartFile> multiPartRequest = [];
+  final List<MultipartFile> multiPartRequest = [];
 
   await Future.forEach<XFile>(files, (element) async {
     final int i = files.indexOf(element);
@@ -341,13 +341,13 @@ String formatJson(String jsonStr) {
     const formatter = JsonEncoder.withIndent('  ');
     return formatter.convert(parsedJson);
   } on Exception catch (e) {
-    dev.log("\x1b[31m formatJson error ::-> ${e.toString()} \x1b[0m");
+    dev.log("\x1b[31m formatJson error ::-> ${e} \x1b[0m");
     return jsonStr;
   }
 }
 
 Map<String, String> defaultHeaders() {
-  Map<String, String> header = {};
+  final Map<String, String> header = {};
 
   header.putIfAbsent(HttpHeaders.cacheControlHeader, () => 'no-cache');
   header.putIfAbsent('Access-Control-Allow-Headers', () => '*');
@@ -357,7 +357,7 @@ Map<String, String> defaultHeaders() {
 }
 
 Map<String, String> buildHeaderForFlutterWave(String flutterWaveSecretKey) {
-  Map<String, String> header = defaultHeaders();
+  final Map<String, String> header = defaultHeaders();
 
   header.putIfAbsent(HttpHeaders.authorizationHeader, () => "Bearer $flutterWaveSecretKey");
 

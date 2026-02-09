@@ -21,13 +21,11 @@ class ForgotPassword extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppScaffold(
       scaffoldBackgroundColor: appScreenBackgroundDark,
-      hasLeadingWidget: true,
       isLoading: forgetPassController.isLoading,
       body: SingleChildScrollView(
         child: Form(
           key: forgetPassController.forgotPassFormKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -108,7 +106,6 @@ class ForgotPassword extends StatelessWidget {
                   decoration: boxDecorationDefault(borderRadius: BorderRadius.circular(6), border: Border.all(color: borderColor), color: cardDarkColor),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
                         locale.value.linkSentToYourEmail,
@@ -133,7 +130,7 @@ class ForgotPassword extends StatelessWidget {
                     ],
                   ),
                 ).visible(forgetPassController.isResetLinSent.isTrue),
-              )
+              ),
             ],
           ).paddingAll(16),
         ),

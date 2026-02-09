@@ -36,7 +36,6 @@ class EventCardComponent extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: _eventGradient.colors.first.withOpacity(0.2),
-            width: 1,
           ),
           boxShadow: [
             BoxShadow(
@@ -162,7 +161,6 @@ class EventCardComponent extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
                               color: _eventGradient.colors.first.withOpacity(0.5),
-                              width: 1,
                             ),
                           ),
                           child: Text(
@@ -392,7 +390,6 @@ class EventCardComponent extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: _eventGradient.colors.first.withOpacity(0.4),
-              width: 1,
             ),
           ),
           child: Text(

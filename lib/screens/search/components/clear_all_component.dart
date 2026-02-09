@@ -55,7 +55,6 @@ class ClearAllComponent extends StatelessWidget {
           ),
           20.height,
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppButton(

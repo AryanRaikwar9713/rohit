@@ -127,7 +127,6 @@ class ProfileComponent extends StatelessWidget {
                     accountProfiles.any((element) => element.isProtectedProfile.getBoolInt() && element.profilePin.isNotEmpty)) {
                   profile.profilePin = selectedAccountProfile.value.profilePin;
                   Get.bottomSheet(
-                    isDismissible: true,
                     isScrollControlled: true,
                     enableDrag: false,
                     VerifyProfilePinComponent(

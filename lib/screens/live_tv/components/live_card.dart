@@ -19,7 +19,6 @@ class LiveCard extends StatelessWidget {
       alignment: Alignment.center,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           getLiveIcon(),
           2.width,

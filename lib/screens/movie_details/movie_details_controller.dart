@@ -148,8 +148,8 @@ class MovieDetailsController extends GetxController {
   }
 
   Future<void> addLike() async {
-    int isLike = movieDetailsResp.value.isLike ? 0 : 1;
-    movieDetailsResp.value.isLike = isLike.getBoolInt() ? true : false;
+    final int isLike = movieDetailsResp.value.isLike ? 0 : 1;
+    movieDetailsResp.value.isLike = isLike.getBoolInt();
     isLoading(true);
     hideKeyBoardWithoutContext();
     await CoreServiceApis().likeMovie(
@@ -172,7 +172,7 @@ class MovieDetailsController extends GetxController {
     if (isLoading.isTrue) return;
     isLoading(true);
     final int isWatchList = movieDetailsResp.value.isWatchList ? 0 : 1;
-    movieDetailsResp.value.isWatchList = isWatchList.getBoolInt() ? true : false;
+    movieDetailsResp.value.isWatchList = isWatchList.getBoolInt();
     hideKeyBoardWithoutContext();
     if (addToWatchList) {
       CoreServiceApis().saveWatchList(
