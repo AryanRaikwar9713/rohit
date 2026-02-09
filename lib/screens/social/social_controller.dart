@@ -263,6 +263,7 @@ class SocialController extends GetxController {
     String? imagePath,
     String? title,
     List<String>? hashtags,
+    bool showDonateButton = false,
   }) async {
     try {
       isUploadingPost.value = true;
@@ -272,6 +273,7 @@ class SocialController extends GetxController {
         caption: caption,
         mediaUrl: imagePath,
         hashtags: hashtags ?? [],
+        showDonateButton: showDonateButton,
         // onProgress: (d){
         //   Logger().i("Progress $d");
         // },

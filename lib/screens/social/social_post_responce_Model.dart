@@ -107,6 +107,8 @@ class SocialPost {
   User? user;
   List<RecentComment>? recentComments;
   dynamic media;
+  /// Backend: return in get_posts as show_donate_button (1/0 or bool). When true, show Donate button on this post.
+  bool? showDonateButton;
 
   SocialPost({
     this.postId,
@@ -123,6 +125,7 @@ class SocialPost {
     this.user,
     this.recentComments,
     this.media,
+    this.showDonateButton,
   });
 
   factory SocialPost.fromJson(Map<String, dynamic> json) => SocialPost(
@@ -140,6 +143,7 @@ class SocialPost {
     user: json["user"] == null ? null : User.fromJson(json["user"]),
     recentComments: json["recent_comments"] == null ? [] : List<RecentComment>.from(json["recent_comments"]!.map((x) => RecentComment.fromJson(x))),
     media: json["media"],
+    showDonateButton: json["show_donate_button"] == true || json["show_donate_button"] == 1,
   );
 
   Map<String, dynamic> toJson() => {
@@ -157,6 +161,7 @@ class SocialPost {
     "user": user?.toJson(),
     "recent_comments": recentComments == null ? [] : List<dynamic>.from(recentComments!.map((x) => x.toJson())),
     "media": media,
+    "show_donate_button": showDonateButton,
   };
 }
 
