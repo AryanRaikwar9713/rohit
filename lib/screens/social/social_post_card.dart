@@ -357,47 +357,48 @@ class _SocialPostCardState extends State<SocialPostCard> {
 
                 const Spacer(),
 
-                // Donate Button (Yellow pill with black heart, like design)
-                GestureDetector(
-                  onTap: () {
-                    // Handle donation
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.yellow.shade400,  // Yellow
-                          Colors.orange.shade400,  // Orange
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                // Donate Button – only when post was created with "show donate" toggle ON
+                if (widget.post.showDonateButton == true) ...[
+                  GestureDetector(
+                    onTap: () {
+                      // Handle donation
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.yellow.shade400,  // Yellow
+                            Colors.orange.shade400,  // Orange
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
                       ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.favorite,
-                          color: Colors.black,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          'Donate 0',
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.favorite,
                             color: Colors.black,
+                            size: 16,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 6),
+                          Text(
+                            'Donate 0',
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-
-                const SizedBox(width: 12),
+                  const SizedBox(width: 12),
+                ],
 
                 // Save/Bookmark Button (CupertinoIcons - Instagram-style)
                 GestureDetector(
