@@ -130,7 +130,6 @@ class _CountryListViewState extends State<CustomCountryListView> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 "Select Country",

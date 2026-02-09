@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:streamit_laravel/configs.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_api.dart';
 
 import 'reel_comment_response_model.dart';
@@ -179,17 +180,19 @@ class ReelsController extends GetxController {
           apiReels.refresh();
 
 
-          WalletApi().getPointsAndBolt(
-            action: PointAction.comment,
-            targetId: reelId,
-            commentId: comment.id ?? 0,
-            getBolt: false,
-            contentType: "reel",
-            onError: (e) {
-              Logger().e("Error in Comment Api $e");
-            },
-            onFailure: (s) => _handleResponse(s),
-          );
+          if (ENABLE_POINT_EARNINGS_SYSTEM) {
+            WalletApi().getPointsAndBolt(
+              action: PointAction.comment,
+              targetId: reelId,
+              commentId: comment.id ?? 0,
+              getBolt: false,
+              contentType: "reel",
+              onError: (e) {
+                Logger().e("Error in Comment Api $e");
+              },
+              onFailure: (s) => _handleResponse(s),
+            );
+          }
         },
       );
     } catch (e) {

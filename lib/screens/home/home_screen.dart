@@ -155,21 +155,10 @@ class HomeScreen extends StatelessWidget {
         children: [
 
 
-          // App Logo/Title
-          Row(
-            children: [
-              Image.asset(
-                'assets/launcher_icons/wammisLogo.png',
-                height: 32,
-                width: 32,
-                fit: BoxFit.contain,
-              ),
-              12.width,
-              Text(
-                'Wamims',
-                style: boldTextStyle(size: 20, color: Colors.white),
-              ),
-            ],
+          // App Title only (no logo for v1)
+          Text(
+            'Wamims',
+            style: boldTextStyle(size: 20, color: Colors.white),
           ),
 
           const Spacer(),

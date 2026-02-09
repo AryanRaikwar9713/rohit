@@ -33,8 +33,7 @@ if (flutterVersionName == null) {
 android {
     namespace "com.anytimeott.live"
     compileSdkVersion 36
-    ndkVersion "29.0.13599879"
-
+    ndkVersion "28.2.13676358"
     compileOptions {
         coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
@@ -55,6 +54,10 @@ android {
         targetSdkVersion 36
         versionCode 90
         versionName "41.2.1"
+        ndk {
+            abiFilters.clear()
+            abiFilters.addAll(['arm64-v8a'])
+        }
     }
     packagingOptions {
         jniLibs {
@@ -78,6 +81,10 @@ android {
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            ndk {
+                abiFilters.clear()
+                abiFilters.addAll(['arm64-v8a'])
+            }
         }
 
         release {
@@ -85,12 +92,25 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            ndk {
+                abiFilters.clear()
+                abiFilters.addAll(['arm64-v8a'])
+            }
         }
     }
 }
 
 flutter {
     source '../..'
+}
+
+// Override abiFilters after Flutter plugin runs - Flutter 3.35+ sets armeabi-v7a by default,
+// but NDK 28 + CMake 3.22 has incompatible flags for armeabi-v7a on Apple Silicon. Restrict to arm64-v8a.
+afterEvaluate {
+    android.buildTypes.each { buildType ->
+        buildType.ndk.abiFilters.clear()
+        buildType.ndk.abiFilters.addAll(['arm64-v8a'])
+    }
 }
 
 dependencies {

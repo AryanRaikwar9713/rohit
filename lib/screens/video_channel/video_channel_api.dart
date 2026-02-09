@@ -17,7 +17,7 @@ class VideoChannelApi {
   {
     try {
 
-      final String uri = 'https://app.wamims.world/public/social/channel_api.php?action=get_channel';
+      const String uri = 'https://app.wamims.world/public/social/channel_api.php?action=get_channel';
 
       final head  = await DB().getHeaderForForm();
 
@@ -54,7 +54,7 @@ class VideoChannelApi {
 }) async
   {
     try {
-      final String uri = 'https://app.wamims.world/public/social/channel_api.php?action=create_channel';
+      const String uri = 'https://app.wamims.world/public/social/channel_api.php?action=create_channel';
       final d = {
         'channel_name':channelName,
         'description':description,

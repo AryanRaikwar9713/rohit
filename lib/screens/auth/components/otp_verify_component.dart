@@ -39,7 +39,6 @@ class OTPVerifyComponent extends StatelessWidget {
         children: [
           SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 20.height,

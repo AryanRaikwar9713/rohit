@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:streamit_laravel/screens/walletSection/models/point_history_responce_model.dart';
 import 'package:streamit_laravel/screens/walletSection/models/walletModel.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_api.dart';

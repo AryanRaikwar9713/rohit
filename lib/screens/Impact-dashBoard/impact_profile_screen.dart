@@ -47,13 +47,13 @@ void _showImpactMenu(BuildContext context, ImpactProfileController controller) {
             ),
             ListTile(
               leading: const Icon(Icons.campaign, color: appColorPrimary),
-              title: Text(
+              title: const Text(
                 'Create Campaign / Project',
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white),
               ),
               subtitle: Text(
                 isApproved ? 'Start a new campaign' : (hasAccount ? 'Account pending approval' : 'Create profile first'),
-                style: TextStyle(color: Colors.white70, fontSize: 12),
+                style: const TextStyle(color: Colors.white70, fontSize: 12),
               ),
               onTap: () {
                 Navigator.pop(ctx);
@@ -240,8 +240,8 @@ class ImpactProfileScreen extends StatelessWidget {
                   12.height,
                   TextButton.icon(
                     onPressed: () => _showImpactMenu(context, controller),
-                    icon: Icon(Icons.menu, color: appColorPrimary, size: 20),
-                    label: Text(
+                    icon: const Icon(Icons.menu, color: appColorPrimary, size: 20),
+                    label: const Text(
                       'More options',
                       style: TextStyle(color: appColorPrimary, fontSize: 14),
                     ),
@@ -256,12 +256,16 @@ class ImpactProfileScreen extends StatelessWidget {
         final limits = profileData.data?.limits;
         final projectsSummary = profileData.data?.projectsSummary;
 
+        if (accountDetails == null) {
+          return const SizedBox();
+        }
+
         return SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Cover Image Section
-              _buildCoverImageSection(accountDetails?.media?.coverImage,accountDetails!),
+              _buildCoverImageSection(accountDetails.media?.coverImage, accountDetails),
               70.height,
 
               // Profile Header

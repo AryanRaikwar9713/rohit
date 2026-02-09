@@ -181,7 +181,7 @@ Future<void> main() async {
   );
   HttpOverrides.global = MyHttpOverrides();
   await MobileAds.instance.initialize();
-  // Initialize AdMob Rewarded Ads
+  // Initialize AdMob Rewarded Ads (preload for wallet)
   AdMobRewardedAdHelper.initialize();
   runApp(const MyApp());
 }
