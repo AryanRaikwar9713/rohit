@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
@@ -34,12 +35,22 @@ class _ReelsScreenState extends State<ReelsScreen> {
     _pageController.dispose();
     // Restore system UI
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    // Delete controller immediately — by the time we're disposed, children
-    // (ReelItemWidgets) are already disposed, so no Obx/listeners remain.
-    // Delaying to next frame caused crash when switching to Profile tab.
-    if (Get.isRegistered<ReelsController>()) {
-      Get.delete<ReelsController>();
-    }
+    // Defer controller delete so that: (1) any open comment bottom sheet can
+    // close and stop using the controller, (2) Video platform view and
+    // media_kit Player listeners are fully torn down (avoids "[Player] has been disposed").
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (Get.isBottomSheetOpen == true) {
+        Get.back();
+      }
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        // Extra delay so Video/AndroidVideoController widListener stops before we dispose Players
+        Future.delayed(const Duration(milliseconds: 350), () {
+          if (Get.isRegistered<ReelsController>()) {
+            Get.delete<ReelsController>();
+          }
+        });
+      });
+    });
     super.dispose();
   }
 

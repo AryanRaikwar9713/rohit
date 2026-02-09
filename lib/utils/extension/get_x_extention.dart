@@ -3,6 +3,22 @@ import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:streamit_laravel/utils/common_base.dart';
 
+extension ExtensionGetNavigation on GetInterface {
+  /// Safe back: avoids crash when Get tries to close snackbar but SnackbarController._controller was never set (e.g. no Overlay).
+  void safeBack({dynamic closeOverlays = false}) {
+    try {
+      back(closeOverlays: closeOverlays);
+    } catch (e) {
+      // LateInitializationError from SnackbarController when overlay/snackbar state is invalid
+      if (e.toString().contains('LateInitializationError') ||
+          e.toString().contains('_controller')) {
+        return;
+      }
+      rethrow;
+    }
+  }
+}
+
 extension ExtensionSnackbar on GetInterface {
   SnackbarController showSnackBar({
     required String message,

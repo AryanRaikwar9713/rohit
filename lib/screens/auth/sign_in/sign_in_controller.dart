@@ -16,6 +16,7 @@ import '../../../main.dart';
 import '../../../utils/app_common.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/common_base.dart';
+import '../../../utils/extension/get_x_extention.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/country_picker/country_code.dart';
 import '../../../utils/extension/string_extention.dart';
@@ -189,7 +190,7 @@ class SignInController extends GetxController {
             initializeCodeResendTimer;
             isLoading(false);
             if (Get.isBottomSheetOpen ?? false) {
-              Get.back(); // Close current bottom sheet first
+              Get.safeBack(); // Close current bottom sheet first
             }
             Future.delayed(const Duration(milliseconds: 200), () {
               // Open OTP sheet only once (in case multiple onCodeSent fired)
@@ -304,13 +305,13 @@ class SignInController extends GetxController {
               e['status_code'] == 404)) {
         _pendingLoginRequest = null;
         ///open sign up screen but not close previous route
-        Get.back();
+        Get.safeBack();
         isLoading(false);
         Get.to(() => SignUpScreen(), arguments: [true, mobileNo, countryCode]);
       } else {
         isLoading(false);
         if (!isNormalLogin) {
-          Get.back();
+          Get.safeBack();
         }
         errorSnackBar(error: e);
         if (e is Map<String, dynamic> &&
@@ -324,8 +325,8 @@ class SignInController extends GetxController {
             DeviceListComponent(
               loggedInDeviceList: errorData.otherDevice,
               onLogout: (logoutAll, deviceId, deviceName) {
-                Get.back();
-                Get.back();
+                Get.safeBack();
+                Get.safeBack();
                 // Loading dialog UPAR dikhne ke liye (client request)
                 Get.dialog(
                   Center(
@@ -431,7 +432,7 @@ class SignInController extends GetxController {
           isLoading(false);
           verifyCont.clear();
 
-          Get.back();
+          Get.safeBack();
           Get.bottomSheet(
             isDismissible: false,
             enableDrag: false,
@@ -449,7 +450,7 @@ class SignInController extends GetxController {
       isLoading(false);
       verifyCont.clear();
 
-      Get.back();
+      Get.safeBack();
       Get.bottomSheet(
         isDismissible: false,
         enableDrag: false,
@@ -614,14 +615,14 @@ class SignInController extends GetxController {
         .deviceLogoutApiWithoutAuth(deviceId: device, userId: userId)
         .then((value) {
       successSnackBar(value.message);
-      if (Get.isBottomSheetOpen ?? false) Get.back();
+      if (Get.isBottomSheetOpen ?? false) Get.safeBack();
       onSuccess?.call();
     }).catchError((e) {
       errorSnackBar(error: e);
-      if (Get.isBottomSheetOpen ?? false) Get.back();
+      if (Get.isBottomSheetOpen ?? false) Get.safeBack();
     }).whenComplete(() {
       isLoading(false);
-      if (Get.isDialogOpen ?? false) Get.back();
+      if (Get.isDialogOpen ?? false) Get.safeBack();
     });
   }
 
@@ -632,13 +633,13 @@ class SignInController extends GetxController {
         .logOutAllAPIWithoutAuth(userId: userId)
         .then((value) async {
       successSnackBar(value.message);
-      if (Get.isBottomSheetOpen ?? false) Get.back();
+      if (Get.isBottomSheetOpen ?? false) Get.safeBack();
       onSuccess?.call();
     }).catchError((e) {
       errorSnackBar(error: e);
     }).whenComplete(() {
       isLoading(false);
-      if (Get.isDialogOpen ?? false) Get.back();
+      if (Get.isDialogOpen ?? false) Get.safeBack();
     });
   }
 }
