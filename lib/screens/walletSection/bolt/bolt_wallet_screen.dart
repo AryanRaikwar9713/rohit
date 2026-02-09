@@ -148,10 +148,10 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                           ),
                           const SizedBox(width: 10),
                           cardDecoration("Conversion Rate",
-                              '${controller.dashboardData.value.data?.wallet?.conversionRate ?? 0} 🔁',),
+                              '- 🔁',),
                           const SizedBox(width: 8),
                           cardDecoration("Bolt Value",
-                              '${controller.dashboardData.value.data?.wallet?.inrValue ?? 0} Bolts',),
+                              '- Bolts',),
                         ],
                       ),
                       const Spacer(),
@@ -172,7 +172,7 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                                   fontSize: 14,),
                             ),
                             Text(
-                              "${controller.dashboardData.value.data?.wallet?.displayValue ?? 0} Bolts",
+                              "- bolts = - Bolts",
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,

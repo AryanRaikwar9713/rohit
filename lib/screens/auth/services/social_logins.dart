@@ -18,48 +18,66 @@ class GoogleSignInAuthService {
   Future<UserData?> signInWithGoogle() async {
     await googleSignIn.initialize(serverClientId: FIREBASE_SERVER_CLIENT_ID);
 
-    final GoogleSignInAccount googleSignInAuthentication = await googleSignIn.authenticate();
+    // Sign out and disconnect any previous session to avoid "Account reauth failed" / canceled.
+    try {
+      await googleSignIn.signOut();
+      await googleSignIn.disconnect();
+    } catch (_) {}
 
-    final authentication = googleSignInAuthentication.authentication;
+    final GoogleSignInAccount account = await googleSignIn.authenticate();
+    final authTokens = account.authentication;
+    final String? idToken = authTokens.idToken;
+    if (idToken == null || idToken.isEmpty) {
+      throw Exception('Google Sign-In: No ID token received. Please try again.');
+    }
+
     final AuthCredential credential = GoogleAuthProvider.credential(
-      idToken: authentication.idToken,
+      idToken: idToken,
     );
 
     final UserCredential authResult = await FirebaseAuth.instance.signInWithCredential(credential);
     final User user = authResult.user!;
-
-    assert(!user.isAnonymous);
+    if (user.isAnonymous) throw Exception('Google Sign-In failed.');
 
     final User currentUser = FirebaseAuth.instance.currentUser!;
-    assert(user.uid == currentUser.uid);
+    if (user.uid != currentUser.uid) throw Exception('Google Sign-In failed.');
+
+    // Optional: link email/password for backend. If it fails (e.g. already linked), we still use the user.
+    try {
+      if (user.email != null && user.email!.isNotEmpty) {
+        final AuthCredential emailCred = EmailAuthProvider.credential(
+          email: user.email!,
+          password: Constants.DEFAULT_PASS,
+        );
+        await user.linkWithCredential(emailCred);
+      }
+    } catch (e) {
+      log('Google linkWithCredential (optional): $e');
+    }
 
     try {
-      final AuthCredential emailAuthCredential = EmailAuthProvider.credential(email: user.email!, password: Constants.DEFAULT_PASS);
-      user.linkWithCredential(emailAuthCredential);
-      log('CURRENTUSER: $currentUser');
-
       await googleSignIn.signOut();
+    } catch (_) {}
 
-      String firstName = '';
-      String lastName = '';
-      if (currentUser.displayName.validate().split(' ').isNotEmpty) firstName = currentUser.displayName.splitBefore(' ');
-      if (currentUser.displayName.validate().split(' ').length >= 2) lastName = currentUser.displayName.splitAfter(' ');
-
-      /// Create a temporary request to send
-      final UserData tempUserData = UserData(planDetails: SubscriptionPlanModel())
-        ..mobile = currentUser.phoneNumber.validate()
-        ..email = currentUser.email.validate()
-        ..firstName = firstName.validate()
-        ..lastName = lastName.validate()
-        ..profileImage = currentUser.photoURL.validate()
-        ..loginType = LoginTypeConst.LOGIN_TYPE_GOOGLE
-        ..fullName = currentUser.displayName.validate();
-
-      return tempUserData;
-    } catch (e) {
-      log(e);
+    String firstName = '';
+    String lastName = '';
+    final String? displayName = currentUser.displayName?.validate();
+    if (displayName != null && displayName.isNotEmpty) {
+      final parts = displayName.split(' ');
+      if (parts.isNotEmpty) firstName = parts.first;
+      if (parts.length >= 2) lastName = parts.sublist(1).join(' ');
     }
-    return null;
+
+    final UserData tempUserData = UserData(planDetails: SubscriptionPlanModel())
+      ..mobile = currentUser.phoneNumber.validate()
+      ..email = currentUser.email.validate()
+      ..firstName = firstName.validate()
+      ..lastName = lastName.validate()
+      ..profileImage = currentUser.photoURL.validate()
+      ..loginType = LoginTypeConst.LOGIN_TYPE_GOOGLE
+      ..fullName = currentUser.displayName.validate();
+
+    return tempUserData;
   }
 
   // region Apple Sign
