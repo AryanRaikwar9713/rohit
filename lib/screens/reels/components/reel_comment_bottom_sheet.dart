@@ -139,6 +139,9 @@ class _ReelCommentBottomSheetState extends State<ReelCommentBottomSheet>
 
   Widget _buildCommentsList() {
     return Obx(() {
+      if (!Get.isRegistered<ReelsController>()) {
+        return const Center(child: Text("Comments unavailable"));
+      }
       final controller = Get.find<ReelsController>();
       
       if(controller.commentLoading.value)
@@ -436,7 +439,7 @@ class _ReelCommentBottomSheetState extends State<ReelCommentBottomSheet>
   }
 
   void _addComment(String text) {
-    print("ajkshf");
+    if (!Get.isRegistered<ReelsController>()) return;
     final controller = Get.find<ReelsController>();
     controller.addCommentOnReel(reelId: widget.reel.id??0,comment: text);
     _commentController.clear();
