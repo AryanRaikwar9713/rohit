@@ -7,6 +7,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/screens/dashboard/dashboard_screen.dart';
 
@@ -538,7 +539,18 @@ class SignInController extends GetxController {
     }).catchError((e) {
       isLoading(false);
       log("Error is $e");
-      toast(e.toString(), print: true);
+      String message = e.toString();
+      if (e is GoogleSignInException) {
+        if (e.code == GoogleSignInExceptionCode.canceled) {
+          message = locale.value.userCancelled.validate().isNotEmpty
+              ? locale.value.userCancelled
+              : 'Sign-in cancelled. Please try again.';
+        } else if (e.code == GoogleSignInExceptionCode.unknownError &&
+            e.toString().toLowerCase().contains('developer console')) {
+          message = 'Google Sign-In is not set up correctly. Please contact support.';
+        }
+      }
+      toast(message, print: true);
     }).whenComplete(() => isLoading(false));
   }
 
