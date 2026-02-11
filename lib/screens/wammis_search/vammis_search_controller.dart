@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -104,7 +103,9 @@ class VammisSearchController extends GetxController {
                       if (search.isNotEmpty)
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4,),
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: appColorPrimary.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(12),
@@ -203,10 +204,13 @@ class _SearchResultCard extends StatelessWidget {
       onTap: () async {
         if (result.contentType == 'user') {
           final user = await DB().getUser();
-          Get.to(VammisProfileScreen(
-            popButton: true,
+          Get.to(
+            VammisProfileScreen(
+              popButton: true,
               userId: result.contentId ?? 0,
-              isOwnProfile: user?.id == result.contentId,),);
+              isOwnProfile: user?.id == result.contentId,
+            ),
+          );
         }
         if (result.contentType == 'project') {
           Get.to(ProjectDetailScreen(id: result.contentId ?? 0));
@@ -395,8 +399,11 @@ class _SearchResultCard extends StatelessWidget {
         return Row(
           children: [
             if (extraData?.viewsCount != null) ...[
-              const Icon(Icons.play_circle_outline,
-                  size: 12, color: secondaryTextColor,),
+              const Icon(
+                Icons.play_circle_outline,
+                size: 12,
+                color: secondaryTextColor,
+              ),
               const SizedBox(width: 4),
               Text(
                 '${_formatCount(extraData!.viewsCount!)} views',

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -293,12 +294,14 @@ class CampaignController extends GetxController {
           isLoading.value = false;
           try {
             final errorData = jsonDecode(response.body);
-            errorMessage.value =
-                errorData['message'] ?? 'Failed to create campaign';
-            toast(errorMessage.value);
+            final msg = errorData['message'] ?? 'Failed to create campaign';
+            errorMessage.value = msg;
+            toast(msg);
+            Logger().e('Create campaign failed: ${response.statusCode} - ${response.body}');
           } catch (e) {
             errorMessage.value = 'Failed to create campaign';
-            toast(errorMessage.value);
+            toast('Failed to create campaign (${response.statusCode})');
+            Logger().e('Create campaign failed: ${response.statusCode} - ${response.body}');
           }
         },
       );

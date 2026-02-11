@@ -37,9 +37,9 @@ class _ReelsWidgetState extends State<ReelsWidget> {
 
     return Obx(() {
       if (controller.isLoading.value) {
-        return SizedBox(
+        return const SizedBox(
           height: 200,
-          child: const Center(
+          child: Center(
             child: CircularProgressIndicator(
               color: appColorPrimary,
             ),

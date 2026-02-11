@@ -9,7 +9,7 @@ CountryModel? getCountryByDialCode(String dialCode) {
 }
 
 CountryModel? getCountryByIsoCode(String isoCode) {
-  final index = countryCodes.indexWhere((country) => (country as CountryModel).iso2Cc == isoCode);
+  final index = countryCodes.indexWhere((country) => country['iso2_cc'] == isoCode);
   if (index < 0) return null;
   return CountryModel.fromJson(countryCodes[index]);
 }

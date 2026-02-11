@@ -59,7 +59,7 @@ class ReelsApi {
   }) async
   {
     try {
-      final String uri = 'https://app.wamims.world/public/social/reels/reel_like.php';
+      const String uri = 'https://app.wamims.world/public/social/reels/reel_like.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
 
@@ -96,7 +96,7 @@ class ReelsApi {
     required void Function(ReelComment) onSuccess,
   }) async {
     try {
-      final String uri =
+      const String uri =
           'https://app.wamims.world/social/reels/add_comment.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
@@ -172,7 +172,7 @@ class ReelsApi {
   }) async
   {
     try {
-      final String uri =
+      const String uri =
           'https://app.wamims.world/public/social/reels/create_reel.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
@@ -252,7 +252,7 @@ class ReelsApi {
   }) async
   {
     try {
-      final String uri = 'https://app.wamims.world/public/social/follow_api.php';
+      const String uri = 'https://app.wamims.world/public/social/follow_api.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
 

@@ -3,7 +3,6 @@ import 'package:streamit_laravel/screens/social/social_post_card.dart';
 import 'package:streamit_laravel/screens/walletSection/models/point_history_responce_model.dart';
 import 'package:streamit_laravel/screens/walletSection/walletContrller.dart';
 import 'package:get/get.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});

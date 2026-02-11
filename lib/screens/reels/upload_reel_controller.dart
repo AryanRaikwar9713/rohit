@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:streamit_laravel/configs.dart';
 import 'package:streamit_laravel/screens/reels/reels_api.dart';
-import 'package:streamit_laravel/screens/walletSection/bolt/bolt_api.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_api.dart';
 import 'package:video_player/video_player.dart';
 
@@ -102,8 +102,8 @@ class UploadReelController extends GetxController {
       videoDuration.value = _formatDuration(duration);
 
       // Get video size (approximate)
-      final file = selectedVideo.value!;
-      final fileSize = await file.length();
+      final file = selectedVideo.value;
+      final fileSize = file != null ? await file.length() : 0;
       videoSize.value = _formatFileSize(fileSize);
     }
   }
@@ -207,13 +207,15 @@ class UploadReelController extends GetxController {
             );
           },
           onSuccess: (reel) {
-            WalletApi().getPointsAndBolt(
-                action: PointAction.reelUpload,
-                targetId: reel,
-                getBolt: false,
-                contentType: "reel",
-                onError: onError,
-                onFailure: (d) {},);
+            if (ENABLE_POINT_EARNINGS_SYSTEM) {
+              WalletApi().getPointsAndBolt(
+                  action: PointAction.reelUpload,
+                  targetId: reel,
+                  getBolt: false,
+                  contentType: "reel",
+                  onError: onError,
+                  onFailure: (d) {},);
+            }
             // Clear form after successful upload
             clearForm();
             // Only pop if user is still on the upload screen

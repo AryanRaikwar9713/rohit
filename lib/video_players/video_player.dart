@@ -848,7 +848,13 @@ class VideoPlayersComponent extends StatelessWidget {
         duration: duration,
         adBreaks: allAdBreaks,
         isPlaying: podController.isVideoPlaying,
-        overlayAd: MediaQuery.of(Get.context!).orientation == Orientation.landscape ? _overlayView(Get.context!) : null,
+        overlayAd: () {
+          final ctx = Get.context;
+          if (ctx != null && MediaQuery.of(ctx).orientation == Orientation.landscape) {
+            return _overlayView(ctx);
+          }
+          return null;
+        }(),
         onFullscreenToggle: () {
           podController.isFullScreen ? podController.disableFullScreen(ctx) : podController.enableFullScreen();
         },

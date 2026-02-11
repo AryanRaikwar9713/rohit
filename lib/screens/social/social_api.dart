@@ -65,7 +65,7 @@ class SocialApi {
     required void Function(bool isLiked, int likeCount) onSuccess,
   }) async {
     try {
-      final String uri = 'https://app.wamims.world/social/post_likes.php';
+      const String uri = 'https://app.wamims.world/social/post_likes.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
       final data = {
@@ -96,7 +96,7 @@ class SocialApi {
     required void Function(SocialPostComment) onSuccess,
   }) async {
     try {
-      final String uri = 'https://app.wamims.world/social/post_comments.php';
+      const String uri = 'https://app.wamims.world/social/post_comments.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
 
@@ -169,7 +169,7 @@ class SocialApi {
     required void Function(int) onSuccess,
   }) async {
     try {
-      final String uri = 'https://app.wamims.world/social/upload_posts.php';
+      const String uri = 'https://app.wamims.world/social/upload_posts.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
 
@@ -227,7 +227,7 @@ class SocialApi {
   }) async
   {
     try {
-      final String uri = 'https://app.wamims.world/public/social/follow_api.php';
+      const String uri = 'https://app.wamims.world/public/social/follow_api.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
 

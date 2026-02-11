@@ -147,6 +147,21 @@ class LocationApi {
     }
   }
 
+  /// Get user's country ISO code (e.g. IN, US, GB, LK) from device location
+  Future<String?> getUserCountryIsoCode() async {
+    try {
+      final Placemark? placemark = await getUserPlacemark();
+      if (placemark != null && placemark.isoCountryCode != null && placemark.isoCountryCode!.isNotEmpty) {
+        _logger.d('Country ISO obtained: ${placemark.isoCountryCode}');
+        return placemark.isoCountryCode;
+      }
+      return null;
+    } catch (e) {
+      _logger.e('Error getting user country ISO: $e');
+      return null;
+    }
+  }
+
   /// Mandatory location permission check - app cannot proceed without it
   /// Returns true if permission is granted, false otherwise
   /// Shows dialog to open settings if permission is denied forever

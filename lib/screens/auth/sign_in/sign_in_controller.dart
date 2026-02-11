@@ -13,13 +13,16 @@ import 'package:streamit_laravel/screens/dashboard/dashboard_screen.dart';
 
 import 'package:streamit_laravel/network/auth_apis.dart';
 import '../../../configs.dart';
+import '../../../location_api.dart';
 import '../../../main.dart';
 import '../../../utils/app_common.dart';
+import '../../../utils/country_picker/country_utils.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/common_base.dart';
 import '../../../utils/extension/get_x_extention.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/country_picker/country_code.dart';
+import '../../../utils/country_picker/country_list.dart';
 import '../../../utils/extension/string_extention.dart';
 import '../../../utils/firebase_phone_auth/firebase_auth_util.dart';
 import '../../../utils/firebase_phone_auth/firebase_excauth_exception_utils.dart';
@@ -83,9 +86,23 @@ class SignInController extends GetxController {
   }
 
   Future<void> init() async {
-    if (await isIqonicProduct) {
-      phoneCont.text = Constants.demoNumber;
-      getBtnEnable();
+    await _setCountryFromLocation();
+    getBtnEnable();
+  }
+
+  Future<void> _setCountryFromLocation() async {
+    try {
+      final String? isoCode = await LocationApi().getUserCountryIsoCode();
+      if (isoCode != null && isoCode.length == 2) {
+        final CountryModel? cm = getCountryByIsoCode(isoCode.toUpperCase());
+        if (cm != null) {
+          final Country country = Country.from(json: cm.toJson());
+          selectedCountry(country);
+          countryCode("+${country.phoneCode}");
+        }
+      }
+    } catch (_) {
+      // Keep default (India) on failure
     }
   }
 
@@ -106,53 +123,9 @@ class SignInController extends GetxController {
     }
   }
 
-  Future<void> isDemoUser({bool verify = false}) async {
-    if (Get.isBottomSheetOpen ?? false) return;
-    isLoading(true);
-
-    Future.delayed(
-      const Duration(seconds: 2),
-      () {
-        if (verify) {
-          isOTPVerify(true);
-          isLoading(false);
-          phoneSignIn();
-        } else {
-          if (Get.isBottomSheetOpen ?? false) {
-            isLoading(false);
-            return;
-          }
-          isOTPSent(true);
-          verificationId('');
-          mobileNo(phoneCont.text);
-          countryCode(countryCode.value);
-          initializeCodeResendTimer;
-          isLoading(false);
-          Get.bottomSheet(
-            isDismissible: false,
-            enableDrag: false,
-            BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-              child: OTPVerifyComponent(
-                mobileNo: "$countryCode${phoneCont.text}",
-              ),
-            ),
-          );
-        }
-      },
-    );
-  }
-
   Future<void> checkIfDemoUser(
       {bool verify = false, required VoidCallback callBack,}) async {
-    if (phoneCont.text.trim() == Constants.demoNumber) {
-      verificationCode('123456');
-      verifyCont.text = '123456';
-      isOTPVerify(true);
-      isDemoUser(verify: verify);
-    } else {
-      callBack.call();
-    }
+    callBack.call();
   }
 
   void resetOTPState() {
@@ -196,9 +169,7 @@ class SignInController extends GetxController {
             Future.delayed(const Duration(milliseconds: 200), () {
               // Open OTP sheet only once (in case multiple onCodeSent fired)
               if (Get.isBottomSheetOpen ?? false) return;
-              if (phoneCont.text.trim() != Constants.demoNumber) {
-                resetOTPState();
-              }
+              resetOTPState();
 
               Get.bottomSheet(
                 isDismissible: false,
@@ -214,9 +185,7 @@ class SignInController extends GetxController {
           },
           /*  onTimeout: () {
             Future.delayed(const Duration(milliseconds: 200), () {
-              if (phoneCont.text.trim() != Constants.demoNumber) {
-                resetOTPState();
-              }
+              resetOTPState();
 
               Get.bottomSheet(
                 isDismissible: false,
@@ -330,7 +299,7 @@ class SignInController extends GetxController {
                 Get.safeBack();
                 // Loading dialog UPAR dikhne ke liye (client request)
                 Get.dialog(
-                  Center(
+                  const Center(
                     child: CircularProgressIndicator(color: Colors.white),
                   ),
                   barrierDismissible: false,
@@ -481,9 +450,7 @@ class SignInController extends GetxController {
         },
         /* onTimeout: () {
           Future.delayed(const Duration(milliseconds: 200), () {
-            if (phoneCont.text.trim() != Constants.demoNumber) {
-              resetOTPState();
-            }
+            resetOTPState();
 
             Get.bottomSheet(
               isDismissible: false,

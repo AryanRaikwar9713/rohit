@@ -132,7 +132,7 @@ class VammisProfileApi {
       final head = await DB().getHeaderForRow();
       final UserData? currentUser = await DB().getUser();
 
-      final String url = 'https://app.wamims.world/public/social/follow_api.php';
+      const String url = 'https://app.wamims.world/public/social/follow_api.php';
 
       final response = await http.post(
         Uri.parse(url),
@@ -181,7 +181,7 @@ class VammisProfileApi {
     try {
       final head = await DB().getHeaderForRow();
 
-      final String url = 'https://app.wamims.world/public/social/wamims_profile.php';
+      const String url = 'https://app.wamims.world/public/social/wamims_profile.php';
 
       // If no file_url is provided, use a static string
       final fileUrlToSend = fileUrl ?? 'default_avatar.jpg';
@@ -230,7 +230,7 @@ class VammisProfileApi {
     required void Function(Map<String, dynamic>) onSuccess,
   }) async {
     try {
-      final String uri = 'https://app.wamims.world/public/social/wamims_profile.php';
+      const String uri = 'https://app.wamims.world/public/social/wamims_profile.php';
 
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();

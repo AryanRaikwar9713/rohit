@@ -20,7 +20,7 @@ class StoryApi {
   {
     try {
       // String uri = 'https://app.wamims.world/public/social/story_api.php?action=create_story';
-      final String uri =
+      const String uri =
           'https://app.wamims.world/public/social/story_api.php?action=create_story';
 
       final head = await DB().getHeaderForForm();
@@ -62,7 +62,7 @@ class StoryApi {
   }) async
   {
     try {
-      final String uri = 'https://app.wamims.world/public/social/story_api.php?action=get_stories';
+      const String uri = 'https://app.wamims.world/public/social/story_api.php?action=get_stories';
 
       final head = await DB().getHeaderForForm();
 
@@ -94,7 +94,7 @@ class StoryApi {
     try
         {
           final String? t = await DB.getUserToke();
-          final String uri = 'https://app.wamims.world/social/my_stories_api.php';
+          const String uri = 'https://app.wamims.world/social/my_stories_api.php';
 
           final head = await DB().getHeaderForForm();
 

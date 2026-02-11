@@ -284,7 +284,7 @@ class WatchingProfileController extends GetxController {
         }
       });
     } catch (e) {
-      toast('Error: ${e}');
+      toast('Error: $e');
     } finally {
       isLoading(false);
     }
