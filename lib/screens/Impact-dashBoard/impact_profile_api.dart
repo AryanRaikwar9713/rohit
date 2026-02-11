@@ -36,7 +36,7 @@ class ImpactProfileApi {
       final head = await DB().getHeaderForRow();
       final UserData? userId = await DB().getUser();
 
-      final String url =
+      const String url =
           'https://app.wamims.world/public/social/impact/create_crowdfunding_account.php';
 
       Logger().i('Creating Impact Profile for user: ${userId?.id}');

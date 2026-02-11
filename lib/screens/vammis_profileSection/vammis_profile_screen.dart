@@ -470,7 +470,6 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () {
-                      // Message button
                       toast('Message feature coming soon');
                     },
                     style: OutlinedButton.styleFrom(
@@ -485,20 +484,6 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                OutlinedButton(
-                  onPressed: () {
-                    // More options
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.grey.shade700),
-                    padding: const EdgeInsets.all(12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Icon(Icons.arrow_drop_down, color: Colors.white),
                 ),
               ],
             ),

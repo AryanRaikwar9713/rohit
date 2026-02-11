@@ -58,7 +58,6 @@ class ShimmerComingSoon extends StatelessWidget {
                     ).paddingOnly(left: 16),
                     24.height,
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const ShimmerWidget(
                           height: Constants.shimmerTextSize,

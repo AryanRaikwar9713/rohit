@@ -40,7 +40,6 @@ class WalkThroughScreen extends StatelessWidget {
         child: SafeArea(
           child: Obx(
             () => Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 8.height,
                 if (walkThroughCont.currentPosition.value == walkThroughCont.pages.length)

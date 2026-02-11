@@ -81,7 +81,6 @@ class RecentSearchScreen extends StatelessWidget {
                       ),
                       20.width,
                       Marquee(
-                        textDirection: TextDirection.ltr,
                         directionMarguee: DirectionMarguee.oneDirection,
                         child: Text(
                           searchItem.searchQuery,

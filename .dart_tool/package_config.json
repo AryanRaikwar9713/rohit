@@ -3,7 +3,7 @@
   "packages": [
     {
       "name": "_flutterfire_internals",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/_flutterfire_internals-1.3.61",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/_flutterfire_internals-1.3.66",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -111,13 +111,13 @@
     },
     {
       "name": "cross_file",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/cross_file-0.3.4+2",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/cross_file-0.3.5+2",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "3.8"
     },
     {
       "name": "crypto",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/crypto-3.0.6",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/crypto-3.0.7",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -135,7 +135,7 @@
     },
     {
       "name": "dbus",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/dbus-0.7.11",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/dbus-0.7.12",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
@@ -153,7 +153,7 @@
     },
     {
       "name": "equatable",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/equatable-2.0.7",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/equatable-2.0.8",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -177,7 +177,7 @@
     },
     {
       "name": "ffi",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/ffi-2.1.4",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/ffi-2.1.5",
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
@@ -195,91 +195,91 @@
     },
     {
       "name": "file_selector_linux",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/file_selector_linux-0.9.3+2",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/file_selector_linux-0.9.4",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "3.8"
     },
     {
       "name": "file_selector_macos",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/file_selector_macos-0.9.4+4",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/file_selector_macos-0.9.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "file_selector_platform_interface",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/file_selector_platform_interface-2.7.0",
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
     {
-      "name": "file_selector_platform_interface",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/file_selector_platform_interface-2.6.2",
-      "packageUri": "lib/",
-      "languageVersion": "3.0"
-    },
-    {
       "name": "file_selector_windows",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/file_selector_windows-0.9.3+4",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/file_selector_windows-0.9.3+5",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "3.8"
     },
     {
       "name": "firebase_auth",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_auth-6.0.2",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_auth-6.1.4",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_auth_platform_interface",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_auth_platform_interface-8.1.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_auth_platform_interface-8.1.6",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_auth_web",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_auth_web-6.0.2",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_auth_web-6.1.2",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "firebase_core",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_core-4.1.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_core-4.4.0",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_core_platform_interface",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_core_platform_interface-6.0.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_core_platform_interface-6.0.2",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_core_web",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_core_web-3.1.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_core_web-3.4.0",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "firebase_crashlytics",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.0.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.0.7",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_crashlytics_platform_interface",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_crashlytics_platform_interface-3.8.12",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_crashlytics_platform_interface-3.8.17",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_messaging",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_messaging-16.0.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.1",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_messaging_platform_interface",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_messaging_platform_interface-4.7.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_messaging_platform_interface-4.7.6",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_messaging_web",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_messaging_web-4.0.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/firebase_messaging_web-4.1.2",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -309,13 +309,13 @@
     },
     {
       "name": "flutter_chrome_cast",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_chrome_cast-1.2.4",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_chrome_cast-1.3.1",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
     {
       "name": "flutter_custom_tabs",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_custom_tabs-2.4.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_custom_tabs-2.4.1",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -327,7 +327,7 @@
     },
     {
       "name": "flutter_custom_tabs_ios",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_custom_tabs_ios-2.4.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_custom_tabs_ios-2.4.1",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -345,7 +345,7 @@
     },
     {
       "name": "flutter_file_downloader",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_file_downloader-2.1.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_file_downloader-2.1.1",
       "packageUri": "lib/",
       "languageVersion": "2.15"
     },
@@ -363,9 +363,9 @@
     },
     {
       "name": "flutter_inappwebview_internal_annotations",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_inappwebview_internal_annotations-1.2.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_inappwebview_internal_annotations-1.3.0",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.7"
     },
     {
       "name": "flutter_inappwebview_ios",
@@ -411,7 +411,7 @@
     },
     {
       "name": "flutter_local_notifications",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_local_notifications-19.4.2",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_local_notifications-19.5.0",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -453,9 +453,9 @@
     },
     {
       "name": "flutter_plugin_android_lifecycle",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.30",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.33",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.9"
     },
     {
       "name": "flutter_spinkit",
@@ -465,15 +465,15 @@
     },
     {
       "name": "flutter_stripe",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_stripe-12.0.2",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_stripe-12.2.0",
       "packageUri": "lib/",
       "languageVersion": "3.8"
     },
     {
       "name": "flutter_svg",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_svg-2.2.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/flutter_svg-2.2.3",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.8"
     },
     {
       "name": "flutter_svg_provider",
@@ -567,7 +567,7 @@
     },
     {
       "name": "geolocator_linux",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/geolocator_linux-0.2.3",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/geolocator_linux-0.2.4",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
@@ -591,7 +591,7 @@
     },
     {
       "name": "get",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/get-4.7.2",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/get-4.7.3",
       "packageUri": "lib/",
       "languageVersion": "2.15"
     },
@@ -603,9 +603,9 @@
     },
     {
       "name": "google_fonts",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/google_fonts-6.3.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/google_fonts-6.3.3",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.9"
     },
     {
       "name": "google_identity_services_web",
@@ -627,15 +627,15 @@
     },
     {
       "name": "google_sign_in_android",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/google_sign_in_android-7.1.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/google_sign_in_android-7.2.7",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.9"
     },
     {
       "name": "google_sign_in_ios",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/google_sign_in_ios-6.2.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/google_sign_in_ios-6.2.5",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.9"
     },
     {
       "name": "google_sign_in_platform_interface",
@@ -663,7 +663,7 @@
     },
     {
       "name": "http",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/http-1.5.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/http-1.6.0",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -675,33 +675,33 @@
     },
     {
       "name": "image",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/image-4.5.4",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/image-4.7.2",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "image_picker",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/image_picker-1.2.0",
-      "packageUri": "lib/",
-      "languageVersion": "3.6"
-    },
-    {
-      "name": "image_picker_android",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/image_picker_android-0.8.13+1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/image_picker-1.2.1",
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
     {
-      "name": "image_picker_for_web",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/image_picker_for_web-3.1.0",
+      "name": "image_picker_android",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/image_picker_android-0.8.13+13",
       "packageUri": "lib/",
-      "languageVersion": "3.6"
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "image_picker_for_web",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/image_picker_for_web-3.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
     },
     {
       "name": "image_picker_ios",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/image_picker_ios-0.8.13",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/image_picker_ios-0.8.13+3",
       "packageUri": "lib/",
-      "languageVersion": "3.6"
+      "languageVersion": "3.9"
     },
     {
       "name": "image_picker_linux",
@@ -711,15 +711,15 @@
     },
     {
       "name": "image_picker_macos",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/image_picker_macos-0.2.2",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/image_picker_macos-0.2.2+1",
       "packageUri": "lib/",
-      "languageVersion": "3.6"
+      "languageVersion": "3.9"
     },
     {
       "name": "image_picker_platform_interface",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/image_picker_platform_interface-2.11.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/image_picker_platform_interface-2.11.1",
       "packageUri": "lib/",
-      "languageVersion": "3.6"
+      "languageVersion": "3.7"
     },
     {
       "name": "image_picker_windows",
@@ -735,9 +735,9 @@
     },
     {
       "name": "json_annotation",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/json_annotation-4.9.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/json_annotation-4.10.0",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.9"
     },
     {
       "name": "leak_tracker",
@@ -759,7 +759,7 @@
     },
     {
       "name": "lints",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/lints-6.0.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/lints-6.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.8"
     },
@@ -777,9 +777,9 @@
     },
     {
       "name": "lottie",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/lottie-3.3.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/lottie-3.3.2",
       "packageUri": "lib/",
-      "languageVersion": "3.6"
+      "languageVersion": "3.9"
     },
     {
       "name": "marquee",
@@ -801,7 +801,7 @@
     },
     {
       "name": "media_kit",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/media_kit-1.2.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/media_kit-1.2.6",
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },
@@ -831,7 +831,7 @@
     },
     {
       "name": "media_kit_libs_video",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/media_kit_libs_video-1.0.6",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/media_kit_libs_video-1.0.7",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
@@ -861,7 +861,7 @@
     },
     {
       "name": "mobile_scanner",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/mobile_scanner-7.0.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/mobile_scanner-7.1.4",
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
@@ -885,7 +885,7 @@
     },
     {
       "name": "package_info_plus",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/package_info_plus-8.3.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/package_info_plus-9.0.0",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -915,15 +915,15 @@
     },
     {
       "name": "path_provider_android",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/path_provider_android-2.2.18",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/path_provider_android-2.2.22",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.9"
     },
     {
       "name": "path_provider_foundation",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.2",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/path_provider_foundation-2.5.1",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.9"
     },
     {
       "name": "path_provider_linux",
@@ -1017,13 +1017,13 @@
     },
     {
       "name": "purchases_flutter",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/purchases_flutter-9.6.2",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/purchases_flutter-9.11.0",
       "packageUri": "lib/",
       "languageVersion": "3.6"
     },
     {
       "name": "razorpay_flutter",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/razorpay_flutter-1.4.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/razorpay_flutter-1.4.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -1035,7 +1035,7 @@
     },
     {
       "name": "safe_local_storage",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/safe_local_storage-2.0.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/safe_local_storage-2.0.3",
       "packageUri": "lib/",
       "languageVersion": "2.16"
     },
@@ -1053,7 +1053,7 @@
     },
     {
       "name": "screen_protector",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/screen_protector-1.4.2+1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/screen_protector-1.5.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -1071,21 +1071,21 @@
     },
     {
       "name": "shared_preferences",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/shared_preferences-2.5.3",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/shared_preferences-2.5.4",
       "packageUri": "lib/",
-      "languageVersion": "3.5"
+      "languageVersion": "3.9"
     },
     {
       "name": "shared_preferences_android",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.12",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.20",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.9"
     },
     {
       "name": "shared_preferences_foundation",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/shared_preferences_foundation-2.5.4",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/shared_preferences_foundation-2.5.6",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "3.9"
     },
     {
       "name": "shared_preferences_linux",
@@ -1125,7 +1125,7 @@
     },
     {
       "name": "source_span",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/source_span-1.10.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/source_span-1.10.2",
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },
@@ -1148,12 +1148,6 @@
       "languageVersion": "3.0"
     },
     {
-      "name": "sprintf",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/sprintf-7.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "sqflite",
       "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/sqflite-2.4.2",
       "packageUri": "lib/",
@@ -1161,9 +1155,9 @@
     },
     {
       "name": "sqflite_android",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/sqflite_android-2.4.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+2",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.9"
     },
     {
       "name": "sqflite_common",
@@ -1203,19 +1197,19 @@
     },
     {
       "name": "stripe_android",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/stripe_android-12.0.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/stripe_android-12.2.0",
       "packageUri": "lib/",
       "languageVersion": "3.8"
     },
     {
       "name": "stripe_ios",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/stripe_ios-12.0.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/stripe_ios-12.2.0",
       "packageUri": "lib/",
       "languageVersion": "3.8"
     },
     {
       "name": "stripe_platform_interface",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/stripe_platform_interface-12.0.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/stripe_platform_interface-12.2.0",
       "packageUri": "lib/",
       "languageVersion": "3.8"
     },
@@ -1263,21 +1257,21 @@
     },
     {
       "name": "unicode",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/unicode-1.1.8",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/unicode-1.1.9",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "universal_html",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/universal_html-2.2.4",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/universal_html-2.2.5",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.7"
     },
     {
       "name": "universal_io",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/universal_io-2.2.2",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/universal_io-2.2.3",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.7"
     },
     {
       "name": "universal_platform",
@@ -1287,9 +1281,9 @@
     },
     {
       "name": "uri_parser",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/uri_parser-3.0.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/uri_parser-3.0.2",
       "packageUri": "lib/",
-      "languageVersion": "2.16"
+      "languageVersion": "3.0"
     },
     {
       "name": "url_launcher",
@@ -1299,27 +1293,27 @@
     },
     {
       "name": "url_launcher_android",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.20",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.28",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.9"
     },
     {
       "name": "url_launcher_ios",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/url_launcher_ios-6.3.4",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/url_launcher_ios-6.3.6",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.9"
     },
     {
       "name": "url_launcher_linux",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/url_launcher_linux-3.2.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/url_launcher_linux-3.2.2",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "3.8"
     },
     {
       "name": "url_launcher_macos",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/url_launcher_macos-3.2.3",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/url_launcher_macos-3.2.5",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.9"
     },
     {
       "name": "url_launcher_platform_interface",
@@ -1335,13 +1329,13 @@
     },
     {
       "name": "url_launcher_windows",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/url_launcher_windows-3.1.4",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/url_launcher_windows-3.1.5",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "3.8"
     },
     {
       "name": "uuid",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/uuid-4.5.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/uuid-4.5.2",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -1359,9 +1353,9 @@
     },
     {
       "name": "vector_graphics_compiler",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/vector_graphics_compiler-1.1.19",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/vector_graphics_compiler-1.1.20",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.9"
     },
     {
       "name": "vector_math",
@@ -1371,27 +1365,27 @@
     },
     {
       "name": "video_player",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/video_player-2.10.0",
-      "packageUri": "lib/",
-      "languageVersion": "3.6"
-    },
-    {
-      "name": "video_player_android",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/video_player_android-2.8.13",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/video_player-2.10.1",
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
     {
-      "name": "video_player_avfoundation",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/video_player_avfoundation-2.8.4",
+      "name": "video_player_android",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/video_player_android-2.9.1",
       "packageUri": "lib/",
-      "languageVersion": "3.6"
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "video_player_avfoundation",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/video_player_avfoundation-2.8.9",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
     },
     {
       "name": "video_player_platform_interface",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/video_player_platform_interface-6.4.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/video_player_platform_interface-6.6.0",
       "packageUri": "lib/",
-      "languageVersion": "3.6"
+      "languageVersion": "3.7"
     },
     {
       "name": "video_player_web",
@@ -1401,19 +1395,19 @@
     },
     {
       "name": "vm_service",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/vm_service-15.0.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/vm_service-15.0.2",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "3.5"
     },
     {
       "name": "volume_controller",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/volume_controller-3.4.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/volume_controller-3.4.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "wakelock_plus",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/wakelock_plus-1.3.3",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/wakelock_plus-1.4.0",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -1431,15 +1425,15 @@
     },
     {
       "name": "webview_flutter",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/webview_flutter-4.13.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/webview_flutter-4.13.1",
       "packageUri": "lib/",
-      "languageVersion": "3.6"
+      "languageVersion": "3.8"
     },
     {
       "name": "webview_flutter_android",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/webview_flutter_android-4.10.1",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/webview_flutter_android-4.10.11",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.9"
     },
     {
       "name": "webview_flutter_platform_interface",
@@ -1449,13 +1443,13 @@
     },
     {
       "name": "webview_flutter_wkwebview",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/webview_flutter_wkwebview-3.23.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/webview_flutter_wkwebview-3.23.6",
       "packageUri": "lib/",
-      "languageVersion": "3.6"
+      "languageVersion": "3.9"
     },
     {
       "name": "win32",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/win32-5.14.0",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/win32-5.15.0",
       "packageUri": "lib/",
       "languageVersion": "3.8"
     },
@@ -1491,7 +1485,7 @@
     },
     {
       "name": "youtube_explode_dart",
-      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/youtube_explode_dart-2.5.2",
+      "rootUri": "file:///Users/pro/.pub-cache/hosted/pub.dev/youtube_explode_dart-2.5.3",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },

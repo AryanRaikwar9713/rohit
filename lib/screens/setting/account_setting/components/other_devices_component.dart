@@ -27,7 +27,6 @@ class OtherDevicesComponent extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               locale.value.otherDevices,

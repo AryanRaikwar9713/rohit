@@ -44,6 +44,8 @@ class BoaltWalletController extends GetxController
   void _init(){
     getDashBoardData();
     getTransectiom(refresh:  true);
+    // Pre-load AdMob rewarded ad so it's ready when user taps
+    AdMobRewardedAdHelper.loadRewardedAd();
   }
 
 
@@ -270,20 +272,16 @@ class BoaltWalletController extends GetxController
       return;
     }
     
-    if (!AdMobRewardedAdHelper.isRewardedAdReady) {
-      toast('Ad is not ready yet. Please wait...');
-      AdMobRewardedAdHelper.loadRewardedAd();
-      return;
-    }
-    
     try {
       isWatchingAd.value = true;
+      if (!AdMobRewardedAdHelper.isRewardedAdReady) {
+        toast('Loading ad, please wait...');
+      }
       
-      // Show AdMob rewarded ad
-      AdMobRewardedAdHelper.showRewardedAd(
+      // Show AdMob rewarded ad (will load and wait if not ready)
+      final shown = await AdMobRewardedAdHelper.showRewardedAd(
         onRewardReceived: () async {
           Logger().i('AdMob Reward received, calling API...');
-          // Call API to reward 0.01 bolt
           await BoltApi().watchAdRewardBolt(
             onError: (e) {
               Logger().e('Error rewarding bolt: $e');
@@ -291,19 +289,19 @@ class BoaltWalletController extends GetxController
               isWatchingAd.value = false;
             },
             onFailure: (response) {
-              Logger().e('Failed to reward bolt: ${response.statusCode}');
+              Logger().e('Reward API failed: ${response.statusCode} - ${response.body}');
               try {
                 final error = jsonDecode(response.body);
-                toast(error['message'] ?? 'Failed to reward bolt');
+                final msg = error['message'] ?? 'Failed to reward bolt';
+                toast(msg);
               } catch (_) {
-                toast('Failed to reward bolt');
+                toast('Failed to reward bolt (${response.statusCode})');
               }
               isWatchingAd.value = false;
             },
             onSuccess: (data) {
               Logger().i('Bolt rewarded successfully: $data');
               toast('🎉 You earned 0.01 Bolt!');
-              // Refresh wallet data
               getDashBoardData();
               getTransectiom(refresh: true);
               isWatchingAd.value = false;
@@ -311,13 +309,10 @@ class BoaltWalletController extends GetxController
           );
         },
       );
-      
-      // Reset after timeout
-      Future.delayed(const Duration(seconds: 60), () {
-        if (isWatchingAd.value) {
-          isWatchingAd.value = false;
-        }
-      });
+      if (!shown) {
+        toast('Ad not ready. Please try again or use App Lovin.');
+        isWatchingAd.value = false;
+      }
     } catch (e) {
       Logger().e('Error watching AdMob ad: $e');
       toast('Error: $e');

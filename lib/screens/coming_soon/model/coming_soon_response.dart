@@ -78,7 +78,7 @@ class ComingSoonModel {
       type: json['type'] is String ? json['type'] : "",
       language: json['language'] is String ? json['language'] : "",
       imdbRating: json['imdb_rating'] is String ? json['imdb_rating'] : '',
-      isRestricted: json['is_restricted'] is int && ((!json['is_restricted'] == 0)),
+      isRestricted: json['is_restricted'] is int && (!json['is_restricted'] == 0),
       contentRating: json['content_rating'] is String ? json['content_rating'] : "",
       thumbnailImage: json['thumbnail_image'] is String ? json['thumbnail_image'] : "",
       trailerUrl: json['trailer_url'] is String ? json['trailer_url'] : "",

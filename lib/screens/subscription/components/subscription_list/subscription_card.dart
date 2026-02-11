@@ -54,7 +54,6 @@ class SubscriptionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   if (planDet.discountPercentage > 0)
                     Container(
@@ -90,7 +89,6 @@ class SubscriptionCard extends StatelessWidget {
               ),
               if (planDet.discountPercentage > 0) 8.height,
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   PriceWidget(
                     isDiscountedPrice: planDet.discountPercentage > 0,
@@ -159,7 +157,6 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
   return Column(
     children: [
       Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CachedImageWidget(
             url: getIcons(title: planType.slug),
@@ -187,7 +184,6 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
       if (planType.slug == SubscriptionTitle.deviceLimit && planType.limitationValue.getBoolInt() && planType.limit.value.isNotEmpty)
         ULWidget(
           titleWidget: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CachedImageWidget(
                 url: getIcons(title: planType.slug),
@@ -214,7 +210,6 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
       if (planType.slug == SubscriptionTitle.videoCast && planType.limitationValue.getBoolInt())
         ULWidget(
           titleWidget: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CachedImageWidget(
                 url: getIcons(title: planType.slug),
@@ -241,7 +236,6 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
       if (planType.slug == SubscriptionTitle.ads)
         ULWidget(
           titleWidget: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CachedImageWidget(
                 url: getIcons(title: planType.slug),
@@ -268,7 +262,6 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
       if (planType.slug == SubscriptionTitle.supportedDeviceType && planType.limitationValue.getBoolInt())
         ULWidget(
           titleWidget: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CachedImageWidget(
                 url: getIcons(title: planType.slug),
@@ -313,7 +306,6 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
       if (planType.slug == SubscriptionTitle.profileLimit && planType.limit.value.isNotEmpty && planType.limitationValue.getBoolInt())
         ULWidget(
           titleWidget: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CachedImageWidget(
                 url: getIcons(title: planType.slug),
@@ -340,7 +332,6 @@ Widget subscriptionBenefitsTile({required PlanType planType}) {
       if (planType.slug == SubscriptionTitle.downloadStatus && planType.limitationValue.getBoolInt())
         ULWidget(
           titleWidget: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CachedImageWidget(
                 url: getIcons(title: planType.slug),

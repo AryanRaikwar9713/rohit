@@ -226,12 +226,12 @@ class ConfigurationResponse {
           ? json['application_language']
           : "",
       status: json['status'] is bool ? json['status'] : false,
-      enableMovie: json['enable_movie'] is int && ((json['enable_movie'] == 1)),
-      enableTvShow: json['enable_tvshow'] is int && ((json['enable_tvshow'] == 1)),
-      enableLiveTv: json['enable_livetv'] is int && ((json['enable_livetv'] == 1)),
-      enableVideo: json['enable_video'] is int && ((json['enable_video'] == 1)),
-      enableContinueWatch: json['continue_watch'] is int && ((json['continue_watch'] == 1)),
-      enableRateUs: json['enable_rate_us'] is int && ((json['enable_rate_us'] == 1)),
+      enableMovie: json['enable_movie'] is int && (json['enable_movie'] == 1),
+      enableTvShow: json['enable_tvshow'] is int && (json['enable_tvshow'] == 1),
+      enableLiveTv: json['enable_livetv'] is int && (json['enable_livetv'] == 1),
+      enableVideo: json['enable_video'] is int && (json['enable_video'] == 1),
+      enableContinueWatch: json['continue_watch'] is int && (json['continue_watch'] == 1),
+      enableRateUs: json['enable_rate_us'] is int && (json['enable_rate_us'] == 1),
       taxPercentage: json['tax'] is List
           ? List<Tax>.from(json['tax'].map((x) => Tax.fromJson(x)))
           : [],
@@ -502,7 +502,7 @@ class Currency {
   });
 
   factory Currency.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return Currency(currencySymbol: "Bolts");
+    if (json == null) return Currency();
     return Currency(
       currencyName: json['currency_name'] is String ? json['currency_name'] as String : "Bolt",
       currencySymbol: json['currency_symbol'] is String ? json['currency_symbol'] as String : "Bolts",

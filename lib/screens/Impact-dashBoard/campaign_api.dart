@@ -18,7 +18,7 @@ class MyCampaignApi {
       final head = await DB().getHeaderForRow();
       final UserData? userId = await DB().getUser();
 
-      final String url =
+      const String url =
           'https://app.wamims.world/public/social/impact/submit_project_fixed.php?action=get_categories';
 
       Logger().i('Fetching Campaign Categories for user: ${userId?.id}');
@@ -64,17 +64,18 @@ class MyCampaignApi {
     required void Function(Map<String, dynamic>) onSuccess,
   }) async {
     try {
-      final head = await DB().getHeaderForRow();
+      // Use getHeaderForForm - no Content-Type (multipart needs auto boundary)
+      final head = await DB().getHeaderForForm();
       final UserData? userId = await DB().getUser();
 
-      final String url =
+      const String url =
           'https://app.wamims.world/public/social/impact/submit_project_fixed.php';
 
       Logger().i('Creating Campaign for user: ${userId?.id}');
 
       final request = http.MultipartRequest('POST', Uri.parse(url));
 
-      // Add headers
+      // Add headers (Authorization only - do NOT set Content-Type for multipart)
       request.headers.addAll(head ?? {});
 
       // Add form fields

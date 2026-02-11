@@ -140,7 +140,7 @@ class _SocialSearchScreenState extends State<SocialSearchScreen> {
       return const SizedBox();
     }
 
-    final results = _searchResults!.data!.results!;
+    final results = _searchResults!.data!.results ?? [];
     
     if (results.isEmpty) {
       return Center(
