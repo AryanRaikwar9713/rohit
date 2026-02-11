@@ -16,7 +16,7 @@ class PushNotificationService {
     try {
       final NotificationSettings settings =
           await FirebaseMessaging.instance.requestPermission(
-        badge: true,
+        
       );
 
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
@@ -215,7 +215,7 @@ class PushNotificationService {
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
 
-    final androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+    const androidPlatformChannelSpecifics = AndroidNotificationDetails(
       FirebaseMsgConst.notificationChannelIdKey,
       FirebaseMsgConst.notificationChannelNameKey,
       importance: Importance.high,
@@ -226,7 +226,7 @@ class PushNotificationService {
       icon: '@drawable/ic_stat_ic_notification',
     );
 
-    final darwinPlatformChannelSpecifics = const DarwinNotificationDetails(
+    const darwinPlatformChannelSpecifics = DarwinNotificationDetails(
       presentSound: true,
       presentBanner: true,
       presentBadge: true,

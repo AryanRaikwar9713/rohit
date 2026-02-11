@@ -30,7 +30,6 @@ class RegisterMobileComponent extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 locale.value.registeredMobileNumber.capitalizeEachWord(),

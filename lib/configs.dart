@@ -28,6 +28,11 @@ const APP_APPSTORE_URL = '';
 const bool ENABLE_POINT_WALLET_SYSTEM =
     false; // Set to true to enable Point Wallet tab
 
+/// Version 1: false = hide point system completely. Only Bolt (from rewarded ads) shown.
+/// Version 2: true = enable point/bolt earnings from social, reels, etc.
+const bool ENABLE_POINT_EARNINGS_SYSTEM =
+    false; // false for v1: only bolt from ads; true for v2: points+bolt from social/reels
+
 ///LOCAL VIDEO TYPE URL
 const LOCAL_VIDEO_DOMAIN_URL = '$DOMAIN_URL/storage/streamit-laravel/';
 
@@ -70,7 +75,7 @@ const IOS_NATIVE_AD_ID = "ca-app-pub-3940256099942544/3986624511";
 // "client_id" in same object has be pasted here
 
 const FIREBASE_SERVER_CLIENT_ID =
-    '228110272023-e67prudmcahjliotdej9skm13rbm7pkq.apps.googleusercontent.com';
+    '228110272023-dhnin6t8nvlj5edf7j09uimtu3l2dit7.apps.googleusercontent.com';
 
 //region defaultCountry
 Country get defaultCountry => Country(

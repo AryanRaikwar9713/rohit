@@ -17,6 +17,8 @@ class AdLovinHelper {
 
   static bool isInterstitialReady = false;
   static bool isRewardedReady = false;
+  static bool _isRewardedLoading = false;
+  static bool _isInterstitialLoading = false;
 
   static Future<void> initialize() async {
     print("🚀 Initializing AppLovin MAX...");
@@ -78,14 +80,17 @@ class AdLovinHelper {
           print("✅ Interstitial LOADED");
           print("   🧪 TEST MODE: This is a test ad");
           isInterstitialReady = true;
+          _isInterstitialLoading = false;
         },
         onAdLoadFailedCallback: (String adUnitId, MaxError error) {
           print("Interstitial FAILED: ${error.message}");
           isInterstitialReady = false;
+          _isInterstitialLoading = false;
           
           // Check if it's a network error by message
           final isNetworkError = error.message.toLowerCase().contains('network') || 
-                                 error.message.toLowerCase().contains('unable to resolve');
+                                 error.message.toLowerCase().contains('unable to resolve') ||
+                                 error.message.toLowerCase().contains('failed to connect');
           
           if (!isNetworkError) {
             // Retry after 10 seconds for non-network errors
@@ -113,13 +118,15 @@ class AdLovinHelper {
   }
 
   static void loadInterstitial() {
+    if (_isInterstitialLoading) return;
+    _isInterstitialLoading = true;
     print("📥 Loading Interstitial Ad...");
     print("   Ad Unit ID: $interstitialAdUnitId");
     try {
       AppLovinMAX.loadInterstitial(interstitialAdUnitId);
     } catch (e) {
       print("❌ Error loading interstitial ad: $e");
-      // Retry after 3 seconds
+      _isInterstitialLoading = false;
       Future.delayed(const Duration(seconds: 3), loadInterstitial);
     }
   }
@@ -143,6 +150,7 @@ class AdLovinHelper {
           print("   Creative ID: ${ad.creativeId}");
           print("   🧪 TEST MODE: This is a test ad");
           isRewardedReady = true;
+          _isRewardedLoading = false;
         },
         onAdLoadFailedCallback: (String adUnitId, MaxError error) {
           print("❌ Rewarded Ad FAILED to Load");
@@ -151,19 +159,19 @@ class AdLovinHelper {
           print("   Error Message: ${error.message}");
           print("   Waterfall: ${error.waterfall}");
           isRewardedReady = false;
+          _isRewardedLoading = false;
           
           // Check if it's a network error by message
           final isNetworkError = error.message.toLowerCase().contains('network') || 
-                                 error.message.toLowerCase().contains('unable to resolve');
+                                 error.message.toLowerCase().contains('unable to resolve') ||
+                                 error.message.toLowerCase().contains('failed to connect');
           
           if (!isNetworkError) {
-            // Retry after 10 seconds for non-network errors
             Future.delayed(const Duration(seconds: 10), () {
               print("🔄 Retrying Rewarded Ad Load...");
               loadRewarded();
             });
           } else {
-            // For network errors, wait longer (30 seconds) - handled by auto-retry
             print("⚠️ Network error detected. Will retry via auto-retry mechanism.");
           }
         },
@@ -207,13 +215,15 @@ class AdLovinHelper {
   }
 
   static void loadRewarded() {
+    if (_isRewardedLoading) return;
+    _isRewardedLoading = true;
     print("📥 Loading Rewarded Ad...");
     print("   Ad Unit ID: $rewardedAdUnitId");
     try {
       AppLovinMAX.loadRewardedAd(rewardedAdUnitId);
     } catch (e) {
       print("❌ Error loading rewarded ad: $e");
-      // Retry after 3 seconds
+      _isRewardedLoading = false;
       Future.delayed(const Duration(seconds: 3), loadRewarded);
     }
   }
@@ -224,13 +234,13 @@ class AdLovinHelper {
     // Cancel existing timer if any
     _retryTimer?.cancel();
     
-    // Check every 30 seconds (reduced from 10) if ads are loaded, if not, retry
-    _retryTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
-      if (!isRewardedReady) {
+    // Check every 45 seconds - avoid "ad already loading" by respecting loading flags
+    _retryTimer = Timer.periodic(const Duration(seconds: 45), (timer) {
+      if (!isRewardedReady && !_isRewardedLoading) {
         print("🔄 Rewarded ad still not ready, retrying...");
         loadRewarded();
       }
-      if (!isInterstitialReady) {
+      if (!isInterstitialReady && !_isInterstitialLoading) {
         print("🔄 Interstitial ad still not ready, retrying...");
         loadInterstitial();
       }

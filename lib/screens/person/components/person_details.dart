@@ -31,7 +31,6 @@ class PersonDetailsWidget extends StatelessWidget {
           20.height.visible(personDet.bio.isNotEmpty),
         ],
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const CachedImageWidget(
               url: Assets.iconsIcCake,

@@ -651,7 +651,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           value: _switchOne,
                           onChanged: (v) => setState(() => _switchOne = v),
                           activeTrackColor: Colors.orange.shade400,
-                          activeColor: Colors.white,
+                          activeThumbColor: Colors.white,
                           inactiveTrackColor: Colors.grey.shade700,
                           inactiveThumbColor: Colors.grey.shade400,
                         ),

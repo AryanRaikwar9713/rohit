@@ -7,7 +7,7 @@ class BoltIconWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double exp = -5;
+    const double exp = -5;
     return SizedBox(
       height: size??24,
       width: size??24,

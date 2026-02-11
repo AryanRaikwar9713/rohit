@@ -9,6 +9,7 @@ import 'package:streamit_laravel/screens/social/comment_responce_model.dart';
 
 import 'package:streamit_laravel/screens/social/social_api.dart';
 import 'package:streamit_laravel/screens/social/social_post_responce_Model.dart';
+import 'package:streamit_laravel/configs.dart';
 import 'package:streamit_laravel/screens/walletSection/bolt/bolt_api.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_api.dart';
 
@@ -45,12 +46,14 @@ class SocialController extends GetxController {
   }
 
   void _initializeData() {
-    loadPosts(navigatorKey.currentContext!);
+    final context = navigatorKey.currentContext;
+    if (context != null) loadPosts(context);
     _loadAds();
   }
 
   Future<void> refreshData() async {
-    await loadPosts(navigatorKey.currentContext!, refresh: true);
+    final context = navigatorKey.currentContext;
+    if (context != null) await loadPosts(context, refresh: true);
     _loadAds();
   }
 
@@ -60,7 +63,6 @@ class SocialController extends GetxController {
       log('=== Testing API with User ID 1 (same as main call) ===');
       final CoreServiceApis coreApi = CoreServiceApis();
       final response = await coreApi.getSocialPosts(
-        perPage: 10,
         userId: 1,
         onError: (s) {},
         onFailure: (s) {},
@@ -132,7 +134,8 @@ class SocialController extends GetxController {
 
   Future<void> loadMorePosts() async {
     if (!hasMoreData.value || isLoading.value) return;
-    await loadPosts(navigatorKey.currentContext!);
+    final context = navigatorKey.currentContext;
+    if (context != null) await loadPosts(context);
   }
 
   void _loadAds() {
@@ -151,7 +154,7 @@ class SocialController extends GetxController {
         title: 'New Movie Release',
         description: 'Check out the latest blockbuster',
         imageUrl:
-            'https://images.unsplash.com/photo-1489599800075-2a4b3b3b3b3b?w=400&h=200&fit=crop',
+            'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400&h=200&fit=crop',
         actionText: 'Watch Now',
         actionUrl: 'https://example.com/movie',
       ),
@@ -183,7 +186,7 @@ class SocialController extends GetxController {
           post.engagement?.isLiked = isLiked;
           posts.value[postIndex] = post;
           posts.refresh();
-          if (isLiked) {
+          if (isLiked && ENABLE_POINT_EARNINGS_SYSTEM) {
             WalletApi().getPointsAndBolt(
               action: PointAction.like,
               getBolt: false,
@@ -227,17 +230,19 @@ class SocialController extends GetxController {
           posts.value[postInt] = post;
           posts.refresh();
 
-          WalletApi().getPointsAndBolt(
-            action: PointAction.comment,
-            targetId: postId,
-            getBolt: false,
-            commentId: int.parse(c.commentId ?? '0'),
-            contentType: "post",
-            onError: (e) {
-              Logger().e("Error in Comment Api $e");
-            },
-            onFailure: (s) => _handleResponce(s),
-          );
+          if (ENABLE_POINT_EARNINGS_SYSTEM) {
+            WalletApi().getPointsAndBolt(
+              action: PointAction.comment,
+              targetId: postId,
+              getBolt: false,
+              commentId: int.parse(c.commentId ?? '0'),
+              contentType: "post",
+              onError: (e) {
+                Logger().e("Error in Comment Api $e");
+              },
+              onFailure: (s) => _handleResponce(s),
+            );
+          }
         },
       );
     } catch (e) {
@@ -289,19 +294,19 @@ class SocialController extends GetxController {
           isUploadingPost.value = false;
           Get.snackbar("Success", "Post Created Successfully",
               backgroundColor: Colors.green,);
-          print("post created done callin point APi");
-          WalletApi().getPointsAndBolt(
-              action: PointAction.postUpload,
-              getBolt: false,
-              targetId: s,
-              contentType: "post",
-              onError: (d) {
-                Logger().e("asdfj0");
-              },
-              onFailure: (d) {
-                Logger().e("Error in Point Api $d");
-              },);
-          print("post created done callin point APi");
+          if (ENABLE_POINT_EARNINGS_SYSTEM) {
+            WalletApi().getPointsAndBolt(
+                action: PointAction.postUpload,
+                getBolt: false,
+                targetId: s,
+                contentType: "post",
+                onError: (d) {
+                  Logger().e("asdfj0");
+                },
+                onFailure: (d) {
+                  Logger().e("Error in Point Api $d");
+                },);
+          }
           await refreshData();
           // Only pop if user is still on the create post screen
           if (onCreatePostScreen.value) {
