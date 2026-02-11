@@ -10,6 +10,8 @@ import 'package:streamit_laravel/screens/Impact-dashBoard/campaign_api.dart';
 import 'package:streamit_laravel/screens/Impact-dashBoard/model/campain_cat_responce_model.dart';
 
 class CampaignController extends GetxController {
+  final _logger = Logger();
+
   // Form Controllers
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -297,11 +299,11 @@ class CampaignController extends GetxController {
             final msg = errorData['message'] ?? 'Failed to create campaign';
             errorMessage.value = msg;
             toast(msg);
-            Logger().e('Create campaign failed: ${response.statusCode} - ${response.body}');
+            _logger.e('Create campaign failed: ${response.statusCode} - ${response.body}');
           } catch (e) {
             errorMessage.value = 'Failed to create campaign';
             toast('Failed to create campaign (${response.statusCode})');
-            Logger().e('Create campaign failed: ${response.statusCode} - ${response.body}');
+            _logger.e('Create campaign failed: ${response.statusCode} - ${response.body}');
           }
         },
       );
