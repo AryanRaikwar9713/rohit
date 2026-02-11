@@ -65,7 +65,10 @@ class HomeController extends GetxController {
 
   Future<void> init({bool forceSync = false, bool showLoader = false, bool forceConfigSync = false}) async {
     getAppConfigurations(forceConfigSync);
-    if (appConfigs.value.enableAds.getBoolInt()) bannerLoad();
+    // Show ads when enabled (1) or when not set (-1) - only skip when explicitly 0
+    if (appConfigs.value.enableAds.getBoolInt() || appConfigs.value.enableAds == -1) {
+      bannerLoad();
+    }
     checkApiCallIsWithinTimeSpan(
       forceSync: forceSync,
       callback: () {
@@ -182,7 +185,7 @@ class HomeController extends GetxController {
       );
     }
 
-    if (appConfigs.value.enableAds.getBoolInt() && sectionList.indexWhere((element) => element.sectionType == DashboardCategoryType.advertisement).isNegative) {
+    if ((appConfigs.value.enableAds.getBoolInt() || appConfigs.value.enableAds == -1) && sectionList.indexWhere((element) => element.sectionType == DashboardCategoryType.advertisement).isNegative) {
       sectionList.add(
         CategoryListModel(
           sectionType: DashboardCategoryType.advertisement,

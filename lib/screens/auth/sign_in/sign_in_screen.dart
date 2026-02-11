@@ -47,7 +47,6 @@ class SignInScreen extends StatelessWidget {
         child: Form(
           key: signInController.signInformKey,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const AppLogoWidget(
                 size: Size(160, 160),

@@ -10,8 +10,11 @@ import 'package:streamit_laravel/screens/profile/watching_profile/watching_profi
 import 'package:streamit_laravel/utils/extension/string_extention.dart';
 
 import '../../../configs.dart';
+import '../../../location_api.dart';
 import '../../../main.dart';
 import '../../../utils/app_common.dart';
+import '../../../utils/country_picker/country_list.dart';
+import '../../../utils/country_picker/country_utils.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/common_base.dart';
 import '../../../utils/constants.dart';
@@ -47,6 +50,10 @@ class SignUpController extends GetxController {
 
   @override
   void onInit() {
+    final hasCountryFromArgs = Get.arguments != null && Get.arguments.length > 2 && Get.arguments[2] is RxString;
+    if (!hasCountryFromArgs) {
+      _setCountryFromLocation();
+    }
     if (Get.arguments != null) {
       if (Get.arguments[0] is bool) {
         isPhoneAuth(true);
@@ -61,6 +68,22 @@ class SignUpController extends GetxController {
       }
     }
     super.onInit();
+  }
+
+  Future<void> _setCountryFromLocation() async {
+    try {
+      final String? isoCode = await LocationApi().getUserCountryIsoCode();
+      if (isoCode != null && isoCode.length == 2) {
+        final CountryModel? cm = getCountryByIsoCode(isoCode.toUpperCase());
+        if (cm != null) {
+          final Country country = Country.from(json: cm.toJson());
+          selectedCountry(country);
+          countryCode("+${country.phoneCode}");
+        }
+      }
+    } catch (_) {
+      // Keep default (India) on failure
+    }
   }
 
   void setGender(String gender) {

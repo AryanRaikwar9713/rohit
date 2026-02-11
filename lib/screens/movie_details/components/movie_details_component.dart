@@ -200,7 +200,6 @@ class MovieDetailsComponent extends StatelessWidget {
             deleteReviewCallback: () {
               LiveStream().emit(podPlayerPauseKey);
               Get.bottomSheet(
-                isScrollControlled: false,
                 RemoveReviewComponent(
                   onRemoveTap: () {
                     Get.back();

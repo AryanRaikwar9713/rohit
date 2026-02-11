@@ -235,7 +235,7 @@ class _SettingScreenState extends State<SettingScreen> {
               Get.back();
               _performLogout();
             },
-            child: Text(locale.value.logout, style: TextStyle(color: appColorPrimary, fontWeight: FontWeight.w600)),
+            child: Text(locale.value.logout, style: const TextStyle(color: appColorPrimary, fontWeight: FontWeight.w600)),
           ),
         ],
       ),

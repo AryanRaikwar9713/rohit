@@ -105,7 +105,6 @@ class ReviewListScreen extends StatelessWidget {
                           },
                           deleteCallback: () {
                             Get.bottomSheet(
-                              isScrollControlled: false,
                               enableDrag: false,
                               BackdropFilter(
                                 filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
@@ -142,7 +141,6 @@ class ReviewListScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Obx(
                   () => Text(
@@ -163,7 +161,6 @@ class ReviewListScreen extends StatelessWidget {
                         color: canvasColor,
                       ),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Icon(reviewCont.isEdit.isTrue ? Icons.close : Icons.mode_edit_outlined, size: 12, color: white),
                           4.width,

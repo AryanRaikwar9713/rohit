@@ -11,6 +11,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/local_db.dart';
+import 'package:streamit_laravel/configs.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_api.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart';
 import 'package:streamit_laravel/utils/mohit/custom_like_button.dart';
@@ -101,7 +102,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
     final Duration sub = p - prePosition;
     watchTime = watchTime + sub;
     prePosition = p;
-    if (watchTime.inSeconds == 5 && !coineGet) {
+    if (watchTime.inSeconds == 5 && !coineGet && ENABLE_POINT_EARNINGS_SYSTEM) {
       coineGet = true;
       WalletApi().getPointsAndBolt(
           action: PointAction.reelWatch,
@@ -123,8 +124,8 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
       final player =
           widget.controller.getVideoController(widget.reel.id ?? 0);
       if (player == null || widget.reel.content?.videoUrl == null) return;
-      final videoUrl = widget.reel.content!.videoUrl!;
-      if (videoUrl.isEmpty) return;
+      final videoUrl = widget.reel.content!.videoUrl;
+      if (videoUrl == null || videoUrl.isEmpty) return;
       
       videoController = VideoController(player);
       

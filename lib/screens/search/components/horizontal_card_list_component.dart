@@ -67,7 +67,6 @@ class HorizontalCardListComponent extends StatelessWidget {
                                 ).cornerRadiusWithClipRRect(3).paddingSymmetric(horizontal: 4, vertical: 4),
                                 6.width,
                                 Marquee(
-                                  textDirection: TextDirection.ltr,
                                   directionMarguee: DirectionMarguee.oneDirection,
                                   child: Text(
                                     searchData.searchQuery,

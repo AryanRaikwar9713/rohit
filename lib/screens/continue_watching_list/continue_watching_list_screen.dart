@@ -108,7 +108,6 @@ class ContinueWatchingListScreen extends StatelessWidget {
 
   Future<void> handleRemoveFromContinueWatchClick(List<VideoPlayerModel> continueWatchingList, int index, BuildContext context) async {
     Get.bottomSheet(
-      isScrollControlled: false,
       enableDrag: false,
       BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),

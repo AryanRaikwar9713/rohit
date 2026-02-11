@@ -70,7 +70,7 @@ class ShopApi {
     required void Function(ShopProfileResponceModel) onSuccess,
   }) async {
     try {
-      final String uri =
+      const String uri =
           'https://app.wamims.world/public/social/shopping/shop_register.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
@@ -187,7 +187,7 @@ class ShopApi {
     try {
       final head = await DB().getHeaderForRow();
 
-      final String uri =
+      const String uri =
           'https://app.wamims.world/public/social/shopping/get_shop_categories.php';
 
       final resp = await http.get(Uri.parse(uri), headers: head ?? {});

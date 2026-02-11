@@ -98,8 +98,9 @@ class Event {
       request.fields['prizes[$i][prize_description]'] =
           prize['prize_description'] ?? '';
       request.fields['prizes[$i][prize_value]'] = prize['prize_value'] ?? '';
-      if (prize['product_id'] != null && prize['product_id']!.isNotEmpty) {
-        request.fields['prizes[$i][product_id]'] = prize['product_id']!;
+      final productId = prize['product_id']?.toString();
+      if (productId != null && productId.isNotEmpty) {
+        request.fields['prizes[$i][product_id]'] = productId;
       }
     }
 
@@ -183,7 +184,7 @@ class Event {
   }) async
   {
     try {
-      final String uri =
+      const String uri =
           "https://app.wamims.world/public/social/shop/coupon_redeem.php";
 
       final head = await DB().getHeaderForRow();

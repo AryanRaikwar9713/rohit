@@ -857,21 +857,21 @@ class ImpactDashboardScreen extends StatelessWidget {
                           ),
                         );
                       }
+                      final chips = controller.categoriesWithProjects;
                       return SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const FilterChipWidget(icon: Icons.public, text: 'Near Me + Worldwide'),
-                            const SizedBox(width: 8),
-                            // All categories chip
+                            // All chip - always show when we have projects
                             FilterChipWidget(
                               icon: Icons.category,
                               text: 'All',
                               isSelected: controller.selectedCategoryId.value == null,
                               onTap: () => controller.setSelectedCategoryId(null),
                             ),
-                            ...controller.categories.map((Datum cat) {
+                            // Only categories that have projects - no dummy/blank
+                            ...chips.map((Datum cat) {
                               final isSelected = controller.selectedCategoryId.value == cat.id;
                               return Padding(
                                 padding: const EdgeInsets.only(left: 8),
@@ -883,8 +883,6 @@ class ImpactDashboardScreen extends StatelessWidget {
                                 ),
                               );
                             }),
-                            const SizedBox(width: 8),
-                            const FilterChipWidget(icon: Icons.local_fire_department, text: 'Urgency'),
                           ],
                         ),
                       );

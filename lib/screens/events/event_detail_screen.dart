@@ -97,7 +97,10 @@ class EventDetailScreen extends StatelessWidget {
       children: [
         // Cover Image (contain = no cut, full image visible) + tap → bottom sheet
         GestureDetector(
-          onTap: () => _showImageBottomSheet(Get.context!),
+          onTap: () {
+            final ctx = Get.context;
+            if (ctx != null) _showImageBottomSheet(ctx);
+          },
           child: Container(
             height: 320,
             width: Get.width,

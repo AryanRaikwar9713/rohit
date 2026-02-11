@@ -171,7 +171,6 @@ class VideoDetailsController extends GetxController {
 
   void download() {
     Get.bottomSheet(
-      isScrollControlled: false,
       enableDrag: false,
       BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),

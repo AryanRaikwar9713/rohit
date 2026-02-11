@@ -26,7 +26,6 @@ class DownloadCard extends StatelessWidget {
         },
         child: Obx(
           () => Row(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
                 height: 16,

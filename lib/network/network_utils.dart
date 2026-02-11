@@ -120,13 +120,13 @@ Future<Response> buildHttpResponse(
     }
   } on Exception catch (e) {
     if (e is SocketException) {
-      log('SocketException: ${e}');
+      log('SocketException: $e');
       throw errorInternetNotAvailable;
     } else if (e is TimeoutException) {
-      log('TimeoutException: ${e}');
+      log('TimeoutException: $e');
       throw locale.value.gatewayTimeout;
     } else {
-      log('Unknown Exception: ${e}');
+      log('Unknown Exception: $e');
       throw errorSomethingWentWrong;
     }
   }
@@ -341,7 +341,7 @@ String formatJson(String jsonStr) {
     const formatter = JsonEncoder.withIndent('  ');
     return formatter.convert(parsedJson);
   } on Exception catch (e) {
-    dev.log("\x1b[31m formatJson error ::-> ${e} \x1b[0m");
+    dev.log("\x1b[31m formatJson error ::-> $e \x1b[0m");
     return jsonStr;
   }
 }

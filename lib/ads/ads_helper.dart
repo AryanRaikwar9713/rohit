@@ -5,9 +5,11 @@ import '../utils/app_common.dart';
 class AdHelper {
   String get bannerAdUnitId {
     if (Platform.isAndroid) {
-      return appConfigs.value.bannerAdId.isNotEmpty ? appConfigs.value.bannerAdId : BANNER_AD_ID;
+      final id = appConfigs.value.bannerAdId;
+      return id.isNotEmpty && id.startsWith('ca-app-pub-') ? id : BANNER_AD_ID;
     } else if (Platform.isIOS) {
-      return appConfigs.value.iosBannerAdId.isNotEmpty ? appConfigs.value.iosBannerAdId : IOS_BANNER_AD_ID;
+      final id = appConfigs.value.iosBannerAdId;
+      return id.isNotEmpty && id.startsWith('ca-app-pub-') ? id : IOS_BANNER_AD_ID;
     }
     throw UnsupportedError("Unsupported platform");
   }

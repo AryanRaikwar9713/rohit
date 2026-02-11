@@ -24,7 +24,7 @@ class InAppPurchaseService {
         if (isLoggedIn.value && !getBoolAsync(SharedPreferenceConst.HAS_IN_APP_USER_LOGIN_DONE_AT_LEASE_ONCE)) loginToRevenueCate();
       } else {}
     } catch (e) {
-      log('In App Purchase Configuration Failed: ${e}');
+      log('In App Purchase Configuration Failed: $e');
     }
     log('In App Purchase Init Complete');
   }
@@ -36,7 +36,7 @@ class InAppPurchaseService {
       setValue(SharedPreferenceConst.HAS_IN_APP_USER_LOGIN_DONE_AT_LEASE_ONCE, true);
       getCustomerInfo();
     } catch (e) {
-      log('In App Purchase User Login Failed: ${e}');
+      log('In App Purchase User Login Failed: $e');
     }
   }
 
