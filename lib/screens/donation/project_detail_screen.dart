@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:streamit_laravel/configs.dart';
 import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/donation/numbar_input_formater.dart';
 import 'package:streamit_laravel/screens/donation/project_detail_control.dart';
@@ -456,12 +457,22 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                           ),
                           child: Row(
                             children: [
-                              CircleAvatar(
-                                radius: 26,
-                                backgroundImage: NetworkImage(
-                                    detail.value.creator?.avatar ?? '',),
-                                backgroundColor: Colors.grey.shade700,
-                              ),
+                              Obx(() {
+                                final rawUrl = controller.creatorAvatarUrl.value.isNotEmpty
+                                    ? controller.creatorAvatarUrl.value
+                                    : (detail.value.creator?.avatar ?? '');
+                                final avatarUrl = _resolveAvatarUrl(rawUrl);
+                                return CircleAvatar(
+                                  radius: 26,
+                                  backgroundImage: avatarUrl.isNotEmpty
+                                      ? NetworkImage(avatarUrl)
+                                      : null,
+                                  backgroundColor: Colors.grey.shade700,
+                                  child: avatarUrl.isEmpty
+                                      ? Icon(Icons.person, color: Colors.white54, size: 32)
+                                      : null,
+                                );
+                              }),
                               const SizedBox(width: 14),
                               Expanded(
                                 child: Column(
@@ -588,6 +599,14 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
     );
   }
 
+  /// Resolves avatar URL - prepends DOMAIN if backend returns relative path
+  static String _resolveAvatarUrl(String? url) {
+    if (url == null || url.isEmpty) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    final path = url.startsWith('/') ? url : '/$url';
+    return '$DOMAIN_URL$path';
+  }
+
   Widget _iconText(IconData icon, String text, {Color color = Colors.white70}) {
     return Row(
       children: [
@@ -708,7 +727,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
     final displayAvatar = isAnonymous
         ? null
         : (donor.avatar != null && donor.avatar!.isNotEmpty
-            ? donor.avatar
+            ? _resolveAvatarUrl(donor.avatar)
             : null);
 
     String timeAgo = "Recently";

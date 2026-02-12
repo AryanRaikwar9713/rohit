@@ -5,12 +5,15 @@ import 'package:logger/logger.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/screens/donation/campainApi.dart';
 import 'package:streamit_laravel/screens/donation/model/project_detail_responce_model.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_api.dart';
 
 class ProjectDetailController extends GetxController
 {
   RxBool loading = true.obs;
   Rx<ProjectDetail> detail = ProjectDetail().obs;
-  
+  /// Creator avatar from vammis profile (when project API returns empty)
+  RxString creatorAvatarUrl = ''.obs;
+
   // Store project ID separately to ensure it's always available
   int? _projectId;
 
@@ -23,10 +26,11 @@ class ProjectDetailController extends GetxController
         toast('Invalid project ID');
         return;
       }
-      
+
+      creatorAvatarUrl.value = '';
       _projectId = id; // Store ID immediately
       loading.value = true;
-      
+
       await DonationProject().getImpactProjectDetails(
           projectId: id,
           onSuccess: (d) {
@@ -38,6 +42,8 @@ class ProjectDetailController extends GetxController
                 detail.value.id = id;
               }
               _projectId = detail.value.id ?? id;
+              // If creator avatar is empty, fetch from vammis profile (same as profile page)
+              _fetchCreatorAvatarIfNeeded();
             } else {
               Logger().w("Project data is null");
               toast('Failed to load project details');
@@ -111,6 +117,23 @@ class ProjectDetailController extends GetxController
     }
   }
 
+  /// Fetch creator avatar from vammis profile API when project API returns empty
+  void _fetchCreatorAvatarIfNeeded() {
+    final creator = detail.value.creator;
+    if (creator == null || creator.id == null) return;
+    final existingAvatar = creator.avatar ?? '';
+    if (existingAvatar.isNotEmpty && (existingAvatar.startsWith('http') || existingAvatar.startsWith('https'))) return;
 
-
+    VammisProfileApi().getUserProfile(
+      userId: creator.id!,
+      onSuccess: (profile) {
+        final avatar = profile.data?.user?.avatarUrl ?? profile.data?.user?.avatar;
+        if (avatar != null && avatar.toString().trim().isNotEmpty) {
+          creatorAvatarUrl.value = avatar.toString().trim();
+        }
+      },
+      onFailure: (_) {},
+      onError: (_) {},
+    );
+  }
 }
