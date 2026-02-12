@@ -362,72 +362,82 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                 ),
               )
             else
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: controller.categories.map((category) {
-                  final isSelected =
-                      controller.selectedCategoryId.value == category.id;
-                  return GestureDetector(
-                    onTap: () {
-                      controller.selectedCategoryId.value = category.id;
-                      controller.selectedCategoryName.value = category.name;
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12,),
-                      decoration: BoxDecoration(
-                        gradient: isSelected
-                            ? const LinearGradient(
-                                colors: [Color(0xff232526), Color(0xff414345)],
-                              )
-                            : null,
-                        color: isSelected ? null : Colors.grey[900],
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color:
-                              isSelected ? appColorPrimary : Colors.grey[700]!,
-                          width: isSelected ? 2 : 1,
-                        ),
-                      ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.grey[900],
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.grey[700]!,
+                  ),
+                ),
+                child: DropdownButtonFormField<int>(
+                  value: controller.selectedCategoryId.value,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 12,
+                    ),
+                  ),
+                  dropdownColor: Colors.grey[900],
+                  hint: Text(
+                    'Select a category',
+                    style: secondaryTextStyle(size: 14, color: Colors.grey),
+                  ),
+                  icon: const Icon(
+                    Icons.keyboard_arrow_down,
+                    color: appColorPrimary,
+                    size: 28,
+                  ),
+                  isExpanded: true,
+                  menuMaxHeight: 280,
+                  items: controller.categories.map((category) {
+                    return DropdownMenuItem<int>(
+                      value: category.id,
                       child: Row(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
                           if (category.icon != null &&
                               category.icon!.isNotEmpty)
                             CachedNetworkImage(
                               imageUrl: category.icon!,
-                              width: 24,
-                              height: 24,
+                              width: 22,
+                              height: 22,
                               errorWidget: (context, url, error) => Icon(
                                 Icons.category,
-                                size: 24,
-                                color:
-                                    isSelected ? appColorPrimary : Colors.grey,
+                                size: 22,
+                                color: Colors.white70,
                               ),
                             )
                           else
                             Icon(
                               Icons.category,
-                              size: 24,
-                              color: isSelected ? appColorPrimary : Colors.grey,
+                              size: 22,
+                              color: Colors.white70,
                             ),
-                          8.width,
-                          Text(
-                            category.name ?? 'Unknown',
-                            style: primaryTextStyle(
-                              size: 14,
-                              color: Colors.white,
-                              weight: isSelected
-                                  ? FontWeight.w700
-                                  : FontWeight.w400,
+                          10.width,
+                          Expanded(
+                            child: Text(
+                              category.name ?? 'Unknown',
+                              style: primaryTextStyle(
+                                size: 14,
+                                color: Colors.white,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  );
-                }).toList(),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    controller.selectedCategoryId.value = value;
+                    controller.selectedCategoryName.value =
+                        controller.categories
+                            .firstWhereOrNull((c) => c.id == value)
+                            ?.name;
+                  },
+                ),
               ),
           ],
         ),

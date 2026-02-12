@@ -295,14 +295,30 @@ class CampaignController extends GetxController {
         onFailure: (response) {
           isLoading.value = false;
           try {
-            final errorData = jsonDecode(response.body);
-            final msg = errorData['message'] ?? 'Failed to create campaign';
+            final errorData = jsonDecode(response.body) as Map<String, dynamic>?;
+            String msg = 'Failed to create campaign';
+            if (errorData != null) {
+              msg = errorData['message']?.toString() ??
+                  errorData['error']?.toString() ??
+                  errorData['msg']?.toString() ??
+                  msg;
+              // Laravel validation errors: {"errors": {"field": ["msg"]}}
+              final errors = errorData['errors'];
+              if (errors is Map && errors.isNotEmpty) {
+                for (final v in errors.values) {
+                  if (v is List && v.isNotEmpty) {
+                    msg = v.first.toString();
+                    break;
+                  }
+                }
+              }
+            }
             errorMessage.value = msg;
             toast(msg);
             _logger.e('Create campaign failed: ${response.statusCode} - ${response.body}');
           } catch (e) {
-            errorMessage.value = 'Failed to create campaign';
-            toast('Failed to create campaign (${response.statusCode})');
+            errorMessage.value = 'Failed to create campaign (${response.statusCode})';
+            toast(errorMessage.value);
             _logger.e('Create campaign failed: ${response.statusCode} - ${response.body}');
           }
         },

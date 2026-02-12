@@ -1029,24 +1029,54 @@ class ImpactDashboardScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ShaderMask(
-                            shaderCallback: (bounds) => appGradient.createShader(bounds),
-                            child: Text(
-                              '\$${raised.toStringAsFixed(0)}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(
+                                "assets/icons/boalt_Icons.png",
+                                height: 18,
+                                width: 18,
+                                color: appGradient.colors.first,
                               ),
-                            ),
+                              const SizedBox(width: 4),
+                              ShaderMask(
+                                shaderCallback: (bounds) => appGradient.createShader(bounds),
+                                child: Text(
+                                  raised.toStringAsFixed(0),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 2),
-                          Text(
-                            'raised of \$${goal.toStringAsFixed(0)}',
-                            style: TextStyle(
-                              color: Colors.grey.shade400,
-                              fontSize: 11,
-                            ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'raised of ',
+                                style: TextStyle(
+                                  color: Colors.grey.shade400,
+                                  fontSize: 11,
+                                ),
+                              ),
+                              Image.asset(
+                                "assets/icons/boalt_Icons.png",
+                                height: 11,
+                                width: 11,
+                                color: Colors.grey.shade400,
+                              ),
+                              Text(
+                                goal.toStringAsFixed(0),
+                                style: TextStyle(
+                                  color: Colors.grey.shade400,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

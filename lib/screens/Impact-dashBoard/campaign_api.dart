@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
+import 'package:streamit_laravel/configs.dart';
 import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/auth/model/login_response.dart';
 import 'package:streamit_laravel/screens/Impact-dashBoard/model/campain_cat_responce_model.dart';
@@ -18,8 +19,8 @@ class MyCampaignApi {
       final head = await DB().getHeaderForRow();
       final UserData? userId = await DB().getUser();
 
-      const String url =
-          'https://app.wamims.world/public/social/impact/submit_project_fixed.php?action=get_categories';
+      final String url =
+          '$DOMAIN_URL/public/social/impact/submit_project_fixed.php?action=get_categories';
 
       Logger().i('Fetching Campaign Categories for user: ${userId?.id}');
 
@@ -68,18 +69,26 @@ class MyCampaignApi {
       final head = await DB().getHeaderForForm();
       final UserData? userId = await DB().getUser();
 
-      const String url =
-          'https://app.wamims.world/public/social/impact/submit_project_fixed.php';
+      final String url =
+          '$DOMAIN_URL/public/social/impact/submit_project_fixed.php';
 
       Logger().i('Creating Campaign for user: ${userId?.id}');
 
+      // Require logged-in user
+      if (userId == null || (userId.id ?? 0) <= 0) {
+        onError('Please log in to create a project');
+        return;
+      }
+
       final request = http.MultipartRequest('POST', Uri.parse(url));
 
-      // Add headers (Authorization only - do NOT set Content-Type for multipart)
+      // Add headers - Authorization + Accept for JSON (no Content-Type - multipart sets boundary)
       request.headers.addAll(head ?? {});
+      request.headers['Accept'] = 'application/json';
 
-      // Add form fields
-      request.fields['user_id'] = (userId?.id ?? 0).toString();
+      // Backend expects action=create for project submission
+      request.fields['action'] = 'create';
+      request.fields['user_id'] = userId.id.toString();
       request.fields['category_id'] = categoryId.toString();
       request.fields['title'] = title;
       request.fields['description'] = description;
@@ -137,10 +146,17 @@ class MyCampaignApi {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         try {
-          final data = jsonDecode(response.body);
+          final data = jsonDecode(response.body) as Map<String, dynamic>;
+          // Backend may return 200 with success:false for validation/auth errors
+          if (data['success'] == false) {
+            final msg = data['message'] ?? data['error'] ?? data['msg'] ?? 'Failed to create project';
+            onError(msg.toString());
+            return;
+          }
           onSuccess(data);
         } catch (e) {
-          onError("Response parsing failed: $e");
+          // Non-JSON response (e.g. HTML error page) - show generic message
+          onError('Server returned invalid response. Please try again.');
         }
       } else {
         onFailure(response);

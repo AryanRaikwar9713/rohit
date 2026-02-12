@@ -204,13 +204,25 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                   const SizedBox(height: 4),
                                   ShaderMask(
                                     shaderCallback: (b) => _appGradient.createShader(b),
-                                    child: Text(
-                                      "🪙 ${(detail.value.fundingRaised ?? 0).toStringAsFixed(2)}",
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Image.asset(
+                                          "assets/icons/boalt_Icons.png",
+                                          height: 20,
+                                          width: 20,
+                                          color: _appGradient.colors.first,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          "${(detail.value.fundingRaised ?? 0).toStringAsFixed(2)}",
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -226,13 +238,25 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 4),
-                                  Text(
-                                    "🪙 ${(detail.value.fundingGoal ?? 0).toStringAsFixed(2)}",
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Image.asset(
+                                        "assets/icons/boalt_Icons.png",
+                                        height: 20,
+                                        width: 20,
+                                        color: _appGradient.colors.first,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        "${(detail.value.fundingGoal ?? 0).toStringAsFixed(2)}",
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

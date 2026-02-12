@@ -156,17 +156,19 @@ class CampaignProjectCard extends StatelessWidget {
                           project.fundingGoal != null) ...[
                         Expanded(
                           child: _buildProjectStat(
-                            '\$${project.fundingRaised!.toStringAsFixed(0)}',
+                            '${project.fundingRaised!.toStringAsFixed(0)}',
                             'Raised',
-                            Icons.attach_money,
+                            Icons.flag,
+                            useBoltIcon: true,
                           ),
                         ),
                         8.width,
                         Expanded(
                           child: _buildProjectStat(
-                            '\$${project.fundingGoal}',
+                            '${project.fundingGoal}',
                             'Goal',
                             Icons.flag,
+                            useBoltIcon: true,
                           ),
                         ),
                       ],
@@ -226,7 +228,7 @@ class CampaignProjectCard extends StatelessWidget {
 
 
 
-  Widget _buildProjectStat(String value, String label, IconData icon) {
+  Widget _buildProjectStat(String value, String label, IconData icon, {bool useBoltIcon = false}) {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -243,7 +245,14 @@ class CampaignProjectCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: appColorPrimary),
+          useBoltIcon
+              ? Image.asset(
+                  "assets/icons/boalt_Icons.png",
+                  height: 16,
+                  width: 16,
+                  color: appColorPrimary,
+                )
+              : Icon(icon, size: 16, color: appColorPrimary),
           6.width,
           Expanded(
             child: Column(
