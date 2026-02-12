@@ -252,54 +252,55 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
           // Profile Picture and Stats Row
           Row(
             children: [
-              // Profile Picture
-              WamimsProfileAvtar(
+              // Profile Picture (gradient ring = active story within 24h, else white ring)
+              Obx(() => WamimsProfileAvtar(
+                story: widget.isOwnProfile && (myStoryController?.activeStories.isNotEmpty ?? false),
                 image: profile.user?.avatarUrl ?? '',
                 onTap: () {
-                  print('${profile.user?.avatarUrl}');
-                  print('${profile.user?.avatar}');
-
-                  String? imageUrl;
-                  if (profile.user?.avatarUrl != null &&
-                      profile.user!.avatarUrl!.isNotEmpty) {
-                    imageUrl = profile.user?.avatarUrl ?? '';
-                  }
-
-                  if (imageUrl == null &&
-                      profile.user?.avatar != null &&
-                      profile.user!.avatar!.isNotEmpty) {
-                    imageUrl = profile.user?.avatar;
-                  }
-
-                  if (imageUrl == null) {
+                  // Apna profile + active story hai → story open karo (Instagram jaisa)
+                  if (widget.isOwnProfile &&
+                      (myStoryController?.activeStories.isNotEmpty ?? false)) {
+                    final firstStory = myStoryController!.activeStories.first;
+                    Get.to(MyStoryScreen(
+                      storyId: firstStory.id.toString(),
+                      controller: myStoryController!,
+                    ));
                     return;
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Blur(
-                            child: Container(
-                              clipBehavior: Clip.hardEdge,
-                              margin: const EdgeInsetsGeometry.symmetric(horizontal: 50),
-                              decoration:const BoxDecoration(
-                                shape: BoxShape.circle,
-
+                  }
+                  // Bina story ke: profile ki by default image clear dikhao
+                  String? imageUrl = profile.user?.avatarUrl ?? profile.user?.avatar;
+                  if (imageUrl == null || imageUrl.isEmpty) return;
+                  showDialog(
+                    context: context,
+                    barrierColor: Colors.black87,
+                    builder: (context) {
+                      return GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Center(
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 40),
+                            clipBehavior: Clip.antiAlias,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(color: Colors.black54, blurRadius: 20, spreadRadius: 2),
+                              ],
+                            ),
+                            child: Hero(
+                              tag: 'profileImage',
+                              child: Image.network(
+                                imageUrl!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => const Icon(Icons.person, size: 80, color: Colors.white54),
                               ),
-                              child: Hero(
-                                  tag: 'profileImage',
-                                  child: Image.network(imageUrl ?? ''),),
                             ),
                           ),
-                        );
-                      },
-                    );
-                  }
+                        ),
+                      );
+                    },
+                  );
                 },
-              ),
+              )),
 
               const SizedBox(width: 20),
 
@@ -1356,16 +1357,8 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
       }
     return Obx((){
 
-      //
-      // return ElevatedButton(onPressed: (){
-      //   myStoryController?.getMyStory();
-      // }, child: Text("test"));
-
       if(myStoryController?.activeStories.isEmpty??true)
         {
-          return ElevatedButton(onPressed: (){
-            myStoryController?.getMyStory();
-          }, child: const Text("test"),);
           return const SizedBox();
         }
       else
