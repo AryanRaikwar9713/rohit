@@ -1,0 +1,47 @@
+# Gradle files
+.gradle/
+**/.gradle/
+android/.gradle/
+android/.gradle_user_home/
+gradle/
+gradlew
+gradlew.bat
+
+# Build files
+build/
+**/build/
+android/build/
+ios/build/
+**/generated/
+
+# Local properties
+*.properties
+local.properties
+android/local.properties
+*.keystore
+*.jks
+
+# Flutter
+.flutter-plugins
+.flutter-plugins-dependencies
+.dart_tool/
+**.mjs
+**.map
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Android
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
+
+# iOS
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Pods/
