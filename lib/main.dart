@@ -43,7 +43,7 @@ import 'utils/constants.dart';
 import 'utils/location_monitor.dart';
 import 'utils/local_storage.dart' as local;
 import 'utils/push_notification_service.dart';
-
+//aryan
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   log('${FirebaseMsgConst.notificationDataKey} : ${message.data}');
