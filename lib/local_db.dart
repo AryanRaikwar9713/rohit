@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:logger/logger.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/screens/auth/model/login_response.dart';
 import 'package:streamit_laravel/screens/shops_section/model/user_order_history_model.dart';

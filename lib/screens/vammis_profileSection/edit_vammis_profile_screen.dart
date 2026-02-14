@@ -12,12 +12,13 @@ const LinearGradient _editProfileGradient = LinearGradient(
 );
 
 class EditVammisProfileScreen extends StatelessWidget {
-  const EditVammisProfileScreen({super.key});
+  final String? profileTag;
+  const EditVammisProfileScreen({super.key, this.profileTag});
 
   @override
   Widget build(BuildContext context) {
     final EditVammisProfileController controller =
-        Get.put(EditVammisProfileController());
+        Get.put(EditVammisProfileController(profileTag: profileTag));
 
     return Scaffold(
       backgroundColor: appScreenBackgroundDark,

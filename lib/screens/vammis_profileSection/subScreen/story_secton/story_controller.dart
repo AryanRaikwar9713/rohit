@@ -4,8 +4,6 @@ import 'package:logger/logger.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_api.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/get_story_responce_model.dart';
-import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/story_responce_model.dart';
-
 
 class StoryContrller extends GetxController
 {
@@ -83,17 +81,36 @@ class StoryContrller extends GetxController
   RxList<StoryUser> storyList = RxList<StoryUser>([]);
   RxBool isLoading = false.obs;
 
+  /// User IDs whose stories have been viewed (for yellow vs 50% ring)
+  final RxList<int> viewedStoryUserIds = <int>[].obs;
+
   RxBool isLastUser = false.obs;
   RxBool isLastStory = false.obs;
 
   final api = StoryApi();
 
+  void markStoryUserViewed(int userId) {
+    if (userId <= 0) return;
+    if (!viewedStoryUserIds.contains(userId)) {
+      viewedStoryUserIds.add(userId);
+      viewedStoryUserIds.refresh();
+    }
+  }
 
-  void setStoryPageController()
-  {
-    // selectedUserId.value = storyList[0].userId??'';
-    // selectedStoryId.value = storyList[0].stories?[0].storyId??'';
-    userPageController = PageController();
+  bool hasViewedStory(int? userId) => userId != null && viewedStoryUserIds.contains(userId);
+
+
+  int initialUserPageIndex = 0;
+
+  void setStoryPageController({int? initialPage}) {
+    if (initialPage != null) initialUserPageIndex = initialPage;
+    try {
+      userPageController.dispose();
+    } catch (_) {}
+    try {
+      storyPageController.dispose();
+    } catch (_) {}
+    userPageController = PageController(initialPage: initialUserPageIndex);
     storyPageController = PageController();
   }
 
@@ -103,8 +120,7 @@ class StoryContrller extends GetxController
     {
       await  api.getStories(onSuccess: (d){
 
-        storyList.value = d.stories??[];
-
+        storyList.assignAll(d.stories ?? []);
 
       }, onError: onError, onFail: (d){
         Logger().e("Feaild To get Sotry ${d.statusCode}");
@@ -120,6 +136,7 @@ class StoryContrller extends GetxController
 
   void onUserChage(int userId)
   {
+    markStoryUserViewed(selectedUserId.value);
     selectedUserId.value = userId;
     isLastUser.value = userId==(storyList.last.user?.id??0);
     final int userInd = storyList.indexWhere((element) => element.user?.id==selectedUserId.value,);

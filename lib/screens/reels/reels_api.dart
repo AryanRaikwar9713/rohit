@@ -174,7 +174,7 @@ class ReelsApi {
     try {
       const String uri =
           'https://app.wamims.world/public/social/reels/create_reel.php';
-      final head = await DB().getHeaderForRow();
+      final headers = await DB().getHeaderForRow();
       final user = await DB().getUser();
 
       final data = {
@@ -220,7 +220,7 @@ class ReelsApi {
 
       request.files.add(multipartFile);
       request.fields.addAll(fd);
-      // request.headers.addAll(head);
+      request.headers.addAll(headers ?? {});
 
       final resp = await request.send();
 

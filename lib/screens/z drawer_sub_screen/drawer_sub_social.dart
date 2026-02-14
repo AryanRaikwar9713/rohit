@@ -79,8 +79,6 @@ class _DrawerSubSocialState extends State<DrawerSubSocial> {
                 mainAxisSpacing: 5,crossAxisSpacing: 5,
                 mainAxisExtent: MediaQuery.of(context).size.height*.25,),
               itemBuilder: (context, index) {
-                  final post = profileController.userPosts[index];
-
                 return Container(
                   color: Colors.red,
                 );

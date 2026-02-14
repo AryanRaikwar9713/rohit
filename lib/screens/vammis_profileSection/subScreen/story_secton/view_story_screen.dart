@@ -21,17 +21,20 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    storyContrller  = Get.put(StoryContrller());
-    storyContrller.loadStory();
+    storyContrller = Get.isRegistered<StoryContrller>()
+        ? Get.find<StoryContrller>()
+        : Get.put(StoryContrller());
+    if (storyContrller.storyList.isEmpty) {
+      storyContrller.loadStory();
+    } else {
+      storyContrller.setStoryPageController();
+    }
   }
-
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    storyContrller.reset();
+    storyContrller.markStoryUserViewed(storyContrller.selectedUserId.value);
     super.dispose();
   }
 

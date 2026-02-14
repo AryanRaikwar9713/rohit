@@ -11,6 +11,9 @@ import 'package:streamit_laravel/utils/colors.dart';
 
 class EditVammisProfileController extends GetxController {
   final ImagePicker _imagePicker = ImagePicker();
+  final String? profileTag;
+
+  EditVammisProfileController({this.profileTag});
 
   // Form controllers
   final TextEditingController usernameController = TextEditingController();
@@ -21,6 +24,18 @@ class EditVammisProfileController extends GetxController {
   Rx<File?> selectedImage = Rx<File?>(null);
   RxString currentAvatarUrl = ''.obs;
   int? userId;
+
+  VammisProfileController? _getProfileController() {
+    try {
+      if (profileTag != null && profileTag!.isNotEmpty && Get.isRegistered<VammisProfileController>(tag: profileTag)) {
+        return Get.find<VammisProfileController>(tag: profileTag);
+      }
+      if (Get.isRegistered<VammisProfileController>()) {
+        return Get.find<VammisProfileController>();
+      }
+    } catch (_) {}
+    return null;
+  }
 
   @override
   void onInit() {
@@ -33,16 +48,14 @@ class EditVammisProfileController extends GetxController {
       final user = await DB().getUser();
       userId = user?.id;
 
-      // Get current profile from VammisProfileController if available
-      if (Get.isRegistered<VammisProfileController>()) {
-        final profileController = Get.find<VammisProfileController>();
+      final profileController = _getProfileController();
+      if (profileController != null) {
         final profileData = profileController.profileResponse.value?.data?.user;
 
         if (profileData != null) {
           usernameController.text = profileData.username ?? '';
           bioController.text = profileData.bio ?? '';
-          currentAvatarUrl.value =
-              profileData.avatarUrl ??'';
+          currentAvatarUrl.value = profileData.avatarUrl ?? '';
         }
       }
     } catch (e) {
@@ -202,9 +215,9 @@ class EditVammisProfileController extends GetxController {
     isLoading.value = true;
 
     try {
-      // Use existing avatar URL or static string
-      // As per requirement: if image is not being sent, use static string
-      final String? fileUrl = currentAvatarUrl.value.isNotEmpty
+      // Avatar URL fallback when image is not being sent (reserved for future use)
+      // ignore: unused_local_variable
+      final String? _avatarUrl = currentAvatarUrl.value.isNotEmpty
           ? currentAvatarUrl.value
           : 'default_avatar.jpg';
 
@@ -217,8 +230,8 @@ class EditVammisProfileController extends GetxController {
           toast('Profile updated successfully');
 
           // Refresh profile in VammisProfileController
-          if (Get.isRegistered<VammisProfileController>()) {
-            final profileController = Get.find<VammisProfileController>();
+          final profileController = _getProfileController();
+          if (profileController != null) {
             profileController.refreshProfile();
           }
 

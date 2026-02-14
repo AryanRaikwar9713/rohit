@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/auth/model/login_response.dart';
 import 'package:streamit_laravel/screens/social/comment_responce_model.dart';
-import 'package:streamit_laravel/screens/social/social_controller.dart';
 import 'package:streamit_laravel/screens/social/social_post_responce_Model.dart';
 
 void respPrinter(int st, String body,{String? uri}) {

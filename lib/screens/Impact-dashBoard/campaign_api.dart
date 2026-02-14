@@ -75,7 +75,7 @@ class MyCampaignApi {
       Logger().i('Creating Campaign for user: ${userId?.id}');
 
       // Require logged-in user
-      if (userId == null || (userId.id ?? 0) <= 0) {
+      if (userId == null || userId.id <= 0) {
         onError('Please log in to create a project');
         return;
       }

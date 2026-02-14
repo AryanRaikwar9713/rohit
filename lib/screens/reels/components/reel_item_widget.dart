@@ -725,6 +725,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
     );
   }
 
+  // ignore: unused_element
   void _showMoreOptions() {
     showModalBottomSheet(
       context: context,

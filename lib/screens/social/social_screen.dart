@@ -15,7 +15,15 @@ import 'package:streamit_laravel/screens/social/social_search_screen.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/get_story_responce_model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/story_controller.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/view_story_screen.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/create_story_screen.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/my_story_screen.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/my_story_controller.dart';
+import 'package:streamit_laravel/screens/reels/reels_screen.dart';
+import 'package:streamit_laravel/screens/reels/reels_api.dart';
+import 'package:streamit_laravel/screens/reels/reel_response_model.dart';
 import 'package:streamit_laravel/configs.dart';
+import 'package:streamit_laravel/local_db.dart';
+import 'package:streamit_laravel/screens/auth/model/login_response.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_api.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_tab_manage.dart';
 import 'package:streamit_laravel/utils/constants.dart';
@@ -278,6 +286,8 @@ class _SocialScreenState extends State<SocialScreen>
                     //   }),
 
                     const _UserSotuyWWigdet(),
+
+                    const _TopReelsSection(),
 
                     // Social Feed
                     Obx(() {
@@ -928,53 +938,323 @@ class _UserSotuyWWigdet extends StatefulWidget {
 }
 
 class _UserSotuyWWigdetState extends State<_UserSotuyWWigdet> {
-
-
   late StoryContrller _storyContrller;
+  UserData? _currentUser;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _storyContrller = (!Get.isRegistered<StoryContrller>())?Get.put(StoryContrller()):Get.find<StoryContrller>();
+    _storyContrller = (!Get.isRegistered<StoryContrller>())
+        ? Get.put(StoryContrller())
+        : Get.find<StoryContrller>();
+    DB().getUser().then((u) {
+      if (mounted) setState(() => _currentUser = u);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if(_storyContrller.storyList.isEmpty)
-        {
-          return const SizedBox();
-        }
-      
+      final hasOwnStory =
+          _storyContrller.storyList.any((s) => s.isOwnStory == true);
+
       return Container(
-        margin: const EdgeInsetsGeometry.only(
-          top: 10,
-          bottom: 5,
-        ),
-        // height: 70,
-        padding: const EdgeInsetsGeometry.symmetric(vertical: 3),
+        margin: const EdgeInsets.only(top: 10, bottom: 5),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.grey.shade900,
-        ),
+        decoration: BoxDecoration(color: Colors.grey.shade900),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Padding(
-            padding: const EdgeInsetsGeometry.symmetric(horizontal: 5),
-            child: Row(children: [
-              for(final StoryUser story in _storyContrller.storyList)
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              children: [
+                // Your story (first circle)
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: WamimsProfileAvtar(image: story.user?.avatar??'',story: true,radious: 30,onTap: (){
-                    Get.to(()=>const ViewStoryScreen());
-                  },),
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: _YourStoryCircle(
+                    avatar: _currentUser?.profileImage ?? '',
+                    onTap: () async {
+                      if (hasOwnStory) {
+                        final c = Get.isRegistered<MyStoryController>()
+                            ? Get.find<MyStoryController>()
+                            : Get.put(MyStoryController());
+                        await c.getMyStory();
+                        if (context.mounted && c.activeStories.isNotEmpty) {
+                          Get.to(MyStoryScreen(
+                            controller: c,
+                            storyId: c.activeStories.first.id.toString(),
+                          ));
+                        } else if (context.mounted) {
+                          Get.to(() => const CreateStoryScreen());
+                        }
+                      } else {
+                        Get.to(() => const CreateStoryScreen());
+                      }
+                    },
+                  ),
                 ),
-
-            ],),
+                // Followed users' stories (yellow ring = unseen, 50% = seen)
+                for (int i = 0; i < _storyContrller.storyList.length; i++)
+                  if (_storyContrller.storyList[i].isOwnStory != true) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: _StoryCircleItem(
+                        story: _storyContrller.storyList[i],
+                        seen: _storyContrller
+                            .hasViewedStory(
+                                _storyContrller.storyList[i].user?.id),
+                        onTap: () {
+                          _storyContrller
+                              .setStoryPageController(initialPage: i);
+                          Get.to(() => const ViewStoryScreen());
+                        },
+                      ),
+                    ),
+                  ],
+              ],
+            ),
           ),
         ),
       );
-    },);
+    });
+  }
+}
+
+class _YourStoryCircle extends StatelessWidget {
+  final String avatar;
+  final VoidCallback onTap;
+
+  const _YourStoryCircle({required this.avatar, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.grey.shade600, width: 2),
+            ),
+            padding: const EdgeInsets.all(2),
+            child: CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.grey.shade800,
+              backgroundImage: (avatar.trim().isEmpty)
+                  ? null
+                  : NetworkImage(
+                      resolveImageUrl(avatar, pathPrefix: 'storage/avatars/'),
+                    ),
+              child: (avatar.trim().isEmpty)
+                  ? const Icon(Icons.person, color: Colors.white54, size: 32)
+                  : null,
+            ),
+          ),
+          4.height,
+          Text(
+            'Your story',
+            style: secondaryTextStyle(size: 12, color: Colors.grey),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StoryCircleItem extends StatelessWidget {
+  final StoryUser story;
+  final bool seen;
+  final VoidCallback onTap;
+
+  const _StoryCircleItem({
+    required this.story,
+    required this.seen,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          WamimsProfileAvtar(
+            image: story.user?.avatar?.toString() ?? '',
+            story: true,
+            storySeen: seen,
+            radious: 30,
+            onTap: onTap,
+          ),
+          4.height,
+          SizedBox(
+            width: 64,
+            child: Text(
+              story.user?.username ?? 'Unknown',
+              style: secondaryTextStyle(size: 12, color: Colors.grey),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Top reels section: horizontal list, 5 per load, tap opens ReelsScreen.
+class _TopReelsSection extends StatefulWidget {
+  const _TopReelsSection();
+
+  @override
+  State<_TopReelsSection> createState() => _TopReelsSectionState();
+}
+
+class _TopReelsSectionState extends State<_TopReelsSection> {
+  final List<Reel> _reels = [];
+  int _page = 0;
+  bool _loading = false;
+  bool _hasMore = true;
+  static const int _pageSize = 5;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMore();
+  }
+
+  Future<void> _loadMore() async {
+    if (_loading || !_hasMore) return;
+    setState(() => _loading = true);
+    final nextPage = _page + 1;
+    await ReelsApi().getReels(
+      nextPage,
+      onSuccess: (res) {
+        final list = res.data?.reels ?? [];
+        final toAdd = list.take(_pageSize).toList();
+        if (mounted) {
+          setState(() {
+            _reels.addAll(toAdd);
+            _page = nextPage;
+            _hasMore = (res.data?.pagination?.hasMore ?? false) && list.length >= _pageSize;
+            _loading = false;
+          });
+        } else {
+          _loading = false;
+        }
+      },
+      onFailure: (_) {
+        if (mounted) setState(() => _loading = false);
+      },
+      onError: (_) {
+        if (mounted) setState(() => _loading = false);
+      },
+    );
+    if (mounted && _loading) setState(() => _loading = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_reels.isEmpty && !_loading) return const SizedBox.shrink();
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: 8, bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: Text(
+              'Reels',
+              style: boldTextStyle(size: 16, color: Colors.white),
+            ),
+          ),
+          SizedBox(
+            height: 140,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              itemCount: _reels.length + (_hasMore && !_loading ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index >= _reels.length) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    child: Center(
+                      child: TextButton(
+                        onPressed: _loading ? null : _loadMore,
+                        child: Text(
+                          _loading ? '...' : 'More',
+                          style: secondaryTextStyle(color: appColorPrimary),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                final reel = _reels[index];
+                final thumb = reel.content?.thumbnailUrl ?? '';
+                final url = thumb.trim().isEmpty
+                    ? ''
+                    : (thumb.startsWith('http') ? thumb : 'https://app.wamims.world/$thumb');
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: GestureDetector(
+                    onTap: () => Get.to(() => const ReelsScreen()),
+                    child: Container(
+                      width: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.grey.shade900,
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(
+                            child: url.isEmpty
+                                ? const Center(
+                                    child: Icon(Icons.videocam_outlined,
+                                        color: Colors.white54, size: 36),
+                                  )
+                                : Image.network(
+                                    url,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) => const Center(
+                                        child: Icon(Icons.videocam_outlined,
+                                            color: Colors.white54, size: 36)),
+                                  ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(6),
+                            child: Row(
+                              children: [
+                                Icon(Icons.favorite_border,
+                                    size: 14, color: Colors.grey[400]),
+                                4.width,
+                                Text(
+                                  '${reel.stats?.likesCount ?? 0}',
+                                  style: secondaryTextStyle(size: 12, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

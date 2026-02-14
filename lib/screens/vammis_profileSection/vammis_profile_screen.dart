@@ -5,10 +5,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:streamit_laravel/local_db.dart';
-import 'package:streamit_laravel/screens/donation/model/get_project_list_responce_model.dart';
-import 'package:streamit_laravel/screens/donation/project_detail_screen.dart';
-import 'package:streamit_laravel/screens/profile/profile_controller.dart';
 import 'package:streamit_laravel/screens/reels/reel_response_model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/social_account/s_media_account_contrller.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/social_account/socila_media_account_model.dart';
@@ -23,6 +19,7 @@ import 'package:streamit_laravel/screens/vammis_profileSection/models/vammis_pro
     as vammis_model;
 import 'package:streamit_laravel/screens/vammis_profileSection/edit_vammis_profile_screen.dart';
 import 'package:streamit_laravel/screens/wamims_setting_screen/setting_screen.dart';
+import 'package:streamit_laravel/configs.dart';
 import 'package:streamit_laravel/utils/colors.dart';
 import 'package:streamit_laravel/utils/mohit/campain_project_card.dart';
 import 'package:streamit_laravel/utils/mohit/custom_like_button.dart';
@@ -52,7 +49,7 @@ class VammisProfileScreen extends StatefulWidget {
 }
 
 class _VammisProfileScreenState extends State<VammisProfileScreen> {
-  final VammisProfileController controller = Get.put(VammisProfileController());
+  late final VammisProfileController controller;
   final ScrollController scrollController = ScrollController();
   final SocialMediaController socialMediaController = Get.put(SocialMediaController());
   MyStoryController? myStoryController;
@@ -65,17 +62,19 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
     'linkedin':'assets/icons/social_media/linkedin.png',
   };
 
+  String get _profileTag => 'profile_${widget.userId}';
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    // One controller per profile (per userId) so Obx works and no "improper use" when opening another user.
+    controller = Get.put(VammisProfileController(), tag: _profileTag);
     scrollController.addListener(_scrollListener);
-    socialMediaController.getSocialAccount();
-    if(widget.isOwnProfile)
-      {
-        myStoryController = Get.put(MyStoryController());
-      }
-
+    // Only load social accounts on own profile to avoid GetX reactive updates on other user's profile
+    if (widget.isOwnProfile) {
+      socialMediaController.getSocialAccount();
+      myStoryController = Get.put(MyStoryController());
+    }
   }
 
   void _scrollListener() {
@@ -93,12 +92,11 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    Get.delete<VammisProfileController>();
-    if(widget.isOwnProfile)
-      {
-        Get.delete<MyStoryController>();
-      }
+    Get.delete<VammisProfileController>(tag: _profileTag);
+    if (widget.isOwnProfile) {
+      Get.delete<MyStoryController>();
+    }
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -137,9 +135,14 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
               (user != null
                   ? '${user.firstName ?? ''} ${user.lastName ?? ''}'.trim()
                   : 'Profile');
-          return Text(
-            name.isEmpty ? 'Profile' : name,
-            style: boldTextStyle(size: 18, color: Colors.white),
+          return FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              name.isEmpty ? 'Profile' : name,
+              style: boldTextStyle(size: 18, color: Colors.white),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           );
         }),
         centerTitle: true,
@@ -231,9 +234,9 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
         }
 
         return RefreshIndicator(
-          onRefresh: ()async{
+          onRefresh: () async {
             await controller.refreshProfile();
-            await socialMediaController.getSocialAccount();
+            if (widget.isOwnProfile) await socialMediaController.getSocialAccount();
           },
           color: appColorPrimary,
           child: SingleChildScrollView(
@@ -244,8 +247,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                 _buildProfileHeader(profileData, controller),
 
                 _buildMyStory(),
-                
-                _budildSocialAccounts(socialMediaController),
+                if (widget.isOwnProfile) _budildSocialAccounts(socialMediaController),
 
                 // Tab Bar
                 _buildTabBar(controller),
@@ -272,7 +274,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
               // Profile Picture (gradient ring = active story within 24h, else white ring)
               Obx(() => WamimsProfileAvtar(
                 story: widget.isOwnProfile && (myStoryController?.activeStories.isNotEmpty ?? false),
-                image: profile.user?.avatarUrl ?? '',
+                image: resolveImageUrl(profile.user?.avatarUrl ?? profile.user?.avatar, pathPrefix: 'storage/avatars/'),
                 onTap: () {
                   // Apna profile + active story hai → story open karo (Instagram jaisa)
                   if (widget.isOwnProfile &&
@@ -287,6 +289,8 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                   // Bina story ke: profile ki by default image clear dikhao
                   String? imageUrl = profile.user?.avatarUrl ?? profile.user?.avatar;
                   if (imageUrl == null || imageUrl.isEmpty) return;
+                  final resolved = resolveImageUrl(imageUrl, pathPrefix: 'storage/avatars/');
+                  if (resolved.isEmpty) return;
                   showDialog(
                     context: context,
                     barrierColor: Colors.black87,
@@ -306,7 +310,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                             child: Hero(
                               tag: 'profileImage',
                               child: Image.network(
-                                imageUrl!,
+                                resolved,
                                 fit: BoxFit.cover,
                                 errorBuilder: (_, __, ___) => const Icon(Icons.person, size: 80, color: Colors.white54),
                               ),
@@ -357,6 +361,8 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                             .trim()
                         : 'User'),
                 style: boldTextStyle(size: 16, color: Colors.white),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               if (profile.user?.bio != null &&
                   profile.user!.bio!.isNotEmpty) ...[
@@ -445,7 +451,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  Get.to(() => const EditVammisProfileScreen())?.then((result) {
+                  Get.to(() => EditVammisProfileScreen(profileTag: _profileTag))?.then((result) {
                     if (result == true) {
                       controller.refreshProfile();
                     }
@@ -537,7 +543,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
     if (widget.isOwnProfile) {
       return OutlinedButton(
         onPressed: () {
-          Get.to(() => const EditVammisProfileScreen())?.then((result) {
+          Get.to(() => EditVammisProfileScreen(profileTag: _profileTag))?.then((result) {
             if (result == true) {
               controller.refreshProfile();
             }
@@ -736,7 +742,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
         final post = controller.userPosts[index];
         return GestureDetector(
           onTap: () {
-            Get.to(const UserPostViewScreen());
+            Get.to(() => UserPostViewScreen(profileTag: _profileTag));
           },
           child: Container(
             decoration: BoxDecoration(
@@ -757,7 +763,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
               borderRadius: BorderRadius.circular(9),
               child: post.imageUrl != null && post.imageUrl!.isNotEmpty
                   ? CachedNetworkImage(
-                      imageUrl: post.imageUrl!,
+                      imageUrl: resolveImageUrl(post.imageUrl!),
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
                         color: Colors.grey.shade800,
@@ -852,7 +858,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
 
         return GestureDetector(
           onTap: () {
-            Get.to(UserReelScreen(reelId: reel.id ?? 0));
+            Get.to(() => UserReelScreen(reelId: reel.id ?? 0, profileTag: _profileTag));
           },
           child: Container(
             decoration: BoxDecoration(
@@ -873,7 +879,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
               borderRadius: BorderRadius.circular(9),
               child: thumbUrl.isNotEmpty
                   ? CachedNetworkImage(
-                      imageUrl: thumbUrl,
+                      imageUrl: resolveImageUrl(thumbUrl),
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
                         color: Colors.grey.shade800,
@@ -1338,25 +1344,29 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
           children: [
             const Text("Other Platforms",style: TextStyle(color: Colors.white,fontSize: 16),),
             10.height,
-            Row(
-              children: [
-                for(final SocialMediaAccount a in c.account)
-                  GestureDetector(
-                    onTap: (){launchUrl(Uri.parse(a.url??''));},
-                    child: Container(
-                      margin: const EdgeInsetsGeometry.symmetric(horizontal: 3),
-                      padding: const EdgeInsets.all(5),
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                        border: Border.all(color: Colors.white),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for(final SocialMediaAccount a in c.account)
+                    GestureDetector(
+                      onTap: (){launchUrl(Uri.parse(a.url??''));},
+                      child: Container(
+                        margin: const EdgeInsetsGeometry.symmetric(horizontal: 3),
+                        padding: const EdgeInsets.all(5),
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          border: Border.all(color: Colors.white),
+                        ),
+                        child: Image.asset(mediaIcons[a.platform]??''),
                       ),
-                      child: Image.asset(mediaIcons[a.platform]??''),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

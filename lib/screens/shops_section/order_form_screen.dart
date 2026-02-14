@@ -42,6 +42,7 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
   // Use same address checkbox
   final bool _useSameAddress = true;
 
+  // ignore: unused_field
   final bool _addNewAddress = false;
 
   List<IngAddress> _preAddress = [];
@@ -193,7 +194,8 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
         "phone": _shippingPhoneController.text.trim(),
       };
 
-      // Prepare billing address
+      // Prepare billing address (reserved for future use)
+      // ignore: unused_local_variable
       final billingAddress = {
         "name": _billingNameController.text.trim(),
         "address_line_1": _billingAddressLine1Controller.text.trim(),
@@ -941,6 +943,7 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
     );
   }
 
+  // ignore: unused_element
   Widget _buildBillingAddressFields() {
     if (_selectedAddress != null) {
       return const SizedBox();

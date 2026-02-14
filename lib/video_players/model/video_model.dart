@@ -171,7 +171,9 @@ class VideoPlayerModel {
       watchedTime: json['watched_time'] is String ? json['watched_time'] : "",
       releaseDate: json['release_date'] is String ? json['release_date'] : "",
       releaseYear: json['release_year'] is int ? json['release_year'] : -1,
-      isRestricted: json['is_restricted'] is int && (!json['is_restricted'] == 0),
+      isRestricted: json['is_restricted'] is int
+          ? (json['is_restricted'] as int) != 0
+          : (json['is_restricted'] is bool ? (json['is_restricted'] as bool) : false),
       entertainmentId: json['entertainment_id'] is int ? json['entertainment_id'] : -1,
       seasonId: json['season_id'] is int ? json['season_id'] : -1,
       trailerUrlType: json['trailer_url_type'] is String ? json['trailer_url_type'] : "",

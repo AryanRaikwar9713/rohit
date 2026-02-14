@@ -1,7 +1,6 @@
 import 'dart:async'; 
 import 'dart:convert';
 import 'dart:io';
-import 'package:applovin_max/applovin_max.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -26,7 +25,6 @@ import 'package:streamit_laravel/services/in_app_purhcase_service.dart';
 import 'package:streamit_laravel/utils/local_storage.dart';
 import 'package:streamit_laravel/video_players/model/video_model.dart';
 import 'package:y_player/y_player.dart';
-import 'ads/ads_helper.dart';
 import 'app_lovin_ads/add_helper.dart';
 import 'components/admob_rewarded_ad_helper.dart';
 import 'app_theme.dart';
@@ -43,7 +41,7 @@ import 'utils/constants.dart';
 import 'utils/location_monitor.dart';
 import 'utils/local_storage.dart' as local;
 import 'utils/push_notification_service.dart';
-
+//aryan
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   log('${FirebaseMsgConst.notificationDataKey} : ${message.data}');

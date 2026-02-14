@@ -10,7 +10,6 @@ import 'package:streamit_laravel/screens/social/comment_responce_model.dart';
 import 'package:streamit_laravel/screens/social/social_api.dart';
 import 'package:streamit_laravel/screens/social/social_post_responce_Model.dart';
 import 'package:streamit_laravel/configs.dart';
-import 'package:streamit_laravel/screens/walletSection/bolt/bolt_api.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_api.dart';
 
 import '../../network/core_api.dart';
@@ -106,13 +105,12 @@ class SocialController extends GetxController {
       isLoading.value = true;
 
       // Load real data from API
-      final response =
-          await SocialApi().getSocialPost(currentPage.value, onSuccess: (d) {
+      await SocialApi().getSocialPost(currentPage.value, onSuccess: (d) {
         if (currentPage.value > 1) {
-          posts.value.addAll(d.data?.posts ?? []);
+          posts.addAll(d.data?.posts ?? []);
           posts.refresh();
         } else {
-          posts.value = d.data?.posts ?? [];
+          posts.assignAll(d.data?.posts ?? []);
           posts.refresh();
         }
         hasMoreData.value = d.data?.pagination?.hasNextPage ?? false;
@@ -139,7 +137,7 @@ class SocialController extends GetxController {
   }
 
   void _loadAds() {
-    ads.value = [
+    ads.assignAll([
       SocialAd(
         id: 1,
         title: 'Premium Subscription',
@@ -158,17 +156,13 @@ class SocialController extends GetxController {
         actionText: 'Watch Now',
         actionUrl: 'https://example.com/movie',
       ),
-    ];
+    ]);
     ads.refresh();
   }
 
   // Post interaction methods
   Future<void> toggleLike(int postId) async {
     try {
-      final SocialPost p = posts.value
-          .where((element) => element.postId == postId.toString())
-          .first;
-
       await SocialApi().likePost(
         postId: postId,
         onError: (e) {
@@ -176,15 +170,15 @@ class SocialController extends GetxController {
         },
         onFailure: (s) => _handleResponce(s),
         onSuccess: (isLiked, likeCount) {
-          final postIndex = posts.value.indexWhere(
+          final postIndex = posts.indexWhere(
             (element) => element.postId == postId.toString(),
           );
 
-          final post = posts.value[postIndex];
+          final post = posts[postIndex];
 
           post.engagement?.likesCount = likeCount;
           post.engagement?.isLiked = isLiked;
-          posts.value[postIndex] = post;
+          posts[postIndex] = post;
           posts.refresh();
           if (isLiked && ENABLE_POINT_EARNINGS_SYSTEM) {
             WalletApi().getPointsAndBolt(
@@ -222,12 +216,12 @@ class SocialController extends GetxController {
             (element) => element.postId == postId.toString(),
           );
 
-          final post = posts.value[postInt];
+          final post = posts[postInt];
 
           post.engagement?.commentsCount =
               (post.engagement?.commentsCount ?? 0) + 1;
 
-          posts.value[postInt] = post;
+          posts[postInt] = post;
           posts.refresh();
 
           if (ENABLE_POINT_EARNINGS_SYSTEM) {
@@ -341,10 +335,10 @@ class SocialController extends GetxController {
         onSuccess: (s) {
           Logger().i("Comment Get Doen");
           if (commentPage.value == 1) {
-            comments.value = s.data?.comments ?? [];
+            comments.assignAll(s.data?.comments ?? []);
             comments.refresh();
           } else {
-            comments.value.addAll(s.data?.comments ?? []);
+            comments.addAll(s.data?.comments ?? []);
             comments.refresh();
           }
           commentPage.value++;
@@ -401,6 +395,7 @@ class SocialController extends GetxController {
     Logger().e(jsonDecode(s.body));
   }
 
+  // ignore: unused_element
   void _handleError(String e) {
     Logger().e(e);
   }

@@ -32,7 +32,7 @@ class StoryApi {
 
       if (caption != null) {
         request.fields.addAll({
-          'caption': caption ?? '',
+          'caption': caption,
         });
       }
 
@@ -41,7 +41,7 @@ class StoryApi {
       print("Response ${response.statusCode}");
       final res = await response.stream.bytesToString();
       print("Response $res");
-      respPrinter(response.statusCode, res ?? '');
+      respPrinter(response.statusCode, res);
       print("Response $res");
       if (response.statusCode == 200 || response.statusCode == 201) {
         onSuccess();
@@ -93,7 +93,7 @@ class StoryApi {
   {
     try
         {
-          final String? t = await DB.getUserToke();
+          await DB.getUserToke();
           const String uri = 'https://app.wamims.world/social/my_stories_api.php';
 
           final head = await DB().getHeaderForForm();

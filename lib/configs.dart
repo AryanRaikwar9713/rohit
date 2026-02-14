@@ -22,6 +22,17 @@ const DOMAIN_URL = "https://app.wamims.world";
 
 const BASE_URL = '$DOMAIN_URL/api/';
 
+/// Resolves image/avatar URL: use as-is if already absolute, else prepend [DOMAIN_URL]
+/// with optional [pathPrefix] (e.g. '/storage/avatars/'). Prevents double base URL.
+String resolveImageUrl(String? url, {String pathPrefix = ''}) {
+  if (url == null || url.trim().isEmpty) return '';
+  final u = url.trim();
+  if (u.startsWith('http://') || u.startsWith('https://')) return u;
+  final prefix = pathPrefix.startsWith('/') ? pathPrefix : '/$pathPrefix';
+  final path = u.startsWith('/') ? u : '$prefix$u';
+  return '$DOMAIN_URL$path';
+}
+
 const APP_APPSTORE_URL = '';
 
 // Wallet System Configuration

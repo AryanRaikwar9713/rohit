@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/screens/social/comment_responce_model.dart';
-import 'package:streamit_laravel/screens/social/social_controller.dart';
 import 'package:streamit_laravel/screens/social/social_post_card.dart';
 import 'package:streamit_laravel/screens/social/social_post_responce_Model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_controller.dart';
@@ -14,7 +13,10 @@ import 'package:streamit_laravel/utils/colors.dart';
 
 
 class UserPostViewScreen extends StatefulWidget {
-  const UserPostViewScreen({super.key});
+  /// When opened from [VammisProfileScreen], pass the same tag so the correct controller is found.
+  final String? profileTag;
+
+  const UserPostViewScreen({super.key, this.profileTag});
 
   @override
   State<UserPostViewScreen> createState() => _UserPostViewScreenState();
@@ -23,13 +25,17 @@ class UserPostViewScreen extends StatefulWidget {
 class _UserPostViewScreenState extends State<UserPostViewScreen> {
 
   final ScrollController scrollController  = ScrollController();
-  final VammisProfileController controller = Get.find<VammisProfileController>();
+  late final VammisProfileController controller;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    scrollController.addListener((){onScroll();});
+    controller = widget.profileTag != null
+        ? Get.find<VammisProfileController>(tag: widget.profileTag)
+        : (Get.isRegistered<VammisProfileController>()
+            ? Get.find<VammisProfileController>()
+            : Get.put(VammisProfileController()));
+    scrollController.addListener(() => onScroll());
   }
 
   void onScroll()
@@ -59,7 +65,7 @@ class _UserPostViewScreenState extends State<UserPostViewScreen> {
             itemCount: controller.userPosts.length,
             itemBuilder: (context, index){
             
-            final SocialPost p = controller.userPosts.value[index];
+            final SocialPost p = controller.userPosts[index];
             
             return  SocialPostCard(
               profilenavigation: false,
@@ -113,9 +119,8 @@ class _UserPostViewScreenState extends State<UserPostViewScreen> {
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
                   builder: (context) => _CommentBottomSheet(
-                    postId: int.parse(
-                        p.postId ??
-                            '0',),
+                    postId: int.parse(p.postId ?? '0'),
+                    profileController: controller,
                   ),
                 );
                 controller.resateCommentData();
@@ -143,7 +148,12 @@ class _UserPostViewScreenState extends State<UserPostViewScreen> {
 
 class _CommentBottomSheet extends StatefulWidget {
   final int postId;
-  const _CommentBottomSheet({required this.postId});
+  final VammisProfileController profileController;
+
+  const _CommentBottomSheet({
+    required this.postId,
+    required this.profileController,
+  });
 
   @override
   State<_CommentBottomSheet> createState() => _CommentBottomSheetState();
@@ -151,25 +161,22 @@ class _CommentBottomSheet extends StatefulWidget {
 
 class _CommentBottomSheetState extends State<_CommentBottomSheet> {
   final _commentController = TextEditingController();
-
   final _scrollController = ScrollController();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        Get.find<VammisProfileController>().loadMoreComment(widget.postId);
+        widget.profileController.loadMoreComment(widget.postId);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<VammisProfileController>();
-
+    final controller = widget.profileController;
     return Obx(() {
       return Container(
         height: MediaQuery.of(context).size.height * 0.75,
@@ -413,10 +420,7 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                       icon: const Icon(Icons.send, color: appColorPrimary),
                       onPressed: () async {
                         if (_commentController.text.isEmpty) return;
-                        final controller = (Get.isRegistered<VammisProfileController>())
-                            ? Get.find<VammisProfileController>()
-                            : Get.put(VammisProfileController());
-                        await controller.commentOnPost(
+                        await widget.profileController.commentOnPost(
                             widget.postId, _commentController.text.trim(),);
                         _commentController.clear();
                       },

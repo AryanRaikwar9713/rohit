@@ -471,6 +471,7 @@ class EventCreateScreen extends StatelessWidget {
     );
   }
 
+  // ignore: unused_element
   Widget _buildDateField({
     required TextEditingController controller,
     required String label,

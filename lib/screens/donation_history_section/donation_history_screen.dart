@@ -217,6 +217,7 @@ class DonationHistoryScreen extends StatelessWidget {
   }
 
   // Compact Donation Card (for recent transactions view)
+  // ignore: unused_element
   Widget _buildCompactDonationCard(
       Donation donation, DonationHistoryController controller,) {
     final donationDetails = donation.donationDetails;
@@ -307,6 +308,7 @@ class DonationHistoryScreen extends StatelessWidget {
   }
 
   // Donation Card (Full Card)
+  // ignore: unused_element
   Widget _buildDonationCard(
       Donation donation, DonationHistoryController controller,) {
     final donationDetails = donation.donationDetails;

@@ -158,7 +158,7 @@ class _ReelCommentBottomSheetState extends State<ReelCommentBottomSheet>
         padding: const EdgeInsets.symmetric(vertical: 8),
         itemCount: controller.comments.length,
         itemBuilder: (context, index) {
-          final comment = controller.comments.value[index];
+          final comment = controller.comments[index];
           return _buildCommentItem(comment);
         },
       );
@@ -445,6 +445,7 @@ class _ReelCommentBottomSheetState extends State<ReelCommentBottomSheet>
     _commentController.clear();
   }
 
+  // ignore: unused_element
   void _showCommentOptions(ReelComment comment) {
     showModalBottomSheet(
       context: context,

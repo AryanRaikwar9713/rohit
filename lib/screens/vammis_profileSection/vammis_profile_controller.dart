@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:get/get.dart';
-import 'package:html/dom.dart';
 import 'package:logger/logger.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/local_db.dart';
@@ -115,7 +114,7 @@ class VammisProfileController extends GetxController {
           isLoadingMore.value = false;
           final newPosts = data.data?.posts ?? [];
           if (refresh) {
-            userPosts.value = newPosts;
+            userPosts.assignAll(newPosts);
           } else {
             userPosts.addAll(newPosts);
           }
@@ -168,10 +167,9 @@ class VammisProfileController extends GetxController {
         userId: userId,
         page: reelsPage.value,
         onSuccess: (data) {
-          Logger().i(data);
           isLoadingReels.value = false;
           if (reelsPage.value == 1) {
-            userReels.value = data.data?.reels ?? [];
+            userReels.assignAll(data.data?.reels ?? []);
           } else {
             userReels.addAll(data.data?.reels ?? []);
           }
@@ -227,7 +225,7 @@ class VammisProfileController extends GetxController {
 
           final newProjects = data.data?.projects ?? [];
           if (refresh) {
-            userProjects.value = newProjects;
+            userProjects.assignAll(newProjects);
           } else {
             userProjects.addAll(newProjects);
           }
@@ -359,9 +357,9 @@ class VammisProfileController extends GetxController {
         onError: onError,
         onFailure: (d) {},
         onSuccess: (isLiked, likeCount) => {
-          userPosts.value.forEach(
+          userPosts.forEach(
             (element) {
-              if (element.postId == postId) {
+              if (element.postId == postId.toString()) {
                 element.engagement?.isLiked = isLiked;
                 element.engagement?.likesCount = likeCount;
               }
@@ -392,9 +390,9 @@ class VammisProfileController extends GetxController {
         onSuccess: (s) {
           Logger().i("Comment Get Doen");
           if (commentPage.value == 1) {
-            comments.value.clear();
+            comments.clear();
           }
-          comments.value.addAll(s.data?.comments ?? []);
+          comments.addAll(s.data?.comments ?? []);
           comments.refresh();
           commentPage.value++;
           hasMoreComment.value = s.data?.pagination?.hasNextPage ?? false;
@@ -429,12 +427,12 @@ class VammisProfileController extends GetxController {
             (element) => element.postId == postId.toString(),
           );
 
-          final post = userPosts.value[postInt];
+          final post = userPosts[postInt];
 
           post.engagement?.commentsCount =
               (post.engagement?.commentsCount ?? 0) + 1;
 
-          userPosts.value[postInt] = post;
+          userPosts[postInt] = post;
           userPosts.refresh();
 
           WalletApi().getPointsAndBolt(
