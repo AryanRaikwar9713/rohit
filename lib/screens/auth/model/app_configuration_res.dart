@@ -2,6 +2,14 @@ import 'package:nb_utils/nb_utils.dart';
 
 import '../../../utils/constants.dart';
 
+/// API/cache se int (0/1) ya bool aa sakta hai – hamesha bool return karo (type 'int' is not a subtype of type 'bool' fix)
+bool _toBool(dynamic value, bool defaultValue) {
+  if (value == null) return defaultValue;
+  if (value is bool) return value;
+  if (value is int) return value == 1;
+  return defaultValue;
+}
+
 class ConfigurationResponse {
   VendorAppUrl vendorAppUrl;
   RazorPay razorPay;
@@ -230,7 +238,7 @@ class ConfigurationResponse {
       enableTvShow: json['enable_tvshow'] is int && (json['enable_tvshow'] == 1),
       enableLiveTv: json['enable_livetv'] is int && (json['enable_livetv'] == 1),
       enableVideo: json['enable_video'] is int && (json['enable_video'] == 1),
-      enableContinueWatch: json['continue_watch'] is int && (json['continue_watch'] == 1),
+      enableContinueWatch: _toBool(json['continue_watch'], false),
       enableRateUs: json['enable_rate_us'] is int && (json['enable_rate_us'] == 1),
       taxPercentage: json['tax'] is List
           ? List<Tax>.from(json['tax'].map((x) => Tax.fromJson(x)))
@@ -242,16 +250,11 @@ class ConfigurationResponse {
       googleApiKey:
           json['google_api_key'] is String ? json['google_api_key'] : "",
       appleApiKey: json['apple_api_key'] is String ? json['apple_api_key'] : "",
-      isDeviceSupported: json['is_device_supported'] is bool
-          ? json['is_device_supported']
-          : true,
-      isLogin:
-          json['is_login'] is bool ? json['is_login'] : json['is_login'] == 1,
+      isDeviceSupported: _toBool(json['is_device_supported'], true),
+      isLogin: _toBool(json['is_login'], true),
       isCastingAvailable: json['is_download_available'] is int && (json['is_casting_available'] as int).getBoolInt(),
       isDownloadAvailable: json['is_download_available'] is int && (json['is_download_available'] as int).getBoolInt(),
-      isEnableSocialLogin: json['enable_social_login'] is bool
-          ? json['enable_social_login']
-          : true,
+      isEnableSocialLogin: _toBool(json['enable_social_login'], true),
     );
   }
 

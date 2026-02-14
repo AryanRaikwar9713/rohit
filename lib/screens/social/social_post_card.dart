@@ -88,18 +88,19 @@ class _SocialPostCardState extends State<SocialPostCard> {
             padding: const EdgeInsets.all(16),
             child: GestureDetector(
               onTap: () async {
-                if (widget.post.user?.userId != null ||
-                    widget.profilenavigation) {
-                  final u = await DB().getUser();
-
-                  final userId = int.tryParse(widget.post.user!.userId!);
-                  if (userId != null) {
-                    Get.to(() => VammisProfileScreen(
-                        popButton: true,
-                        userId: userId,
-                        isOwnProfile: u?.id == userId,),);
-                  }
-                }
+                if (!widget.profilenavigation || widget.post.user == null) return;
+                // userId API se string ya int aa sakta hai
+                final rawId = widget.post.user!.userId;
+                final int? userId = rawId is int
+                    ? rawId as int
+                    : int.tryParse(rawId?.toString() ?? '');
+                if (userId == null || userId <= 0) return;
+                final u = await DB().getUser();
+                Get.to(() => VammisProfileScreen(
+                      popButton: true,
+                      userId: userId,
+                      isOwnProfile: u?.id == userId,
+                    ));
               },
               child: Row(
                 children: [
@@ -152,25 +153,25 @@ class _SocialPostCardState extends State<SocialPostCard> {
                     ),
                   ),
 
-                  // Three Dots Menu (More Options) - moved closer to name like design
-                  8.width,
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        // Show more options menu
-                      },
-                      borderRadius: BorderRadius.circular(20),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Icon(
-                          Icons.more_vert,
-                          color: Colors.grey[400],
-                          size: 22,
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Three Dots Menu (More Options) - filhal UI me nahi dikhana
+                  // 8.width,
+                  // Material(
+                  //   color: Colors.transparent,
+                  //   child: InkWell(
+                  //     onTap: () {
+                  //       // Show more options menu
+                  //     },
+                  //     borderRadius: BorderRadius.circular(20),
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.all(8),
+                  //       child: Icon(
+                  //         Icons.more_vert,
+                  //         color: Colors.grey[400],
+                  //         size: 22,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -399,17 +400,17 @@ class _SocialPostCardState extends State<SocialPostCard> {
                   const SizedBox(width: 12),
                 ],
 
-                // Save/Bookmark Button (CupertinoIcons - Instagram-style)
-                GestureDetector(
-                  onTap: () {
-                    // Handle bookmark
-                  },
-                  child: const Icon(
-                    CupertinoIcons.bookmark,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                ),
+                // Save/Bookmark Button - filhal UI me nahi dikhana
+                // GestureDetector(
+                //   onTap: () {
+                //     // Handle bookmark
+                //   },
+                //   child: const Icon(
+                //     CupertinoIcons.bookmark,
+                //     color: Colors.white,
+                //     size: 24,
+                //   ),
+                // ),
               ],
             ),
           ),
