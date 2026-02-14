@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/get_story_responce_model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/story_controller.dart';
-import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/story_responce_model.dart';
 import 'package:streamit_laravel/utils/mohit/vammis_profile_avtar.dart';
 import 'package:get/get.dart';
 
@@ -45,6 +44,19 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
           if(storyContrller.isLoading.value)
             {
               return const Center(child: CircularProgressIndicator(),);
+            }
+          if(storyContrller.storyList.isEmpty)
+            {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.auto_stories_outlined, size: 64, color: Colors.grey[400]),
+                    16.height,
+                    Text('No stories yet', style: TextStyle(color: Colors.grey[400], fontSize: 16)),
+                  ],
+                ),
+              );
             }
 
           return  PageView(
@@ -90,17 +102,34 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
     );
   }
 
+  Widget _buildStoryMedia(StoryStory s) {
+    final hasMedia = (s.mediaUrl ?? '').trim().isNotEmpty;
+    if (!hasMedia) {
+      return Center(child: Icon(Icons.photo_library_outlined, size: 64, color: Colors.grey[600]));
+    }
+    if (s.mediaType == 'video') {
+      return Center(child: Icon(Icons.videocam_outlined, size: 64, color: Colors.grey[400]));
+    }
+    return Center(
+      child: Image.network(
+        s.mediaUrl!,
+        fit: BoxFit.contain,
+        loadingBuilder: (_, child, progress) => progress == null
+            ? child
+            : Center(child: CircularProgressIndicator(value: progress.expectedTotalBytes != null ? progress.cumulativeBytesLoaded / (progress.expectedTotalBytes ?? 1) : null)),
+        errorBuilder: (_, __, ___) => Icon(Icons.image_not_supported_outlined, color: Colors.white54, size: 40),
+      ),
+    );
+  }
 
   Container _buildStory(StoryStory s,StoryContrller controller)
   {
-
     return Container(
+      color: Colors.grey[900],
       alignment: Alignment.center,
       child: Stack(
         children: [
-
-          if (s.mediaType=='video') Center(child: Text(s.mediaUrl??'',style: TextStyle(color: Colors.white),),) else Center(child: Image.network(s.mediaUrl??'',
-          errorBuilder: (context, error, stackTrace) => Icon(Icons.image_not_supported_outlined,color: Colors.white,size: 40,),)),
+          _buildStoryMedia(s),
 
           //
           InkWell(

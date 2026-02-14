@@ -16,6 +16,12 @@ import 'components/continue_watch_component.dart';
 import 'components/slider_widget.dart';
 import 'home_controller.dart';
 
+bool _safeBool(dynamic value) {
+  if (value is bool) return value;
+  if (value is int) return value == 1;
+  return value == true;
+}
+
 class HomeScreen extends StatelessWidget {
   final HomeController homeScreenController;
 
@@ -78,8 +84,8 @@ class HomeScreen extends StatelessWidget {
                           ContinueWatchComponent(
                             continueWatchList: homeScreenController
                                 .dashboardDetail.value.continueWatch,
-                          ).visible(appConfigs.value.enableContinueWatch &&
-                              appConfigs.value.isLogin &&
+                          ).visible(_safeBool(appConfigs.value.enableContinueWatch) &&
+                              _safeBool(appConfigs.value.isLogin) &&
                               (homeScreenController.dashboardDetail.value
                                   .continueWatch.isNotEmpty),),
                           CategoryListComponent(

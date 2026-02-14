@@ -104,10 +104,13 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Load profile on first build
+    // Profile open hote hi sahi user load karo – purana data dikhane se grey/ wrong screen fix
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (controller.profileResponse.value == null ||
-          controller.currentUserId != widget.userId) {
+      if (controller.currentUserId != widget.userId) {
+        controller.currentUserId = widget.userId;
+        controller.isLoading.value = true;
+        controller.profileResponse.value = null;
+        controller.errorMessage.value = '';
         controller.loadUserProfile(widget.userId);
       }
     });
@@ -204,11 +207,25 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
         }
 
         final profileData = controller.profileResponse.value?.data;
-        if (profileData == null) {
-          return const Center(
-            child: Text(
-              'No profile data found',
-              style: TextStyle(color: Colors.white70),
+        if (profileData == null || profileData.user == null) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.person_off_outlined, size: 64, color: Colors.grey[500]),
+                16.height,
+                const Text(
+                  'No profile data found',
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+                24.height,
+                TextButton.icon(
+                  onPressed: () => controller.loadUserProfile(widget.userId),
+                  icon: const Icon(Icons.refresh, color: Colors.white70),
+                  label: const Text('Retry', style: TextStyle(color: Colors.white70)),
+                ),
+              ],
             ),
           );
         }
