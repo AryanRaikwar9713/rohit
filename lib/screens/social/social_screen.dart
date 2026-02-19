@@ -57,7 +57,10 @@ class _SocialScreenState extends State<SocialScreen>
     storyController = (Get.isRegistered<StoryContrller>())
         ? Get.find<StoryContrller>()
         : Get.put(StoryContrller());
-    storyController.loadStory();
+    // Defer story load so first frame paints faster (reduces jank/crash on weak devices)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) storyController.loadStory();
+    });
   }
 
   void _scrollListener() {
@@ -82,14 +85,10 @@ class _SocialScreenState extends State<SocialScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
-      log('=== App Resumed - Refreshing Social Posts ===');
-      // Get the controller from GetX if it exists
-      if (Get.isRegistered<SocialController>()) {
-        final controller = Get.find<SocialController>();
-        controller.refreshData();
+    if (state == AppLifecycleState.resumed &&
+          Get.isRegistered<SocialController>()) {
+        Get.find<SocialController>().refreshData();
       }
-    }
   }
 
   @override
@@ -291,12 +290,6 @@ class _SocialScreenState extends State<SocialScreen>
 
                     // Social Feed
                     Obx(() {
-                      print('=== Social Screen Rebuild ===');
-                      print('Is Loading: ${controller.isLoading.value}');
-                      print('Posts Count: ${controller.posts.length}');
-                      print(
-                          'Posts: ${controller.posts.map((p) => '${p.postId}: ${p.caption}').toList()}',);
-
                       if (controller.isLoading.value &&
                           controller.posts.isEmpty) {
                         return const Center(
@@ -402,7 +395,7 @@ class _SocialScreenState extends State<SocialScreen>
                                     gapPadding: 0,
                                   ),
                                   child: Image.network(
-                                    controller.posts[i].imageUrl ?? '',
+                                    resolveImageUrl(controller.posts[i].imageUrl ?? ''),
                                     fit: BoxFit.contain,
                                   ),
                                 ),
@@ -452,7 +445,9 @@ class _SocialScreenState extends State<SocialScreen>
                         physics: const NeverScrollableScrollPhysics(),
                         padding: const EdgeInsets.only(bottom: 100),
                         itemCount: items.length,
-                        itemBuilder: (context, index) => items[index],
+                        itemBuilder: (context, index) => RepaintBoundary(
+                          child: items[index],
+                        ),
                       );
                     }),
                   ],
@@ -953,6 +948,63 @@ class _UserSotuyWWigdetState extends State<_UserSotuyWWigdet> {
     });
   }
 
+  void _showYourStoryOptions(BuildContext context, bool hasOwnStory) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: Colors.grey[900],
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.add_circle_outline, color: Colors.white70),
+                title: Text('Add story', style: boldTextStyle(size: 16, color: Colors.white)),
+                subtitle: Text('Upload a new story', style: secondaryTextStyle(size: 12, color: Colors.grey)),
+                onTap: () {
+                  Get.back();
+                  Get.to(() => const CreateStoryScreen());
+                },
+              ),
+              ListTile(
+                leading: Icon(hasOwnStory ? Icons.auto_stories : Icons.auto_stories_outlined, color: Colors.white70),
+                title: Text('View my story', style: boldTextStyle(size: 16, color: Colors.white)),
+                subtitle: Text(
+                  hasOwnStory ? 'See your active story' : "You haven't added a story yet",
+                  style: secondaryTextStyle(size: 12, color: Colors.grey),
+                ),
+                onTap: () async {
+                  Get.back();
+                  if (hasOwnStory) {
+                    final c = Get.isRegistered<MyStoryController>()
+                        ? Get.find<MyStoryController>()
+                        : Get.put(MyStoryController());
+                    await c.getMyStory();
+                    if (context.mounted && c.activeStories.isNotEmpty) {
+                      Get.to(MyStoryScreen(
+                        controller: c,
+                        storyId: c.activeStories.first.id.toString(),
+                      ),);
+                    } else if (context.mounted) {
+                      Get.to(() => const CreateStoryScreen());
+                    }
+                  } else {
+                    Get.to(() => const CreateStoryScreen());
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      isScrollControlled: true,
+      ignoreSafeArea: false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -975,24 +1027,7 @@ class _UserSotuyWWigdetState extends State<_UserSotuyWWigdet> {
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: _YourStoryCircle(
                     avatar: _currentUser?.profileImage ?? '',
-                    onTap: () async {
-                      if (hasOwnStory) {
-                        final c = Get.isRegistered<MyStoryController>()
-                            ? Get.find<MyStoryController>()
-                            : Get.put(MyStoryController());
-                        await c.getMyStory();
-                        if (context.mounted && c.activeStories.isNotEmpty) {
-                          Get.to(MyStoryScreen(
-                            controller: c,
-                            storyId: c.activeStories.first.id.toString(),
-                          ),);
-                        } else if (context.mounted) {
-                          Get.to(() => const CreateStoryScreen());
-                        }
-                      } else {
-                        Get.to(() => const CreateStoryScreen());
-                      }
-                    },
+                    onTap: () => _showYourStoryOptions(context, hasOwnStory),
                   ),
                 ),
                 // Followed users' stories (yellow ring = unseen, 50% = seen)

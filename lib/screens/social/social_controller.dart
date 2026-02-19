@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
@@ -36,12 +37,8 @@ class SocialController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    // Refresh data when controller is ready
-    log('=== SocialController Ready - Refreshing Data ===');
     refreshData();
-
-    // Test with user ID 1 to see if there are any posts
-    testApiWithDifferentUser();
+    // testApiWithDifferentUser(); // disabled for performance; use only when debugging API
   }
 
   void _initializeData() {
@@ -92,7 +89,7 @@ class SocialController extends GetxController {
   }
 
   Future<void> loadPosts(BuildContext context, {bool refresh = false}) async {
-    print("loading Post");
+    if (kDebugMode) print("loading Post");
     try {
       if (refresh) {
         currentPage.value = 1;
@@ -124,7 +121,7 @@ class SocialController extends GetxController {
 
       isLoading.value = false;
     } catch (e) {
-      print("Error $e");
+      if (kDebugMode) print("Error $e");
       isLoading.value = false;
       hasMoreData.value = false;
     }

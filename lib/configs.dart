@@ -35,14 +35,12 @@ String resolveImageUrl(String? url, {String pathPrefix = ''}) {
 
 const APP_APPSTORE_URL = '';
 
-// Wallet System Configuration
-const bool ENABLE_POINT_WALLET_SYSTEM =
-    false; // Set to true to enable Point Wallet tab
+// Wallet System Configuration (v1: bolt from ads only; point wallet = next version)
+const bool ENABLE_POINT_WALLET_SYSTEM = false;
 
-/// Version 1: false = hide point system completely. Only Bolt (from rewarded ads) shown.
-/// Version 2: true = enable point/bolt earnings from social, reels, etc.
-const bool ENABLE_POINT_EARNINGS_SYSTEM =
-    false; // false for v1: only bolt from ads; true for v2: points+bolt from social/reels
+/// false = bolt only when user watches ads (Watch & Earn). No bolt for like/comment/post/reel.
+/// true = enable bolt/points from social like, comment, post view, reel watch, etc. (next version)
+const bool ENABLE_POINT_EARNINGS_SYSTEM = false;
 
 ///LOCAL VIDEO TYPE URL
 const LOCAL_VIDEO_DOMAIN_URL = '$DOMAIN_URL/storage/streamit-laravel/';

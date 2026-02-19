@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:streamit_laravel/configs.dart';
 import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/donation/model/get_project_list_responce_model.dart';
 import 'package:streamit_laravel/screens/reels/reel_response_model.dart';
@@ -435,17 +436,19 @@ class VammisProfileController extends GetxController {
           userPosts[postInt] = post;
           userPosts.refresh();
 
-          WalletApi().getPointsAndBolt(
-            action: PointAction.comment,
-            getBolt: false,
-            targetId: postId,
-            commentId: int.parse(c.commentId ?? '0'),
-            contentType: "post",
-            onError: (e) {
-              Logger().e("Error in Comment Api $e");
-            },
-            onFailure: (s) {},
-          );
+          if (ENABLE_POINT_EARNINGS_SYSTEM) {
+            WalletApi().getPointsAndBolt(
+              action: PointAction.comment,
+              getBolt: false,
+              targetId: postId,
+              commentId: int.parse(c.commentId ?? '0'),
+              contentType: "post",
+              onError: (e) {
+                Logger().e("Error in Comment Api $e");
+              },
+              onFailure: (s) {},
+            );
+          }
         },
       );
     } catch (e) {

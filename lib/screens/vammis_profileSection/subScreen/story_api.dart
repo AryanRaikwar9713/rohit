@@ -62,7 +62,8 @@ class StoryApi {
   }) async
   {
     try {
-      const String uri = 'https://wamims.international/public/social/story_api.php?action=get_stories';
+      // Backend should return only stories of users whom current user follows (when followed_only=1)
+      const String uri = 'https://wamims.international/public/social/story_api.php?action=get_stories&followed_only=1';
 
       final head = await DB().getHeaderForForm();
 

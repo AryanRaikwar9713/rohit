@@ -89,11 +89,12 @@ class _SocialPostCardState extends State<SocialPostCard> {
             padding: const EdgeInsets.all(16),
             child: GestureDetector(
               onTap: () async {
-                if (!widget.profilenavigation || widget.post.user == null) return;
-                // userId API se string ya int aa sakta hai
-                final rawId = widget.post.user!.userId;
+                if (!widget.profilenavigation) return;
+                final user = widget.post.user;
+                if (user == null) return;
+                final rawId = user.userId;
                 final int? userId = rawId is int
-                    ? rawId! as int
+                    ? rawId as int
                     : int.tryParse(rawId?.toString() ?? '');
                 if (userId == null || userId <= 0) return;
                 final u = await DB().getUser();
@@ -105,25 +106,21 @@ class _SocialPostCardState extends State<SocialPostCard> {
               },
               child: Row(
                 children: [
-                  // Profile Picture
-                  CircleAvatar(
-                    radius: 22,
-                    backgroundColor: Colors.grey[850],
-                    backgroundImage: widget.post.user?.profileImage != null &&
-                            widget.post.user!.profileImage!.toString().trim().isNotEmpty
-                        ? NetworkImage(resolveImageUrl(
-                            widget.post.user!.profileImage!.toString(),
-                            pathPrefix: 'storage/avatars/',
-                          ))
-                        : null,
-                    child: widget.post.user?.profileImage == null ||
-                            widget.post.user!.profileImage!.toString().trim().isEmpty
-                        ? Icon(
-                            Icons.person,
-                            color: Colors.grey[400],
-                            size: 20,
-                          )
-                        : null,
+                  // Profile Picture (null-safe for user/profileImage)
+                  Builder(
+                    builder: (_) {
+                      final avatar = widget.post.user?.profileImage?.toString().trim() ?? '';
+                      return CircleAvatar(
+                        radius: 22,
+                        backgroundColor: Colors.grey[850],
+                        backgroundImage: avatar.isNotEmpty
+                            ? NetworkImage(resolveImageUrl(avatar, pathPrefix: 'storage/avatars/'))
+                            : null,
+                        child: avatar.isEmpty
+                            ? Icon(Icons.person, color: Colors.grey[400], size: 20)
+                            : null,
+                      );
+                    },
                   ),
                   8.width,
 
@@ -184,7 +181,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
           // Post Image: actual size; sirf full-screen type (jo puri screen cover kare) ko 70% cap
           if (widget.post.imageUrl != null && widget.post.imageUrl!.isNotEmpty)
             _PostImageWidget(
-              imageUrl: resolveImageUrl(widget.post.imageUrl!),
+              imageUrl: resolveImageUrl(widget.post.imageUrl),
               onTap: widget.onImageTap,
             ),
 

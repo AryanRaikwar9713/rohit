@@ -52,8 +52,8 @@ android {
         applicationId "com.anytimeott.live"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion 36
-        versionCode 90
-        versionName "41.2.1"
+        versionCode 95
+        versionName "41.2.6"
         ndk {
             abiFilters.clear()
             abiFilters.addAll(['arm64-v8a'])

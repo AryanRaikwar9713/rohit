@@ -73,11 +73,11 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo with transparent background on black screen
+            // WALK A MILE IN MY SHOES logo (splash)
             Image.asset(
-              'assets/launcher_icons/wammisLogo.png',
-              height: 160,
-              width: 160,
+              'assets/splash_logo.png',
+              height: 200,
+              width: double.infinity,
               fit: BoxFit.contain,
               errorBuilder: (_, __, ___) => Icon(
                 Icons.image_not_supported_outlined,
