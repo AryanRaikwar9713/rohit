@@ -29,7 +29,7 @@ class ShopApi {
       final UserData? userData = await DB().getUser();
 
       final String uri =
-          'https://app.wamims.world/public/social/shopping/shop_register.php?user_id=${userData?.id ?? 0}';
+          'https://wamims.international/public/social/shopping/shop_register.php?user_id=${userData?.id ?? 0}';
 
       final resp = await http.get(Uri.parse(uri), headers: head ?? {});
 
@@ -71,7 +71,7 @@ class ShopApi {
   }) async {
     try {
       const String uri =
-          'https://app.wamims.world/public/social/shopping/shop_register.php';
+          'https://wamims.international/public/social/shopping/shop_register.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
 
@@ -188,7 +188,7 @@ class ShopApi {
       final head = await DB().getHeaderForRow();
 
       const String uri =
-          'https://app.wamims.world/public/social/shopping/get_shop_categories.php';
+          'https://wamims.international/public/social/shopping/get_shop_categories.php';
 
       final resp = await http.get(Uri.parse(uri), headers: head ?? {});
 

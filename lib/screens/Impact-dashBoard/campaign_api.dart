@@ -19,7 +19,7 @@ class MyCampaignApi {
       final head = await DB().getHeaderForRow();
       final UserData? userId = await DB().getUser();
 
-      final String url =
+      const String url =
           '$DOMAIN_URL/public/social/impact/submit_project_fixed.php?action=get_categories';
 
       Logger().i('Fetching Campaign Categories for user: ${userId?.id}');
@@ -69,7 +69,7 @@ class MyCampaignApi {
       final head = await DB().getHeaderForForm();
       final UserData? userId = await DB().getUser();
 
-      final String url =
+      const String url =
           '$DOMAIN_URL/public/social/impact/submit_project_fixed.php';
 
       Logger().i('Creating Campaign for user: ${userId?.id}');

@@ -30,7 +30,7 @@ class AdMobNativeAdWidget extends StatelessWidget {
               children: [
                 Text('Ad', style: TextStyle(color: Colors.grey[500], fontSize: 10)),
                 const SizedBox(height: 4),
-                Text('Sponsored', style: TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
+                const Text('Sponsored', style: TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 2),
                 Text('Your ad could be here', style: TextStyle(color: Colors.grey[500], fontSize: 12)),
               ],

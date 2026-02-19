@@ -18,7 +18,7 @@ const LIVE_AUTO_SLIDER_SECOND = 5;
 const API_VERSION = 2;
 
 ///DO NOT ADD SLASH HERE
-const DOMAIN_URL = "https://app.wamims.world";
+const DOMAIN_URL = "https://wamims.international";
 
 const BASE_URL = '$DOMAIN_URL/api/';
 

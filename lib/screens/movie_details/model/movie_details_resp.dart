@@ -146,7 +146,7 @@ class MovieDetailModel {
       releaseYear: json['release_year'] is int ? json['release_year'] : -1,
       isRestricted: json['is_restricted'] is int
           ? (json['is_restricted'] as int) != 0
-          : (json['is_restricted'] is bool ? (json['is_restricted'] as bool) : false),
+          : (json['is_restricted'] is bool && (json['is_restricted'] as bool)),
       videoUploadType: json['video_upload_type'] is String ? json['video_upload_type'] : "",
       videoUrlInput: json['video_url_input'] is String ? json['video_url_input'] : "",
       isDownload: json['is_download'] is bool ? json['is_download'] : false,

@@ -370,7 +370,6 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
 
   Future<void> _selectimage() async {
     final reselt = await FilePicker.platform.pickFiles(
-        allowCompression: true,
         type: FileType.custom,
         allowedExtensions: ['jpg', 'png', 'jpeg', 'mp4'],);
 

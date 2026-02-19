@@ -24,7 +24,7 @@ class ProductAPi {
   }) async {
     try {
       final uri = Uri.parse(
-        "https://app.wamims.world/public/social/shopping/get_product_categories.php",
+        "https://wamims.international/public/social/shopping/get_product_categories.php",
       );
 
       final head = await DB().getHeaderForRow();
@@ -84,7 +84,7 @@ class ProductAPi {
 
       print("askdf");
       final uri = Uri.http(
-        "app.wamims.world",
+        "wamims.international",
         "/social/shopping/get_products.php",
         queryParams,
       );
@@ -135,7 +135,7 @@ class ProductAPi {
   {
     try {
       final uri = Uri.parse(
-        "https://app.wamims.world/social/shopping/shop_product_create.php",
+        "https://wamims.international/social/shopping/shop_product_create.php",
       );
 
       final head = await DB().getHeaderForForm();

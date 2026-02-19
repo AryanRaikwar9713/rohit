@@ -103,8 +103,8 @@ class APIEndPoints {
   static const String saveRentDetails = 'save-payment-pay-per-view';
 
   // Social Media APIs
-  static const String createSocialPost = 'https://app.wamims.world/social/social_api.php';
-  static const String getSocialPosts = 'https://app.wamims.world/social/social_api.php';
+  static const String createSocialPost = 'https://wamims.international/social/social_api.php';
+  static const String getSocialPosts = 'https://wamims.international/social/social_api.php';
   static const String likeSocialPost = 'social/like-post';
   static const String commentSocialPost = 'social/comment-post';
 }

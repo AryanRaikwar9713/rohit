@@ -53,7 +53,6 @@ class WamimsProfileAvtar extends StatelessWidget {
                 ? _storyRingGradient.colors.first.withOpacity(0.4 * ringOpacity)
                 : Colors.white.withOpacity(0.2),
             blurRadius: 8,
-            spreadRadius: 0,
           ),
         ],
       ),

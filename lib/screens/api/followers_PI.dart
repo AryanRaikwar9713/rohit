@@ -21,7 +21,7 @@ class FollowersApi {
     try
         {
 
-          const String uri ='https://app.wamims.world/public/social/followers_following_list_api.php';
+          const String uri ='https://wamims.international/public/social/followers_following_list_api.php';
 
           final head = await DB().getHeaderForRow();
           final user = await DB().getUser();
@@ -77,7 +77,7 @@ class FollowersApi {
     try
     {
 
-      const String uri ='https://app.wamims.world/public/social/followers_following_list_api.php';
+      const String uri ='https://wamims.international/public/social/followers_following_list_api.php';
 
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();

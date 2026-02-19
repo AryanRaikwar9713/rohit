@@ -372,10 +372,10 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                   ),
                 ),
                 child: DropdownButtonFormField<int>(
-                  value: controller.selectedCategoryId.value,
-                  decoration: InputDecoration(
+                  initialValue: controller.selectedCategoryId.value,
+                  decoration: const InputDecoration(
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(
+                    contentPadding: EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 12,
                     ),
@@ -403,14 +403,14 @@ class _CreateCampaignScreenState extends State<CreateCampaignScreen> {
                               imageUrl: category.icon!,
                               width: 22,
                               height: 22,
-                              errorWidget: (context, url, error) => Icon(
+                              errorWidget: (context, url, error) => const Icon(
                                 Icons.category,
                                 size: 22,
                                 color: Colors.white70,
                               ),
                             )
                           else
-                            Icon(
+                            const Icon(
                               Icons.category,
                               size: 22,
                               color: Colors.white70,

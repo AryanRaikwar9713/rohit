@@ -216,7 +216,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                         ),
                                         const SizedBox(width: 4),
                                         Text(
-                                          "${(detail.value.fundingRaised ?? 0).toStringAsFixed(2)}",
+                                          (detail.value.fundingRaised ?? 0).toStringAsFixed(2),
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 20,
@@ -250,7 +250,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        "${(detail.value.fundingGoal ?? 0).toStringAsFixed(2)}",
+                                        (detail.value.fundingGoal ?? 0).toStringAsFixed(2),
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 20,
@@ -469,7 +469,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                                       : null,
                                   backgroundColor: Colors.grey.shade700,
                                   child: avatarUrl.isEmpty
-                                      ? Icon(Icons.person, color: Colors.white54, size: 32)
+                                      ? const Icon(Icons.person, color: Colors.white54, size: 32)
                                       : null,
                                 );
                               }),

@@ -30,13 +30,13 @@ class SocialApi {
   }) async
   {
     try {
-      // String uri = 'https://app.wamims.world/api/posts/feed?offset=$page';
+      // String uri = 'https://wamims.international/api/posts/feed?offset=$page';
       final head = await DB().getHeaderForRow();
 
       final UserData? userData = await DB().getUser();
 
       final String uri =
-          'https://app.wamims.world/social/get_posts.php?logged_in_user_id=${userData?.id ?? 0}&page=$page';
+          'https://wamims.international/social/get_posts.php?logged_in_user_id=${userData?.id ?? 0}&page=$page';
 
       final resp = await http.get(Uri.parse(uri), headers: head ?? {});
 
@@ -63,7 +63,7 @@ class SocialApi {
     required void Function(bool isLiked, int likeCount) onSuccess,
   }) async {
     try {
-      const String uri = 'https://app.wamims.world/social/post_likes.php';
+      const String uri = 'https://wamims.international/social/post_likes.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
       final data = {
@@ -94,7 +94,7 @@ class SocialApi {
     required void Function(SocialPostComment) onSuccess,
   }) async {
     try {
-      const String uri = 'https://app.wamims.world/social/post_comments.php';
+      const String uri = 'https://wamims.international/social/post_comments.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
 
@@ -133,7 +133,7 @@ class SocialApi {
       final user = await DB().getUser();
 
       final String uri =
-          'https://app.wamims.world/public/social/get_comments.php?post_id=$post_id&logged_in_user_id=${user?.id??0}&page=$page&limit=10';
+          'https://wamims.international/public/social/get_comments.php?post_id=$post_id&logged_in_user_id=${user?.id??0}&page=$page&limit=10';
 
       final resp = await http.get(
         Uri.parse(uri),
@@ -167,7 +167,7 @@ class SocialApi {
     required void Function(int) onSuccess,
   }) async {
     try {
-      const String uri = 'https://app.wamims.world/social/upload_posts.php';
+      const String uri = 'https://wamims.international/social/upload_posts.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
 
@@ -225,7 +225,7 @@ class SocialApi {
   }) async
   {
     try {
-      const String uri = 'https://app.wamims.world/public/social/follow_api.php';
+      const String uri = 'https://wamims.international/public/social/follow_api.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
 

@@ -20,7 +20,7 @@ class DonationProject{
     required void Function(http.Response) onFailure,
     required void Function(String error) onError,
   }) async {
-    const String url = "https://app.wamims.world/public/social/impact/donate.php";
+    const String url = "https://wamims.international/public/social/impact/donate.php";
 
     try {
       final head = await DB().getHeaderForRow();
@@ -67,7 +67,7 @@ class DonationProject{
     required void Function(String error) onError,
   }) async {
     final String url =
-        "https://app.wamims.world/public/social/impact/get_projects_fixed.php?action=get_project_details&project_id=$projectId";
+        "https://wamims.international/public/social/impact/get_projects_fixed.php?action=get_project_details&project_id=$projectId";
 
     try {
       final head = await DB().getHeaderForRow();
@@ -107,7 +107,7 @@ class DonationProject{
       final user = await DB().getUser();
 
       final String url =
-          "https://app.wamims.world/public/social/impact/donation_history.php?user_id=${user?.id}&page=$page&limit=10";
+          "https://wamims.international/public/social/impact/donation_history.php?user_id=${user?.id}&page=$page&limit=10";
 
       final response = await http.get(
         Uri.parse(url),
@@ -135,7 +135,7 @@ class DonationProject{
     required void Function(String error) onError,
   }) async {
     final url = Uri.parse(
-      'https://app.wamims.world/social/impact/get_projects.php?page=$page&limit=10',
+      'https://wamims.international/social/impact/get_projects.php?page=$page&limit=10',
     );
 
     try {

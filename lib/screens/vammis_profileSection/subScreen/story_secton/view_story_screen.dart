@@ -120,7 +120,7 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
         loadingBuilder: (_, child, progress) => progress == null
             ? child
             : Center(child: CircularProgressIndicator(value: progress.expectedTotalBytes != null ? progress.cumulativeBytesLoaded / (progress.expectedTotalBytes ?? 1) : null)),
-        errorBuilder: (_, __, ___) => Icon(Icons.image_not_supported_outlined, color: Colors.white54, size: 40),
+        errorBuilder: (_, __, ___) => const Icon(Icons.image_not_supported_outlined, color: Colors.white54, size: 40),
       ),
     );
   }

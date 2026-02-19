@@ -37,7 +37,7 @@ class ImpactProfileApi {
       final UserData? userId = await DB().getUser();
 
       const String url =
-          'https://app.wamims.world/public/social/impact/create_crowdfunding_account.php';
+          'https://wamims.international/public/social/impact/create_crowdfunding_account.php';
 
       Logger().i('Creating Impact Profile for user: ${userId?.id}');
 
@@ -148,7 +148,7 @@ class ImpactProfileApi {
       final UserData? userId = await DB().getUser();
 
       final String url =
-          'https://app.wamims.world/public/social/impact/check_account.php?user_id=${userId?.id ?? 0}';
+          'https://wamims.international/public/social/impact/check_account.php?user_id=${userId?.id ?? 0}';
 
       Logger().i('Checking Impact Account for user: ${userId?.id}');
 
@@ -180,7 +180,7 @@ class ImpactProfileApi {
     required void Function(String error) onError,
   }) async {
     const String url =
-        "https://app.wamims.world/public/social/impact/submit_project_fixed.php?action=get_limits";
+        "https://wamims.international/public/social/impact/submit_project_fixed.php?action=get_limits";
 
     try {
       final head = await DB().getHeaderForRow();

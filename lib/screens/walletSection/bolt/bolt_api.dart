@@ -57,7 +57,7 @@ class BoltApi {
   }) async {
     final user = await DB().getUser();
     await _postBolt(
-      url: 'https://app.wamims.world/public/social/ads/social_like_bolt.php',
+      url: 'https://wamims.international/public/social/ads/social_like_bolt.php',
       body: {
         "user_id": user?.id ?? 0,
         "post_id": postId,
@@ -81,7 +81,7 @@ class BoltApi {
     final user = await DB().getUser();
     await _postBolt(
       url:
-          'https://app.wamims.world/public/social/bolt/social_comment_bolt.php',
+          'https://wamims.international/public/social/bolt/social_comment_bolt.php',
       body: {
         "user_id": user?.id ?? 0,
         "post_id": postId,
@@ -106,7 +106,7 @@ class BoltApi {
     final user = await DB().getUser();
     await _postBolt(
       url:
-          'https://app.wamims.world/public/social/bolt/social_post_view_bolt.php',
+          'https://wamims.international/public/social/bolt/social_post_view_bolt.php',
       body: {
         "user_id": user?.id ?? 0,
         "post_id": postId,
@@ -130,7 +130,7 @@ class BoltApi {
     final user = await DB().getUser();
     await _postBolt(
       url:
-          'https://app.wamims.world/public/social/bolt/social_post_upload_bolt.php',
+          'https://wamims.international/public/social/bolt/social_post_upload_bolt.php',
       body: {
         "user_id": user?.id ?? 0,
         "post_id": postId,
@@ -153,7 +153,7 @@ class BoltApi {
     final user = await DB().getUser();
     await _postBolt(
       url:
-          'https://app.wamims.world/public/social/bolt/social_reel_upload_bolt.php',
+          'https://wamims.international/public/social/bolt/social_reel_upload_bolt.php',
       body: {
         "user_id": user?.id ?? 0,
         "reel_id": reelId,
@@ -177,7 +177,7 @@ class BoltApi {
     final user = await DB().getUser();
     await _postBolt(
       url:
-          'https://app.wamims.world/public/social/bolt/social_reel_watch_bolt.php',
+          'https://wamims.international/public/social/bolt/social_reel_watch_bolt.php',
       body: {
         "user_id": user?.id ?? 0,
         "reel_id": reelId,
@@ -201,7 +201,7 @@ class BoltApi {
     final user = await DB().getUser();
     await _postBolt(
       url:
-          'https://app.wamims.world/public/social/ads/watch_ad_reward_bolt.php',
+          'https://wamims.international/public/social/ads/watch_ad_reward_bolt.php',
       body: {
         "user_id": user?.id ?? 0,
         "ad_type": "rewarded",
@@ -226,7 +226,7 @@ class BoltApi {
     final user = await DB().getUser();
 
     final String url =
-        'https://app.wamims.world/public/social/bolt/bolt_wallet.php?user_id=${user?.id}&action=dashboard';
+        'https://wamims.international/public/social/bolt/bolt_wallet.php?user_id=${user?.id}&action=dashboard';
     final head =
         await DB().getHeaderForRow(); // agar tu header function use karta hai
 
@@ -256,7 +256,7 @@ class BoltApi {
       final user = await DB().getUser();
 
       final String url =
-          'https://app.wamims.world/public/social/bolt/bolt_wallet.php?user_id=${user?.id}&action=transactions&page=$page&limit=10';
+          'https://wamims.international/public/social/bolt/bolt_wallet.php?user_id=${user?.id}&action=transactions&page=$page&limit=10';
 
       final response = await http.get(Uri.parse(url), headers: head ?? {});
 

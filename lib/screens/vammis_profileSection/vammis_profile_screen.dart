@@ -283,11 +283,11 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                     Get.to(MyStoryScreen(
                       storyId: firstStory.id.toString(),
                       controller: myStoryController!,
-                    ));
+                    ),);
                     return;
                   }
                   // Bina story ke: profile ki by default image clear dikhao
-                  String? imageUrl = profile.user?.avatarUrl ?? profile.user?.avatar;
+                  final String? imageUrl = profile.user?.avatarUrl ?? profile.user?.avatar;
                   if (imageUrl == null || imageUrl.isEmpty) return;
                   final resolved = resolveImageUrl(imageUrl, pathPrefix: 'storage/avatars/');
                   if (resolved.isEmpty) return;
@@ -321,7 +321,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                     },
                   );
                 },
-              )),
+              ),),
 
               const SizedBox(width: 20),
 
@@ -763,7 +763,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
               borderRadius: BorderRadius.circular(9),
               child: post.imageUrl != null && post.imageUrl!.isNotEmpty
                   ? CachedNetworkImage(
-                      imageUrl: resolveImageUrl(post.imageUrl!),
+                      imageUrl: resolveImageUrl(post.imageUrl),
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
                         color: Colors.grey.shade800,

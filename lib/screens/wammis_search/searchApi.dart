@@ -19,7 +19,7 @@ class SearchApi {
     try {
 
       final String encoded = Uri.encodeComponent(query.trim());
-      final String url = "https://app.wamims.world/public/social/search_content.php?q=$encoded&type=all&limit=$limit&page=$page";
+      final String url = "https://wamims.international/public/social/search_content.php?q=$encoded&type=all&limit=$limit&page=$page";
 
       final responce = await http.get(Uri.parse(url));
 

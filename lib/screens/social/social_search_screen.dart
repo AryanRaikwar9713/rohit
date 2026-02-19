@@ -77,17 +77,17 @@ class _SocialSearchScreenState extends State<SocialSearchScreen> {
     await Future.wait([
       _reelsApi.getReels(1, onSuccess: (r) {
         if (mounted) setState(() => _topReels = r.data?.reels ?? []);
-      }, onFailure: (_) {}, onError: (_) {}),
+      }, onFailure: (_) {}, onError: (_) {},),
       _socialApi.getSocialPost(1, onSuccess: (r) {
         if (mounted) setState(() => _trendingPosts = r.data?.posts ?? []);
-      }, onFailure: (_) {}, onError: (_) {}),
+      }, onFailure: (_) {}, onError: (_) {},),
     ]);
-    _searchApi.searchApi('a', page: 1, limit: 12, onSuccess: (r) async {
+    _searchApi.searchApi('a', limit: 12, onSuccess: (r) async {
       if (mounted && r.data?.results != null) {
         final users = r.data!.results!.where((e) => e.contentType == 'user').toList();
         if (users.isNotEmpty) setState(() => _suggestedUsers = SearchResultReponceModel(success: true, data: SearchData(results: users)));
       }
-    }, onError: (_) async {}, onFailed: (_) async {});
+    }, onError: (_) async {}, onFailed: (_) async {},);
 
     if (mounted) setState(() => _isLoadingRecommended = false);
   }
@@ -128,17 +128,18 @@ class _SocialSearchScreenState extends State<SocialSearchScreen> {
 
     _searchApi.searchApi(
       query.trim(),
-      page: 1,
       onSuccess: (result) async {
-        if (mounted) setState(() {
+        if (mounted) {
+          setState(() {
           _searchResults = result;
           _isLoading = false;
         });
+        }
       },
       onError: (error) async {
         if (mounted) {
           setState(() => _isLoading = false);
-          toast(error.toString());
+          toast(error);
         }
       },
       onFailed: (response) async {
@@ -414,20 +415,26 @@ class _SocialSearchScreenState extends State<SocialSearchScreen> {
               targetUserId: id,
               onSuccess: (value) {
                 final isFollowing = value == true || value == 1;
-                if (mounted) setState(() {
-                  if (isFollowing) _followingUserIds.add(id); else _followingUserIds.remove(id);
+                if (mounted) {
+                  setState(() {
+                  if (isFollowing) {
+                    _followingUserIds.add(id);
+                  } else {
+                    _followingUserIds.remove(id);
+                  }
                 });
+                }
               },
-              onError: (e) => toast(e.toString()),
+              onError: (e) => toast(e),
               onFailure: (_) => toast('Failed to update follow'),
             );
           },
           onTap: () {
             final id = r.contentId ?? 0;
-            if (id > 0) _openProfile(id, isOwnProfile: false);
+            if (id > 0) _openProfile(id);
           },
         ),
-      )).toList(),
+      ),).toList(),
     );
   }
 
@@ -471,7 +478,7 @@ class _SocialSearchScreenState extends State<SocialSearchScreen> {
       child: InkWell(
         onTap: () {
           final id = user.contentId ?? 0;
-          if (id > 0) _openProfile(id, isOwnProfile: false);
+          if (id > 0) _openProfile(id);
         },
         borderRadius: BorderRadius.circular(14),
         child: Container(
@@ -513,7 +520,7 @@ class _SocialSearchScreenState extends State<SocialSearchScreen> {
             if (post.imageUrl != null && post.imageUrl!.isNotEmpty)
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: CachedNetworkImage(imageUrl: resolveImageUrl(post.imageUrl!), width: 72, height: 72, fit: BoxFit.cover, errorWidget: (_, __, ___) => const Icon(Icons.image)),
+                child: CachedNetworkImage(imageUrl: resolveImageUrl(post.imageUrl), width: 72, height: 72, fit: BoxFit.cover, errorWidget: (_, __, ___) => const Icon(Icons.image)),
               ),
             if (post.imageUrl != null && post.imageUrl!.isNotEmpty) 14.width,
             Expanded(
@@ -548,7 +555,7 @@ class _SocialSearchScreenState extends State<SocialSearchScreen> {
               if (reel.imageUrl != null && reel.imageUrl!.isNotEmpty)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: CachedNetworkImage(imageUrl: resolveImageUrl(reel.imageUrl!), width: 72, height: 72, fit: BoxFit.cover, errorWidget: (_, __, ___) => const Icon(Icons.video_library)),
+                  child: CachedNetworkImage(imageUrl: resolveImageUrl(reel.imageUrl), width: 72, height: 72, fit: BoxFit.cover, errorWidget: (_, __, ___) => const Icon(Icons.video_library)),
                 ),
               if (reel.imageUrl != null && reel.imageUrl!.isNotEmpty) 14.width,
               Expanded(
@@ -588,7 +595,7 @@ class _SocialSearchScreenState extends State<SocialSearchScreen> {
               if (project.imageUrl != null && project.imageUrl!.isNotEmpty)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: CachedNetworkImage(imageUrl: resolveImageUrl(project.imageUrl!), width: 72, height: 72, fit: BoxFit.cover, errorWidget: (_, __, ___) => const Icon(Icons.folder)),
+                  child: CachedNetworkImage(imageUrl: resolveImageUrl(project.imageUrl), width: 72, height: 72, fit: BoxFit.cover, errorWidget: (_, __, ___) => const Icon(Icons.folder)),
                 ),
               if (project.imageUrl != null && project.imageUrl!.isNotEmpty) 14.width,
               Expanded(
@@ -632,7 +639,7 @@ class _PostTile extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: CachedNetworkImage(
-                  imageUrl: resolveImageUrl(post.imageUrl!),
+                  imageUrl: resolveImageUrl(post.imageUrl),
                   width: imageSize,
                   height: imageSize,
                   fit: BoxFit.cover,

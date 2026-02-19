@@ -32,7 +32,7 @@ class ReelsApi {
       final UserData? userData = await DB().getUser();
 
       final String uri =
-          'https://app.wamims.world/public/social/reels/get_reels.php?user_id=${userData?.id??0}&page=$page&limit=10';
+          'https://wamims.international/public/social/reels/get_reels.php?user_id=${userData?.id??0}&page=$page&limit=10';
 
       final resp = await http.get(Uri.parse(uri), headers: head ?? {});
 
@@ -59,7 +59,7 @@ class ReelsApi {
   }) async
   {
     try {
-      const String uri = 'https://app.wamims.world/public/social/reels/reel_like.php';
+      const String uri = 'https://wamims.international/public/social/reels/reel_like.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
 
@@ -97,7 +97,7 @@ class ReelsApi {
   }) async {
     try {
       const String uri =
-          'https://app.wamims.world/social/reels/add_comment.php';
+          'https://wamims.international/social/reels/add_comment.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
 
@@ -139,7 +139,7 @@ class ReelsApi {
       final user = await DB().getUser();
 
       final String uri =
-          'https://app.wamims.world/public/social/reels/get_comments.php?reel_id=$reel_id&logged_in_user_id=${user?.id ?? 0}&page=$page&limit=10';
+          'https://wamims.international/public/social/reels/get_comments.php?reel_id=$reel_id&logged_in_user_id=${user?.id ?? 0}&page=$page&limit=10';
 
       final resp = await http.get(
         Uri.parse(uri),
@@ -173,7 +173,7 @@ class ReelsApi {
   {
     try {
       const String uri =
-          'https://app.wamims.world/public/social/reels/create_reel.php';
+          'https://wamims.international/public/social/reels/create_reel.php';
       final headers = await DB().getHeaderForRow();
       final user = await DB().getUser();
 
@@ -252,7 +252,7 @@ class ReelsApi {
   }) async
   {
     try {
-      const String uri = 'https://app.wamims.world/public/social/follow_api.php';
+      const String uri = 'https://wamims.international/public/social/follow_api.php';
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
 

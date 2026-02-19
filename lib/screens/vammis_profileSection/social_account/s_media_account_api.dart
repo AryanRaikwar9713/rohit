@@ -18,7 +18,7 @@ class SocialMediaApi {
 
       final user = await DB().getUser();
       final String uri =
-          'https://app.wamims.world/public/social/social_media_api.php'
+          'https://wamims.international/public/social/social_media_api.php'
           '?action=get_social_media'
           '&current_user_id=${user?.id}';
 
@@ -52,7 +52,7 @@ class SocialMediaApi {
       final user = await DB().getUser();
 
       final resp = await http.post(
-        Uri.parse('https://app.wamims.world/public/social/social_media_api.php'),
+        Uri.parse('https://wamims.international/public/social/social_media_api.php'),
         headers: head ?? {},
         body: {
           'action': 'add_social_media',

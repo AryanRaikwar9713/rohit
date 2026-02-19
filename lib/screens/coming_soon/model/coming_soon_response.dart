@@ -80,7 +80,7 @@ class ComingSoonModel {
       imdbRating: json['imdb_rating'] is String ? json['imdb_rating'] : '',
       isRestricted: json['is_restricted'] is int
           ? (json['is_restricted'] as int) != 0
-          : (json['is_restricted'] is bool ? (json['is_restricted'] as bool) : false),
+          : (json['is_restricted'] is bool && (json['is_restricted'] as bool)),
       contentRating: json['content_rating'] is String ? json['content_rating'] : "",
       thumbnailImage: json['thumbnail_image'] is String ? json['thumbnail_image'] : "",
       trailerUrl: json['trailer_url'] is String ? json['trailer_url'] : "",

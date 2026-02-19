@@ -30,7 +30,7 @@ class Event {
   }) async
   {
     final url = Uri.parse(
-      "https://app.wamims.world/public/social/shop/event_create.php",
+      "https://wamims.international/public/social/shop/event_create.php",
     );
 
     final request = http.MultipartRequest("POST", url);
@@ -146,7 +146,7 @@ class Event {
       final user = await DB().getUser();
 
       final String uri =
-          "https://app.wamims.world/public/social/shop/get_events.php?user_id=${user?.id ?? 0}&page=$page&limit=10";
+          "https://wamims.international/public/social/shop/get_events.php?user_id=${user?.id ?? 0}&page=$page&limit=10";
 
       final resp = await http.get(
         Uri.parse(uri),
@@ -185,7 +185,7 @@ class Event {
   {
     try {
       const String uri =
-          "https://app.wamims.world/public/social/shop/coupon_redeem.php";
+          "https://wamims.international/public/social/shop/coupon_redeem.php";
 
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();

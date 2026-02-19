@@ -128,8 +128,8 @@ class ProjectDetailController extends GetxController
       userId: creator.id!,
       onSuccess: (profile) {
         final avatar = profile.data?.user?.avatarUrl ?? profile.data?.user?.avatar;
-        if (avatar != null && avatar.toString().trim().isNotEmpty) {
-          creatorAvatarUrl.value = avatar.toString().trim();
+        if (avatar != null && avatar.trim().isNotEmpty) {
+          creatorAvatarUrl.value = avatar.trim();
         }
       },
       onFailure: (_) {},

@@ -46,7 +46,7 @@ class CampaignProjectCard extends StatelessWidget {
             // Project Image
             if (imageUrl != null && imageUrl.isNotEmpty)
               ClipRRect(
-                borderRadius:  BorderRadius.vertical(
+                borderRadius:  const BorderRadius.vertical(
                   top: Radius.circular(brds),
                 ),
                 child: CachedNetworkImage(
@@ -156,7 +156,7 @@ class CampaignProjectCard extends StatelessWidget {
                           project.fundingGoal != null) ...[
                         Expanded(
                           child: _buildProjectStat(
-                            '${project.fundingRaised!.toStringAsFixed(0)}',
+                            project.fundingRaised!.toStringAsFixed(0),
                             'Raised',
                             Icons.flag,
                             useBoltIcon: true,
@@ -245,14 +245,12 @@ class CampaignProjectCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          useBoltIcon
-              ? Image.asset(
+          if (useBoltIcon) Image.asset(
                   "assets/icons/boalt_Icons.png",
                   height: 16,
                   width: 16,
                   color: appColorPrimary,
-                )
-              : Icon(icon, size: 16, color: appColorPrimary),
+                ) else Icon(icon, size: 16, color: appColorPrimary),
           6.width,
           Expanded(
             child: Column(

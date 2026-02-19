@@ -217,7 +217,7 @@ class EditVammisProfileController extends GetxController {
     try {
       // Avatar URL fallback when image is not being sent (reserved for future use)
       // ignore: unused_local_variable
-      final String? _avatarUrl = currentAvatarUrl.value.isNotEmpty
+      final String avatarUrl = currentAvatarUrl.value.isNotEmpty
           ? currentAvatarUrl.value
           : 'default_avatar.jpg';
 

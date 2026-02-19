@@ -35,7 +35,7 @@ class OrderApi {
   {
     try {
       final uri = Uri.parse(
-        "https://app.wamims.world/public/social/shopping/product_order.php",
+        "https://wamims.international/public/social/shopping/product_order.php",
       );
 
       final head = await DB().getHeaderForRow();
@@ -93,7 +93,7 @@ class OrderApi {
 
       final user = await DB().getUser();
       final url = Uri.parse(
-        "https://app.wamims.world/public/social/shopping/product_order.php?user_id=${user?.id}",
+        "https://wamims.international/public/social/shopping/product_order.php?user_id=${user?.id}",
       );
 
       final headers = await DB().getHeaderForRow();

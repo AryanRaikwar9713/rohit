@@ -409,7 +409,7 @@ class _SocialScreenState extends State<SocialScreen>
                               ),
                             );
 
-                            if (ENABLE_POINT_EARNINGS_SYSTEM)
+                            if (ENABLE_POINT_EARNINGS_SYSTEM) {
                               WalletApi().getPointsAndBolt(
                                   action: PointAction.postView,
                                   getBolt: false,
@@ -418,6 +418,7 @@ class _SocialScreenState extends State<SocialScreen>
                                   contentType: "post",
                                   onError: onError,
                                   onFailure: (d) {},);
+                            }
                           },
                           onSare: () async {
                             Clipboard.setData(const ClipboardData(
@@ -984,7 +985,7 @@ class _UserSotuyWWigdetState extends State<_UserSotuyWWigdet> {
                           Get.to(MyStoryScreen(
                             controller: c,
                             storyId: c.activeStories.first.id.toString(),
-                          ));
+                          ),);
                         } else if (context.mounted) {
                           Get.to(() => const CreateStoryScreen());
                         }
@@ -1003,7 +1004,7 @@ class _UserSotuyWWigdetState extends State<_UserSotuyWWigdet> {
                         story: _storyContrller.storyList[i],
                         seen: _storyContrller
                             .hasViewedStory(
-                                _storyContrller.storyList[i].user?.id),
+                                _storyContrller.storyList[i].user?.id,),
                         onTap: () {
                           _storyContrller
                               .setStoryPageController(initialPage: i);
@@ -1201,7 +1202,7 @@ class _TopReelsSectionState extends State<_TopReelsSection> {
                 final thumb = reel.content?.thumbnailUrl ?? '';
                 final url = thumb.trim().isEmpty
                     ? ''
-                    : (thumb.startsWith('http') ? thumb : 'https://app.wamims.world/$thumb');
+                    : (thumb.startsWith('http') ? thumb : 'https://wamims.international/$thumb');
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: GestureDetector(
@@ -1220,14 +1221,14 @@ class _TopReelsSectionState extends State<_TopReelsSection> {
                             child: url.isEmpty
                                 ? const Center(
                                     child: Icon(Icons.videocam_outlined,
-                                        color: Colors.white54, size: 36),
+                                        color: Colors.white54, size: 36,),
                                   )
                                 : Image.network(
                                     url,
                                     fit: BoxFit.cover,
                                     errorBuilder: (_, __, ___) => const Center(
                                         child: Icon(Icons.videocam_outlined,
-                                            color: Colors.white54, size: 36)),
+                                            color: Colors.white54, size: 36,),),
                                   ),
                           ),
                           Padding(
@@ -1235,7 +1236,7 @@ class _TopReelsSectionState extends State<_TopReelsSection> {
                             child: Row(
                               children: [
                                 Icon(Icons.favorite_border,
-                                    size: 14, color: Colors.grey[400]),
+                                    size: 14, color: Colors.grey[400],),
                                 4.width,
                                 Text(
                                   '${reel.stats?.likesCount ?? 0}',

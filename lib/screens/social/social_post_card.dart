@@ -6,6 +6,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/social/social_post_responce_Model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart';
+import 'package:streamit_laravel/configs.dart';
 import 'package:streamit_laravel/utils/colors.dart';
 
 import '../../utils/mohit/vammis_like_botton.dart';
@@ -92,7 +93,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
                 // userId API se string ya int aa sakta hai
                 final rawId = widget.post.user!.userId;
                 final int? userId = rawId is int
-                    ? rawId as int
+                    ? rawId! as int
                     : int.tryParse(rawId?.toString() ?? '');
                 if (userId == null || userId <= 0) return;
                 final u = await DB().getUser();
@@ -100,7 +101,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
                       popButton: true,
                       userId: userId,
                       isOwnProfile: u?.id == userId,
-                    ));
+                    ),);
               },
               child: Row(
                 children: [
@@ -109,11 +110,14 @@ class _SocialPostCardState extends State<SocialPostCard> {
                     radius: 22,
                     backgroundColor: Colors.grey[850],
                     backgroundImage: widget.post.user?.profileImage != null &&
-                            widget.post.user!.profileImage!.isNotEmpty
-                        ? NetworkImage(widget.post.user!.profileImage!)
+                            widget.post.user!.profileImage!.toString().trim().isNotEmpty
+                        ? NetworkImage(resolveImageUrl(
+                            widget.post.user!.profileImage!.toString(),
+                            pathPrefix: 'storage/avatars/',
+                          ))
                         : null,
                     child: widget.post.user?.profileImage == null ||
-                            widget.post.user!.profileImage!.isEmpty
+                            widget.post.user!.profileImage!.toString().trim().isEmpty
                         ? Icon(
                             Icons.person,
                             color: Colors.grey[400],
@@ -180,7 +184,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
           // Post Image: actual size; sirf full-screen type (jo puri screen cover kare) ko 70% cap
           if (widget.post.imageUrl != null && widget.post.imageUrl!.isNotEmpty)
             _PostImageWidget(
-              imageUrl: widget.post.imageUrl!,
+              imageUrl: resolveImageUrl(widget.post.imageUrl!),
               onTap: widget.onImageTap,
             ),
 

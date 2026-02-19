@@ -75,7 +75,7 @@ class ReelsApi {
 ```
 
 **API Endpoints:**
-- Base URL: `https://app.wamims.world/public/social/reels/`
+- Base URL: `https://wamims.international/public/social/reels/`
 - All APIs require headers from `DB().getHeaderForRow()`
 - User ID from `DB().getUser()`
 

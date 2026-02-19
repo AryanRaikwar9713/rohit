@@ -22,7 +22,7 @@ class WalletApi {
       final UserData? userId = await DB().getUser();
 
       final String url =
-          'https://app.wamims.world/social/get_wallet.php?action=summary&user_id=${userId?.id ?? 0}';
+          'https://wamims.international/social/get_wallet.php?action=summary&user_id=${userId?.id ?? 0}';
 
       final response = await http.get(Uri.parse(url), headers: head ?? {});
 
@@ -52,7 +52,7 @@ class WalletApi {
   }) async {
     try {
       final String uri =
-          'https://app.wamims.world/public/social/point/index.php?action=$action';
+          'https://wamims.international/public/social/point/index.php?action=$action';
       final head = await DB().getHeaderForRow();
       final UserData? userId = await DB().getUser();
 
@@ -173,7 +173,7 @@ class WalletApi {
         print("Getting Points");
 
         final String uri =
-            'https://app.wamims.world/public/social/point/index.php?action=$action';
+            'https://wamims.international/public/social/point/index.php?action=$action';
         final head = await DB().getHeaderForRow();
         final UserData? userId = await DB().getUser();
 
@@ -395,7 +395,7 @@ class WalletApi {
       final head = await DB().getHeaderForRow();
       final user = await DB().getUser();
       final url =
-          'https://app.wamims.world/public/social/point/index.php?action=history&user_id=${user?.id}&page=$page&limit=10';
+          'https://wamims.international/public/social/point/index.php?action=history&user_id=${user?.id}&page=$page&limit=10';
 
       final response = await http.get(
         Uri.parse(url),
