@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:streamit_laravel/configs.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -147,7 +148,7 @@ class WalletApi {
   }
 
   /// Combined method to get both Points and Bolt
-  /// This method calls both APIs and shows a single combined toast
+  /// When ENABLE_POINT_EARNINGS_SYSTEM is false: no API call, no toast. Only rewarded-ad bolt is used.
   Future<void> getPointsAndBolt({
     int commentId = 0,
     int duration = 0,
@@ -160,6 +161,7 @@ class WalletApi {
     required void Function(String) onError,
     required void Function(http.Response) onFailure,
   }) async {
+    if (!ENABLE_POINT_EARNINGS_SYSTEM) return;
     try {
       String? pointsSymbol;
       double? pointsEarned;

@@ -143,16 +143,18 @@ class ReelsController extends GetxController {
             }
           }
 
-          WalletApi().getPointsAndBolt(
-            action: PointAction.like,
-            targetId: reelId,
-            getBolt: false,
-            contentType: "reel",
-            onError: (e) {
-              Logger().e("Error in Like Api $e");
-            },
-            onFailure: (s) => _handleResponse(s),
-          );
+          if (ENABLE_POINT_EARNINGS_SYSTEM) {
+            WalletApi().getPointsAndBolt(
+              action: PointAction.like,
+              targetId: reelId,
+              getBolt: false,
+              contentType: "reel",
+              onError: (e) {
+                Logger().e("Error in Like Api $e");
+              },
+              onFailure: (s) => _handleResponse(s),
+            );
+          }
         },
       );
     } catch (e) {

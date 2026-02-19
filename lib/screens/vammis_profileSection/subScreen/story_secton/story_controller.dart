@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -150,23 +151,25 @@ class StoryContrller extends GetxController
     isLastUser.value = storyList.last.user?.id==selectedUserId.value;
     final int userInd = storyList.indexWhere((element) => element.user?.id==selectedUserId.value,);
     isLastStory.value =  storyList[userInd].stories?.last.id==storyId;
-    print('selectedUserId $selectedUserId');
-    print('selectedStoryId $selectedStoryId');
-    print('isLastUser $isLastUser');
-    print('isLastStory $isLastStory');
+    if (kDebugMode) {
+      print('selectedUserId $selectedUserId');
+      print('selectedStoryId $selectedStoryId');
+      print('isLastUser $isLastUser');
+      print('isLastStory $isLastStory');
+    }
   }
 
   
   
   void nextStory()
   {
-    print('$selectedUserId $selectedStoryId');
+    if (kDebugMode) print('$selectedUserId $selectedStoryId');
 
 
 
 
 
-    print("${isLastStory.value} ${isLastUser.value}");
+    if (kDebugMode) print("${isLastStory.value} ${isLastUser.value}");
     // print('${storyList}');
 
     if(isLastUser.value&&isLastStory.value)
