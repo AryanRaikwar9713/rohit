@@ -126,8 +126,8 @@ class _HomeStoriesRowState extends State<HomeStoriesRow> {
       final hasOwnStory = _storyController.storyList.any((s) => s.isOwnStory == true);
 
       return Container(
-        margin: const EdgeInsets.only(top: 10, bottom: 5),
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        margin: const EdgeInsets.only(top: 10, bottom: 10),
+        padding: const EdgeInsets.symmetric(vertical: 14),
         width: double.infinity,
         decoration: BoxDecoration(color: Colors.grey.shade900),
         child: SingleChildScrollView(
@@ -194,7 +194,7 @@ class _YourStoryCircle extends StatelessWidget {
             ),
             padding: const EdgeInsets.all(2),
             child: CircleAvatar(
-              radius: 30,
+              radius: 36,
               backgroundColor: Colors.grey.shade800,
               backgroundImage: avatar.trim().isEmpty
                   ? null
@@ -204,9 +204,9 @@ class _YourStoryCircle extends StatelessWidget {
                   : null,
             ),
           ),
-          4.height,
+          6.height,
           SizedBox(
-            width: 64,
+            width: 72,
             child: Text(
               displayName,
               style: secondaryTextStyle(size: 12, color: Colors.grey),
@@ -243,12 +243,12 @@ class _StoryCircleItem extends StatelessWidget {
             image: story.user?.avatar?.toString() ?? '',
             story: true,
             storySeen: seen,
-            radious: 30,
+            radious: 36,
             onTap: onTap,
           ),
-          4.height,
+          6.height,
           SizedBox(
-            width: 64,
+            width: 72,
             child: Text(
               story.user?.username ?? 'Unknown',
               style: secondaryTextStyle(size: 12, color: Colors.grey),
