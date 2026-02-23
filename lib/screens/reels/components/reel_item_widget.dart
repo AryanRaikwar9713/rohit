@@ -13,7 +13,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/configs.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_api.dart';
-import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart' show openVammisProfile;
 import 'package:streamit_laravel/utils/mohit/custom_like_button.dart';
 
 import '../reel_response_model.dart';
@@ -408,10 +408,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                         if (userId == null) return;
                         DB().getUser().then((value) {
                           if (!mounted) return;
-                          Get.to(() => VammisProfileScreen(
-                              popButton: true,
-                              userId: userId,
-                              isOwnProfile: value?.id == widget.reel.user?.id,),);
+                          openVammisProfile(userId: userId, isOwnProfile: value?.id == widget.reel.user?.id, popButton: true);
                         });
                       },
                       child: Text(
@@ -624,10 +621,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
             if (userId == null) return;
             DB().getUser().then((value) {
               if (!mounted) return;
-              Get.to(() => VammisProfileScreen(
-                  popButton: true,
-                  userId: userId,
-                  isOwnProfile: value?.id == widget.reel.user?.id,),);
+              openVammisProfile(userId: userId, isOwnProfile: value?.id == widget.reel.user?.id, popButton: true);
             });
           },
           child: Container(

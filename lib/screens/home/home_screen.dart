@@ -8,8 +8,10 @@ import 'package:streamit_laravel/utils/colors.dart';
 
 import '../../components/app_scaffold.dart';
 import '../../components/category_list/category_list_component.dart';
+import '../../components/home_stories_row.dart';
 import '../../components/shimmer_widget.dart';
 import '../../main.dart';
+import '../social/social_search_screen.dart';
 import '../../utils/constants.dart';
 import '../../utils/empty_error_state_widget.dart';
 import 'components/continue_watch_component.dart';
@@ -39,17 +41,23 @@ class HomeScreen extends StatelessWidget {
           // Custom App Bar with Coming Soon Icon
           _buildCustomAppBar(),
 
-          // Main Content
+          // Main Content — pull-down-from-top to refresh
           Expanded(
-            child: AnimatedScrollView(
-              refreshIndicatorColor: appColorPrimary,
-              padding: const EdgeInsets.only(bottom: 120),
-              physics: const AlwaysScrollableScrollPhysics(),
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              onSwipeRefresh: () async {
-                return homeScreenController.init(
+            child: RefreshIndicator(
+              color: appColorPrimary,
+              onRefresh: () async {
+                await homeScreenController.init(
                     forceSync: true, showLoader: true, forceConfigSync: true,);
               },
+              child: AnimatedScrollView(
+                refreshIndicatorColor: appColorPrimary,
+                padding: const EdgeInsets.only(bottom: 120),
+                physics: const AlwaysScrollableScrollPhysics(),
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                onSwipeRefresh: () async {
+                  return homeScreenController.init(
+                      forceSync: true, showLoader: true, forceConfigSync: true,);
+                },
               children: [
                 Obx(
                   () => SnapHelperWidget(
@@ -77,6 +85,8 @@ class HomeScreen extends StatelessWidget {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if (_safeBool(appConfigs.value.isLogin))
+                            const HomeStoriesRow(),
                           SliderComponent(homeScreenCont: homeScreenController)
                               .visible(homeScreenController.dashboardDetail
                                       .value.slider?.isNotEmpty ??
@@ -140,6 +150,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
+            ),
           ),
         ],
       ),
@@ -198,10 +209,10 @@ class HomeScreen extends StatelessWidget {
                 tooltip: 'Wallet - Watch Ads & Earn Bolts',
               ),
 
-              // Search Icon
+              // Search Icon — opens user/post/reel search (no GetX route)
               IconButton(
                 onPressed: () {
-                  Get.toNamed('/search');
+                  Get.to(() => const SocialSearchScreen());
                 },
                 icon: const Icon(
                   Icons.search,

@@ -32,6 +32,31 @@ const LinearGradient _profileGradient = LinearGradient(
   end: Alignment.bottomRight,
 );
 
+/// Use this to open profile so GetX Binding runs in route scope (fixes "improper use" error).
+void openVammisProfile({
+  required int userId,
+  required bool isOwnProfile,
+  bool popButton = true,
+}) {
+  Get.to(
+    () => VammisProfileScreen(
+      userId: userId,
+      isOwnProfile: isOwnProfile,
+      popButton: popButton,
+    ),
+    binding: BindingsBuilder(() {
+      final tag = 'profile_$userId';
+      Get.lazyPut<VammisProfileController>(() => VammisProfileController(), tag: tag);
+      if (!Get.isRegistered<SocialMediaController>()) {
+        Get.lazyPut<SocialMediaController>(() => SocialMediaController(), fenix: true);
+      }
+      if (isOwnProfile) {
+        Get.lazyPut<MyStoryController>(() => MyStoryController());
+      }
+    }),
+  );
+}
+
 class VammisProfileScreen extends StatefulWidget {
   final int userId;
   final bool isOwnProfile;
@@ -50,8 +75,8 @@ class VammisProfileScreen extends StatefulWidget {
 
 class _VammisProfileScreenState extends State<VammisProfileScreen> {
   late final VammisProfileController controller;
+  late final SocialMediaController socialMediaController;
   final ScrollController scrollController = ScrollController();
-  final SocialMediaController socialMediaController = Get.put(SocialMediaController());
   MyStoryController? myStoryController;
 
   final Map<String,String> mediaIcons = {
@@ -67,14 +92,20 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // One controller per profile (per userId) so Obx works and no "improper use" when opening another user.
-    controller = Get.put(VammisProfileController(), tag: _profileTag);
-    scrollController.addListener(_scrollListener);
-    // Only load social accounts on own profile to avoid GetX reactive updates on other user's profile
+    // Prefer controllers from Binding (openVammisProfile). Fallback to put when opened without binding (e.g. dashboard).
+    controller = Get.isRegistered<VammisProfileController>(tag: _profileTag)
+        ? Get.find<VammisProfileController>(tag: _profileTag)
+        : Get.put(VammisProfileController(), tag: _profileTag);
+    socialMediaController = Get.isRegistered<SocialMediaController>()
+        ? Get.find<SocialMediaController>()
+        : Get.put(SocialMediaController());
     if (widget.isOwnProfile) {
+      myStoryController = Get.isRegistered<MyStoryController>()
+          ? Get.find<MyStoryController>()
+          : Get.put(MyStoryController());
       socialMediaController.getSocialAccount();
-      myStoryController = Get.put(MyStoryController());
     }
+    scrollController.addListener(_scrollListener);
   }
 
   void _scrollListener() {
@@ -262,6 +293,62 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
     );
   }
 
+  /// Profile avatar: Obx only when we have myStoryController (own profile) so GetX always has an observable.
+  Widget _buildProfileAvatar(vammis_model.VammisProfile profile) {
+    final image = resolveImageUrl(profile.user?.avatarUrl ?? profile.user?.avatar, pathPrefix: 'storage/avatars/');
+    final VoidCallback onTap = () {
+      if (widget.isOwnProfile && (myStoryController?.activeStories.isNotEmpty ?? false)) {
+        final firstStory = myStoryController!.activeStories.first;
+        Get.to(MyStoryScreen(
+          storyId: firstStory.id.toString(),
+          controller: myStoryController!,
+        ));
+        return;
+      }
+      final String? imageUrl = profile.user?.avatarUrl ?? profile.user?.avatar;
+      if (imageUrl == null || imageUrl.isEmpty) return;
+      final resolved = resolveImageUrl(imageUrl, pathPrefix: 'storage/avatars/');
+      if (resolved.isEmpty) return;
+      showDialog(
+        context: context,
+        barrierColor: Colors.black87,
+        builder: (context) {
+          return GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Center(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 40),
+                clipBehavior: Clip.antiAlias,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(color: Colors.black54, blurRadius: 20, spreadRadius: 2),
+                  ],
+                ),
+                child: Hero(
+                  tag: 'profileImage',
+                  child: Image.network(
+                    resolved,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => const Icon(Icons.person, size: 80, color: Colors.white54),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    };
+    if (widget.isOwnProfile && myStoryController != null) {
+      return Obx(() => WamimsProfileAvtar(
+        story: myStoryController!.activeStories.isNotEmpty,
+        image: image,
+        onTap: onTap,
+      ));
+    }
+    return WamimsProfileAvtar(story: false, image: image, onTap: onTap);
+  }
+
   Widget _buildProfileHeader(
       vammis_model.VammisProfile profile, VammisProfileController controller,) {
     return Container(
@@ -271,57 +358,9 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
           // Profile Picture and Stats Row
           Row(
             children: [
-              // Profile Picture (gradient ring = active story within 24h, else white ring)
-              Obx(() => WamimsProfileAvtar(
-                story: widget.isOwnProfile && (myStoryController?.activeStories.isNotEmpty ?? false),
-                image: resolveImageUrl(profile.user?.avatarUrl ?? profile.user?.avatar, pathPrefix: 'storage/avatars/'),
-                onTap: () {
-                  // Apna profile + active story hai → story open karo (Instagram jaisa)
-                  if (widget.isOwnProfile &&
-                      (myStoryController?.activeStories.isNotEmpty ?? false)) {
-                    final firstStory = myStoryController!.activeStories.first;
-                    Get.to(MyStoryScreen(
-                      storyId: firstStory.id.toString(),
-                      controller: myStoryController!,
-                    ),);
-                    return;
-                  }
-                  // Bina story ke: profile ki by default image clear dikhao
-                  final String? imageUrl = profile.user?.avatarUrl ?? profile.user?.avatar;
-                  if (imageUrl == null || imageUrl.isEmpty) return;
-                  final resolved = resolveImageUrl(imageUrl, pathPrefix: 'storage/avatars/');
-                  if (resolved.isEmpty) return;
-                  showDialog(
-                    context: context,
-                    barrierColor: Colors.black87,
-                    builder: (context) {
-                      return GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Center(
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 40),
-                            clipBehavior: Clip.antiAlias,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(color: Colors.black54, blurRadius: 20, spreadRadius: 2),
-                              ],
-                            ),
-                            child: Hero(
-                              tag: 'profileImage',
-                              child: Image.network(
-                                resolved,
-                                fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => const Icon(Icons.person, size: 80, color: Colors.white54),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),),
+              // Profile Picture (gradient ring = active story within 24h, else white ring).
+              // Use Obx only when myStoryController exists (own profile) so GetX has an observable to track.
+              _buildProfileAvatar(profile),
 
               const SizedBox(width: 20),
 

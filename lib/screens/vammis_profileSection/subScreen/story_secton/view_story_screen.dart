@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/get_story_responce_model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/story_controller.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart' show openVammisProfile;
 import 'package:streamit_laravel/utils/mohit/vammis_profile_avtar.dart';
-import 'package:get/get.dart';
 
 
 
@@ -82,10 +84,16 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
 
   Column _buildUsers(StoryUser model,StoryContrller controller)
   {
+    final userId = model.user?.id ?? 0;
     return Column(
       children: [
         10.height,
         ListTile(
+          onTap: () async {
+            if (userId <= 0) return;
+            final u = await DB().getUser();
+            openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+          },
           leading: WamimsProfileAvtar(image: model.user?.avatar??'', story: true, radious: 30,),
           title: Text(model.user?.username??'No Name',style: TextStyle(color: Colors.white,fontFamily: GoogleFonts.poppins().fontFamily),),
         ),

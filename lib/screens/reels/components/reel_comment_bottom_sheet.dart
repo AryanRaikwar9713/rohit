@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/reels/reel_comment_response_model.dart';
 import 'package:streamit_laravel/screens/reels/reels_controller.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart' show openVammisProfile;
 
 import '../reel_response_model.dart';
 
@@ -177,7 +179,12 @@ class _ReelCommentBottomSheetState extends State<ReelCommentBottomSheet>
           // Profile image
           GestureDetector(
             onTap: () {
-              // Navigate to user profile
+              final userId = comment.user?.id;
+              if (userId != null && userId > 0) {
+                DB().getUser().then((u) {
+                  openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+                });
+              }
             },
             child: Container(
               width: 32,
@@ -222,15 +229,25 @@ class _ReelCommentBottomSheetState extends State<ReelCommentBottomSheet>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Username and time
+                // Username and time — tap name to open profile
                 Row(
                   children: [
-                    Text(
-    comment.user?.fullName??'',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                    GestureDetector(
+                      onTap: () {
+                        final userId = comment.user?.id;
+                        if (userId != null && userId > 0) {
+                          DB().getUser().then((u) {
+                            openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+                          });
+                        }
+                      },
+                      child: Text(
+                        comment.user?.fullName ?? '',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                     if (false) ...[

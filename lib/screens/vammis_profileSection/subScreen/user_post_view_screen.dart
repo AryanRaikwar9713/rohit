@@ -3,11 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:get/get.dart';
+import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/social/comment_responce_model.dart';
 import 'package:streamit_laravel/screens/social/social_post_card.dart';
 import 'package:streamit_laravel/screens/social/social_post_responce_Model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_controller.dart';
-import 'package:get/get.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart' show openVammisProfile;
 import 'package:streamit_laravel/utils/colors.dart';
 
 
@@ -276,7 +278,13 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                             // Profile image
                             GestureDetector(
                               onTap: () {
-                                // Navigate to user profile
+                                final raw = comment.user?.userId;
+                                final int? userId = raw is int ? (raw as int) : int.tryParse(raw?.toString() ?? '');
+                                if (userId != null && userId > 0) {
+                                  DB().getUser().then((u) {
+                                    openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+                                  });
+                                }
                               },
                               child: Container(
                                 width: 32,
@@ -325,15 +333,26 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                                 crossAxisAlignment:
                                 CrossAxisAlignment.start,
                                 children: [
-                                  // Username and time
+                                  // Username and time — tap to open profile
                                   Row(
                                     children: [
-                                      Text(
-                                        '${comment.user?.firstName} ${comment.user?.lastName}',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
+                                      GestureDetector(
+                                        onTap: () {
+                                          final raw = comment.user?.userId;
+                                          final int? userId = raw is int ? (raw as int) : int.tryParse(raw?.toString() ?? '');
+                                          if (userId != null && userId > 0) {
+                                            DB().getUser().then((u) {
+                                              openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+                                            });
+                                          }
+                                        },
+                                        child: Text(
+                                          '${comment.user?.firstName} ${comment.user?.lastName}',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
                                       ),
                                       if (false) ...[

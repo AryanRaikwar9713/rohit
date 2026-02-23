@@ -11,23 +11,18 @@ import 'package:streamit_laravel/screens/dash_boad_drawer.dart';
 import 'package:streamit_laravel/screens/notificationSection/notification_screen.dart';
 import 'package:streamit_laravel/screens/social/comment_responce_model.dart';
 import 'package:streamit_laravel/screens/social/social_post_card.dart';
+import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/social/social_search_screen.dart';
-import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/get_story_responce_model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/story_controller.dart';
-import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/view_story_screen.dart';
-import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/create_story_screen.dart';
-import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/my_story_screen.dart';
-import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/my_story_controller.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart' show openVammisProfile;
 import 'package:streamit_laravel/screens/reels/reels_screen.dart';
 import 'package:streamit_laravel/screens/reels/reels_api.dart';
 import 'package:streamit_laravel/screens/reels/reel_response_model.dart';
 import 'package:streamit_laravel/configs.dart';
-import 'package:streamit_laravel/local_db.dart';
-import 'package:streamit_laravel/screens/auth/model/login_response.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_api.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_tab_manage.dart';
 import 'package:streamit_laravel/utils/constants.dart';
-import 'package:streamit_laravel/utils/mohit/vammis_profile_avtar.dart';
+import 'package:streamit_laravel/components/home_stories_row.dart';
 import '../../utils/colors.dart';
 import 'social_controller.dart';
 import 'create_post_screen.dart';
@@ -284,7 +279,7 @@ class _SocialScreenState extends State<SocialScreen>
                     //     );
                     //   }),
 
-                    const _UserSotuyWWigdet(),
+                    const HomeStoriesRow(),
 
                     const _TopReelsSection(),
 
@@ -758,10 +753,16 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Profile image
+                                  // Profile image — tap to open user profile
                                   GestureDetector(
                                     onTap: () {
-                                      // Navigate to user profile
+                                      final raw = comment.user?.userId;
+                                      final int? userId = raw is int ? (raw as int) : int.tryParse(raw?.toString() ?? '');
+                                      if (userId != null && userId > 0) {
+                                        DB().getUser().then((u) {
+                                          openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+                                        });
+                                      }
                                     },
                                     child: Container(
                                       width: 32,
@@ -810,15 +811,26 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        // Username and time
+                                        // Username and time — tap name to open profile
                                         Row(
                                           children: [
-                                            Text(
-                                              '${comment.user?.firstName} ${comment.user?.lastName}',
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
+                                            GestureDetector(
+                                              onTap: () {
+                                                final raw = comment.user?.userId;
+                                                final int? userId = raw is int ? (raw as int) : int.tryParse(raw?.toString() ?? '');
+                                                if (userId != null && userId > 0) {
+                                                  DB().getUser().then((u) {
+                                                    openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+                                                  });
+                                                }
+                                              },
+                                              child: Text(
+                                                '${comment.user?.firstName} ${comment.user?.lastName}',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
                                               ),
                                             ),
                                             if (false) ...[
@@ -922,225 +934,6 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
         ),
       );
     });
-  }
-}
-
-
-class _UserSotuyWWigdet extends StatefulWidget {
-  const _UserSotuyWWigdet();
-
-  @override
-  State<_UserSotuyWWigdet> createState() => _UserSotuyWWigdetState();
-}
-
-class _UserSotuyWWigdetState extends State<_UserSotuyWWigdet> {
-  late StoryContrller _storyContrller;
-  UserData? _currentUser;
-
-  @override
-  void initState() {
-    super.initState();
-    _storyContrller = (!Get.isRegistered<StoryContrller>())
-        ? Get.put(StoryContrller())
-        : Get.find<StoryContrller>();
-    DB().getUser().then((u) {
-      if (mounted) setState(() => _currentUser = u);
-    });
-  }
-
-  void _showYourStoryOptions(BuildContext context, bool hasOwnStory) {
-    Get.bottomSheet(
-      Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: Colors.grey[900],
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-        ),
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.add_circle_outline, color: Colors.white70),
-                title: Text('Add story', style: boldTextStyle(size: 16, color: Colors.white)),
-                subtitle: Text('Upload a new story', style: secondaryTextStyle(size: 12, color: Colors.grey)),
-                onTap: () {
-                  Get.back();
-                  Get.to(() => const CreateStoryScreen());
-                },
-              ),
-              ListTile(
-                leading: Icon(hasOwnStory ? Icons.auto_stories : Icons.auto_stories_outlined, color: Colors.white70),
-                title: Text('View my story', style: boldTextStyle(size: 16, color: Colors.white)),
-                subtitle: Text(
-                  hasOwnStory ? 'See your active story' : "You haven't added a story yet",
-                  style: secondaryTextStyle(size: 12, color: Colors.grey),
-                ),
-                onTap: () async {
-                  Get.back();
-                  if (hasOwnStory) {
-                    final c = Get.isRegistered<MyStoryController>()
-                        ? Get.find<MyStoryController>()
-                        : Get.put(MyStoryController());
-                    await c.getMyStory();
-                    if (context.mounted && c.activeStories.isNotEmpty) {
-                      Get.to(MyStoryScreen(
-                        controller: c,
-                        storyId: c.activeStories.first.id.toString(),
-                      ),);
-                    } else if (context.mounted) {
-                      Get.to(() => const CreateStoryScreen());
-                    }
-                  } else {
-                    Get.to(() => const CreateStoryScreen());
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-      isScrollControlled: true,
-      ignoreSafeArea: false,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Obx(() {
-      final hasOwnStory =
-          _storyContrller.storyList.any((s) => s.isOwnStory == true);
-
-      return Container(
-        margin: const EdgeInsets.only(top: 10, bottom: 5),
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        width: double.infinity,
-        decoration: BoxDecoration(color: Colors.grey.shade900),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Row(
-              children: [
-                // Your story (first circle)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: _YourStoryCircle(
-                    avatar: _currentUser?.profileImage ?? '',
-                    onTap: () => _showYourStoryOptions(context, hasOwnStory),
-                  ),
-                ),
-                // Followed users' stories (yellow ring = unseen, 50% = seen)
-                for (int i = 0; i < _storyContrller.storyList.length; i++)
-                  if (_storyContrller.storyList[i].isOwnStory != true) ...[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: _StoryCircleItem(
-                        story: _storyContrller.storyList[i],
-                        seen: _storyContrller
-                            .hasViewedStory(
-                                _storyContrller.storyList[i].user?.id,),
-                        onTap: () {
-                          _storyContrller
-                              .setStoryPageController(initialPage: i);
-                          Get.to(() => const ViewStoryScreen());
-                        },
-                      ),
-                    ),
-                  ],
-              ],
-            ),
-          ),
-        ),
-      );
-    });
-  }
-}
-
-class _YourStoryCircle extends StatelessWidget {
-  final String avatar;
-  final VoidCallback onTap;
-
-  const _YourStoryCircle({required this.avatar, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.grey.shade600, width: 2),
-            ),
-            padding: const EdgeInsets.all(2),
-            child: CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.grey.shade800,
-              backgroundImage: (avatar.trim().isEmpty)
-                  ? null
-                  : NetworkImage(
-                      resolveImageUrl(avatar, pathPrefix: 'storage/avatars/'),
-                    ),
-              child: (avatar.trim().isEmpty)
-                  ? const Icon(Icons.person, color: Colors.white54, size: 32)
-                  : null,
-            ),
-          ),
-          4.height,
-          Text(
-            'Your story',
-            style: secondaryTextStyle(size: 12, color: Colors.grey),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StoryCircleItem extends StatelessWidget {
-  final StoryUser story;
-  final bool seen;
-  final VoidCallback onTap;
-
-  const _StoryCircleItem({
-    required this.story,
-    required this.seen,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          WamimsProfileAvtar(
-            image: story.user?.avatar?.toString() ?? '',
-            story: true,
-            storySeen: seen,
-            radious: 30,
-            onTap: onTap,
-          ),
-          4.height,
-          SizedBox(
-            width: 64,
-            child: Text(
-              story.user?.username ?? 'Unknown',
-              style: secondaryTextStyle(size: 12, color: Colors.grey),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 

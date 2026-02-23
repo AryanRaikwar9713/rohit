@@ -9,7 +9,7 @@ import 'package:streamit_laravel/screens/reels/reel_response_model.dart';
 import 'package:streamit_laravel/screens/reels/reels_api.dart';
 import 'package:streamit_laravel/screens/social/social_post_responce_Model.dart';
 import 'package:streamit_laravel/screens/social/social_api.dart';
-import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart' show openVammisProfile, VammisProfileScreen;
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_api.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/get_story_responce_model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/story_controller.dart';
@@ -93,11 +93,26 @@ class _SocialSearchScreenState extends State<SocialSearchScreen> {
   }
 
   void _openProfile(int userId, {bool isOwnProfile = false}) {
-    try {
-      Get.to(() => VammisProfileScreen(popButton: true, userId: userId, isOwnProfile: isOwnProfile));
-    } catch (_) {
-      Get.to(() => VammisProfileScreen(popButton: true, userId: userId, isOwnProfile: isOwnProfile));
-    }
+    if (userId <= 0) return;
+    openVammisProfile(userId: userId, isOwnProfile: isOwnProfile, popButton: true);
+  }
+
+  void _onFollowUser(int? targetId) {
+    if (targetId == null || targetId <= 0) return;
+    _socialApi.followUser(
+      targetUserId: targetId,
+      onSuccess: (value) {
+        final isFollowing = value == true || value == 1;
+        if (mounted) {
+          setState(() {
+            if (isFollowing) _followingUserIds.add(targetId);
+            else _followingUserIds.remove(targetId);
+          });
+        }
+      },
+      onError: (e) => toast(e),
+      onFailure: (_) => toast('Failed to update follow'),
+    );
   }
 
   /// User avatar circle: resolves URL and uses CachedNetworkImage so 404 shows placeholder
@@ -463,7 +478,7 @@ class _SocialSearchScreenState extends State<SocialSearchScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (users.isNotEmpty) ...[_sectionTitle('Users', isNarrow), 8.height, ...users.map((u) => _buildUserItem(u, isNarrow)), 16.height],
+          if (users.isNotEmpty) ...[_sectionTitle('Users', isNarrow), 8.height, ...users.map((u) => _buildUserItem(u, isNarrow, onFollow: () => _onFollowUser(u.contentId))), 16.height],
           if (posts.isNotEmpty) ...[_sectionTitle('Posts', isNarrow), 8.height, ...posts.map((p) => _buildPostItem(p, isNarrow)), 16.height],
           if (reels.isNotEmpty) ...[_sectionTitle('Reels', isNarrow), 8.height, ...reels.map((r) => _buildReelItem(r, isNarrow)), 16.height],
           if (projects.isNotEmpty) ...[_sectionTitle('Projects', isNarrow), 8.height, ...projects.map((p) => _buildProjectItem(p, isNarrow))],
@@ -472,12 +487,13 @@ class _SocialSearchScreenState extends State<SocialSearchScreen> {
     );
   }
 
-  Widget _buildUserItem(Result user, bool isNarrow) {
+  Widget _buildUserItem(Result user, bool isNarrow, {VoidCallback? onFollow}) {
+    final id = user.contentId ?? 0;
+    final isFollowing = id > 0 && _followingUserIds.contains(id);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         onTap: () {
-          final id = user.contentId ?? 0;
           if (id > 0) _openProfile(id);
         },
         borderRadius: BorderRadius.circular(14),
@@ -501,6 +517,17 @@ class _SocialSearchScreenState extends State<SocialSearchScreen> {
                   ],
                 ),
               ),
+              if (onFollow != null && id > 0)
+                TextButton(
+                  onPressed: onFollow,
+                  style: TextButton.styleFrom(
+                    backgroundColor: isFollowing ? Colors.grey[700] : appColorPrimary,
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: Text(isFollowing ? 'Following' : 'Follow', style: GoogleFonts.poppins(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600)),
+                ),
             ],
           ),
         ),

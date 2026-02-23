@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../../../local_db.dart';
+import '../../../screens/vammis_profileSection/vammis_profile_screen.dart' show openVammisProfile;
 import '../../../utils/colors.dart';
 import '../reels_controller.dart';
 import '../reels_screen.dart';
@@ -198,48 +200,57 @@ class _ReelsWidgetState extends State<ReelsWidget> {
                         ),
                         const SizedBox(height: 4),
 
-                        // User info
-                        Row(
-                          children: [
-                            Container(
-                              width: 16,
-                              height: 16,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border:
-                                    Border.all(color: Colors.white),
-                              ),
-                              child: ClipOval(
-                                child: CachedNetworkImage(
-                                  imageUrl: reel.user?.avatar ?? '',
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) => const Icon(
-                                    Icons.person,
-                                    color: Colors.white,
-                                    size: 10,
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(
-                                    Icons.person,
-                                    color: Colors.white,
-                                    size: 10,
+                        // User info — tap to open profile
+                        GestureDetector(
+                          onTap: () {
+                            final userId = reel.user?.id;
+                            if (userId == null || userId <= 0) return;
+                            DB().getUser().then((u) {
+                              openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 16,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border:
+                                      Border.all(color: Colors.white),
+                                ),
+                                child: ClipOval(
+                                  child: CachedNetworkImage(
+                                    imageUrl: reel.user?.avatar ?? '',
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => const Icon(
+                                      Icons.person,
+                                      color: Colors.white,
+                                      size: 10,
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(
+                                      Icons.person,
+                                      color: Colors.white,
+                                      size: 10,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                '@${reel.user?.fullName ?? 'user'}',
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 10,
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  '@${reel.user?.fullName ?? 'user'}',
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 10,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),

@@ -6,7 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/donation_history_section/donation_history_controller.dart';
 import 'package:streamit_laravel/screens/donation_history_section/model/donation_history_history_responce.dart';
-import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart' show openVammisProfile;
 import 'package:streamit_laravel/utils/colors.dart';
 import 'package:streamit_laravel/utils/constants.dart';
 
@@ -149,9 +149,7 @@ class DonationHistoryListScreen extends StatelessWidget {
           GestureDetector(
             onTap: ()async{
               final u = await DB().getUser();
-              Get.to(VammisProfileScreen(
-                popButton: true,
-                  userId: projectOwner?.userId??0, isOwnProfile: u?.id==projectOwner?.userId,),);
+              openVammisProfile(userId: projectOwner?.userId ?? 0, isOwnProfile: u?.id == projectOwner?.userId, popButton: true);
             },
             child: Row(
               children: [

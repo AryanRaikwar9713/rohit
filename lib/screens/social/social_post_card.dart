@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/local_db.dart';
@@ -98,11 +97,7 @@ class _SocialPostCardState extends State<SocialPostCard> {
                     : int.tryParse(rawId?.toString() ?? '');
                 if (userId == null || userId <= 0) return;
                 final u = await DB().getUser();
-                Get.to(() => VammisProfileScreen(
-                      popButton: true,
-                      userId: userId,
-                      isOwnProfile: u?.id == userId,
-                    ),);
+                openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
               },
               child: Row(
                 children: [

@@ -36,8 +36,13 @@ class GoogleSignInAuthService {
     assert(user.uid == currentUser.uid);
 
     try {
-      final AuthCredential emailAuthCredential = EmailAuthProvider.credential(email: user.email!, password: Constants.DEFAULT_PASS);
-      user.linkWithCredential(emailAuthCredential);
+      if (user.email != null && user.email!.isNotEmpty) {
+        final AuthCredential emailAuthCredential = EmailAuthProvider.credential(
+          email: user.email!,
+          password: Constants.DEFAULT_PASS,
+        );
+        await user.linkWithCredential(emailAuthCredential);
+      }
       log('CURRENTUSER: $currentUser');
 
       await googleSignIn.signOut();
@@ -60,8 +65,21 @@ class GoogleSignInAuthService {
       return tempUserData;
     } catch (e) {
       log(e);
+      // Linking failed (e.g. already linked / credential in use) – still return user data so API login can proceed
+      await googleSignIn.signOut();
+      String firstName = '';
+      String lastName = '';
+      if (currentUser.displayName.validate().split(' ').isNotEmpty) firstName = currentUser.displayName.splitBefore(' ');
+      if (currentUser.displayName.validate().split(' ').length >= 2) lastName = currentUser.displayName.splitAfter(' ');
+      return UserData(planDetails: SubscriptionPlanModel())
+        ..mobile = currentUser.phoneNumber.validate()
+        ..email = currentUser.email.validate()
+        ..firstName = firstName.validate()
+        ..lastName = lastName.validate()
+        ..profileImage = currentUser.photoURL.validate()
+        ..loginType = LoginTypeConst.LOGIN_TYPE_GOOGLE
+        ..fullName = currentUser.displayName.validate();
     }
-    return null;
   }
 
   // region Apple Sign

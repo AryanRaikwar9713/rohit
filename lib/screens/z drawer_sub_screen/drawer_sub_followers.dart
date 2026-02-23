@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:streamit_laravel/screens/api/otherModels/follower_controoelrs.dart';
 import 'package:get/get.dart';
+import 'package:streamit_laravel/local_db.dart';
+import 'package:streamit_laravel/screens/api/otherModels/follower_controoelrs.dart';
 import 'package:streamit_laravel/screens/api/otherModels/follower_responce_model.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart' show openVammisProfile;
 
 class DrawerSubFollowers extends StatefulWidget {
   const DrawerSubFollowers({super.key});
@@ -117,9 +119,13 @@ class _DrawerSubFollowersState extends State<DrawerSubFollowers> {
   }
 
   Widget _buildTile(FollwerOrFlollowingUser data) {
-
-    //
+    final userId = data.id ?? 0;
     return ListTile(
+      onTap: () async {
+        if (userId <= 0) return;
+        final u = await DB().getUser();
+        openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+      },
       leading: Container(
         width: 50,
         height: 50,

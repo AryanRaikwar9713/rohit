@@ -5,7 +5,7 @@ import 'package:streamit_laravel/configs.dart';
 import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/donation/numbar_input_formater.dart';
 import 'package:streamit_laravel/screens/donation/project_detail_control.dart';
-import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart' show openVammisProfile;
 import 'package:streamit_laravel/screens/donation/model/project_detail_responce_model.dart';
 import 'package:streamit_laravel/utils/mohit/custom_like_button.dart';
 import 'package:streamit_laravel/widgets/bottom_navigation_wrapper.dart';
@@ -440,12 +440,11 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                         onTap: () async {
                           final u = await DB().getUser();
                           if (detail.value.creator?.id != null) {
-                            Get.to(() => VammisProfileScreen(
-                                  userId: detail.value.creator!.id!,
-                                  popButton: true,
-                                  isOwnProfile:
-                                      detail.value.creator!.id == (u?.id ?? 0),
-                                ),);
+                            openVammisProfile(
+                              userId: detail.value.creator!.id!,
+                              isOwnProfile: detail.value.creator!.id == (u?.id ?? 0),
+                              popButton: true,
+                            );
                           }
                         },
                         child: Container(
@@ -754,10 +753,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
         onTap: () async {
           print('aghd');
           final user = await DB().getUser();
-          Get.to(VammisProfileScreen(
-              userId: donor.id ?? 0,
-              isOwnProfile: user?.id == donor.id,
-              popButton: true,),);
+          openVammisProfile(userId: donor.id ?? 0, isOwnProfile: user?.id == donor.id, popButton: true);
         },
         child: Row(
           children: [

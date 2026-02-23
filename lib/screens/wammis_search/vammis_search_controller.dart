@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/donation/project_detail_screen.dart';
-import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart' show openVammisProfile;
 import 'package:streamit_laravel/screens/wammis_search/searchApi.dart';
 import 'package:streamit_laravel/screens/wammis_search/search_result_responce_model.dart';
 import 'package:streamit_laravel/utils/colors.dart';
@@ -204,12 +204,10 @@ class _SearchResultCard extends StatelessWidget {
       onTap: () async {
         if (result.contentType == 'user') {
           final user = await DB().getUser();
-          Get.to(
-            VammisProfileScreen(
-              popButton: true,
-              userId: result.contentId ?? 0,
-              isOwnProfile: user?.id == result.contentId,
-            ),
+          openVammisProfile(
+            userId: result.contentId ?? 0,
+            isOwnProfile: user?.id == result.contentId,
+            popButton: true,
           );
         }
         if (result.contentType == 'project') {
