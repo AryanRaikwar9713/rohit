@@ -408,7 +408,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
                         if (userId == null) return;
                         DB().getUser().then((value) {
                           if (!mounted) return;
-                          openVammisProfile(userId: userId, isOwnProfile: value?.id == widget.reel.user?.id, popButton: true);
+                          openVammisProfile(userId: userId, isOwnProfile: value?.id == widget.reel.user?.id);
                         });
                       },
                       child: Text(
@@ -621,7 +621,7 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
             if (userId == null) return;
             DB().getUser().then((value) {
               if (!mounted) return;
-              openVammisProfile(userId: userId, isOwnProfile: value?.id == widget.reel.user?.id, popButton: true);
+              openVammisProfile(userId: userId, isOwnProfile: value?.id == widget.reel.user?.id);
             });
           },
           child: Container(

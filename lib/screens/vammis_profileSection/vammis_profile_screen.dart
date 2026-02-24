@@ -296,13 +296,13 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
   /// Profile avatar: Obx only when we have myStoryController (own profile) so GetX always has an observable.
   Widget _buildProfileAvatar(vammis_model.VammisProfile profile) {
     final image = resolveImageUrl(profile.user?.avatarUrl ?? profile.user?.avatar, pathPrefix: 'storage/avatars/');
-    final VoidCallback onTap = () {
+    void onTap() {
       if (widget.isOwnProfile && (myStoryController?.activeStories.isNotEmpty ?? false)) {
         final firstStory = myStoryController!.activeStories.first;
         Get.to(MyStoryScreen(
           storyId: firstStory.id.toString(),
           controller: myStoryController!,
-        ));
+        ),);
         return;
       }
       final String? imageUrl = profile.user?.avatarUrl ?? profile.user?.avatar;
@@ -338,15 +338,15 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
           );
         },
       );
-    };
+    }
     if (widget.isOwnProfile && myStoryController != null) {
       return Obx(() => WamimsProfileAvtar(
         story: myStoryController!.activeStories.isNotEmpty,
         image: image,
         onTap: onTap,
-      ));
+      ),);
     }
-    return WamimsProfileAvtar(story: false, image: image, onTap: onTap);
+    return WamimsProfileAvtar(image: image, onTap: onTap);
   }
 
   Widget _buildProfileHeader(

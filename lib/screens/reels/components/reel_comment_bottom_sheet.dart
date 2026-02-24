@@ -182,7 +182,7 @@ class _ReelCommentBottomSheetState extends State<ReelCommentBottomSheet>
               final userId = comment.user?.id;
               if (userId != null && userId > 0) {
                 DB().getUser().then((u) {
-                  openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+                  openVammisProfile(userId: userId, isOwnProfile: u?.id == userId);
                 });
               }
             },
@@ -237,7 +237,7 @@ class _ReelCommentBottomSheetState extends State<ReelCommentBottomSheet>
                         final userId = comment.user?.id;
                         if (userId != null && userId > 0) {
                           DB().getUser().then((u) {
-                            openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+                            openVammisProfile(userId: userId, isOwnProfile: u?.id == userId);
                           });
                         }
                       },

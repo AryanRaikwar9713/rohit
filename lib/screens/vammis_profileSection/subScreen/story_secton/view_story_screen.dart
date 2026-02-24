@@ -92,7 +92,7 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
           onTap: () async {
             if (userId <= 0) return;
             final u = await DB().getUser();
-            openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+            openVammisProfile(userId: userId, isOwnProfile: u?.id == userId);
           },
           leading: WamimsProfileAvtar(image: model.user?.avatar??'', story: true, radious: 30,),
           title: Text(model.user?.username??'No Name',style: TextStyle(color: Colors.white,fontFamily: GoogleFonts.poppins().fontFamily),),

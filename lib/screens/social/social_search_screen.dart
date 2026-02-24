@@ -94,7 +94,7 @@ class _SocialSearchScreenState extends State<SocialSearchScreen> {
 
   void _openProfile(int userId, {bool isOwnProfile = false}) {
     if (userId <= 0) return;
-    openVammisProfile(userId: userId, isOwnProfile: isOwnProfile, popButton: true);
+    openVammisProfile(userId: userId, isOwnProfile: isOwnProfile);
   }
 
   void _onFollowUser(int? targetId) {
@@ -105,8 +105,11 @@ class _SocialSearchScreenState extends State<SocialSearchScreen> {
         final isFollowing = value == true || value == 1;
         if (mounted) {
           setState(() {
-            if (isFollowing) _followingUserIds.add(targetId);
-            else _followingUserIds.remove(targetId);
+            if (isFollowing) {
+              _followingUserIds.add(targetId);
+            } else {
+              _followingUserIds.remove(targetId);
+            }
           });
         }
       },

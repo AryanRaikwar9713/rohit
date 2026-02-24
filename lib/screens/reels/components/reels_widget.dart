@@ -206,7 +206,7 @@ class _ReelsWidgetState extends State<ReelsWidget> {
                             final userId = reel.user?.id;
                             if (userId == null || userId <= 0) return;
                             DB().getUser().then((u) {
-                              openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+                              openVammisProfile(userId: userId, isOwnProfile: u?.id == userId);
                             });
                           },
                           child: Row(

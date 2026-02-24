@@ -443,7 +443,6 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                             openVammisProfile(
                               userId: detail.value.creator!.id!,
                               isOwnProfile: detail.value.creator!.id == (u?.id ?? 0),
-                              popButton: true,
                             );
                           }
                         },
@@ -753,7 +752,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
         onTap: () async {
           print('aghd');
           final user = await DB().getUser();
-          openVammisProfile(userId: donor.id ?? 0, isOwnProfile: user?.id == donor.id, popButton: true);
+          openVammisProfile(userId: donor.id ?? 0, isOwnProfile: user?.id == donor.id);
         },
         child: Row(
           children: [

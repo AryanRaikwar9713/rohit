@@ -93,11 +93,11 @@ class _SocialPostCardState extends State<SocialPostCard> {
                 if (user == null) return;
                 final rawId = user.userId;
                 final int? userId = rawId is int
-                    ? rawId as int
+                    ? rawId! as int
                     : int.tryParse(rawId?.toString() ?? '');
                 if (userId == null || userId <= 0) return;
                 final u = await DB().getUser();
-                openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+                openVammisProfile(userId: userId, isOwnProfile: u?.id == userId);
               },
               child: Row(
                 children: [

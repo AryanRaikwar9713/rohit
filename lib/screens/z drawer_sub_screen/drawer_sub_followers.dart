@@ -124,7 +124,7 @@ class _DrawerSubFollowersState extends State<DrawerSubFollowers> {
       onTap: () async {
         if (userId <= 0) return;
         final u = await DB().getUser();
-        openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+        openVammisProfile(userId: userId, isOwnProfile: u?.id == userId);
       },
       leading: Container(
         width: 50,

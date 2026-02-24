@@ -105,7 +105,7 @@ class _HomeStoriesRowState extends State<HomeStoriesRow> {
                     Get.to(MyStoryScreen(
                       controller: c,
                       storyId: c.activeStories.first.id.toString(),
-                    ));
+                    ),);
                   } else {
                     Get.to(() => const CreateStoryScreen());
                   }

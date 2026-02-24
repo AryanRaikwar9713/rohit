@@ -757,10 +757,10 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                                   GestureDetector(
                                     onTap: () {
                                       final raw = comment.user?.userId;
-                                      final int? userId = raw is int ? (raw as int) : int.tryParse(raw?.toString() ?? '');
+                                      final int? userId = raw is int ? (raw! as int) : int.tryParse(raw?.toString() ?? '');
                                       if (userId != null && userId > 0) {
                                         DB().getUser().then((u) {
-                                          openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+                                          openVammisProfile(userId: userId, isOwnProfile: u?.id == userId);
                                         });
                                       }
                                     },
@@ -817,10 +817,10 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
                                             GestureDetector(
                                               onTap: () {
                                                 final raw = comment.user?.userId;
-                                                final int? userId = raw is int ? (raw as int) : int.tryParse(raw?.toString() ?? '');
+                                                final int? userId = raw is int ? (raw! as int) : int.tryParse(raw?.toString() ?? '');
                                                 if (userId != null && userId > 0) {
                                                   DB().getUser().then((u) {
-                                                    openVammisProfile(userId: userId, isOwnProfile: u?.id == userId, popButton: true);
+                                                    openVammisProfile(userId: userId, isOwnProfile: u?.id == userId);
                                                   });
                                                 }
                                               },

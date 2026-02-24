@@ -149,7 +149,7 @@ class DonationHistoryListScreen extends StatelessWidget {
           GestureDetector(
             onTap: ()async{
               final u = await DB().getUser();
-              openVammisProfile(userId: projectOwner?.userId ?? 0, isOwnProfile: u?.id == projectOwner?.userId, popButton: true);
+              openVammisProfile(userId: projectOwner?.userId ?? 0, isOwnProfile: u?.id == projectOwner?.userId);
             },
             child: Row(
               children: [

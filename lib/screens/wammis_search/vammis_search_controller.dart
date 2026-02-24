@@ -207,7 +207,6 @@ class _SearchResultCard extends StatelessWidget {
           openVammisProfile(
             userId: result.contentId ?? 0,
             isOwnProfile: user?.id == result.contentId,
-            popButton: true,
           );
         }
         if (result.contentType == 'project') {
