@@ -319,71 +319,80 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
             bottom: 100,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // Like Button
-                Obx(() {
-                  final currentReel = _getCurrentReel();
-                  final isLiked = currentReel?.interactions?.isLiked ?? false;
-                  final likeCount = currentReel?.stats?.likesCount ?? 0;
-
-                  return CustomLikeButton(
-                    isLiked: isLiked,
-                    likeCount: likeCount,
-                    onLike: () async {
-                      final reelId = widget.reel.id ?? 0;
-                      widget.controller.toggleLikeReel(reelId);
-                      _likeAnimationController.forward().then((_) {
-                        _likeAnimationController.reverse();
-                      });
-                    },
-                  );
-                }),
-                const SizedBox(height: 20),
-
-                // Comment Button
-                Obx(() {
-                  final currentReel = _getCurrentReel();
-                  final commentCount = currentReel?.stats?.commentsCount ?? 0;
-                  return _buildActionButton(
-                    icon: CupertinoIcons.chat_bubble,
-                    count: commentCount,
-                    onTap: () {
-                      _showCommentBottomSheet();
-                    },
-                  );
-                }),
-                const SizedBox(height: 20),
-
-                // Share Button
-                _buildActionButton(
-                  icon: CupertinoIcons.arrowshape_turn_up_right_fill,
-                  count: 0,
-                  onTap: () {
-                    // widget.controller.shareReel(0);
-                    Clipboard.setData(const ClipboardData(
-                        text:
-                            "https://play.google.com/store/apps/details?id=com.anytimeott.live",),);
-                    toast("Url Copied");
-                  },
+                SizedBox(
+                  width: 48,
+                  child: Center(
+                    child: Obx(() {
+                      final currentReel = _getCurrentReel();
+                      final isLiked = currentReel?.interactions?.isLiked ?? false;
+                      final likeCount = currentReel?.stats?.likesCount ?? 0;
+                      return CustomLikeButton(
+                        isLiked: isLiked,
+                        likeCount: likeCount,
+                        onLike: () async {
+                          final reelId = widget.reel.id ?? 0;
+                          widget.controller.toggleLikeReel(reelId);
+                          _likeAnimationController.forward().then((_) {
+                            _likeAnimationController.reverse();
+                          });
+                        },
+                      );
+                    }),
+                  ),
                 ),
-                // const SizedBox(height: 24),
-                const SizedBox(height: 50),
-
-                // More Options
-                // GestureDetector(
-                //   onTap: () {
-                //     _showMoreOptions();
-                //   },
-                //   child: Padding(
-                //     padding:
-                //         const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                //     child: const Icon(
-                //       Icons.more_vert,
-                //       color: Colors.white,
-                //       size: 28,
-                //     ),
-                //   ),
-                // ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: 48,
+                  child: Center(
+                    child: Obx(() {
+                      final currentReel = _getCurrentReel();
+                      final commentCount = currentReel?.stats?.commentsCount ?? 0;
+                      return _buildActionButton(
+                        icon: CupertinoIcons.chat_bubble,
+                        count: commentCount,
+                        onTap: _showCommentBottomSheet,
+                      );
+                    }),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: 48,
+                  child: Center(
+                    child: _buildActionButton(
+                      icon: CupertinoIcons.arrowshape_turn_up_right_fill,
+                      count: 0,
+                      onTap: () {
+                        Clipboard.setData(const ClipboardData(
+                          text: "https://play.google.com/store/apps/details?id=com.anytimeott.live",
+                        ));
+                        toast("Url Copied");
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: 48,
+                  child: Center(
+                    child: _buildActionButton(
+                      icon: Icons.download_rounded,
+                      count: 0,
+                      onTap: () {
+                        final url = widget.reel.content?.videoUrl ?? "";
+                        if (url.isEmpty) {
+                          toast("Download not available");
+                          return;
+                        }
+                        Clipboard.setData(ClipboardData(text: url));
+                        toast("Link copied");
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
               ],
             ),
           ),
@@ -672,8 +681,10 @@ class _ReelItemWidgetState extends State<ReelItemWidget>
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             AnimatedBuilder(
               animation: _likeAnimationController,

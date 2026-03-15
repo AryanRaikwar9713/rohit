@@ -71,28 +71,26 @@ class _SocialPostCardState extends State<SocialPostCard> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.sizeOf(context).width;
-    final maxCardWidth = screenWidth * 0.80;
 
-    return Center(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: maxCardWidth),
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: const Color(0xFF181818),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.35),
-                blurRadius: 18,
-                offset: const Offset(0, 6),
-              ),
-            ],
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFF181818),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.35),
+            blurRadius: 18,
+            offset: const Offset(0, 6),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Post Header
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Post Header
           Padding(
             padding: const EdgeInsets.all(16),
             child: GestureDetector(
@@ -180,12 +178,11 @@ class _SocialPostCardState extends State<SocialPostCard> {
             ),
           ),
 
-          // Post Image: max 80% screen width, fills box (no blank sides), tap for full size
+          // Post Image: full device width, height from width, max 80% device height, rest clipped (Instagram-style)
           if (widget.post.imageUrl != null && widget.post.imageUrl!.isNotEmpty)
             _PostImageWidget(
               imageUrl: resolveImageUrl(widget.post.imageUrl),
               onTap: widget.onImageTap,
-              maxBoxWidth: maxCardWidth,
             ),
 
           // Caption and Content (Below Image)
@@ -420,30 +417,27 @@ class _SocialPostCardState extends State<SocialPostCard> {
           ),
         ],
       ),
-    ),
-    ),
     );
   }
 }
 
-/// Post image: max width 80% of screen, fills box (no blank sides), overflow hidden in box. Tap to view full size.
+/// Post image: full width, box height max 80% content. Contain = full image visible, no crop from sides (Instagram-like).
 class _PostImageWidget extends StatelessWidget {
   final String imageUrl;
   final Future<void> Function()? onTap;
-  final double maxBoxWidth;
 
-  const _PostImageWidget({
-    required this.imageUrl,
-    this.onTap,
-    required this.maxBoxWidth,
-  });
+  const _PostImageWidget({required this.imageUrl, this.onTap});
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
     final screenHeight = MediaQuery.sizeOf(context).height;
-    // Box width = full card width; height = same as effective width (square) capped at 80% of screen height so it stays in view
-    final boxWidth = maxBoxWidth;
-    final boxHeight = (boxWidth).clamp(200.0, screenHeight * 0.80);
+    final padding = MediaQuery.of(context).padding;
+    const appBarHeight = 56.0;
+    const bottomNavHeight = 64.0;
+    final contentHeight = screenHeight - padding.top - appBarHeight - bottomNavHeight;
+    final maxBoxHeight = contentHeight * 0.80;
+    final boxHeight = (screenWidth).clamp(200.0, maxBoxHeight);
 
     return GestureDetector(
       onTap: onTap,
@@ -452,15 +446,16 @@ class _PostImageWidget extends StatelessWidget {
         height: boxHeight,
         decoration: BoxDecoration(
           color: Colors.grey[900],
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
         ),
         clipBehavior: Clip.antiAlias,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           child: CachedNetworkImage(
             imageUrl: imageUrl,
             cacheManager: ExtendedTimeoutCacheManager(),
-            fit: BoxFit.cover,
+            fit: BoxFit.contain,
+            alignment: Alignment.center,
             width: double.infinity,
             height: boxHeight,
             placeholder: (_, __) => Container(

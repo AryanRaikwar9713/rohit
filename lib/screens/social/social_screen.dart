@@ -110,7 +110,7 @@ class _SocialScreenState extends State<SocialScreen>
                 color: appBackgroundColorDark,
               ),
               padding:
-                  const EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 12),
+                  const EdgeInsets.only(left: 16, right: 16, top: 0, bottom: 12),
               child: SafeArea(
                 bottom: false,
                 child: Row(
