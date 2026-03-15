@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Scale logo to fit, uncropped (max 40% of screen so never clipped) -->
+<scale xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/splash_center"
+    android:scaleWidth="0.40"
+    android:scaleHeight="0.40"
+    android:scaleGravity="center"
+    android:level="10000" />

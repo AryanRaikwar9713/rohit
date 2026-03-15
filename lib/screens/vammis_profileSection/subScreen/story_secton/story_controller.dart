@@ -85,6 +85,9 @@ class StoryContrller extends GetxController
   /// User IDs whose stories have been viewed (for yellow vs 50% ring)
   final RxList<int> viewedStoryUserIds = <int>[].obs;
 
+  /// Local like state for stories (per-story, optimistic until backend confirms).
+  final RxSet<int> likedStoryIds = <int>{}.obs;
+
   RxBool isLastUser = false.obs;
   RxBool isLastStory = false.obs;
 
@@ -95,10 +98,29 @@ class StoryContrller extends GetxController
     if (!viewedStoryUserIds.contains(userId)) {
       viewedStoryUserIds.add(userId);
       viewedStoryUserIds.refresh();
+      _sortStoryListUnviewedFirst();
     }
   }
 
+  /// Unviewed first, viewed last; within each group, latest story first.
+  void _sortStoryListUnviewedFirst() {
+    final list = storyList.toList();
+    if (list.isEmpty) return;
+    list.sort((a, b) {
+      final aViewed = viewedStoryUserIds.contains(a.user?.id ?? 0);
+      final bViewed = viewedStoryUserIds.contains(b.user?.id ?? 0);
+      if (aViewed != bViewed) return aViewed ? 1 : -1;
+      final aLatest = a.stories?.map((s) => s.createdAt ?? DateTime(0)).fold<DateTime>(DateTime(0), (p, t) => t.isAfter(p) ? t : p) ?? DateTime(0);
+      final bLatest = b.stories?.map((s) => s.createdAt ?? DateTime(0)).fold<DateTime>(DateTime(0), (p, t) => t.isAfter(p) ? t : p) ?? DateTime(0);
+      return bLatest.compareTo(aLatest);
+    });
+    storyList.assignAll(list);
+  }
+
   bool hasViewedStory(int? userId) => userId != null && viewedStoryUserIds.contains(userId);
+
+  bool isStoryLiked(int? storyId) =>
+      storyId != null && likedStoryIds.contains(storyId);
 
 
   int initialUserPageIndex = 0;
@@ -120,9 +142,33 @@ class StoryContrller extends GetxController
     try
     {
       await  api.getStories(onSuccess: (d){
-
-        storyList.assignAll(d.stories ?? []);
-
+        final list = d.stories ?? [];
+        // Latest first: sort each user's stories by createdAt desc, then users by their latest story
+        for (final user in list) {
+          final stories = user.stories;
+          if (stories != null && stories.isNotEmpty) {
+            stories.sort((a, b) {
+              final at = a.createdAt ?? DateTime(0);
+              final bt = b.createdAt ?? DateTime(0);
+              return bt.compareTo(at);
+            });
+          }
+        }
+        list.sort((a, b) {
+          final aLatest = a.stories?.map((s) => s.createdAt ?? DateTime(0)).fold<DateTime>(DateTime(0), (p, t) => t.isAfter(p) ? t : p) ?? DateTime(0);
+          final bLatest = b.stories?.map((s) => s.createdAt ?? DateTime(0)).fold<DateTime>(DateTime(0), (p, t) => t.isAfter(p) ? t : p) ?? DateTime(0);
+          return bLatest.compareTo(aLatest);
+        });
+        storyList.assignAll(list);
+        _sortStoryListUnviewedFirst();
+        final firstStoryId = list.isNotEmpty ? list.first.stories?.firstOrNull?.id ?? 0 : 0;
+        if (firstStoryId > 0) {
+          api.recordStoryView(
+            storyId: firstStoryId,
+            onError: (e) => Logger().w('Record story view error: $e'),
+            onFail: (r) => Logger().w('Record story view failed: ${r.statusCode}'),
+          );
+        }
       }, onError: onError, onFail: (d){
         Logger().e("Feaild To get Sotry ${d.statusCode}");
       },);
@@ -135,6 +181,28 @@ class StoryContrller extends GetxController
     isLoading.value = false;
   }
 
+  /// Toggle like on a story (used for double‑tap like). Works locally even if
+  /// backend API is not ready yet.
+  void toggleLikeOnStory(int? storyId) {
+    if (storyId == null || storyId <= 0) return;
+    final alreadyLiked = likedStoryIds.contains(storyId);
+    if (alreadyLiked) {
+      likedStoryIds.remove(storyId);
+    } else {
+      likedStoryIds.add(storyId);
+    }
+    likedStoryIds.refresh();
+
+    // Fire‑and‑forget API call – safe even if endpoint not live yet.
+    api.likeStory(
+      storyId: storyId,
+      isLike: !alreadyLiked,
+      onError: (e) => Logger().w('Story like API error: $e'),
+      onFail: (resp) =>
+          Logger().w('Story like API failed: ${resp.statusCode}'),
+    );
+  }
+
   void onUserChage(int userId)
   {
     markStoryUserViewed(selectedUserId.value);
@@ -144,10 +212,16 @@ class StoryContrller extends GetxController
     isLastStory.value =  storyList[userInd].stories?.length==1;
   }
 
-  void onStoryChange(int storyId,int userId)
-  {
+  void onStoryChange(int storyId, int userId) {
     selectedStoryId.value = storyId;
     selectedUserId.value = userId;
+    if (storyId > 0) {
+      api.recordStoryView(
+        storyId: storyId,
+        onError: (e) => Logger().w('Record story view error: $e'),
+        onFail: (r) => Logger().w('Record story view failed: ${r.statusCode}'),
+      );
+    }
     isLastUser.value = storyList.last.user?.id==selectedUserId.value;
     final int userInd = storyList.indexWhere((element) => element.user?.id==selectedUserId.value,);
     isLastStory.value =  storyList[userInd].stories?.last.id==storyId;

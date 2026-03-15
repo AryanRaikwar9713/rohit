@@ -11,6 +11,12 @@ import 'package:streamit_laravel/screens/setting/otp_verification_bottom_sheet.d
 import 'package:streamit_laravel/screens/setting/pin_generation_bottom_sheet.dart';
 import 'package:streamit_laravel/screens/setting/setting_controller.dart';
 import 'package:streamit_laravel/screens/setting/subscription_history/subscription_history_screen.dart';
+import 'package:streamit_laravel/screens/legal/cancellation_policy_screen.dart';
+import 'package:streamit_laravel/screens/legal/contact_us_screen.dart';
+import 'package:streamit_laravel/screens/legal/privacy_policy_screen.dart';
+import 'package:streamit_laravel/screens/legal/refund_policy_screen.dart';
+import 'package:streamit_laravel/screens/legal/skill_game_landing_screen.dart';
+import 'package:streamit_laravel/screens/legal/terms_conditions_screen.dart';
 import 'package:streamit_laravel/screens/setting/subscription_history/rental_history_screen.dart';
 import 'package:streamit_laravel/screens/watch_list/watch_list_screen.dart';
 import 'package:streamit_laravel/utils/app_common.dart';
@@ -222,12 +228,20 @@ class SettingScreen extends StatelessWidget {
       Get.to(() => DownloadVideosScreen());
     } else if (aboutDataModel.title == locale.value.watchlist) {
       Get.to(() => WatchListScreen());
+    } else if (aboutDataModel.slug == AppPages.skillGameLanding) {
+      Get.to(() => const SkillGameLandingScreen());
+    } else if (aboutDataModel.slug == AppPages.privacyPolicy) {
+      Get.to(() => const PrivacyPolicyScreen());
+    } else if (aboutDataModel.slug == AppPages.termsAndCondition) {
+      Get.to(() => const TermsConditionsScreen());
+    } else if (aboutDataModel.slug == AppPages.refundAndCancellation) {
+      Get.to(() => const RefundPolicyScreen());
+    } else if (aboutDataModel.slug == AppPages.cancellationPolicy) {
+      Get.to(() => const CancellationPolicyScreen());
+    } else if (aboutDataModel.slug == AppPages.contactUs) {
+      Get.to(() => const ContactUsScreen());
     } else if (aboutDataModel.slug == AppPages.aboutUs ||
-        aboutDataModel.slug == AppPages.privacyPolicy ||
-        aboutDataModel.slug == AppPages.termsAndCondition ||
-        aboutDataModel.slug == AppPages.aboutUs ||
-        aboutDataModel.slug == AppPages.dataDeletion ||
-        aboutDataModel.slug == AppPages.refundAndCancellation) {
+        aboutDataModel.slug == AppPages.dataDeletion) {
       if (aboutDataModel.url.isNotEmpty) launchUrlCustomURL(aboutDataModel.url);
     } else if (aboutDataModel.title == locale.value.faqs) {
       Get.to(

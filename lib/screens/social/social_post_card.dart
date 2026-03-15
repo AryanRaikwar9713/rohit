@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,7 +7,9 @@ import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/social/social_post_responce_Model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart';
 import 'package:streamit_laravel/configs.dart';
+import 'package:streamit_laravel/generated/assets.dart';
 import 'package:streamit_laravel/utils/colors.dart';
+import 'package:streamit_laravel/utils/image_cache_manager.dart';
 
 import '../../utils/mohit/vammis_like_botton.dart';
 
@@ -67,23 +70,29 @@ class _SocialPostCardState extends State<SocialPostCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: const Color(0xFF181818),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.35),
-            blurRadius: 18,
-            offset: const Offset(0, 6),
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final maxCardWidth = screenWidth * 0.80;
+
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: maxCardWidth),
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: const Color(0xFF181818),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.35),
+                blurRadius: 18,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Post Header
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Post Header
           Padding(
             padding: const EdgeInsets.all(16),
             child: GestureDetector(
@@ -110,10 +119,8 @@ class _SocialPostCardState extends State<SocialPostCard> {
                         backgroundColor: Colors.grey[850],
                         backgroundImage: avatar.isNotEmpty
                             ? NetworkImage(resolveImageUrl(avatar, pathPrefix: 'storage/avatars/'))
-                            : null,
-                        child: avatar.isEmpty
-                            ? Icon(Icons.person, color: Colors.grey[400], size: 20)
-                            : null,
+                            : const AssetImage(Assets.iconsIcDefaultUser) as ImageProvider,
+                        onBackgroundImageError: (_, __) {},
                       );
                     },
                   ),
@@ -173,11 +180,12 @@ class _SocialPostCardState extends State<SocialPostCard> {
             ),
           ),
 
-          // Post Image: actual size; sirf full-screen type (jo puri screen cover kare) ko 70% cap
+          // Post Image: max 80% screen width, fills box (no blank sides), tap for full size
           if (widget.post.imageUrl != null && widget.post.imageUrl!.isNotEmpty)
             _PostImageWidget(
               imageUrl: resolveImageUrl(widget.post.imageUrl),
               onTap: widget.onImageTap,
+              maxBoxWidth: maxCardWidth,
             ),
 
           // Caption and Content (Below Image)
@@ -412,154 +420,61 @@ class _SocialPostCardState extends State<SocialPostCard> {
           ),
         ],
       ),
+    ),
+    ),
     );
   }
 }
 
-/// Post image: actual size dikhata hai; sirf jo full-screen type (puri screen cover) ho woh 70% cap
-class _PostImageWidget extends StatefulWidget {
+/// Post image: max width 80% of screen, fills box (no blank sides), overflow hidden in box. Tap to view full size.
+class _PostImageWidget extends StatelessWidget {
   final String imageUrl;
   final Future<void> Function()? onTap;
+  final double maxBoxWidth;
 
-  const _PostImageWidget({required this.imageUrl, this.onTap});
-
-  @override
-  State<_PostImageWidget> createState() => _PostImageWidgetState();
-}
-
-class _PostImageWidgetState extends State<_PostImageWidget> {
-  int? _imageWidth;
-  int? _imageHeight;
-  bool _loadFailed = false;
-  ImageStream? _imageStream;
-  ImageStreamListener? _listener;
-
-  @override
-  void initState() {
-    super.initState();
-    _resolveImageDimensions();
-  }
-
-  void _resolveImageDimensions() {
-    final provider = NetworkImage(widget.imageUrl);
-    final stream = provider.resolve(const ImageConfiguration());
-    _listener = ImageStreamListener(
-      (ImageInfo info, bool synchronousCall) {
-        if (!mounted) return;
-        final w = info.image.width;
-        final h = info.image.height;
-        if (w > 0 && h > 0 && _listener != null) {
-          stream.removeListener(_listener!);
-          setState(() {
-            _imageWidth = w;
-            _imageHeight = h;
-          });
-        }
-      },
-      onError: (exception, stackTrace) {
-        if (!mounted) return;
-        if (_listener != null) stream.removeListener(_listener!);
-        setState(() => _loadFailed = true);
-      },
-    );
-    _imageStream = stream;
-    stream.addListener(_listener!);
-  }
-
-  @override
-  void dispose() {
-    if (_imageStream != null && _listener != null) {
-      _imageStream!.removeListener(_listener!);
-    }
-    super.dispose();
-  }
+  const _PostImageWidget({
+    required this.imageUrl,
+    this.onTap,
+    required this.maxBoxWidth,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    const appBarHeight = 56.0;
-    const bottomNavHeight = 80.0;
-    final remainingHeight = screenHeight - appBarHeight - bottomNavHeight - MediaQuery.of(context).padding.top;
-    final maxHeightForFullScreen = remainingHeight * 0.70;
-
-    // Dimensions nahi aaye ya load fail: placeholder (chota height, baad mein actual size dikhega)
-    if (_loadFailed || (_imageWidth == null && _imageHeight == null)) {
-      final placeholderHeight = _loadFailed ? 200.0 : 220.0;
-      return GestureDetector(
-        onTap: widget.onTap,
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 5),
-          width: double.infinity,
-          height: placeholderHeight,
-          decoration: BoxDecoration(
-            color: Colors.grey[900],
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: _loadFailed
-                ? const Center(
-                    child: Icon(Icons.image_not_supported, color: Colors.grey, size: 50),
-                  )
-                : const Center(
-                    child: CircularProgressIndicator(color: appColorPrimary),
-                  ),
-          ),
-        ),
-      );
-    }
-
-    // Actual size: full width, height = aspect ratio; sirf full-screen type ko 70% cap
-    final w = _imageWidth!.toDouble();
-    final h = _imageHeight!.toDouble();
-    final heightIfFullWidth = screenWidth * (h / w);
-    final displayHeight = heightIfFullWidth > maxHeightForFullScreen
-        ? maxHeightForFullScreen
-        : heightIfFullWidth;
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    // Box width = full card width; height = same as effective width (square) capped at 80% of screen height so it stays in view
+    final boxWidth = maxBoxWidth;
+    final boxHeight = (boxWidth).clamp(200.0, screenHeight * 0.80);
 
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 5),
         width: double.infinity,
-        height: displayHeight,
+        height: boxHeight,
         decoration: BoxDecoration(
           color: Colors.grey[900],
           borderRadius: BorderRadius.circular(16),
         ),
+        clipBehavior: Clip.antiAlias,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: Image.network(
-            widget.imageUrl,
-            fit: BoxFit.contain,
+          child: CachedNetworkImage(
+            imageUrl: imageUrl,
+            cacheManager: ExtendedTimeoutCacheManager(),
+            fit: BoxFit.cover,
             width: double.infinity,
-            height: displayHeight,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Container(
-                color: Colors.grey[900],
-                height: displayHeight,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
-                        : null,
-                    color: appColorPrimary,
-                  ),
-                ),
-              );
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                height: displayHeight,
-                color: Colors.grey[900],
-                child: const Center(
-                  child: Icon(Icons.image_not_supported, color: Colors.grey, size: 50),
-                ),
-              );
-            },
+            height: boxHeight,
+            placeholder: (_, __) => Container(
+              color: Colors.grey[900],
+              height: boxHeight,
+              alignment: Alignment.center,
+              child: const CircularProgressIndicator(color: appColorPrimary),
+            ),
+            errorWidget: (_, __, ___) => Container(
+              height: boxHeight,
+              color: Colors.grey[900],
+              alignment: Alignment.center,
+              child: const Icon(Icons.image_not_supported, color: Colors.grey, size: 50),
+            ),
           ),
         ),
       ),

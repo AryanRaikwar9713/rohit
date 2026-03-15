@@ -268,6 +268,37 @@ class SettingController extends GetxController {
         ),
       );
     }
+    // Always show skill-game policy & support (in-app)
+    if (!settingList.any((e) => e.slug == AppPages.contactUs)) {
+      settingList.add(
+        SettingModel(
+          icon: getPageIcon(AppPages.contactUs),
+          title: 'Contact Us',
+          subTitle: '',
+          slug: AppPages.contactUs,
+        ),
+      );
+    }
+    if (!settingList.any((e) => e.slug == AppPages.cancellationPolicy)) {
+      settingList.add(
+        SettingModel(
+          icon: getPageIcon(AppPages.cancellationPolicy),
+          title: 'Cancellation Policy',
+          subTitle: '',
+          slug: AppPages.cancellationPolicy,
+        ),
+      );
+    }
+    if (!settingList.any((e) => e.slug == AppPages.skillGameLanding)) {
+      settingList.add(
+        SettingModel(
+          icon: getPageIcon(AppPages.skillGameLanding),
+          title: 'Play & Win – How it works',
+          subTitle: '',
+          slug: AppPages.skillGameLanding,
+        ),
+      );
+    }
 
     if (isLoginCheck) {
       settingList.add(SettingModel(

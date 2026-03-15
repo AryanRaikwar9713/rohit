@@ -38,7 +38,7 @@ class AppLogoWidget extends StatelessWidget {
       width: size?.width ?? Constants.appLogoSize,
       errorBuilder: (context, url,er) {
         return Image.asset(
-          Assets.assetsAppLogo,
+          Assets.iconsIcIcon,
           height: size?.height ?? Constants.appLogoSize,
           width: size?.width ?? Constants.appLogoSize,
         );

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:streamit_laravel/utils/image_cache_manager.dart';
 import 'package:streamit_laravel/screens/reels/reel_response_model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/social_account/s_media_account_contrller.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/social_account/socila_media_account_model.dart';
@@ -24,6 +25,8 @@ import 'package:streamit_laravel/utils/colors.dart';
 import 'package:streamit_laravel/utils/mohit/campain_project_card.dart';
 import 'package:streamit_laravel/utils/mohit/custom_like_button.dart';
 import 'package:streamit_laravel/utils/mohit/vammis_profile_avtar.dart';
+import 'package:streamit_laravel/screens/messaging/message_api.dart';
+import 'package:streamit_laravel/screens/messaging/chat_screen.dart';
 
 /// Apna gradient - yellow-orange (Impact/Events jaisa)
 const LinearGradient _profileGradient = LinearGradient(
@@ -133,9 +136,14 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Profile open hote hi sahi user load karo – purana data dikhane se grey/ wrong screen fix
+    // Profile open hote hi sahi user load karo – purana data dikhane se grey/ wrong screen fix.
+    // Also refetch when displayed user != this userId (e.g. back then open same profile again)
+    // so is_following from API shows correct Connect/Connected state.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (controller.currentUserId != widget.userId) {
+      final currentDisplayedId = controller.profileResponse.value?.data?.user?.id;
+      final shouldLoad = controller.currentUserId != widget.userId ||
+          (currentDisplayedId != null && currentDisplayedId != widget.userId);
+      if (shouldLoad) {
         controller.currentUserId = widget.userId;
         controller.isLoading.value = true;
         controller.profileResponse.value = null;
@@ -364,23 +372,13 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
 
               const SizedBox(width: 20),
 
-              // Stats
+              // Stats row 1: Posts, Followers, Following (equal width for alignment)
               Expanded(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildStatItem(
-                      '${profile.contentCounts?.posts ?? profile.stats?.posts ?? 0}',
-                      'Posts',
-                    ),
-                    _buildStatItem(
-                      '${profile.user?.followersCount ?? profile.stats?.followers ?? 0}',
-                      'Followers',
-                    ),
-                    _buildStatItem(
-                      '${profile.user?.followingCount ?? profile.stats?.following ?? 0}',
-                      'Following',
-                    ),
+                    Expanded(child: _buildStatItem('${profile.contentCounts?.posts ?? profile.stats?.posts ?? 0}', 'Posts')),
+                    Expanded(child: _buildStatItem('${profile.user?.followersCount ?? profile.stats?.followers ?? 0}', 'Followers')),
+                    Expanded(child: _buildStatItem('${profile.user?.followingCount ?? profile.stats?.following ?? 0}', 'Following')),
                   ],
                 ),
               ),
@@ -389,68 +387,31 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
 
           16.height,
 
-          // Name and Bio
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                profile.user?.username ??
-                    (profile.user != null
-                        ? '${profile.user!.firstName ?? ''} ${profile.user!.lastName ?? ''}'
-                            .trim()
-                        : 'User'),
-                style: boldTextStyle(size: 16, color: Colors.white),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (profile.user?.bio != null &&
-                  profile.user!.bio!.isNotEmpty) ...[
-                8.height,
-                Text(
-                  profile.user!.bio!,
-                  style: primaryTextStyle(size: 14, color: Colors.white70),
-                ),
-              ],
-            ],
-          ),
-
-          16.height,
-
-          // Additional Stats (Projects, Donations, Engagement)
-          if (profile.contentCounts != null || profile.stats != null) ...[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                if (profile.contentCounts?.projects != null ||
-                    profile.stats?.projects != null)
-                  _buildStatItem(
-                    '${profile.contentCounts?.projects ?? profile.stats?.projects ?? 0}',
-                    'Projects',
-                  ),
-                if (profile.isOwnProfile == true) ...[
-                  // Show donations given only for own profile
-                  if (profile.stats?.donationsGiven != null)
-                    _buildStatItem(
-                      profile.stats!.donationsGiven!.toStringAsFixed(0),
-                      'Donated',
-                    ),
-                ] else ...[
-                  // Show donations received only for other user's profile
-                  if (profile.stats?.donationsReceived != null)
-                    _buildStatItem(
-                      '${profile.stats!.donationsReceived ?? 0}',
-                      'Donations',
-                    ),
-                ],
-                if (profile.stats?.totalEngagement != null)
-                  _buildStatItem(
-                    '${profile.stats!.totalEngagement ?? 0}',
-                    'Engagement',
-                  ),
-              ],
+          // Bio only (username already in app bar)
+          if (profile.user?.bio != null && profile.user!.bio!.isNotEmpty) ...[
+            Text(
+              profile.user!.bio!,
+              style: primaryTextStyle(size: 14, color: Colors.white70),
             ),
             16.height,
           ],
+
+          // Stats row 2: Projects, Donated, Engagement (same 3-column grid as row 1)
+          Row(
+            children: [
+              Expanded(child: _buildStatItem('${profile.contentCounts?.projects ?? profile.stats?.projects ?? 0}', 'Projects')),
+              Expanded(
+                child: _buildStatItem(
+                  profile.isOwnProfile == true
+                      ? (profile.stats?.donationsGiven?.toStringAsFixed(0) ?? '0')
+                      : '${profile.stats?.donationsReceived ?? 0}',
+                  profile.isOwnProfile == true ? 'Donated' : 'Donations',
+                ),
+              ),
+              Expanded(child: _buildStatItem('${profile.stats?.totalEngagement ?? 0}', 'Engagement')),
+            ],
+          ),
+          16.height,
 
           // Personal Information (Only for own profile)
           if (profile.isOwnProfile == true) ...[
@@ -533,7 +494,7 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () {
-                      toast('Message feature coming soon');
+                      _openMessageWithUser(context, widget.userId);
                     },
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(color: Colors.grey.shade700),
@@ -618,6 +579,27 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
           fontWeight: FontWeight.w600,
         ),
       ),
+    );
+  }
+
+  void _openMessageWithUser(BuildContext context, int otherUserId) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => const Center(child: CircularProgressIndicator(color: Colors.white)),
+    );
+    MessageApi.getOrCreateConversation(
+      otherUserId: otherUserId,
+      onSuccess: (conversationId, otherUser) {
+        if (context.mounted) Navigator.of(context).pop();
+        Get.to(() => ChatScreen(conversationId: conversationId, otherUser: otherUser));
+      },
+      onError: (msg) {
+        if (context.mounted) {
+          Navigator.of(context).pop();
+          toast(msg);
+        }
+      },
     );
   }
 
@@ -1467,8 +1449,13 @@ class _VammisProfileScreenState extends State<VammisProfileScreen> {
                               decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                               ),
-                              child: Image.network(s.mediaUrl??'',fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => const Icon(Icons.videocam),),
+                              child: CachedNetworkImage(
+                                imageUrl: s.mediaUrl ?? '',
+                                cacheManager: ExtendedTimeoutCacheManager(),
+                                fit: BoxFit.cover,
+                                placeholder: (_, __) => const Icon(Icons.videocam),
+                                errorWidget: (_, __, ___) => const Icon(Icons.videocam),
+                              ),
                             ),
                           ),
                         ),

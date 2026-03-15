@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:io' if (dart.library.io) '../../platform_stub.dart' as io;
 import 'package:flutter_chrome_cast/lib.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -68,11 +68,11 @@ class FCCast extends GetxController {
       const appId = GoogleCastDiscoveryCriteria.kDefaultApplicationId;
       GoogleCastOptions? options;
       
-      if (Platform.isIOS) {
+      if (io.Platform.isIOS) {
         options = IOSGoogleCastOptions(
           GoogleCastDiscoveryCriteriaInitialize.initWithApplicationID(appId),
         );
-      } else if (Platform.isAndroid) {
+      } else if (io.Platform.isAndroid) {
         options = GoogleCastOptionsAndroid(
           appId: appId,
         );
@@ -86,7 +86,7 @@ class FCCast extends GetxController {
         log("❌ Failed to create Chrome Cast options for platform");
       }
       // Check initial discovery state for iOS
-      if (Platform.isIOS) {
+      if (io.Platform.isIOS) {
         try {
           await GoogleCastDiscoveryManager.instance.isDiscoveryActiveForDeviceCategory(appId);
         } catch (e) {

@@ -1,0 +1,77 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter analyze lib/utils/push_notification_service.dart lib/screens/notificationSection/notification_screen.dart
+
+## exception
+
+_Exception: Exception: analysis server exited with code 64 and output:
+[stderr] Project
+[stderr]   build       Build a Dart application including code assets.
+[stderr]   compile     Compile Dart to various formats.
+[stderr]   create      Create a new Dart project.
+[stderr]   pub         Work with packages.
+[stderr]   run         Run a Dart program.
+[stderr]   test        Run tests for a project.
+[stderr] 
+[stderr] Source code
+[stderr]   analyze     Analyze Dart code in a directory.
+[stderr]   doc         Generate API documentation for Dart projects.
+[stderr]   fix         Apply automated fixes to Dart source code.
+[stderr]   format      Idiomatically format Dart source code.
+[stderr] 
+[stderr] Tools
+[stderr]   devtools    Open DevTools (optionally connecting to an existing application).
+[stderr]   info        Show diagnostic information about the installed tooling.
+[stderr] 
+[stderr] Run "dart help <command>" for more information about a command.
+[stderr] See https://dart.dev/tools/dart-tool for detailed documentation.
+
+```
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel stable, 3.38.4, on macOS 26.3 25D125 darwin-arm64, locale en-IN) [601ms]
+    • Flutter version 3.38.4 on channel stable at /Users/aryanraikwar/Downloads/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 66dd93f9a2 (3 months ago), 2025-12-03 14:56:10 -0800
+    • Engine revision a5cb96369e
+    • Dart version 3.10.3
+    • DevTools version 2.51.1
+    • Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-native-assets, omit-legacy-version-file, enable-lldb-debugging
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 36.0.0) [2.9s]
+    • Android SDK at /Users/aryanraikwar/Library/Android/sdk
+    • Emulator version 35.5.10.0 (build_id 13402964) (CL:N/A)
+    • Platform android-36, build-tools 36.0.0
+    • ANDROID_HOME = /Users/aryanraikwar/Library/Android/sdk
+    • Java binary at: /Users/aryanraikwar/Library/Java/JavaVirtualMachines/corretto-17.0.14/Contents/Home/bin/java
+      This JDK is specified in your Flutter configuration.
+      To change the current JDK, run: `flutter config --jdk-dir="path/to/jdk"`.
+    • Java version OpenJDK Runtime Environment Corretto-17.0.14.7.1 (build 17.0.14+7-LTS)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 26.2) [1,863ms]
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 17C52
+    • CocoaPods version 1.16.2
+
+[✓] Chrome - develop for the web [6ms]
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Connected device (3 available) [7.8s]
+    • V2415 (mobile)  • 10BF280PXF002RD • android-arm64  • Android 15 (API 35)
+    • macOS (desktop) • macos           • darwin-arm64   • macOS 26.3 25D125 darwin-arm64
+    • Chrome (web)    • chrome          • web-javascript • Google Chrome 145.0.7632.162
+    ! Error: Browsing on the local area network for iPhone. Ensure the device is unlocked and attached with a cable or associated with the same local area network as this Mac.
+      The device must be opted into Developer Mode to connect wirelessly. (code -27)
+
+[✓] Network resources [1,269ms]
+    • All expected network resources are available.
+
+• No issues found!
+```

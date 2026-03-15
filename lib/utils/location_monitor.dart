@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ class LocationMonitor {
 
   /// Start monitoring location service
   static void startMonitoring(BuildContext context) {
+    if (kIsWeb) return;
     // Stop any existing timer
     stopMonitoring();
 
@@ -35,6 +37,7 @@ class LocationMonitor {
 
   /// Check location service status
   static Future<void> _checkLocationService(BuildContext context) async {
+    if (kIsWeb) return;
     try {
       final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       final LocationPermission permission = await Geolocator.checkPermission();
@@ -198,6 +201,7 @@ class _LocationBlockingOverlayState extends State<_LocationBlockingOverlay> {
                     // Button
                     ElevatedButton(
                       onPressed: () async {
+                        if (kIsWeb) return;
                         // Check if location service is off or permission is denied
                         final bool serviceEnabled =
                             await Geolocator.isLocationServiceEnabled();
@@ -205,14 +209,11 @@ class _LocationBlockingOverlayState extends State<_LocationBlockingOverlay> {
                             await Geolocator.checkPermission();
 
                         if (!serviceEnabled) {
-                          // Open location settings
                           await Geolocator.openLocationSettings();
                         } else if (permission == LocationPermission.denied ||
                             permission == LocationPermission.deniedForever) {
-                          // Open app settings for permission
                           await Geolocator.openAppSettings();
                         } else {
-                          // Request permission
                           await Geolocator.requestPermission();
                         }
                       },

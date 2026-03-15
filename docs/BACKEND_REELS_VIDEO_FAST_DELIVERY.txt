@@ -1,0 +1,24 @@
+================================================================================
+REELS & LONG VIDEO – FAST DELIVERY (TikTok / Instagram–like)
+================================================================================
+Backend checklist for serving reels and long (user-uploaded) videos so they start
+in < 2 seconds. Full detail: docs/BACKEND_COMPLETE_SPEC.txt (Section 4 subsection G,
+Section 9).
+
+--------------------------------------------------------------------------------
+CHECKLIST
+--------------------------------------------------------------------------------
+[ ] Serve all video_url (reels + long video) from a CDN (not direct origin).
+[ ] Reel/long video_url is either:
+    (a) HLS (.m3u8) – strongly recommended; short segments (2–4 s).
+    (b) MP4 with Accept-Ranges: bytes on CDN/origin.
+[ ] First segment (HLS) or first byte range (MP4) is small and cached at edge for < 2s start.
+[ ] Optional: transcode uploads to HLS for reels and long videos.
+
+--------------------------------------------------------------------------------
+FLUTTER
+--------------------------------------------------------------------------------
+- Long video: if video_url contains .m3u8, app uses HLS automatically.
+- Reels: media_kit plays HLS; same video_url from API, no app change when backend sends .m3u8 or CDN URLs.
+
+================================================================================

@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:io' if (dart.library.io) '../utils/platform_stub.dart' as io;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -841,7 +842,7 @@ class CoreServiceApis {
 //Edit Profile API
   Future<void> updateProfileReq({
     required Map<String, dynamic> request,
-    List<File>? files,
+    List<dynamic>? files,
     VoidCallback? onSuccess,
   }) async {
     final multiPartRequest =
@@ -850,13 +851,16 @@ class CoreServiceApis {
       await getMultipartFields(val: request),
     );
 
-    if (files.validate().isNotEmpty) {
-      multiPartRequest.files.add(
-        await http.MultipartFile.fromPath(
-          'file_url',
-          files.validate().first.path.validate(),
-        ),
-      );
+    if (!kIsWeb && files.validate().isNotEmpty) {
+      final first = files!.first;
+      if (first is io.File) {
+        multiPartRequest.files.add(
+          await http.MultipartFile.fromPath(
+            'file_url',
+            first.path.validate(),
+          ),
+        );
+      }
     }
 
     log("Multipart ${jsonEncode(multiPartRequest.fields)}");
@@ -935,20 +939,23 @@ class CoreServiceApis {
 // Watching Edit Profile
   Future<WatchingProfileResponse> updateWatchProfile({
     required Map<String, dynamic> request,
-    List<File>? files,
+    List<dynamic>? files,
     VoidCallback? onSuccess,
   }) async {
     final multiPartRequest =
         await getMultiPartRequest(APIEndPoints.editWatchingProfile);
     multiPartRequest.fields.addAll(await getMultipartFields(val: request));
 
-    if (files.validate().isNotEmpty) {
-      multiPartRequest.files.add(
-        await http.MultipartFile.fromPath(
-          'file_url',
-          files.validate().first.path.validate(),
-        ),
-      );
+    if (!kIsWeb && files.validate().isNotEmpty) {
+      final first = files!.first;
+      if (first is io.File) {
+        multiPartRequest.files.add(
+          await http.MultipartFile.fromPath(
+            'file_url',
+            first.path.validate(),
+          ),
+        );
+      }
     }
 
     multiPartRequest.headers.addAll(buildHeaderTokens());
@@ -1312,7 +1319,7 @@ class CoreServiceApis {
   // Social Media APIs
   Future<BaseResponseModel> createSocialPost({
     required Map<String, dynamic> request,
-    List<File>? files,
+    List<dynamic>? files,
   }) async {
     try {
       log('=== Creating Social Post API Call ===');
@@ -1331,16 +1338,18 @@ class CoreServiceApis {
         multipartRequest.fields[key] = value.toString();
       });
 
-      // Add image file if provided
-      if (files != null && files.isNotEmpty) {
+      // Add image file if provided (skip on web - no dart:io path)
+      if (!kIsWeb && files != null && files.isNotEmpty) {
         final file = files.first;
-        log('Adding image file: ${file.path}');
-        multipartRequest.files.add(
-          await http.MultipartFile.fromPath(
-            'image',
-            file.path,
-          ),
-        );
+        if (file is io.File) {
+          log('Adding image file: ${file.path}');
+          multipartRequest.files.add(
+            await http.MultipartFile.fromPath(
+              'image',
+              file.path,
+            ),
+          );
+        }
       }
 
       // Add headers

@@ -1,4 +1,4 @@
-
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:get/get.dart';
@@ -11,6 +11,9 @@ import 'package:streamit_laravel/screens/walletSection/bolt/bolt_api.dart';
 import 'package:http/http.dart' as http;
 import 'package:streamit_laravel/screens/walletSection/bolt/bolt_transection_responce_model.dart';
 
+/// Cooldown in seconds before user can watch another ad (protects ad accounts).
+/// 59s so user can't spam AdMob/AppLovin buttons.
+const int kWatchAdCooldownSeconds = 59;
 
 class BoaltWalletController extends GetxController
 {
@@ -200,21 +203,51 @@ class BoaltWalletController extends GetxController
 
   // Watch Ad and get reward
   RxBool isWatchingAd = false.obs;
+  /// Seconds remaining before user can watch next ad (0 = can tap).
+  RxInt cooldownSecondsRemaining = 0.obs;
+  Timer? _cooldownTimer;
+
+  @override
+  void onClose() {
+    _cooldownTimer?.cancel();
+    super.onClose();
+  }
+
+  void _startCooldown() {
+    cooldownSecondsRemaining.value = kWatchAdCooldownSeconds;
+    _cooldownTimer?.cancel();
+    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (cooldownSecondsRemaining.value <= 1) {
+        t.cancel();
+        cooldownSecondsRemaining.value = 0;
+        return;
+      }
+      cooldownSecondsRemaining.value--;
+    });
+  }
 
   Future<void> watchAdForReward() async {
+    if (cooldownSecondsRemaining.value > 0) {
+      toast('Wait ${cooldownSecondsRemaining.value}s before watching again');
+      return;
+    }
     if (isWatchingAd.value) {
       toast('Please wait, ad is loading...');
       return;
     }
-    
+
+    // Even if AppLovin ad is not ready, start cooldown so user can't spam-tap.
     if (!AdLovinHelper.isRewardedReady) {
-      toast('Ad is not ready yet. Please wait...');
+      toast('Ad is getting ready, please wait...');
+      _startCooldown();
       AdLovinHelper.loadRewarded();
       return;
     }
-    
+
     try {
       isWatchingAd.value = true;
+      // Start 59s cooldown immediately when user taps, so they can't spam the button.
+      _startCooldown();
       
       // Set reward callback before showing ad
       AdLovinHelper.setRewardCallback(() async {
@@ -239,7 +272,7 @@ class BoaltWalletController extends GetxController
           onSuccess: (data) {
             Logger().i('Bolt rewarded successfully: $data');
             toast('🎉 You earned 0.01 Bolt!');
-            // Refresh wallet data
+            _startCooldown();
             getDashBoardData();
             getTransectiom(refresh: true);
             isWatchingAd.value = false;
@@ -267,6 +300,10 @@ class BoaltWalletController extends GetxController
 
   // Watch AdMob Ad and get reward
   Future<void> watchAdMobForReward() async {
+    if (cooldownSecondsRemaining.value > 0) {
+      toast('Wait ${cooldownSecondsRemaining.value}s before watching again');
+      return;
+    }
     if (isWatchingAd.value) {
       toast('Please wait, ad is loading...');
       return;
@@ -274,6 +311,8 @@ class BoaltWalletController extends GetxController
     
     try {
       isWatchingAd.value = true;
+      // Start 59s cooldown immediately when user taps, so they can't spam the button.
+      _startCooldown();
       if (!AdMobRewardedAdHelper.isRewardedAdReady) {
         toast('Loading ad, please wait...');
       }
@@ -302,6 +341,7 @@ class BoaltWalletController extends GetxController
             onSuccess: (data) {
               Logger().i('Bolt rewarded successfully: $data');
               toast('🎉 You earned 0.01 Bolt!');
+              _startCooldown();
               getDashBoardData();
               getTransectiom(refresh: true);
               isWatchingAd.value = false;

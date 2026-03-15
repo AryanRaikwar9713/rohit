@@ -4,6 +4,8 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:country_picker/country_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -143,6 +145,10 @@ class SignInController extends GetxController {
   }
 
   Future<void> onLoginPressed() async {
+    if (kIsWeb) {
+      toast('Phone sign-in is not available on web. Please use email or social sign-in.');
+      return;
+    }
     // Prevent multiple taps: do not open OTP sheet again if already open or request in progress
     if (isLoading.value) return;
     if (Get.isBottomSheetOpen ?? false) return;
@@ -514,6 +520,13 @@ class SignInController extends GetxController {
         } else if (e.code == GoogleSignInExceptionCode.unknownError &&
             e.toString().toLowerCase().contains('developer console')) {
           message = 'Google Sign-In is not set up correctly. Please contact support.';
+        } else if (e.toString().contains('403') || e.toString().toLowerCase().contains('suspended')) {
+          message = 'Google/Firebase service temporarily unavailable. Please try again later.';
+        }
+      } else if (e is FirebaseAuthException) {
+        message = e.message ?? 'Sign-in failed. Please try again.';
+        if (e.message != null && (e.message!.contains('403') || e.message!.toLowerCase().contains('suspended') || e.code == 'internal-error')) {
+          message = 'Firebase service temporarily unavailable. Please try again later.';
         }
       }
       toast(message, print: true);

@@ -5,7 +5,7 @@
   "packages": [
     {
       "name": "streamit_laravel",
-      "version": "41.2.6+95",
+      "version": "41.2.20+111",
       "dependencies": [
         "applovin_max",
         "cached_network_image",
@@ -19,6 +19,7 @@
         "firebase_messaging",
         "fl_chart",
         "flutter",
+        "flutter_cache_manager",
         "flutter_chrome_cast",
         "flutter_custom_tabs",
         "flutter_file_downloader",
@@ -650,6 +651,22 @@
         "url_launcher_platform_interface",
         "url_launcher_web",
         "url_launcher_windows"
+      ]
+    },
+    {
+      "name": "flutter_cache_manager",
+      "version": "3.4.1",
+      "dependencies": [
+        "clock",
+        "collection",
+        "file",
+        "flutter",
+        "http",
+        "path",
+        "path_provider",
+        "rxdart",
+        "sqflite",
+        "uuid"
       ]
     },
     {
@@ -1766,26 +1783,22 @@
       ]
     },
     {
+      "name": "sqflite",
+      "version": "2.4.2",
+      "dependencies": [
+        "flutter",
+        "path",
+        "sqflite_android",
+        "sqflite_common",
+        "sqflite_darwin",
+        "sqflite_platform_interface"
+      ]
+    },
+    {
       "name": "octo_image",
       "version": "2.1.0",
       "dependencies": [
         "flutter"
-      ]
-    },
-    {
-      "name": "flutter_cache_manager",
-      "version": "3.4.1",
-      "dependencies": [
-        "clock",
-        "collection",
-        "file",
-        "flutter",
-        "http",
-        "path",
-        "path_provider",
-        "rxdart",
-        "sqflite",
-        "uuid"
       ]
     },
     {
@@ -2209,14 +2222,43 @@
       ]
     },
     {
-      "name": "sqflite",
+      "name": "sqflite_common",
+      "version": "2.5.6",
+      "dependencies": [
+        "meta",
+        "path",
+        "synchronized"
+      ]
+    },
+    {
+      "name": "sqflite_platform_interface",
+      "version": "2.4.0",
+      "dependencies": [
+        "flutter",
+        "meta",
+        "platform",
+        "plugin_platform_interface",
+        "sqflite_common"
+      ]
+    },
+    {
+      "name": "sqflite_darwin",
       "version": "2.4.2",
       "dependencies": [
         "flutter",
+        "meta",
         "path",
-        "sqflite_android",
         "sqflite_common",
-        "sqflite_darwin",
+        "sqflite_platform_interface"
+      ]
+    },
+    {
+      "name": "sqflite_android",
+      "version": "2.4.2+2",
+      "dependencies": [
+        "flutter",
+        "path",
+        "sqflite_common",
         "sqflite_platform_interface"
       ]
     },
@@ -2315,47 +2357,6 @@
       "dependencies": [
         "meta",
         "vector_math"
-      ]
-    },
-    {
-      "name": "sqflite_common",
-      "version": "2.5.6",
-      "dependencies": [
-        "meta",
-        "path",
-        "synchronized"
-      ]
-    },
-    {
-      "name": "sqflite_platform_interface",
-      "version": "2.4.0",
-      "dependencies": [
-        "flutter",
-        "meta",
-        "platform",
-        "plugin_platform_interface",
-        "sqflite_common"
-      ]
-    },
-    {
-      "name": "sqflite_darwin",
-      "version": "2.4.2",
-      "dependencies": [
-        "flutter",
-        "meta",
-        "path",
-        "sqflite_common",
-        "sqflite_platform_interface"
-      ]
-    },
-    {
-      "name": "sqflite_android",
-      "version": "2.4.2+2",
-      "dependencies": [
-        "flutter",
-        "path",
-        "sqflite_common",
-        "sqflite_platform_interface"
       ]
     }
   ],

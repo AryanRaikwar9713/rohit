@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -36,7 +35,7 @@ class SocialAuthComponent extends StatelessWidget {
             signInController.googleSignIn();
           },
         ),
-        if (Platform.isIOS)
+        if (defaultTargetPlatform == TargetPlatform.iOS)
           SocialIconWidget(
             buttonWidth: Get.width,
             icon: Assets.socialMediaApple,

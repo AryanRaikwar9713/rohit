@@ -1,0 +1,289 @@
+================================================================================
+BACKEND – COMPLETE SPEC (Single file for Backend Cursor)
+================================================================================
+Use this file to implement all backend changes. Flutter app is ready to consume
+these APIs and FCM payloads.
+
+--------------------------------------------------------------------------------
+RECENT BACKEND REQUIREMENTS (summary – give this file to backend Cursor)
+--------------------------------------------------------------------------------
+- Profile: GET profile by user_id MUST return is_following (true/false) for the
+  logged-in user so Connect/Connected state is correct when reopening profile.
+- FCM message: Notification body must show sender (e.g. "Rahul sent you a message");
+  data must include type, conversation_id, sender_user_id, sender_name for tap-to-open chat.
+- Notifications: List API must return all_unread_count; optional
+  api/notification-deleteall so "Clear all" does not 404 (app works without it).
+- Long video list_public: Must support page & limit (e.g. ?action=list_public&page=1&limit=10);
+  response: { videos: [...], has_more: true|false }; include like_count, comment_count per video.
+- Video fast loading (user uploads): To fix slow load (1G-like even on 5G), serve long videos
+  as HLS: return video_url pointing to .m3u8 playlist (Flutter auto-uses HLS). Or use CDN +
+  HTTP Range (Accept-Ranges: bytes) for single MP4. See section 4 subsection G below.
+- FCM topics: App subscribes to user_<userId> and all_users; send FCM to these topics as needed.
+- Long video FCM types: long_upload, long_like, long_comment (open Social/Long); impact_* with
+  project_id (open project detail). See Flutter FCM handling for payload keys.
+- Reels fast delivery: Reels must load/start like TikTok/Instagram (no 2s delay). Serve via CDN,
+  HLS or Range-supported MP4, first-segment priority. See section 9 below.
+
+--------------------------------------------------------------------------------
+1) PROFILE API – CONNECT / CONNECTED STATE (CRITICAL FIX)
+--------------------------------------------------------------------------------
+When a user opens another user’s profile and taps “Connect”, the app shows
+“Connected”. When they go back and open the same profile again, the button
+must still show “Connected”, not “Connect”.
+
+REQUIRED:
+- GET user profile API (the one used when opening a profile by user_id) MUST
+  return for the viewed user:
+    is_following: true | false
+  where the value is from the perspective of the currently logged-in user.
+  If the logged-in user follows this profile user, is_following MUST be true.
+
+- Flutter reads: profile.data.user.isFollowing (or equivalent in your JSON).
+  If your response uses a different path (e.g. data.is_following), ensure it
+  is consistent. Flutter expects a boolean.
+
+- After follow_api.php (follow/unfollow) succeeds, the next GET profile call
+  for that user must return the updated is_following so that when the user
+  re-opens the profile, the correct state is shown.
+
+--------------------------------------------------------------------------------
+2) FCM – MESSAGE NOTIFICATIONS (SHOW SENDER + OPEN CHAT)
+--------------------------------------------------------------------------------
+Currently message notifications may show “New message”. Required:
+
+A) Notification title/body (what user sees):
+   - Title: e.g. “New message” or “Message”
+   - Body: MUST show who sent it, e.g. “Rahul sent you a message” or
+     “<sender_name> sent you a message”
+   So the user knows who sent the message, not just “message”.
+
+B) FCM data payload (for tap-to-open that conversation):
+   When sending FCM for a new message, include in data:
+   - type: 'message'
+   - conversation_id: <int>
+   - sender_user_id: <int>   (the user who sent the message)
+   - sender_name: <string>   (display name of sender, e.g. “Rahul” or “Rahul Kumar”)
+
+   Flutter uses conversation_id + sender_user_id + sender_name to open the
+   specific chat screen (ChatScreen) instead of just the message inbox.
+   If sender_user_id / sender_name are missing, app falls back to opening
+   Message Inbox.
+
+--------------------------------------------------------------------------------
+3) NOTIFICATION LIST API – UNREAD COUNT + MARK AS READ
+--------------------------------------------------------------------------------
+A) GET notification list must return:
+   - notification_data: array of notifications (each with id, type, data, read_at, etc.)
+   - all_unread_count: int (total count of unread notifications for badge on Home/Social)
+
+   Unread = notification where read_at IS NULL (or your equivalent).
+   If all_unread_count is missing, app shows 0.
+
+B) Optional but recommended – Mark as read:
+   - When user opens the notification screen, call a “mark all as read” or
+     “mark notification list as read” API so that all_unread_count becomes 0
+     on next fetch. Flutter can call this when user lands on notification screen.
+   - Or: mark single notification as read when user taps it (pass notification id).
+   - Response: success; next GET notification list should return updated
+     read_at and all_unread_count.
+
+C) Notification item for “message” type should include in data (for in-app list):
+   - user_name: sender’s name (so app can show “X sent you a message”)
+   - conversation_id: so app can open that chat on tap
+
+D) Optional – Clear all notifications (fixes 404 when user taps "Clear all" in app):
+   - Route: api/notification-deleteall (e.g. POST or GET, same auth as notification-list).
+   - If this route is not implemented, the app still clears the list locally and does not show an error.
+   - If implemented: delete/mark all notifications for the logged-in user; return success.
+
+--------------------------------------------------------------------------------
+4) LONG VIDEO (CHANNEL) – UPLOAD, LIST, EDIT, DELETE (YOUTUBE-STYLE)
+--------------------------------------------------------------------------------
+After a user has created a video channel (existing channel_api create_channel),
+they must be able to upload long/full videos and manage them (view, edit, update, delete).
+
+A) Upload long video
+   - Endpoint: e.g. POST long_video_api.php?action=upload (or your convention)
+   - Auth: logged-in user, must have a channel.
+   - Input: multipart/form or similar
+     - title (string, required)
+     - description (string, optional)
+     - video file (required)
+     - thumbnail (optional)
+     - channel_id or infer from logged-in user’s channel
+   - Response: video id, title, url (or stream URL), thumbnail, created_at, etc.
+
+B) List my long videos
+   - Endpoint: e.g. GET/POST long_video_api.php?action=list_my_videos
+   - Auth: logged-in user
+   - Returns: list of videos belonging to the user’s channel
+     - id, title, description, video_url (or stream key), thumbnail_url,
+       duration (optional), created_at, updated_at, status (optional)
+
+C) Get one long video (for edit screen / playback)
+   - Endpoint: e.g. long_video_api.php?action=get_video&video_id=<id>
+   - Auth: only owner (or public if you want public long videos).
+   - Returns: same fields as one item in list.
+
+D) Update long video
+   - Endpoint: e.g. POST long_video_api.php?action=update
+   - Auth: only owner
+   - Input: video_id (required), title, description, optionally new thumbnail.
+     Video file replace is optional (if you support re-upload).
+   - Response: success + updated video object.
+
+E) Delete long video
+   - Endpoint: e.g. POST long_video_api.php?action=delete
+   - Auth: only owner
+   - Input: video_id
+   - Response: success.
+
+F) List public long videos (for Long/Home page – show all users’ uploads)
+   - Endpoint: POST long_video_api.php?action=list_public
+   - Auth: optional (logged-in or anonymous)
+   - Input (query): page (int, 1-based), limit (int, e.g. 10). Flutter calls: ?action=list_public&page=1&limit=10, then page=2 for "Load more".
+   - Returns: JSON
+     { "videos": [ { "id", "title", "description", "video_url", "thumbnail_url", "duration", "status", "created_at", "updated_at", "like_count", "comment_count" }, ... ],
+       "has_more": true|false }
+   - Only return videos that are public/approved (e.g. status = 1 or your convention). New uploads must appear here so users see them on the Long page.
+   - has_more: true if there are more pages (e.g. total > page * limit).
+   - Flutter uses this on the Long (Home) page in the "User uploads" section with pagination; everyone can see and play uploaded videos.
+
+G) Fast loading (YouTube-like) – user-uploaded long videos
+   - Problem: Single large MP4 URLs load slowly (like 1G) even on 5G; users expect fast start.
+   - Solution (backend): Serve long videos for streaming, not one big file.
+     (1) HLS: Prefer converting uploads to HLS (e.g. .m3u8 + .ts segments). Return video_url
+         pointing to the .m3u8 playlist. Flutter detects .m3u8 and uses HLS mode for fast,
+         segment-by-segment loading (first chunk loads quickly, playback starts early).
+     (2) CDN: Serve video (HLS or MP4) from a CDN so users get low latency and range requests.
+     (3) Range requests: If you keep single MP4, ensure the server supports HTTP Range
+         (Accept-Ranges: bytes) so the player can request only the beginning of the file
+         for fast start.
+   - Flutter: If video_url contains ".m3u8", the app treats it as HLS automatically. No
+     extra app change needed once backend returns HLS URLs.
+
+Flutter will:
+- In drawer under “Long”/Clips section, show “My long videos” (and/or “Upload long video”)
+  when user has a channel.
+- Screen to list user’s long videos, open to play or edit, and options to edit/delete.
+- Upload screen for new long video after channel exists.
+
+--------------------------------------------------------------------------------
+5) FCM – NOTIFICATIONS WHEN APP IS CLOSED / NOT RUNNING (CRITICAL)
+--------------------------------------------------------------------------------
+Backend ne jo FCM bhejna hai, ye ensure karo taaki user ko notification mile
+**even when app band ho ya background me ho**.
+
+A) HAR ACTIVITY PE BHEJO
+   - Message, like, comment, share, follow, reel_like, reel_comment, reel_upload,
+     post_upload, story_upload, impact_project, impact_donated, impact_viewed, etc.
+   - Recipient: topic = user_<recipient_user_id> (e.g. user_42 for user id 42).
+   - Flutter app already subscribes to this topic after login.
+
+B) FCM MESSAGE ME YE DO CHEEZE ZAROOR BHEJO (dono together)
+   1) **notification** block (title, body)
+      - Isse OS (Android/iOS) system tray me notification dikhata hai **app band hone par bhi**.
+   2) **data** block (type, post_id / conversation_id / user_id / project_id, etc.)
+      - Isse jab user notification tap kare to app sahi screen khol sakti hai.
+
+   Example (Firebase Admin / PHP):
+   - "notification": { "title": "New like", "body": "Rahul liked your post" }
+   - "data": { "type": "like", "post_id": "123" }
+   - "topic": "user_42"  (recipient user id 42)
+
+C) ANDROID PE RELIABLE DELIVERY
+   - Android par priority high rakho (FCM options me priority: "high").
+   - Agar sirf "data" bhejoge (notification block na ho) to kabhi-kabhi app killed
+     hone par system notification nahi dikhata; isliye **notification + data dono bhejo**.
+
+D) FLUTTER APP – SIDE READY HAI
+   - Background handler registered (data-only pe bhi local notification dikhata hai).
+   - Topic user_<id> subscribe ho jata hai login ke baad.
+   - Tap par: getInitialMessage / onMessageOpenedApp se sahi screen open hoti hai.
+   - Backend ko Flutter se kuch extra implement nahi karna; bas FCM sahi format me bhejo.
+
+--------------------------------------------------------------------------------
+6) EXISTING FCM & NOTIFICATION TYPES (REFERENCE)
+--------------------------------------------------------------------------------
+- Already implemented (verify): message, like, comment, share (post_likes, post_comments, etc.)
+- Add if not present: reel_like, reel_comment, follow, story_upload, reel_upload,
+  post_upload, impact_project, impact_donated, impact_viewed.
+- See docs/BACKEND_AUTOMATED_FCM_NOTIFICATIONS.txt for full list.
+- Use topic: user_<recipient_user_id>. Save notification in notifications table
+  for in-app list; include in payload: type, conversation_id (for message),
+  post_id (for like/comment), etc.
+
+--------------------------------------------------------------------------------
+7) LONG FORM ADMIN TOGGLE (REFERENCE)
+--------------------------------------------------------------------------------
+App configuration API must return: enable_long_form (0 or 1).
+0 = Long tab locked; 1 = usable. See docs/BACKEND_LONG_FORM_ADMIN_TOGGLE.txt.
+
+--------------------------------------------------------------------------------
+8) STORY VIEWS (REFERENCE)
+--------------------------------------------------------------------------------
+record_story_view_api, story_viewers_api – see docs/story_api_requirements.md
+if not already implemented.
+
+--------------------------------------------------------------------------------
+9) REELS – FAST DELIVERY (TIKTOK / INSTAGRAM / YT SHORTS–LIKE SPEED) (CRITICAL)
+--------------------------------------------------------------------------------
+Users expect reels to start in under 1–2 seconds on any network (5G, 4G, or weak). Currently
+reels can feel like "1G speed" (slow start, buffering). Backend must deliver reels so that
+playback starts almost instantly, like TikTok/Instagram/YouTube Shorts.
+
+A) PROBLEM
+   - Single large MP4 URLs cause slow first-byte and long buffering.
+   - Users abandon after ~90 seconds of buffering; each extra second of start delay drops
+     engagement. Target: no visible delay (< 2 seconds to first frame).
+
+B) SOLUTION – BACKEND MUST DO THE FOLLOWING
+
+   (1) CDN (mandatory)
+       - Serve ALL reel video URLs (video_url in get_reels / reel feed API) from a CDN.
+       - Use 200+ PoPs (or your CDN's edge nodes) so users hit the nearest edge.
+       - GeoDNS or edge routing so requests go to closest server.
+
+   (2) HLS for reels (strongly recommended)
+       - Convert/transcode reels to HLS: short segments (e.g. 2–4 second .ts segments, .m3u8 playlist).
+       - Return video_url pointing to the .m3u8 playlist in the reel feed API.
+       - Flutter (media_kit) can play HLS; app can use same URL if .m3u8.
+       - First segment is small so first frame loads in < 1–2 seconds.
+
+   (3) If keeping single MP4 (minimum)
+       - Enable HTTP Range requests (Accept-Ranges: bytes) on the CDN/origin.
+       - Player can request only the first chunk (e.g. first few MB) for fast start.
+       - Encode reels at moderate bitrate (e.g. 720p) so first chunk is small.
+
+   (4) First-segment / first-chunk priority
+       - Ensure the first segment (HLS) or first byte range (MP4) is cached at the edge and
+         served with low latency. This is what makes "instant" start.
+       - Prefer 720p (or one quality) for feed so first segment is small and fast.
+
+   (5) Optional (for scale)
+       - "Hot" reels (new or viral): keep on fast storage (e.g. SSD) and/or aggressive edge cache.
+       - Multiple qualities later if needed; for now one fast quality (e.g. 720p) is enough.
+
+C) FLUTTER APP – ALREADY DONE
+   - App preloads current + next 2–3 reels and disposes distant ones.
+   - If backend returns video_url as .m3u8, media_kit will play HLS.
+   - No app change required once backend serves HLS or Range-enabled CDN URLs.
+
+D) CHECKLIST FOR BACKEND
+   [ ] Reel feed API (get_reels) returns video_url served from CDN (not direct origin).
+   [ ] Reel video_url is either (a) HLS (.m3u8) or (b) MP4 with Accept-Ranges: bytes.
+   [ ] First segment / first chunk optimized (small, cached at edge) for < 2s start.
+   [ ] Optional: transcode uploads to HLS with short segments (2–4 s) for reels.
+
+================================================================================
+SUMMARY CHECKLIST FOR BACKEND
+================================================================================
+[ ] Profile API returns is_following for logged-in user (Connect/Connected fix)
+[ ] Message FCM: body shows “<sender_name> sent you a message”; data has conversation_id, sender_user_id, sender_name
+[ ] Notification list: all_unread_count; optional mark-as-read API
+[ ] Message notification list item: data has user_name, conversation_id
+[ ] Long video: upload (with title, description, thumbnail), list_my_videos, list_public, get_video, update, delete APIs (after channel exists)
+[ ] Reels: serve reel video_url via CDN; HLS (.m3u8) or Range-enabled MP4; first-segment priority for <2s start (TikTok-like)
+[ ] FCM: har activity pe send (topic user_<id>), message me notification (title,body) + data (type, ids) dono bhejo taaki app band ho to bhi notification dikhe
+[ ] FCM + notification list for all types as in BACKEND_AUTOMATED_FCM_NOTIFICATIONS.txt
+================================================================================

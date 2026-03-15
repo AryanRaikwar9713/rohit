@@ -7,6 +7,7 @@ import 'package:streamit_laravel/screens/donation/numbar_input_formater.dart';
 import 'package:streamit_laravel/screens/donation/project_detail_control.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_screen.dart' show openVammisProfile;
 import 'package:streamit_laravel/screens/donation/model/project_detail_responce_model.dart';
+import 'package:streamit_laravel/utils/constants.dart';
 import 'package:streamit_laravel/utils/mohit/custom_like_button.dart';
 import 'package:streamit_laravel/widgets/bottom_navigation_wrapper.dart';
 
@@ -964,7 +965,17 @@ class _DonatSheet extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 12),
+                Text(
+                  Constants.adsPolicyText,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.7),
+                    fontSize: 11,
+                    height: 1.3,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
 
                 // Donate button - apna gradient
                 SizedBox(

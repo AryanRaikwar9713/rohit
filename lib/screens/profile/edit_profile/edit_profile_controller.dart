@@ -1,6 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'dart:io';
+import 'dart:io' if (dart.library.io) '../../../utils/platform_stub.dart' as io;
 
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +42,7 @@ class EditProfileController extends GetxController {
 
   RxString selectedGender = GenderTypeConst.MALE.obs;
   RxString profilePic = "".obs;
-  Rx<File> imageFile = File("").obs;
+  Rx<io.File> imageFile = io.File("").obs;
   XFile? pickedFile;
   Rx<Country> selectedCountry = defaultCountry.obs;
   RxString countryCode = "+91".obs;
@@ -122,7 +122,7 @@ class EditProfileController extends GetxController {
     Get.back();
     pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery, maxWidth: 1800, maxHeight: 1800);
     if (pickedFile != null) {
-      imageFile(File(pickedFile!.path));
+      imageFile(io.File(pickedFile!.path));
     }
     onBtnEnable();
     isPicLoading(false);
@@ -133,7 +133,7 @@ class EditProfileController extends GetxController {
     Get.back();
     pickedFile = await ImagePicker().pickImage(source: ImageSource.camera, maxWidth: 1800, maxHeight: 1800);
     if (pickedFile != null) {
-      imageFile(File(pickedFile!.path));
+      imageFile(io.File(pickedFile!.path));
     }
     onBtnEnable();
     isPicLoading(false);
@@ -180,7 +180,7 @@ class EditProfileController extends GetxController {
     emailCont.clear();
     mobileNoCont.clear();
     dobCont.clear();
-    imageFile(File(""));
+    imageFile(io.File(""));
     super.onClose();
   }
 

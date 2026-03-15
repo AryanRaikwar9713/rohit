@@ -1,9 +1,9 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -74,9 +74,12 @@ class SplashScreenController extends GetxController {
     }
   }
 
-//Get Device Information
+//Get Device Information (skipped on web)
   Future<void> getDeviceInfo() async {
-    if (Platform.isAndroid) {
+    if (kIsWeb) return;
+    final isAndroid = defaultTargetPlatform == TargetPlatform.android;
+    final isIOS = defaultTargetPlatform == TargetPlatform.iOS;
+    if (isAndroid) {
       final androidInfo = await DeviceInfoPlugin().androidInfo;
 
       yourDevice(
@@ -90,7 +93,7 @@ class SplashScreenController extends GetxController {
       );
     }
 
-    if (Platform.isIOS) {
+    if (isIOS) {
       final iosInfo = await DeviceInfoPlugin().iosInfo;
       yourDevice(
         YourDevice(
@@ -127,19 +130,12 @@ class SplashScreenController extends GetxController {
       }
       isLoading(false);
       appNotSynced(false);
-      // Navigate to dashboard after successful configuration load
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Get.offAll(() => DashboardScreen(dashboardController: getDashboardController()), binding: BindingsBuilder(
-          () {
-            getDashboardController().onBottomTabChange(0);
-          },
-        ),);
-      });
+      // Navigation is done inside auth_apis getAppConfigurations when isFromSplashScreen is true
     });
 
-    // Agar API 25 sec me complete na ho to reload dikhao
+    // Agar API 15 sec me complete na ho to reload dikhao
     Future<void>.delayed(
-      const Duration(seconds: 25),
+      const Duration(seconds: 15),
       () {
         if (isLoading.value) {
           isLoading(false);

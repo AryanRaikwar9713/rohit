@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:streamit_laravel/configs.dart';
 
-/// Instagram-style: gradient ring when user has active story (24h), white ring when no story.
+/// Instagram-style: gradient ring for unviewed story; light grey for viewed.
 const LinearGradient _storyRingGradient = LinearGradient(
   colors: [Color(0xFFFFF176), Color(0xFFFF9800)],
   begin: Alignment.topLeft,
   end: Alignment.bottomRight,
 );
 
+/// Light grey ring for viewed stories (like Instagram).
+const Color _storySeenRingColor = Color(0xFFB0B0B0);
+
 class WamimsProfileAvtar extends StatelessWidget {
-  /// When true: yellow-orange gradient border (active story). When false: white border.
+  /// When true: gradient or grey border (active story). When false: white border.
   final bool story;
-  /// When true (and story is true): ring at 50% opacity (seen). When false: full yellow (unseen).
+  /// When true (and story is true): light grey ring (viewed). When false: gradient ring (unviewed).
   final bool storySeen;
   final String image;
   final double? radious;
@@ -31,26 +34,24 @@ class WamimsProfileAvtar extends StatelessWidget {
   Widget build(BuildContext context) {
     final double ringWidth = borderWidth ?? 3;
     final bool useStoryRing = story;
-    final double ringOpacity = (story && storySeen) ? 0.5 : 1.0;
+    final bool viewedRing = story && storySeen;
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: useStoryRing
-            ? null
+            ? (viewedRing
+                ? Border.all(color: _storySeenRingColor, width: ringWidth)
+                : null)
             : Border.all(color: Colors.white, width: ringWidth),
-        gradient: useStoryRing
-            ? LinearGradient(
-                colors: _storyRingGradient.colors
-                    .map((c) => c.withOpacity(ringOpacity))
-                    .toList(),
-                begin: _storyRingGradient.begin,
-                end: _storyRingGradient.end,
-              )
+        gradient: useStoryRing && !viewedRing
+            ? _storyRingGradient
             : null,
         boxShadow: [
           BoxShadow(
             color: useStoryRing
-                ? _storyRingGradient.colors.first.withOpacity(0.4 * ringOpacity)
+                ? (viewedRing
+                    ? _storySeenRingColor.withOpacity(0.3)
+                    : const Color(0xFFFFF176).withOpacity(0.4))
                 : Colors.white.withOpacity(0.2),
             blurRadius: 8,
           ),

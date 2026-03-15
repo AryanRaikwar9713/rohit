@@ -1,6 +1,5 @@
-import 'dart:io';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:streamit_laravel/configs.dart';
+import 'package:streamit_laravel/ads/ads_helper.dart';
 
 class AdMobRewardedAdHelper {
   static RewardedAd? _rewardedAd;
@@ -12,7 +11,7 @@ class AdMobRewardedAdHelper {
   }
 
   static void loadRewardedAd() {
-    final adUnitId = Platform.isIOS ? IOS_REWARDED_AD_ID : REWARDED_AD_ID;
+    final adUnitId = AdHelper().rewardedAdUnitId;
     RewardedAd.load(
       adUnitId: adUnitId,
       request: const AdRequest(),

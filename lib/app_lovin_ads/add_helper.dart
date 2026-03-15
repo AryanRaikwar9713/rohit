@@ -5,12 +5,8 @@ import 'package:streamit_laravel/configs.dart';
 
 class AdLovinHelper {
 
-  // AppLovin MAX Ad Unit IDs
-  // Note: AppLovin doesn't provide universal test IDs like AdMob
-  // These IDs must exist in your AppLovin dashboard
-  // When test mode is enabled (setTestDeviceAdvertisingIds([])), ANY valid ad unit ID will show test ads
-  // For testing, create ad units in AppLovin dashboard and use those IDs here
-  // Current IDs - Update these with your actual AppLovin dashboard ad unit IDs
+  // AppLovin MAX – REAL PRODUCTION Ad Unit IDs (same as dashboard)
+  // When account is approved, ads will automatically serve – no code change needed.
   static const String interstitialAdUnitId = "b6f3cfc7e7eab13e";
   static const String rewardedAdUnitId = "8b362c81e5a1b7d1";
   static const String bannerAdUnitId = "8b1a5c1b32845bcb";
@@ -28,14 +24,9 @@ class AdLovinHelper {
     print("Rewarded Ad Unit ID: $rewardedAdUnitId");
 
     try {
-      // Enable test mode for debugging - empty array enables test mode for all devices
-      // This ensures test ads are shown for all devices during development
-      AppLovinMAX.setTestDeviceAdvertisingIds([]);
-      print("✅ Test Mode Enabled for All Devices");
-      print("📱 Test ads will be shown for all devices");
-      print("🧪 TEST MODE: AppLovin will show test ads automatically");
-      print("⚠️ IMPORTANT: Ad unit IDs must exist in your AppLovin dashboard");
-      print("   Even in test mode, ad unit IDs must be valid");
+      // Production: no test device IDs set → real ads will show when account is approved.
+      // To show test ads on specific devices only, add their GAIDs to the list:
+      // AppLovinMAX.setTestDeviceAdvertisingIds(["DEVICE_GAID_HERE"]);
 
       // Initialize with timeout
       await AppLovinMAX.initialize(APP_LOVIN_SDK_KEY).timeout(
@@ -45,9 +36,7 @@ class AdLovinHelper {
           return null;
         },
       );
-      print("✅ AppLovin MAX Initialized Successfully");
-      print("🔑 SDK Key: ${APP_LOVIN_SDK_KEY.substring(0, 20)}...");
-      print("🧪 TEST MODE ACTIVE - All ads will be test ads");
+      print("✅ AppLovin MAX Initialized (production IDs – ads will serve when account approved)");
 
       // Wait a bit for SDK to fully initialize
       await Future.delayed(const Duration(milliseconds: 3000));
@@ -78,7 +67,6 @@ class AdLovinHelper {
       InterstitialListener(
         onAdLoadedCallback: (MaxAd ad) {
           print("✅ Interstitial LOADED");
-          print("   🧪 TEST MODE: This is a test ad");
           isInterstitialReady = true;
           _isInterstitialLoading = false;
         },
@@ -147,8 +135,6 @@ class AdLovinHelper {
           print("✅ Rewarded Ad LOADED Successfully!");
           print("   Ad Unit ID: $rewardedAdUnitId");
           print("   Network: ${ad.networkName}");
-          print("   Creative ID: ${ad.creativeId}");
-          print("   🧪 TEST MODE: This is a test ad");
           isRewardedReady = true;
           _isRewardedLoading = false;
         },
@@ -287,8 +273,6 @@ class AdLovinHelper {
             print("✅ AppLovin Banner Loaded Successfully");
             print("Banner Ad Unit ID: $bannerAdUnitId");
             print("Banner Ad Network: ${ad.networkName}");
-            print("Banner Ad Creative ID: ${ad.creativeId}");
-            print("🧪 TEST MODE: This is a test ad");
           },
           onAdLoadFailedCallback: (String adUnitId, MaxError error) {
             print("❌ AppLovin Banner Failed to Load");

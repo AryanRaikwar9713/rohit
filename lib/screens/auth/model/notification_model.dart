@@ -102,6 +102,16 @@ class NotificationModel {
   }
 }
 
+String _stringFromJson(Map<String, dynamic> json, String key, {bool inData = false}) {
+  final v = json[key]?.toString();
+  if (v != null && v.isNotEmpty) return v;
+  if (inData && json['data'] is Map) {
+    final d = json['data'] as Map<String, dynamic>;
+    return d[key]?.toString() ?? '';
+  }
+  return '';
+}
+
 class NotificationDetail {
   String notificationType;
   String loggedInUserFullName;
@@ -121,6 +131,8 @@ class NotificationDetail {
   String siteUrl;
   String notificationGroup;
   String orderCode;
+  String conversationId;
+  String postId;
 
   NotificationDetail({
     this.notificationType = "",
@@ -141,6 +153,8 @@ class NotificationDetail {
     this.siteUrl = "",
     this.notificationGroup = "",
     this.orderCode = "",
+    this.conversationId = "",
+    this.postId = "",
   });
 
   factory NotificationDetail.fromJson(Map<String, dynamic> json) {
@@ -163,6 +177,8 @@ class NotificationDetail {
       siteUrl: json['site_url'] is String ? json['site_url'] : "",
       notificationGroup: json['notification_group'] is String ? json['notification_group'] : "",
       orderCode: json['order_code'] is String ? json['order_code'] : "",
+      conversationId: _stringFromJson(json, 'conversation_id', inData: true),
+      postId: _stringFromJson(json, 'post_id', inData: true),
     );
   }
 
@@ -186,6 +202,8 @@ class NotificationDetail {
       'site_url': siteUrl,
       'notification_group': siteUrl,
       'order_code': orderCode,
+      'conversation_id': conversationId,
+      'post_id': postId,
     };
   }
 }

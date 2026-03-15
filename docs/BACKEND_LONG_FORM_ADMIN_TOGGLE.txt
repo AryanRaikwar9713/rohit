@@ -1,0 +1,47 @@
+================================================================================
+LONG FORM SCREEN – ADMIN TOGGLE (Backend)
+================================================================================
+Long form = "Long" tab in bottom nav (movies, TV shows, videos). App can show
+it blurred + locked + "Coming soon" OR fully usable, controlled by admin.
+
+--------------------------------------------------------------------------------
+1) APP-CONFIGURATION API – NEW FIELD
+--------------------------------------------------------------------------------
+Add one field to your app-configuration response (same API that returns
+enable_movie, enable_video, enable_tvshow, etc.):
+
+  enable_long_form  (int: 0 or 1)
+
+  - 0 = Long form screen is LOCKED: blur overlay, lock icon, "Coming soon", untouchable
+  - 1 = Long form screen is USABLE: normal content, touch works
+
+--------------------------------------------------------------------------------
+2) RESPONSE EXAMPLE
+--------------------------------------------------------------------------------
+{
+  "enable_movie": 1,
+  "enable_video": 1,
+  "enable_tvshow": 1,
+  "enable_long_form": 0,    <-- ADD THIS (0 = locked, 1 = enabled)
+  ...
+}
+
+--------------------------------------------------------------------------------
+3) ADMIN PANEL
+--------------------------------------------------------------------------------
+Admin must be able to toggle this setting (similar to enable_movie, enable_video).
+Store in your settings/config table. Return in app-configuration API.
+
+--------------------------------------------------------------------------------
+4) DEFAULT
+--------------------------------------------------------------------------------
+If enable_long_form is missing from response, Flutter treats it as 0 (locked).
+
+--------------------------------------------------------------------------------
+5) FLOW
+--------------------------------------------------------------------------------
+- App calls app-configuration on startup / login
+- Flutter reads enable_long_form
+- If 0: Long tab shows blur + lock + "Coming soon", touch blocked
+- If 1: Long tab shows normal content, fully usable
+================================================================================

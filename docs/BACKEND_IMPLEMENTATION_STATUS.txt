@@ -1,0 +1,86 @@
+================================================================================
+BACKEND – COMPLETE SPEC IMPLEMENTATION (wamims.international)
+================================================================================
+Single reference for Backend / Cursor. Flutter consumes these APIs and FCM payloads.
+
+--------------------------------------------------------------------------------
+1) PROFILE API – CONNECT / CONNECTED STATE
+--------------------------------------------------------------------------------
+[✓] GET user profile returns is_following from logged-in user's perspective.
+    File: public/social/wamims_profile.php
+    - is_following and isFollowing (camelCase) on data.user.
+    - Root data.is_following also returned.
+- logged_in_user_id: from GET param or from Authorization Bearer token (Sanctum/api_token).
+- After follow_api.php success, next GET profile returns updated is_following.
+  Flutter: profile.data.user.is_following or profile.data.user.isFollowing.
+
+--------------------------------------------------------------------------------
+2) FCM – MESSAGE NOTIFICATIONS
+--------------------------------------------------------------------------------
+[✓] send_message.php (public/social/message/send_message.php)
+    - Title: "New message"
+    - Body: "<sender_name> sent you a message"
+    - FCM data: type, conversation_id, sender_user_id, sender_name, user_name
+  Flutter uses conversation_id + sender_user_id + sender_name to open ChatScreen.
+
+--------------------------------------------------------------------------------
+3) NOTIFICATION LIST API
+--------------------------------------------------------------------------------
+[✓] GET /api/notification-list (auth:sanctum)
+    - notification_data: array of notifications (id, type, data, read_at, created_at)
+    - all_unread_count: int (unread = read_at IS NULL)
+[✓] Mark all read: POST /api/notification-mark-read
+[✓] Mark one read: POST /api/notification-mark-read/{id}
+    - Or body: notification_id
+[✓] Clear all (delete all): POST or DELETE /api/notification-clear-all; also POST or GET /api/notification-deleteall (same handler).
+- Message type items include in data: user_name, conversation_id (NotificationResource merges full data).
+
+--------------------------------------------------------------------------------
+4) LONG VIDEO (CHANNEL) API
+--------------------------------------------------------------------------------
+File: public/social/long_video_api.php
+Auth: Bearer token or token/user_id/current_user_id except list_public and get_video (public).
+
+[✓] upload          – POST, multipart: title (required), description, video, thumbnail. Requires channel.
+[✓] list_my_videos  – GET/POST, returns user's channel videos (id, title, description, video_url, thumbnail_url, duration, status, created_at, updated_at).
+[✓] get_video       – video_id required. Owner always; non-owner if status=active (public). Optional auth for public playback. Returns like_count, comment_count.
+[✓] update          – video_id, title, description, optional thumbnail. Owner only.
+[✓] delete          – video_id. Owner only.
+[✓] list_public     – No auth. ?action=list_public&page=1&limit=10 (page 1-based). Response: { "videos": [ { id, title, description, video_url, thumbnail_url, duration, status, created_at, updated_at, like_count, comment_count }, ... ], "has_more": true|false }.
+
+--------------------------------------------------------------------------------
+5) FCM & NOTIFICATION TYPES (REFERENCE)
+--------------------------------------------------------------------------------
+See docs/FLUTTER_NOTIFICATIONS_BACKEND_COMPLETE.txt and docs/BACKEND_AUTOMATED_FCM_NOTIFICATIONS.txt.
+Topic: user_<recipient_user_id>. Types: message, like, comment, share, reel_like, reel_comment, follow, story_upload, reel_upload, post_upload, impact_project, impact_donated, impact_viewed, admin_broadcast.
+
+--------------------------------------------------------------------------------
+6) LONG FORM ADMIN TOGGLE
+--------------------------------------------------------------------------------
+[✓] App config API returns enable_long_form (0 or 1). File: app/Http/Controllers/Backend/API/SettingController.php (setting long_form).
+
+--------------------------------------------------------------------------------
+7) STORY VIEWS
+--------------------------------------------------------------------------------
+[✓] record_story_view: story_api.php?action=record_story_view
+[✓] story_viewers_api.php: GET ?story_id= – returns who viewed (story owner).
+
+--------------------------------------------------------------------------------
+SUMMARY CHECKLIST
+--------------------------------------------------------------------------------
+[✓] Profile API returns is_following (and isFollowing) for logged-in user; token auth supported.
+[✓] Message FCM: body "<sender_name> sent you a message"; data has conversation_id, sender_user_id, sender_name.
+[✓] Notification list: all_unread_count; mark-all-read and mark-one-read APIs.
+[✓] Message notification list item: data has user_name, conversation_id.
+[✓] Long video: upload, list_my_videos, list_public, get_video, update, delete.
+[✓] FCM + notification list for all types per BACKEND_AUTOMATED_FCM_NOTIFICATIONS.txt.
+[✓] enable_long_form in app config.
+[✓] Story record_story_view and story_viewers_api.
+
+--------------------------------------------------------------------------------
+8) REELS & LONG VIDEO – FAST DELIVERY (TikTok-like)
+--------------------------------------------------------------------------------
+See docs/BACKEND_REELS_VIDEO_FAST_DELIVERY.txt.
+Checklist: serve video_url from CDN; prefer HLS (.m3u8) or MP4 with Accept-Ranges: bytes; first-segment priority for < 2s start. Flutter uses same URL; if .m3u8, media_kit plays HLS.
+
+================================================================================

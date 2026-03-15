@@ -1,10 +1,9 @@
-import 'dart:async'; 
+import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kIsWeb, kReleaseMode, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -26,6 +25,7 @@ import 'package:streamit_laravel/utils/local_storage.dart';
 import 'package:streamit_laravel/video_players/model/video_model.dart';
 import 'package:y_player/y_player.dart';
 import 'app_lovin_ads/add_helper.dart';
+import 'components/admob_app_open_helper.dart';
 import 'components/admob_rewarded_ad_helper.dart';
 import 'app_theme.dart';
 import 'configs.dart';
@@ -41,6 +41,7 @@ import 'utils/constants.dart';
 import 'utils/location_monitor.dart';
 import 'utils/local_storage.dart' as local;
 import 'utils/push_notification_service.dart';
+import 'http_overrides_stub.dart' if (dart.library.io) 'http_overrides_io.dart' as http_overrides;
 //aryan
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -48,6 +49,10 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   log('${FirebaseMsgConst.notificationKey} : ${message.notification}');
   log('${FirebaseMsgConst.notificationTitleKey} : ${message.notification?.title ?? ''}');
   log('${FirebaseMsgConst.notificationBodyKey} : ${message.notification?.body ?? ''}');
+  // When server sends only "data" (no "notification"), show local notification so user sees it
+  if (message.notification == null) {
+    await PushNotificationService.showNotificationFromBackground(message);
+  }
 }
 
 Rx<BaseLanguage> locale = LanguageEn().obs;
@@ -79,23 +84,27 @@ Future<void> main() async {
   MediaKit.ensureInitialized();
   YPlayerInitializer.ensureInitialized();
 
-  await AdLovinHelper.initialize();
+  if (!kIsWeb) {
+    await AdLovinHelper.initialize();
+  }
 
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  if (!kIsWeb) {
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  }
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  await Firebase.initializeApp().then((value) {
-    // Initialize Firebase Messaging asynchronously to avoid blocking app startup
-    PushNotificationService().initFirebaseMessaging().catchError((error) {
-      log('Firebase Messaging initialization error: $error');
-      // App should continue even if Firebase Messaging fails
-    });
-    if (kReleaseMode) {
-      FlutterError.onError =
-          FirebaseCrashlytics.instance.recordFlutterFatalError;
-    }
-  }).catchError(onError);
+  if (!kIsWeb) {
+    await Firebase.initializeApp().then((value) {
+      PushNotificationService().initFirebaseMessaging().catchError((error) {
+        log('Firebase Messaging initialization error: $error');
+      });
+      if (kReleaseMode) {
+        FlutterError.onError =
+            FirebaseCrashlytics.instance.recordFlutterFatalError;
+      }
+    }).catchError(onError);
+  }
   await GetStorage.init();
   //
   fontFamilyPrimaryGlobal =
@@ -163,6 +172,10 @@ Future<void> main() async {
 
     if (getStringAsync(SharedPreferenceConst.USER_DATA).isNotEmpty) {
       loginUserData(UserData.fromJson(jsonDecode(userData)));
+      // Subscribe to FCM topic user_<id> so push (like/comment/share/message) works when app was killed
+      if (!kIsWeb && loginUserData.value.id > 0) {
+        PushNotificationService().registerFCMAndTopics();
+      }
     } else {
       isLoggedIn(false);
       AuthServiceApis().clearData();
@@ -177,11 +190,51 @@ Future<void> main() async {
       systemNavigationBarIconBrightness: Brightness.light,
     ),
   );
-  HttpOverrides.global = MyHttpOverrides();
-  await MobileAds.instance.initialize();
-  // Initialize AdMob Rewarded Ads (preload for wallet)
-  AdMobRewardedAdHelper.initialize();
+  if (!kIsWeb) {
+    http_overrides.setHttpOverrides();
+    await MobileAds.instance.initialize();
+    AdMobRewardedAdHelper.initialize();
+    AdMobAppOpenHelper.load();
+  }
   runApp(const MyApp());
+}
+
+class _AppOpenAdLifecycleWrapper extends StatefulWidget {
+  final Widget child;
+
+  const _AppOpenAdLifecycleWrapper({required this.child});
+
+  @override
+  State<_AppOpenAdLifecycleWrapper> createState() =>
+      _AppOpenAdLifecycleWrapperState();
+}
+
+class _AppOpenAdLifecycleWrapperState extends State<_AppOpenAdLifecycleWrapper>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      AdMobAppOpenHelper.onAppPaused();
+    } else if (state == AppLifecycleState.resumed) {
+      AdMobAppOpenHelper.maybeShowOnResume();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 class MyApp extends StatelessWidget {
@@ -196,18 +249,46 @@ class MyApp extends StatelessWidget {
       defaultTransition: Transition.noTransition,
       supportedLocales: LanguageDataModel.languageLocales(),
       builder: (context, child) {
-        return LocationMonitorWidget(
-          child: MediaQuery(
-            data: MediaQuery.of(context)
-                .copyWith(textScaler: const TextScaler.linear(0.8)),
-            child: SafeArea(
-              left: false,
-              top: false,
-              right: false,
-              bottom: !Platform.isIOS,
-              child: child!,
-            ),
+        final Widget inner = MediaQuery(
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: const TextScaler.linear(0.8)),
+          child: SafeArea(
+            left: false,
+            top: false,
+            right: false,
+            bottom: !kIsWeb && (defaultTargetPlatform != TargetPlatform.iOS),
+            child: child!,
           ),
+        );
+        final Widget content = kIsWeb
+            ? LayoutBuilder(
+                builder: (context, constraints) {
+                  const double maxWidth = 500;
+                  if (constraints.maxWidth > maxWidth) {
+                    return Center(
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: maxWidth),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 20,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: inner,
+                      ),
+                    );
+                  }
+                  return inner;
+                },
+              )
+            : inner;
+        return _AppOpenAdLifecycleWrapper(
+          child: LocationMonitorWidget(child: content),
         );
       },
       localizationsDelegates: const [

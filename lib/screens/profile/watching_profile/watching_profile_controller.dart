@@ -249,7 +249,7 @@ class WatchingProfileController extends GetxController {
       // Send the profile update request with the image
       await CoreServiceApis().updateWatchProfile(
         request: request,
-        files: [tempFile], // Use the file (downloaded or asset-based)
+        files: [tempFile],
       ).then((value) async {
         if (value.newUserProfile.id > -1) {
           accountProfiles.clear();

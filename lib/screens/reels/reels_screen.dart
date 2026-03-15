@@ -10,7 +10,9 @@ import 'upload_reel_screen.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_tab_manage.dart';
 
 class ReelsScreen extends StatefulWidget {
-  const ReelsScreen({super.key});
+  final int? initialReelId;
+
+  const ReelsScreen({super.key, this.initialReelId});
 
   @override
   State<ReelsScreen> createState() => _ReelsScreenState();
@@ -19,6 +21,7 @@ class ReelsScreen extends StatefulWidget {
 class _ReelsScreenState extends State<ReelsScreen> {
   late PageController _pageController;
   late ReelsController _controller;
+  bool _didJumpToInitial = false;
 
   @override
   void initState() {
@@ -71,7 +74,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
               color: Colors.white,
               size: 26,
             ),
-            tooltip: 'Wallet - Watch Ads & Earn Bolts',
+            tooltip: 'Wallet - Watch ads (policy-compliant), earn Bolts, donate',
           ),
           IconButton(
             style: const ButtonStyle(
@@ -132,8 +135,14 @@ class _ReelsScreenState extends State<ReelsScreen> {
 
         // Calculate total items (reels + ads every 5 reels)
         const int adInterval = 5; // Show ad after every 5 reels
-        final int totalItems = _controller.apiReels.length + 
+        final int totalItems = _controller.apiReels.length +
             (_controller.apiReels.length ~/ adInterval);
+
+        // If we came from a specific reel (e.g. Social top row), jump to that reel once.
+        // Use post-frame callback so that PageController is attached to PageView.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _ensureInitialPage(adInterval);
+        });
         
         return PageView.builder(
           controller: _pageController,
@@ -196,5 +205,31 @@ class _ReelsScreenState extends State<ReelsScreen> {
     }
     // Subtract ads to get actual reel index
     return index - adsBefore;
+  }
+
+  void _ensureInitialPage(int adInterval) {
+    if (_didJumpToInitial || widget.initialReelId == null) return;
+    if (!_pageController.hasClients) return;
+
+    final reelId = widget.initialReelId!;
+    final reelIndex = _controller.apiReels.indexWhere((e) => e.id == reelId);
+    if (reelIndex < 0) {
+      _didJumpToInitial = true;
+      return;
+    }
+
+    // For each full group of `adInterval` reels before this reel, one ad is inserted.
+    final adsBefore = reelIndex ~/ adInterval;
+    final pageIndex = reelIndex + adsBefore;
+
+    final int totalItems =
+        _controller.apiReels.length + (_controller.apiReels.length ~/ adInterval);
+
+    if (pageIndex >= 0 && pageIndex < totalItems) {
+      _pageController.jumpToPage(pageIndex);
+      _controller.onReelChanged(reelId);
+    }
+
+    _didJumpToInitial = true;
   }
 }

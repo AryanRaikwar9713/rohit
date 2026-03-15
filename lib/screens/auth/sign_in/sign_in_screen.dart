@@ -8,10 +8,10 @@ import 'package:streamit_laravel/components/app_scaffold.dart';
 import 'package:streamit_laravel/configs.dart';
 import 'package:streamit_laravel/generated/assets.dart';
 import 'package:streamit_laravel/main.dart';
-import 'package:streamit_laravel/screens/auth/model/about_page_res.dart';
 import 'package:streamit_laravel/utils/app_common.dart';
 import 'package:streamit_laravel/utils/colors.dart';
-import 'package:streamit_laravel/utils/constants.dart';
+import 'package:streamit_laravel/screens/legal/privacy_policy_screen.dart';
+import 'package:streamit_laravel/screens/legal/terms_conditions_screen.dart';
 import 'package:streamit_laravel/utils/country_picker/country_list.dart';
 import 'package:streamit_laravel/utils/country_picker/country_utils.dart';
 import 'package:streamit_laravel/utils/extension/string_extention.dart';
@@ -258,8 +258,7 @@ class SignInScreen extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            final AboutDataModel aboutDataModel = appPageList.firstWhere((element) => element.slug == AppPages.termsAndCondition);
-                            if (aboutDataModel.url.validate().isNotEmpty) launchUrlCustomURL(aboutDataModel.url.validate());
+                            Get.to(() => const TermsConditionsScreen());
                           },
                           child: Wrap(
                             alignment: WrapAlignment.center,
@@ -272,8 +271,7 @@ class SignInScreen extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            final AboutDataModel aboutDataModel = appPageList.firstWhere((element) => element.slug == AppPages.privacyPolicy);
-                            if (aboutDataModel.url.validate().isNotEmpty) launchUrlCustomURL(aboutDataModel.url.validate());
+                            Get.to(() => const PrivacyPolicyScreen());
                           },
                           child: Wrap(
                             alignment: WrapAlignment.center,

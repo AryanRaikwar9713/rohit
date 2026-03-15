@@ -103,11 +103,18 @@ class SocialController extends GetxController {
 
       // Load real data from API
       await SocialApi().getSocialPost(currentPage.value, onSuccess: (d) {
+        final newPosts = d.data?.posts ?? [];
+        // Latest first (like Instagram) - sort by createdAt descending
+        newPosts.sort((a, b) {
+          final at = a.createdAt ?? DateTime(0);
+          final bt = b.createdAt ?? DateTime(0);
+          return bt.compareTo(at);
+        });
         if (currentPage.value > 1) {
-          posts.addAll(d.data?.posts ?? []);
+          posts.addAll(newPosts);
           posts.refresh();
         } else {
-          posts.assignAll(d.data?.posts ?? []);
+          posts.assignAll(newPosts);
           posts.refresh();
         }
         hasMoreData.value = d.data?.pagination?.hasNextPage ?? false;

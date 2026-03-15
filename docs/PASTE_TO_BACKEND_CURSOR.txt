@@ -1,0 +1,61 @@
+================================================================================
+PASTE THIS ENTIRE MESSAGE TO BACKEND CURSOR – FCM NOTIFICATIONS MUST WORK
+================================================================================
+
+TASK: When message/like/comment happens, send FCM push so the WAMIMS app shows notification.
+App is ready. Backend must send FCM. Do the following.
+
+--------------------------------------------------------------------------------
+1) FIREBASE PROJECT: maarket-points (same as app)
+--------------------------------------------------------------------------------
+- Firebase Console → maarket-points → Project Settings → Service Accounts
+- Generate new private key → save as storage/app/firebase-service-account.json
+
+--------------------------------------------------------------------------------
+2) INSTALL & CREATE
+--------------------------------------------------------------------------------
+composer require kreait/firebase-php
+
+Create app/Services/FcmService.php with this class:
+- sendToUser($userId, $title, $body, $data) – sends to topic "user_$userId"
+- sendMessageNotification($receiverUserId, $senderName, $messagePreview, $conversationId)
+- sendLikeNotification($postOwnerUserId, $likerName, $postId)
+- sendCommentNotification($postOwnerUserId, $commenterName, $postId)
+
+Data keys for app deep link: type ('message'|'like'|'comment'), conversation_id (for message), post_id (for like/comment)
+All data values MUST be strings.
+
+--------------------------------------------------------------------------------
+3) CALL FCM AT THESE EXACT MOMENTS
+--------------------------------------------------------------------------------
+
+A) MESSAGE SEND (send_message.php or controller that saves chat message)
+   AFTER message saved to DB:
+   $receiverUserId = <user who receives>;
+   $senderName = <sender full name>;
+   $messageBody = <message text>;
+   $conversationId = <conversation id>;
+   app(FcmService::class)->sendMessageNotification($receiverUserId, $senderName, $messageBody, $conversationId);
+
+B) POST LIKE (like-post handler)
+   AFTER like saved:
+   app(FcmService::class)->sendLikeNotification($post->user_id, auth()->user()->name, $post->id);
+
+C) POST COMMENT (comment-post handler)
+   AFTER comment saved:
+   app(FcmService::class)->sendCommentNotification($post->user_id, auth()->user()->name, $post->id);
+
+--------------------------------------------------------------------------------
+4) FULL FcmService.php CODE (copy as-is)
+--------------------------------------------------------------------------------
+See: docs/BACKEND_FCM_IMPLEMENTATION_COMPLETE.txt – STEP 3 has the full PHP class.
+
+--------------------------------------------------------------------------------
+5) NOTIFICATION LIST API
+--------------------------------------------------------------------------------
+When sending FCM, also INSERT into notifications table so GET api/notification-list returns real data.
+Include in data JSON: type, conversation_id (for message), post_id (for like/comment).
+
+--------------------------------------------------------------------------------
+DONE WHEN: User A sends message → User B gets push (even app closed). Same for like/comment.
+================================================================================

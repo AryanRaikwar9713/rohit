@@ -22,6 +22,9 @@ const DOMAIN_URL = "https://wamims.international";
 
 const BASE_URL = '$DOMAIN_URL/api/';
 
+/// Messaging system (1:1 chat) – backend at /social/message/
+const MESSAGE_BASE_URL = 'https://wamims.international/social/message';
+
 /// Resolves image/avatar URL: use as-is if already absolute, else prepend [DOMAIN_URL]
 /// with optional [pathPrefix] (e.g. '/storage/avatars/'). Prevents double base URL.
 String resolveImageUrl(String? url, {String pathPrefix = ''}) {
@@ -64,20 +67,31 @@ const String payStackCurrency = "NGN";
 const String payPalSupportedCurrency = 'USD';
 //endregion
 
-//ADs - Test IDs (Replace with production IDs when ready)
-//Android Test IDs
-const INTERSTITIAL_AD_ID = "ca-app-pub-3940256099942544/1033173712";
-const BANNER_AD_ID = "ca-app-pub-3940256099942544/6300978111";
-const REWARDED_AD_ID =
-    "ca-app-pub-3940256099942544/5224354917"; // AdMob Rewarded Test ID
-const NATIVE_AD_ID =
-    "ca-app-pub-3940256099942544/2247696110"; // AdMob Native Test ID
+// ---------------------------------------------------------------------------
+// AdMob & AppLovin – REAL PRODUCTION IDs (no test IDs)
+// Account under review: Until approved, fill may be low or zero. No code change needed.
+// As soon as account is approved, ads will automatically start showing (no app update).
+// ---------------------------------------------------------------------------
 
-//IOS Test IDs
-const IOS_INTERSTITIAL_AD_ID = "ca-app-pub-3940256099942544/4411468910";
-const IOS_BANNER_AD_ID = "ca-app-pub-3940256099942544/2934735716";
-const IOS_REWARDED_AD_ID = "ca-app-pub-3940256099942544/1712485313";
-const IOS_NATIVE_AD_ID = "ca-app-pub-3940256099942544/3986624511";
+// AdMob – Production IDs (policy-compliant placement only)
+const String ADMOB_APP_ID_ANDROID = "ca-app-pub-1073907455931977~7164377673";
+const String ADMOB_APP_ID_IOS = "ca-app-pub-1073907455931977~7164377673";
+
+// Android
+const INTERSTITIAL_AD_ID = "ca-app-pub-1073907455931977/5439699633";
+const BANNER_AD_ID = "ca-app-pub-1073907455931977/9661327318";
+const REWARDED_AD_ID = "ca-app-pub-1073907455931977/1256912048";
+const REWARD_INTERSTITIAL_AD_ID = "ca-app-pub-1073907455931977/4521010843";
+const NATIVE_AD_ID = "ca-app-pub-1073907455931977/9501874788";
+const APP_OPEN_AD_ID = "ca-app-pub-1073907455931977/7442358082";
+
+// iOS (same unit IDs unless you create iOS-specific in AdMob)
+const IOS_INTERSTITIAL_AD_ID = "ca-app-pub-1073907455931977/5439699633";
+const IOS_BANNER_AD_ID = "ca-app-pub-1073907455931977/9661327318";
+const IOS_REWARDED_AD_ID = "ca-app-pub-1073907455931977/1256912048";
+const IOS_REWARD_INTERSTITIAL_AD_ID = "ca-app-pub-1073907455931977/4521010843";
+const IOS_NATIVE_AD_ID = "ca-app-pub-1073907455931977/9501874788";
+const IOS_APP_OPEN_AD_ID = "ca-app-pub-1073907455931977/7442358082";
 
 //Note: For FIREBASE_SERVER_CLIENT_ID ---> Go to android/app/google-services.json
 // - Find press ctrl+F and look for "client_type": 3
@@ -85,6 +99,10 @@ const IOS_NATIVE_AD_ID = "ca-app-pub-3940256099942544/3986624511";
 
 const FIREBASE_SERVER_CLIENT_ID =
     '228110272023-dhnin6t8nvlj5edf7j09uimtu3l2dit7.apps.googleusercontent.com';
+
+/// iOS Google Sign-In client ID (from GoogleService-Info.plist - maarket-points)
+const FIREBASE_IOS_CLIENT_ID =
+    '228110272023-d4cmai99ein70d8ttl50ppvbmfgbjl25.apps.googleusercontent.com';
 
 //region defaultCountry
 Country get defaultCountry => Country(

@@ -39,8 +39,9 @@ class FirebaseAuthUtil {
       print("Auto retrieval timeout");
     };
 
+    final String phone = mobileNumber.trim().startsWith('+') ? mobileNumber.trim() : '+${mobileNumber.trim()}';
     return firebaseAuth.verifyPhoneNumber(
-      phoneNumber: '+$mobileNumber',
+      phoneNumber: phone,
       timeout: const Duration(seconds: 20),
       verificationCompleted: verificationCompleted,
       verificationFailed: verificationFailed,

@@ -98,7 +98,14 @@ class HomeController extends GetxController {
     isLoading(showLoader);
     isWatchListLoading(showLoader);
 
-    await getDashboardDetailFuture(CoreServiceApis().getDashboard()).then((value) async {
+    const Duration dashboardTimeout = Duration(seconds: 25);
+    final Future<DashboardDetailResponse> dashboardFuture = CoreServiceApis()
+        .getDashboard()
+        .timeout(dashboardTimeout, onTimeout: () {
+      throw TimeoutException('Dashboard load timed out', dashboardTimeout);
+    });
+
+    await getDashboardDetailFuture(dashboardFuture).then((value) async {
       value.data.continueWatch = List<VideoPlayerModel>.from(value.data.continueWatch);
       value.data.continueWatch.validate().removeWhere((continueWatchData) {
         return calculatePendingPercentage(

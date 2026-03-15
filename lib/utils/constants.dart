@@ -16,6 +16,10 @@ class Constants {
 
   static const double commonDialogBoxRadius = 32;
 
+  /// Ad policy text — show wherever ads/bolts/donate are used (policy-compliant).
+  static const String adsPolicyText =
+      'Ads shown comply with our ad policies. Watch ads to earn Bolts; use Bolts to donate. All ad-related features follow applicable policies.';
+
   static List<String> rtlLanguage = [
     'ar', // Arabic
     'he', // Hebrew
@@ -197,6 +201,18 @@ class FirebaseMsgConst {
   static const additionalDataKey = 'additional_data';
   static const notificationGroupKey = 'notification_group';
   static const idKey = 'id';
+  static const postTypeKey = 'post_type';
+  /// FCM data type: 'message' | 'like' | 'comment' – for in-app navigation
+  static const notificationTypeKey = 'type';
+  static const conversationIdKey = 'conversation_id';
+  static const senderUserIdKey = 'sender_user_id';
+  static const senderNameKey = 'sender_name';
+  static const postIdKey = 'post_id';
+  static const userIdKey = 'user_id';
+  static const projectIdKey = 'project_id';
+  static const videoIdKey = 'video_id';
+  /// Topic for broadcast (admin); subscribe on login, unsubscribe on logout.
+  static const allUsersTopicKey = 'all_users';
   static const notificationDataKey = 'Notification Data';
   static const fcmNotificationTokenKey = 'FCM Notification Token';
   static const apnsNotificationTokenKey = 'APNS Notification Token';
@@ -240,6 +256,9 @@ class AppPages {
   static const privacyPolicy = 'privacy-policy';
   static const helpAndSupport = 'help-and-support';
   static const refundAndCancellation = 'refund-and-cancellation-policy';
+  static const cancellationPolicy = 'cancellation-policy';
+  static const contactUs = 'contact-us';
+  static const skillGameLanding = 'skill-game-landing';
   static const dataDeletion = 'data-deletation-request';
   static const faq = 'faq';
   static const aboutUs = 'about-us';

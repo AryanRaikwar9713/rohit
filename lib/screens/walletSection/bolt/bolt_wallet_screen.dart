@@ -29,76 +29,280 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
             //
             // Color(0xff000428),
             // Color(0xff004e92),
 
             Color(0xff000000),
             Color(0xff434343),
-          ],),),
+          ],
+        ),
+      ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
           child: Column(
             children: [
               //
+              // Top box: Balance + policy text + Watch Ads buttons (App Lovin / AdMob)
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xff232526),
-                          Color(0xff414345),
-                        ],),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 15,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],),
-                height: 180,
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xff232526),
+                      Color(0xff414345),
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
                 margin: const EdgeInsets.only(top: 15, left: 15, right: 15),
                 width: double.infinity,
                 child: Obx(() {
                   if (controller.isLoading.value) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
+                    return const SizedBox(
+                      height: 220,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
                       ),
                     );
                   }
-
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Text(
+                        "Your Balance",
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.8),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "${controller.dashboardData.value.data?.wallet?.totalBolt ?? 0} Bolts",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 32,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      const SizedBox(height: 10),
+                      Text(
+                        'Support causes by engaging with sponsored content',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.85),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      // Watch Ads buttons — 59s cooldown after each watch (protects ad accounts)
+                      Row(
                         children: [
-                          Text(
-                            "Your Balance",
-                            style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "${controller.dashboardData.value.data?.wallet?.totalBolt ?? 0} Bolts",
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 32,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 0.5,),
-                          ),
+                          Obx(() {
+                            final cooldown =
+                                controller.cooldownSecondsRemaining.value;
+                            final disabled =
+                                controller.isWatchingAd.value || cooldown > 0;
+                            return Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: disabled
+                                    ? null
+                                    : () => controller.watchAdMobForReward(),
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 14, vertical: 10,),
+                                  decoration: BoxDecoration(
+                                    gradient: disabled
+                                        ? null
+                                        : LinearGradient(
+                                            colors: [
+                                              Colors.blue.shade400,
+                                              Colors.blue.shade600,
+                                            ],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          ),
+                                    color:
+                                        disabled ? Colors.grey.shade700 : null,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (controller.isWatchingAd.value)
+                                        const SizedBox(
+                                          width: 14,
+                                          height: 14,
+                                          child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2,),
+                                        )
+                                      else
+                                        Icon(
+                                          Icons.monetization_on,
+                                          color: disabled
+                                              ? Colors.white70
+                                              : Colors.white,
+                                          size: 18,
+                                        ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        controller.isWatchingAd.value
+                                            ? 'Loading...'
+                                            : 'AdMob',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                          const SizedBox(width: 10),
+                          Obx(() {
+                            final cooldown =
+                                controller.cooldownSecondsRemaining.value;
+                            final disabled =
+                                controller.isWatchingAd.value || cooldown > 0;
+                            return Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: disabled
+                                    ? null
+                                    : () => controller.watchAdForReward(),
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 14, vertical: 10,),
+                                  decoration: BoxDecoration(
+                                    gradient: disabled
+                                        ? null
+                                        : LinearGradient(
+                                            colors: [
+                                              Colors.yellow.shade400,
+                                              Colors.orange.shade500,
+                                            ],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          ),
+                                    color:
+                                        disabled ? Colors.grey.shade600 : null,
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: disabled
+                                        ? null
+                                        : [
+                                            BoxShadow(
+                                                color: Colors.orange
+                                                    .withOpacity(0.4),
+                                                blurRadius: 8,
+                                                offset: const Offset(0, 2),),
+                                          ],
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (controller.isWatchingAd.value)
+                                        const SizedBox(
+                                          width: 14,
+                                          height: 14,
+                                          child: CircularProgressIndicator(
+                                              color: Colors.black,
+                                              strokeWidth: 2,),
+                                        )
+                                      else
+                                        Icon(
+                                          Icons.play_circle_outline,
+                                          color: disabled
+                                              ? Colors.black54
+                                              : Colors.black,
+                                          size: 18,
+                                        ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        controller.isWatchingAd.value
+                                            ? 'Loading...'
+                                            : 'App Lovin',
+                                        style: TextStyle(
+                                            color: disabled
+                                                ? Colors.white70
+                                                : Colors.black,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                          const Spacer(),
+                          // Global 59s cooldown timer – shows at the far right of the row
+                          Obx(() {
+                            final cooldown =
+                                controller.cooldownSecondsRemaining.value;
+                            if (cooldown <= 0) {
+                              return const SizedBox.shrink();
+                            }
+                            return Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(999),
+                                border: Border.all(
+                                  color: Colors.yellow.shade500,
+                                  width: 1.2,
+                                ),
+                                color: Colors.black.withOpacity(0.4),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.timer_outlined,
+                                    color: Colors.white,
+                                    size: 14,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${cooldown}s',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     ],
@@ -108,161 +312,55 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
 
               const SizedBox(height: 20),
 
-              // Ads Earning Section
+              // Ads Earnings summary (amount only)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Obx(() => Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.orange.shade700.withOpacity(0.3),
-                        Colors.yellow.shade600.withOpacity(0.2),
+                child: Obx(
+                  () => Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.orange.shade700.withOpacity(0.3),
+                          Colors.yellow.shade600.withOpacity(0.2),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: Colors.orange.withOpacity(0.3),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Ads Earnings",
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              "${controller.getAdsEarnings().toStringAsFixed(2)} 🪙",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: Colors.orange.withOpacity(0.3),
                     ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Ads Earnings",
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "${controller.getAdsEarnings().toStringAsFixed(2)} 🪙",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ],
-                      ),
-                      // Watch Ads Buttons - AdMob first (more reliable when AppLovin blocked)
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // AdMob Rewarded Ad (primary - works when AppLovin network fails)
-                          Obx(() => Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: controller.isWatchingAd.value ? null : () => controller.watchAdMobForReward(),
-                              borderRadius: BorderRadius.circular(12),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.blue.shade400,
-                                      Colors.blue.shade600,
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (controller.isWatchingAd.value)
-                                      const SizedBox(
-                                        width: 14,
-                                        height: 14,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                          strokeWidth: 2,
-                                        ),
-                                      )
-                                    else
-                                      const Icon(Icons.monetization_on, color: Colors.white, size: 18),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      controller.isWatchingAd.value ? 'Loading...' : 'AdMob',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),),
-                          const SizedBox(height: 6),
-                          // App Lovin Ad (fallback)
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: controller.isWatchingAd.value ? null : () => controller.watchAdForReward(),
-                              borderRadius: BorderRadius.circular(12),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.yellow.shade400,
-                                      Colors.orange.shade500,
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.orange.withOpacity(0.4),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (controller.isWatchingAd.value)
-                                      const SizedBox(
-                                        width: 14,
-                                        height: 14,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.black,
-                                          strokeWidth: 2,
-                                        ),
-                                      )
-                                    else
-                                      const Icon(Icons.play_circle_outline, color: Colors.black, size: 18),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      controller.isWatchingAd.value ? 'Loading...' : 'App Lovin',
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),),
+                ),
               ),
 
               const SizedBox(height: 20),
@@ -270,27 +368,29 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
               // Filter Chips - Simplified to 2 types
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Obx(() => Row(
-                  children: [
-                    Expanded(
-                      child: _buildFilterChip(
-                        '💰 Earnings History', 
-                        'earnings', 
-                        controller.selectedFilter.value, 
-                        () => controller.setFilter('earnings'),
+                child: Obx(
+                  () => Row(
+                    children: [
+                      Expanded(
+                        child: _buildFilterChip(
+                          '💰 Earnings History',
+                          'earnings',
+                          controller.selectedFilter.value,
+                          () => controller.setFilter('earnings'),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildFilterChip(
-                        '💝 Donations History', 
-                        'donations', 
-                        controller.selectedFilter.value, 
-                        () => controller.setFilter('donations'),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _buildFilterChip(
+                          '💝 Donations History',
+                          'donations',
+                          controller.selectedFilter.value,
+                          () => controller.setFilter('donations'),
+                        ),
                       ),
-                    ),
-                  ],
-                ),),
+                    ],
+                  ),
+                ),
               ),
 
               const SizedBox(height: 15),
@@ -318,10 +418,11 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                     const Text(
                       "Transaction History",
                       style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 22,
-                          letterSpacing: 0.5,),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 22,
+                        letterSpacing: 0.5,
+                      ),
                     ),
                   ],
                 ),
@@ -382,8 +483,9 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                 }
                 return Column(
                   children: [
-                    ...controller.transactionList.map((transaction) => 
-                      _TransactionTile(transection: transaction),
+                    ...controller.transactionList.map(
+                      (transaction) =>
+                          _TransactionTile(transection: transaction),
                     ),
                     if (controller.hasMore.value)
                       const Padding(
@@ -395,9 +497,9 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
                   ],
                 );
               }),
-              
+
               const SizedBox(height: 20), // Bottom padding,
-              
+
               const SizedBox(height: 20), // Bottom padding
             ],
           ),
@@ -405,8 +507,9 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
       ),
     );
   }
-  
-  Widget _buildFilterChip(String label, String value, String selected, VoidCallback onTap) {
+
+  Widget _buildFilterChip(
+      String label, String value, String selected, VoidCallback onTap,) {
     final isSelected = selected == value;
     return Material(
       color: Colors.transparent,
@@ -427,7 +530,9 @@ class _BoltWalletScreenState extends State<BoltWalletScreen> {
             color: isSelected ? null : Colors.white.withOpacity(0.1),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: isSelected ? Colors.white.withOpacity(0.3) : Colors.white.withOpacity(0.2),
+              color: isSelected
+                  ? Colors.white.withOpacity(0.3)
+                  : Colors.white.withOpacity(0.2),
             ),
           ),
           child: Text(
@@ -517,10 +622,11 @@ class _TransactionTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                      letterSpacing: 0.3,),
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                    letterSpacing: 0.3,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Row(
@@ -534,9 +640,10 @@ class _TransactionTile extends StatelessWidget {
                     Text(
                       transection.formattedDate ?? '',
                       style: TextStyle(
-                          color: Colors.white.withOpacity(0.7),
-                          fontWeight: FontWeight.w400,
-                          fontSize: 13,),
+                        color: Colors.white.withOpacity(0.7),
+                        fontWeight: FontWeight.w400,
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),
@@ -556,10 +663,11 @@ class _TransactionTile extends StatelessWidget {
             child: Text(
               '${isPositive ? '+' : ''}${transection.boltAmount ?? 0} 🪙',
               style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.5,),
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.5,
+              ),
             ),
           ),
         ],

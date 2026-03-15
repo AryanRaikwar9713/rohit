@@ -1,0 +1,231 @@
+================================================================================
+WAMIMS – BACKEND FCM IMPLEMENTATION (Complete Guide)
+================================================================================
+FCM notifications must work: message/like/comment → push to device. App subscribes to topic user_<user_id>.
+
+--------------------------------------------------------------------------------
+1) FIREBASE PROJECT: maarket-points (same as app)
+--------------------------------------------------------------------------------
+- Firebase Console → Project "maarket-points" → Project Settings → Service Accounts
+- Click "Generate new private key"
+- Save the downloaded JSON as: storage/app/firebase-service-account.json
+
+--------------------------------------------------------------------------------
+2) INSTALL
+--------------------------------------------------------------------------------
+composer require kreait/firebase-php
+
+(Already present via kreait/laravel-firebase)
+
+--------------------------------------------------------------------------------
+3) FcmService.php (Laravel) – Full Code
+--------------------------------------------------------------------------------
+Path: app/Services/FcmService.php
+
+<?php
+namespace App\Services;
+
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
+
+class FcmService
+{
+    protected $messaging;
+
+    public function __construct()
+    {
+        $path = storage_path('app/firebase-service-account.json');
+        if (!file_exists($path)) {
+            $path = storage_path('app/firebase/firebase-credentials.json');
+        }
+        if (!file_exists($path)) {
+            throw new \RuntimeException('Firebase service account JSON not found.');
+        }
+        $this->messaging = (new Factory)->withServiceAccount($path)->createMessaging();
+    }
+
+    public function sendToUser(int $userId, string $title, string $body, array $data = []): void
+    {
+        try {
+            $topic = 'user_' . $userId;
+            $data = array_map('strval', $data);
+            $message = CloudMessage::withTarget('topic', $topic)
+                ->withNotification(Notification::create($title, $body))
+                ->withData($data);
+            $this->messaging->send($message);
+        } catch (\Throwable $e) {
+            \Log::error('FCM send failed: ' . $e->getMessage());
+        }
+    }
+
+    public function sendMessageNotification(int $receiverUserId, string $senderName, string $messagePreview, int $conversationId): void
+    {
+        $title = 'New message';
+        $body = $senderName . ': ' . (strlen($messagePreview) > 50 ? substr($messagePreview, 0, 47) . '...' : $messagePreview);
+        $this->sendToUser($receiverUserId, $title, $body, [
+            'type' => 'message',
+            'conversation_id' => (string) $conversationId,
+        ]);
+    }
+
+    public function sendLikeNotification(int $postOwnerUserId, string $likerName, int $postId): void
+    {
+        $title = 'New like';
+        $body = $likerName . ' liked your post';
+        $this->sendToUser($postOwnerUserId, $title, $body, [
+            'type' => 'like',
+            'post_id' => (string) $postId,
+        ]);
+    }
+
+    public function sendCommentNotification(int $postOwnerUserId, string $commenterName, int $postId): void
+    {
+        $title = 'New comment';
+        $body = $commenterName . ' commented on your post';
+        $this->sendToUser($postOwnerUserId, $title, $body, [
+            'type' => 'comment',
+            'post_id' => (string) $postId,
+        ]);
+    }
+
+    public function sendShareNotification(int $postOwnerUserId, string $sharerName, int $postId): void
+    {
+        $title = 'New share';
+        $body = $sharerName . ' shared your post';
+        $this->sendToUser($postOwnerUserId, $title, $body, [
+            'type' => 'share',
+            'post_id' => (string) $postId,
+        ]);
+    }
+}
+
+--------------------------------------------------------------------------------
+4) CALL FCM AT THESE MOMENTS (PHP Social APIs)
+--------------------------------------------------------------------------------
+The social APIs use push_notification_helper.php (not Laravel FcmService) because
+they are core PHP files. Both use same FCM topic user_<userId> and same data keys.
+
+A) MESSAGE SEND – public/social/message/send_message.php
+   AFTER message saved: wamims_send_push_and_save($pdo, $otherUserId, 'New message', $body, 'message', ['conversation_id' => $conversationId, 'id' => $messageId]);
+   ✓ Already implemented
+
+B) POST LIKE – public/social/post_likes.php
+   AFTER like saved: wamims_send_push_and_save($conn, $post_owner_id, 'New like', ...);
+   ✓ Already implemented
+
+C) POST COMMENT – public/social/post_comments.php
+   AFTER comment saved: wamims_send_push_and_save($conn, $post_owner_id, 'New comment', ...);
+   ✓ Already implemented
+
+D) POST SHARE – public/social/post_share.php
+   ✓ Already implemented
+
+--------------------------------------------------------------------------------
+5) DATA KEYS (all strings)
+--------------------------------------------------------------------------------
+- type: 'message' | 'like' | 'comment' | 'share'
+- conversation_id: for message (deep link to Messages)
+- post_id: for like/comment/share (deep link to Social post)
+
+--------------------------------------------------------------------------------
+6) NOTIFICATIONS TABLE
+--------------------------------------------------------------------------------
+When FCM is sent, wamims_send_push_and_save also INSERTs into notifications table.
+GET api/notification-list returns real data with type, conversation_id, post_id.
+
+--------------------------------------------------------------------------------
+7) CRITICAL – FIREBASE SERVICE ACCOUNT
+--------------------------------------------------------------------------------
+Place maarket-points service account JSON at:
+  storage/app/firebase-service-account.json
+
+Without this file, FCM v1 (kreait) fails and fallback legacy key from settings
+table is used (if configured).
+
+--------------------------------------------------------------------------------
+DONE WHEN
+--------------------------------------------------------------------------------
+User A sends message → User B gets push (even app closed).
+User A likes/comment User B's post → User B gets push.
+
+================================================================================
+8) FLUTTER / APP SIDE – FCM Setup & Troubleshooting
+================================================================================
+Backend bhej raha hai, lekin app mein notification nahi aa raha → ye section check karein.
+
+--------------------------------------------------------------------------------
+8.1) TOPIC SUBSCRIPTION (sabse common reason)
+--------------------------------------------------------------------------------
+App ko login ke baad user_{userId} topic pe subscribe hona zaroori hai.
+Implementation: lib/utils/push_notification_service.dart
+
+  registerFCMAndTopics() → getToken() → subScribeToTopic('user_${loginUserData.value.id}')
+
+Called from:
+  - lib/network/auth_apis.dart (after login success)
+  - lib/main.dart (on app init when loginUserData.value.id > 0)
+
+Verify: Login ke baad logs mein "topic-----subscribed---->user_26" jaisa message dikhna chahiye.
+Agar nahi dikhe, to topic subscription fail ho rahi hai – notifications nahi aayenge.
+
+--------------------------------------------------------------------------------
+8.2) FIREBASE PROJECT MATCH
+--------------------------------------------------------------------------------
+App aur backend dono same project use karein: maarket-points
+
+  - App Android: android/app/google-services.json
+  - App iOS: ios/Runner/GoogleService-Info.plist
+  - Backend: storage/app/firebase-service-account.json
+
+Agar koi bhi alag project se ho, FCM nahi chalega.
+
+--------------------------------------------------------------------------------
+8.3) FOREGROUND HANDLING
+--------------------------------------------------------------------------------
+Jab app open ho, FCM onMessage fire hota hai. By default data-only payload pe system
+notification nahi dikhata. App manually local notification show karta hai.
+
+  FirebaseMessaging.onMessage → handleNotificationClick(isForeGround: true)
+  → agar message.notification != null: showNotification(title, body)
+
+Agar backend sirf data bhej raha ho (notification payload na ho), message.notification
+null hoga – tab bhi fallback se local notification show karna chahiye. Current flow
+mein isForeGround + message.notification != null check hai.
+
+--------------------------------------------------------------------------------
+8.4) BACKGROUND / TERMINATED
+--------------------------------------------------------------------------------
+  - onMessageOpenedApp: app background → notification tap → open
+  - getInitialMessage: app killed → notification tap → open
+
+Background/terminated pe system notification automatically dikhega (backend ne
+notification payload bheja ho).
+
+--------------------------------------------------------------------------------
+8.5) PERMISSIONS
+--------------------------------------------------------------------------------
+  Android 13+: POST_NOTIFICATIONS runtime permission
+  iOS: APNs setup + requestPermission
+
+  App startup pe FirebaseMessaging.instance.requestPermission() call ho raha ho.
+
+--------------------------------------------------------------------------------
+8.6) DEBUG CHECKLIST
+--------------------------------------------------------------------------------
+1. FCM Token log: "🔑 FCM TOKEN (copy for Firebase Test on device): ..."
+   Drawer → Copy FCM Token bhi available hai.
+
+2. Topic log: "topic-----subscribed---->user_26" (replace 26 with your userId)
+
+3. Firebase Console → maarket-points → Cloud Messaging → Test on device
+   → paste FCM token → agar yahan se send karne pe bhi notification na aaye,
+   to app/Firebase config issue. Agar yahan se aata hai, backend topic ya payload issue.
+
+4. Verify both app and backend use maarket-points (not Ludo, anytimeottv2, etc).
+
+--------------------------------------------------------------------------------
+8.7) DATA KEYS (App expects – must match backend)
+--------------------------------------------------------------------------------
+  type, conversation_id, post_id (same as backend wamims_send_push_and_save)
+================================================================================

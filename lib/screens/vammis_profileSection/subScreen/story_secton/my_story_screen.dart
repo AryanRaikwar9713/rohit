@@ -20,7 +20,7 @@ class _MyStoryScreenState extends State<MyStoryScreen> {
   PageController? pageController;
 
   VideoPlayerController? videoPlayerController;
-  Duration storyDuration = const Duration(seconds: 5);
+  Duration storyDuration = const Duration(seconds: 7);
   Timer? videoPositionTimer;
   Timer? imageTimer;
 
@@ -122,14 +122,14 @@ class _MyStoryScreenState extends State<MyStoryScreen> {
         _startVideoPositionListener();
       } catch (e) {
         print('Error loading video: $e');
-        storyDuration = const Duration(seconds: 5);
+        storyDuration = const Duration(seconds: 7);
         _isVideoLoading = false;
         _isVideoPlaying = false;
       }
     }
     else {
       // For images, use default 5 seconds
-      storyDuration = const Duration(seconds: 5);
+      storyDuration = const Duration(seconds: 7);
       _isVideoLoading = false;
       _isVideoPlaying = false;
 
@@ -361,13 +361,7 @@ class _MyStoryScreenState extends State<MyStoryScreen> {
                             isCompleted: i < currentStoryIndex,
                             duration: i == currentStoryIndex
                                 ? storyDuration
-                                : (widget.controller.activeStories[i]
-                                            .mediaType ==
-                                        'video'
-                                    ? const Duration(
-                                        seconds:
-                                            5,) // Will be updated when loaded
-                                    : const Duration(seconds: 5)),
+                                : const Duration(seconds: 7),
                             onComplete: _goToNextStory,
                             isPaused: (isPaused || _isVideoLoading) &&
                                 i == currentStoryIndex,
@@ -417,8 +411,12 @@ class _MyStoryScreenState extends State<MyStoryScreen> {
                     itemCount: widget.controller.activeStories.length,
                     itemBuilder: (context, index) {
                       final story = widget.controller.activeStories[index];
+                      // Preload viewers; once backend is ready this will start
+                      // filling the UI automatically.
+                      widget.controller.loadViewersForStory(story.id);
                       return _StoryViewWidget(
                         story: story,
+                        controller: widget.controller,
                         videoController: index == currentStoryIndex
                             ? videoPlayerController
                             : null,
@@ -437,17 +435,20 @@ class _MyStoryScreenState extends State<MyStoryScreen> {
 
 class _StoryViewWidget extends StatelessWidget {
   final ActiveStory story;
+  final MyStoryController controller;
   final VideoPlayerController? videoController;
 
   const _StoryViewWidget({
     required this.story,
+    required this.controller,
     this.videoController,
   });
 
   @override
   Widget build(BuildContext context) {
+    Widget media;
     if (story.mediaType == 'image') {
-      return Container(
+      media = Container(
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
@@ -479,7 +480,7 @@ class _StoryViewWidget extends StatelessWidget {
       );
     } else if (story.mediaType == 'video') {
       if (videoController != null && videoController!.value.isInitialized) {
-        return SizedBox.expand(
+        media = SizedBox.expand(
           child: FittedBox(
             fit: BoxFit.cover,
             child: SizedBox(
@@ -490,18 +491,98 @@ class _StoryViewWidget extends StatelessWidget {
           ),
         );
       } else {
-        return const Center(
+        media = const Center(
           child: CircularProgressIndicator(color: Colors.white),
         );
       }
     } else {
-      return const Center(
+      media = const Center(
         child: Text(
           'Unsupported media type',
           style: TextStyle(color: Colors.white),
         ),
       );
     }
+
+    // Media + viewers strip at bottom (like Instagram "Seen by" section).
+    return Stack(
+      children: [
+        media,
+        Positioned(
+          left: 16,
+          right: 16,
+          bottom: 24,
+          child: Obx(() {
+            final viewers =
+                controller.getViewersForStory(story.id ?? 0);
+            final count = viewers.length;
+            if (count == 0) {
+              return Align(
+                alignment: Alignment.bottomLeft,
+                child: Text(
+                  'No views yet',
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              );
+            }
+
+            final preview = viewers.take(3).toList();
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 14 + (preview.length * 18.0),
+                      height: 28,
+                      child: Stack(
+                        children: List.generate(preview.length, (index) {
+                          final v = preview[index];
+                          return Positioned(
+                            left: index * 18.0,
+                            child: CircleAvatar(
+                              radius: 14,
+                              backgroundColor: Colors.black,
+                              child: CircleAvatar(
+                                radius: 12,
+                                backgroundImage: v.avatar.isNotEmpty
+                                    ? NetworkImage(v.avatar)
+                                    : null,
+                                child: v.avatar.isEmpty
+                                    ? const Icon(
+                                        Icons.person,
+                                        size: 14,
+                                        color: Colors.white70,
+                                      )
+                                    : null,
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '$count view${count == 1 ? '' : 's'}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          }),
+        ),
+      ],
+    );
   }
 }
 

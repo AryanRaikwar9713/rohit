@@ -1,6 +1,9 @@
 # Uncomment this line to define a global platform for your project
 platform :ios, '15.6.0'
 
+# Reduce Stripe (and other git) clone timeouts: increase git buffer (run once per machine)
+system('git config --global http.postBuffer 524288000 2>/dev/null || true')
+
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 

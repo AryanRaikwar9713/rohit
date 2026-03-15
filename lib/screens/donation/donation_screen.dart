@@ -771,6 +771,7 @@ import 'package:streamit_laravel/screens/donation/donation_controller.dart';
 import 'package:streamit_laravel/screens/donation/model/get_project_list_responce_model.dart';
 import 'package:streamit_laravel/screens/donation/project_detail_screen.dart';
 import 'package:streamit_laravel/screens/Impact-dashBoard/impact_profile_screen.dart';
+import 'package:streamit_laravel/screens/walletSection/wallet_tab_manage.dart';
 import 'package:streamit_laravel/utils/colors.dart';
 
 class ImpactDashboardScreen extends StatelessWidget {
@@ -810,6 +811,17 @@ class ImpactDashboardScreen extends StatelessWidget {
                           'Impact Dashboard',
                           style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
                         ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          Get.to(() => const WalletTabManage());
+                        },
+                        icon: const Icon(
+                          Icons.account_balance_wallet,
+                          color: Colors.white,
+                          size: 26,
+                        ),
+                        tooltip: 'Wallet - Watch Ads & Earn Bolts',
                       ),
                       Material(
                         color: Colors.transparent,

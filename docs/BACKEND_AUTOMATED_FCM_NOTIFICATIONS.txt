@@ -1,0 +1,117 @@
+================================================================================
+BACKEND – AUTOMATED FCM NOTIFICATIONS (Full Spec for Cursor Backend)
+================================================================================
+Manual Firebase notification works. Now backend must trigger FCM automatically
+for these events so users get popups even when app is closed.
+
+--------------------------------------------------------------------------------
+1) ALREADY IMPLEMENTED (verify these work)
+--------------------------------------------------------------------------------
+- Message: send_message.php → wamims_send_push_and_save (type: message, conversation_id)
+- Like: post_likes.php → wamims_send_push_and_save (type: like, post_id)
+- Comment: post_comments.php → wamims_send_push_and_save (type: comment, post_id)
+- Share: post_share.php → wamims_send_push_and_save (type: share, post_id)
+
+All use topic user_<userId>. App subscribes after login.
+
+--------------------------------------------------------------------------------
+2) ADD THESE AUTOMATED NOTIFICATIONS
+--------------------------------------------------------------------------------
+
+A) REEL LIKE
+   When: User A likes User B's reel
+   API: Reel like handler (e.g. reel_like_api.php or similar)
+   Recipient: Reel owner (User B)
+   Data: type: 'reel_like', post_id: <reel_id>
+   Title: "New like"  Body: "<liker_name> liked your reel"
+
+B) REEL COMMENT
+   When: User A comments on User B's reel
+   Recipient: Reel owner
+   Data: type: 'reel_comment', post_id: <reel_id>
+   Title: "New comment"  Body: "<commenter_name> commented on your reel"
+
+C) REEL UPLOAD (followed user)
+   When: User A (whom I follow) uploads a new reel
+   Recipient: All followers of User A
+   Data: type: 'reel_upload', post_id: <reel_id>
+   Title: "New reel"  Body: "<uploader_name> posted a new reel"
+
+D) STORY UPLOAD (followed user)
+   When: User A (whom I follow) uploads a story
+   Recipient: All followers
+   Data: type: 'story_upload'
+   Title: "New story"  Body: "<uploader_name> posted a story"
+
+E) FOLLOW
+   When: User A follows User B
+   Recipient: User B (the one who got followed)
+   Data: type: 'follow', user_id: <follower_user_id>
+   Title: "New follower"  Body: "<follower_name> started following you"
+
+F) POST UPLOAD (followed user)
+   When: User A (whom I follow) uploads a new post
+   Recipient: All followers
+   Data: type: 'post_upload', post_id: <post_id>
+   Title: "New post"  Body: "<uploader_name> posted"
+
+G) IMPACT – New project
+   When: A new impact project is created
+   Recipient: Users who follow impact / relevant segment (define in admin)
+   Data: type: 'impact_project', project_id: <id>
+   Title: "New impact project"  Body: "<project_title>"
+
+H) IMPACT – Project donated
+   When: Someone donates to user's impact project
+   Recipient: Project owner
+   Data: type: 'impact_donated', project_id: <id>
+   Title: "New donation"  Body: "<donor_name> donated to your project"
+
+I) IMPACT – Project watched/viewed
+   When: Someone watches/views user's impact project (if you track this)
+   Recipient: Project owner
+   Data: type: 'impact_viewed', project_id: <id>
+   Title: "Project viewed"  Body: "<viewer_name> viewed your project"
+
+--------------------------------------------------------------------------------
+3) FCM SEND PATTERN (same as existing)
+--------------------------------------------------------------------------------
+Use wamims_send_push_and_save or equivalent:
+  - Send to topic: user_<recipient_user_id>
+  - Data payload: type, plus ids (post_id, conversation_id, project_id, user_id)
+  - Notification payload: title, body
+  - INSERT into notifications table for in-app list
+
+--------------------------------------------------------------------------------
+4) NOTIFICATION LIST API – REQUIREMENTS
+--------------------------------------------------------------------------------
+GET notification-list must return:
+  - notification_data: array of notifications
+  - all_unread_count: int (count of unread notifications – used for badge)
+
+If all_unread_count is missing, app shows 0. Backend should track read_at per
+notification; unread = where read_at IS NULL.
+
+Optional: Mark-as-read API when user opens notification screen:
+  POST notification-mark-read (or mark-all-read) to set read_at.
+  Then all_unread_count becomes 0 on next fetch.
+
+--------------------------------------------------------------------------------
+5) ADMIN PANEL (if needed)
+--------------------------------------------------------------------------------
+- Toggle FCM on/off globally
+- Enable/disable specific notification types (e.g. impact_project, follow)
+- Firebase service account: storage/app/firebase-service-account.json (maarket-points)
+
+--------------------------------------------------------------------------------
+6) FLUTTER APP – HANDLED TYPES (deep links)
+--------------------------------------------------------------------------------
+App navigates on tap:
+  - message + conversation_id → Message Inbox
+  - like, comment, share + post_id → Social feed
+  - reel_like, reel_comment, reel_upload, post_upload + post_id → Social/Reels
+  - follow + user_id → Profile
+  - impact_project, impact_donated, impact_viewed + project_id → Impact screen
+
+Add new types in push_notification_service handleNotificationClick if needed.
+================================================================================

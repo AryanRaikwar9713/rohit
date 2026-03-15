@@ -2,7 +2,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer' as dev;
-import 'dart:io';
+import 'dart:io' if (dart.library.io) '../utils/platform_stub.dart' as io;
 
 import 'package:get/get.dart' as gets;
 import 'package:http/http.dart' as http;
@@ -31,7 +31,7 @@ Map<String, String> buildHeaderTokens({
   }
 
   final Map<String, String> header = {
-    HttpHeaders.cacheControlHeader: 'no-cache',
+    io.HttpHeaders.cacheControlHeader: 'no-cache',
     'Access-Control-Allow-Headers': '*',
     'Access-Control-Allow-Origin': '*',
     'Accept': "application/json",
@@ -40,19 +40,19 @@ Map<String, String> buildHeaderTokens({
   };
 
   if (endPoint == APIEndPoints.register) {
-    header.putIfAbsent(HttpHeaders.acceptHeader, () => 'application/json');
+    header.putIfAbsent(io.HttpHeaders.acceptHeader, () => 'application/json');
   }
-  header.putIfAbsent(HttpHeaders.contentTypeHeader, () => 'application/json; charset=utf-8');
+  header.putIfAbsent(io.HttpHeaders.contentTypeHeader, () => 'application/json; charset=utf-8');
 
   if (isLoggedIn.value && extraKeys.containsKey('isFlutterWave') && extraKeys['isFlutterWave']) {
-    header.putIfAbsent(HttpHeaders.authorizationHeader, () => "Bearer ${extraKeys!['flutterWaveSecretKey']}");
+    header.putIfAbsent(io.HttpHeaders.authorizationHeader, () => "Bearer ${extraKeys!['flutterWaveSecretKey']}");
   } else if (isLoggedIn.value && extraKeys.containsKey('isAirtelMoney') && extraKeys['isAirtelMoney']) {
-    header.putIfAbsent(HttpHeaders.contentTypeHeader, () => 'application/json; charset=utf-8');
-    header.putIfAbsent(HttpHeaders.authorizationHeader, () => 'Bearer ${extraKeys!['access_token']}');
+    header.putIfAbsent(io.HttpHeaders.contentTypeHeader, () => 'application/json; charset=utf-8');
+    header.putIfAbsent(io.HttpHeaders.authorizationHeader, () => 'Bearer ${extraKeys!['access_token']}');
     header.putIfAbsent('X-Country', () => '${extraKeys!['X-Country']}');
     header.putIfAbsent('X-Currency', () => '${extraKeys!['X-Currency']}');
   } else if ((getBoolAsync(SharedPreferenceConst.IS_LOGGED_IN) || isLoggedIn.value) && loginUserData.value.apiToken.isNotEmpty) {
-    header.putIfAbsent(HttpHeaders.authorizationHeader, () => 'Bearer ${loginUserData.value.apiToken}');
+    header.putIfAbsent(io.HttpHeaders.authorizationHeader, () => 'Bearer ${loginUserData.value.apiToken}');
   }
 
   return header;
@@ -119,7 +119,7 @@ Future<Response> buildHttpResponse(
       return response;
     }
   } on Exception catch (e) {
-    if (e is SocketException) {
+    if (e is io.SocketException) {
       log('SocketException: $e');
       throw errorInternetNotAvailable;
     } else if (e is TimeoutException) {
@@ -349,7 +349,7 @@ String formatJson(String jsonStr) {
 Map<String, String> defaultHeaders() {
   final Map<String, String> header = {};
 
-  header.putIfAbsent(HttpHeaders.cacheControlHeader, () => 'no-cache');
+  header.putIfAbsent(io.HttpHeaders.cacheControlHeader, () => 'no-cache');
   header.putIfAbsent('Access-Control-Allow-Headers', () => '*');
   header.putIfAbsent('Access-Control-Allow-Origin', () => '*');
 
@@ -359,7 +359,7 @@ Map<String, String> defaultHeaders() {
 Map<String, String> buildHeaderForFlutterWave(String flutterWaveSecretKey) {
   final Map<String, String> header = defaultHeaders();
 
-  header.putIfAbsent(HttpHeaders.authorizationHeader, () => "Bearer $flutterWaveSecretKey");
+  header.putIfAbsent(io.HttpHeaders.authorizationHeader, () => "Bearer $flutterWaveSecretKey");
 
   return header;
 }
@@ -367,7 +367,7 @@ Map<String, String> buildHeaderForFlutterWave(String flutterWaveSecretKey) {
 String getUserAgent() {
   String userAgent;
 
-  switch (Platform.operatingSystem) {
+  switch (io.Platform.operatingSystem) {
     case 'android':
       userAgent = 'FlutterAndroidApp/1.0 (Android)';
       break;

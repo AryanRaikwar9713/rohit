@@ -1,4 +1,5 @@
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart' as custom_tabs;
@@ -310,10 +311,10 @@ void onSubscriptionLoginCheck({
       //This is to launch subscription screen when not to navigate from origin
       Get.to(() => SubscriptionScreen(launchDashboard: false), preventDuplicates: false);
     } else {
-      if (videoAccess == MovieAccess.freeAccess && isSupportedDevice.value) {
+      if (videoAccess == MovieAccess.freeAccess && (isSupportedDevice.value || planLevel <= 0)) {
         callBack.call();
       } else {
-        if (((videoAccess == MovieAccess.paidAccess || planLevel > 0) && currentSubscription.value.level < planLevel) || !isSupportedDevice.value) {
+        if (((videoAccess == MovieAccess.paidAccess || planLevel > 0) && currentSubscription.value.level < planLevel) || (!isSupportedDevice.value && planLevel > 0)) {
           if (!isSupportedDevice.value) {
             //Todo add
             toast('${locale.value.yourDeviceIsNot} ${locale.value.pleaseUpgradeToContinue}');
@@ -414,7 +415,7 @@ Future<void> handlePip({required dynamic controller, required BuildContext conte
         );
 
       WebViewWidget(controller: controller.webController).launch(context);
-    } else {
+    } else if (!kIsWeb) {
       try {
         await const MethodChannel("videoPlatform").invokeMethod('play', {
           "data": controller.videoUrlInput,
@@ -425,7 +426,7 @@ Future<void> handlePip({required dynamic controller, required BuildContext conte
         debugPrint("Fail: ${e.message}");
       }
     }
-  } else {
+  } else if (!kIsWeb) {
     /// Android Picture In Picture Mode
     try {
       // Set up platform channel listener for PiP mode changes
@@ -553,6 +554,18 @@ String getPageIcon(String slug) {
       {
         return Assets.iconsIcRefund;
       }
+    case AppPages.cancellationPolicy:
+      {
+        return Assets.iconsIcRefund;
+      }
+    case AppPages.contactUs:
+      {
+        return Assets.iconsIcPhone;
+      }
+    case AppPages.skillGameLanding:
+      {
+        return Assets.iconsIcStar;
+      }
     case AppPages.dataDeletion:
       {
         return Assets.iconsIcDataDelete;
@@ -601,6 +614,19 @@ Future<void> checkApiCallIsWithinTimeSpan({bool forceSync = false, required Void
 
   if (forceSync || currentTimeStamp.isAfter(fiveMinutesLater)) {
     callback.call();
+  } else {
+    log('$sharePreferencesKey was synced recently');
+  }
+}
+
+/// Same as [checkApiCallIsWithinTimeSpan] but awaits [callback]. Use from splash so navigation happens only after config loads.
+Future<void> checkApiCallIsWithinTimeSpanAsync({bool forceSync = false, required Future<void> Function() callback, required String sharePreferencesKey, Duration? duration}) async {
+  final DateTime currentTimeStamp = DateTime.timestamp();
+  final DateTime lastSyncedTimeStamp = DateTime.fromMillisecondsSinceEpoch(getIntAsync(sharePreferencesKey));
+  final DateTime fiveMinutesLater = lastSyncedTimeStamp.add(duration ?? const Duration(minutes: 5));
+
+  if (forceSync || currentTimeStamp.isAfter(fiveMinutesLater)) {
+    await callback();
   } else {
     log('$sharePreferencesKey was synced recently');
   }

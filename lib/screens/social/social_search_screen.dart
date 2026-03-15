@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:streamit_laravel/utils/image_cache_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -670,6 +671,7 @@ class _PostTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 child: CachedNetworkImage(
                   imageUrl: resolveImageUrl(post.imageUrl),
+                  cacheManager: ExtendedTimeoutCacheManager(),
                   width: imageSize,
                   height: imageSize,
                   fit: BoxFit.cover,

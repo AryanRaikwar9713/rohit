@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -16,7 +18,10 @@ class GoogleSignInAuthService {
   GoogleSignIn googleSignIn = GoogleSignIn.instance;
 
   Future<UserData?> signInWithGoogle() async {
-    await googleSignIn.initialize(serverClientId: FIREBASE_SERVER_CLIENT_ID);
+    await googleSignIn.initialize(
+      serverClientId: FIREBASE_SERVER_CLIENT_ID,
+      clientId: defaultTargetPlatform == TargetPlatform.iOS ? FIREBASE_IOS_CLIENT_ID : null,
+    );
 
     final GoogleSignInAccount googleSignInAuthentication = await googleSignIn.authenticate();
 

@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:io' if (dart.library.io) '../utils/platform_stub.dart' as io;
 
 import 'package:flutter/cupertino.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:nb_utils/nb_utils.dart';
@@ -91,6 +91,8 @@ class AuthServiceApis {
     setValue(SharedPreferenceConst.USER_SUBSCRIPTION_DATA,
         userData.userData.planDetails.toJson(),);
     profilePin(loginUserData.value.pin);
+    // Subscribe to FCM topic user_<id> so backend can send like/comment/share/message push
+    PushNotificationService().registerFCMAndTopics();
   }
 
   Future<ChangePasswordResponse> changePasswordApi(
@@ -111,6 +113,7 @@ class AuthServiceApis {
     int perPage = 10,
     required List<NotificationData> notifications,
     Function(bool)? lastPageCallBack,
+    Function(int)? unreadCountCallBack,
   }) async {
     if (isLoggedIn.value) {
       final notificationRes = NotificationResponse.fromJson(
@@ -122,10 +125,24 @@ class AuthServiceApis {
       notifications.addAll(notificationRes.notificationData);
       lastPageCallBack
           ?.call(notificationRes.notificationData.length != perPage);
+      if (unreadCountCallBack != null && notificationRes.allUnreadCount >= 0) {
+        unreadCountCallBack(notificationRes.allUnreadCount);
+      }
       return notifications;
     } else {
       return [];
     }
+  }
+
+  /// Mark all notifications as read (GET notification-list?type=mark_as_read). Call when user opens notification screen.
+  Future<void> markAllNotificationsAsRead() async {
+    if (!isLoggedIn.value) return;
+    try {
+      await buildHttpResponse(getEndPoint(
+        endPoint: APIEndPoints.getNotification,
+        params: ['type=mark_as_read'],
+      ));
+    } catch (_) {}
   }
 
   Future<NotificationData> clearAllNotification() async {
@@ -252,7 +269,7 @@ class AuthServiceApis {
     bool isFromSplashScreen = false,
     VoidCallback? onError,
   }) async {
-    checkApiCallIsWithinTimeSpan(
+    await checkApiCallIsWithinTimeSpanAsync(
       sharePreferencesKey:
           SharedPreferenceConst.LAST_APP_CONFIGURATION_CALL_TIME,
       forceSync: forceSync,
@@ -323,22 +340,7 @@ class AuthServiceApis {
               }
 
               if (isFromSplashScreen) {
-                // Check location permission before navigation
-                final bool serviceEnabled =
-                    await Geolocator.isLocationServiceEnabled();
-                final LocationPermission permission =
-                    await Geolocator.checkPermission();
-                final bool hasLocationPermission = serviceEnabled &&
-                    permission != LocationPermission.denied &&
-                    permission != LocationPermission.deniedForever;
-
-                // Only navigate if location permission is granted
-                if (!hasLocationPermission) {
-                  log('Location permission not granted, navigation blocked');
-                  // Don't navigate, let splash screen handle location permission
-                  return;
-                }
-
+                // Navigate - location handled by splash; don't block on iOS/Android
                 if (getBoolAsync(SharedPreferenceConst.IS_FIRST_TIME,
                     defaultValue: true,)) {
                   await setValue(SharedPreferenceConst.IS_FIRST_TIME, false);
@@ -400,7 +402,7 @@ class AuthServiceApis {
   }
 
   Future<dynamic> updateProfile({
-    File? imageFile,
+    dynamic imageFile,
     String firstName = '',
     String lastName = '',
     String mobile = '',
@@ -422,9 +424,9 @@ class AuthServiceApis {
         multiPartRequest.fields[UserKeys.address] = address;
       }
 
-      if (imageFile != null) {
+      if (imageFile != null && !kIsWeb) {
         multiPartRequest.files.add(await http.MultipartFile.fromPath(
-            UserKeys.fileUrl, imageFile.path,),);
+            UserKeys.fileUrl, (imageFile as io.File).path,),);
       }
 
       multiPartRequest.headers.addAll(buildHeaderTokens());

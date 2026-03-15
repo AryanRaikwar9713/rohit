@@ -41,7 +41,7 @@ class WalletTabManage extends StatelessWidget {
               Color(0xff414345),
             ],),
           ),
-          indicatorPadding: const EdgeInsetsGeometry.symmetric(horizontal: 16,vertical: 5),
+          indicatorPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
           labelStyle: const TextStyle(color: Colors.white,fontWeight: FontWeight.w900,fontSize: 16),
           unselectedLabelStyle: const TextStyle(color: Colors.white,fontWeight: FontWeight.w900,fontSize: 16),
           dividerColor: Colors.transparent,

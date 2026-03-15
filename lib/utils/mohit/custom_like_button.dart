@@ -79,7 +79,7 @@ class CustomStreamButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Image.asset(
-          "assets/launcher_icons/streamLogo.png",
+          "assets/launcher_icons/wammisLogo.png",
           width: 20,
           height: 20,
           color: Colors.white,

@@ -1,5 +1,6 @@
 // ignore_for_file: invalid_use_of_protected_member
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -25,6 +26,7 @@ import '../../utils/colors.dart';
 import '../../utils/local_storage.dart' as storage;
 import '../home/home_controller.dart';
 import '../home/home_screen.dart';
+import '../home/long_form_screen_wrapper.dart';
 import '../profile/profile_controller.dart';
 import '../profile/profile_login_screen.dart';
 import '../search/search_controller.dart';
@@ -127,7 +129,7 @@ class DashboardController extends GetxController {
           activeIcon: Icons.people,
           type: BottomItem.social.name,),
       BottomBarItem(
-          title: 'Reels',
+          title: 'Shorts',
           icon: Icons.play_circle_outline,
           activeIcon: Icons.play_circle,
           type: BottomItem.reels.name,),
@@ -162,21 +164,21 @@ class DashboardController extends GetxController {
     //   );
     // }
 
-    // Clips section is permanently visible (always added)
+    // Clips (Long form) section is permanently visible (always added)
     items.add(
       BottomBarItem(
-        title: 'Clips',
+        title: 'Long',
         icon: Icons.home_outlined,
         activeIcon: Icons.home,
         type: BottomItem.home.name,
         customIcon: Image.asset(
-          'assets/launcher_icons/streamLogo.png',
+          'assets/launcher_icons/wammisLogo.png',
           width: 22,
           height: 22,
           color: iconColor,
         ),
         customActiveIcon: Image.asset(
-          'assets/launcher_icons/streamLogo.png',
+          'assets/launcher_icons/wammisLogo.png',
           width: 22,
           height: 22,
           color: appColorPrimary,
@@ -290,8 +292,8 @@ class DashboardController extends GetxController {
       final HomeController homeScreenController =
           getOrPutController<HomeController>(() => HomeController());
       
-      // Always show VideoChannelScreen first to avoid black screen
-      addScreenAtPosition(homeIndex, HomeScreen(homeScreenController: homeScreenController));
+      // Long form screen – admin can lock via enable_long_form
+      addScreenAtPosition(homeIndex, LongFormScreenWrapper(homeScreenController: homeScreenController));
       
       // Load channel data if not already loaded or loading
       // // Screen will automatically update via Obx when data loads
@@ -401,6 +403,7 @@ class DashboardController extends GetxController {
   }
 
   Future<void> getActiveVastAds() async {
+    if (kIsWeb) return;
     try {
       final VastAdResponse? res = await CoreServiceApis().getVastAds();
       if (res != null) {

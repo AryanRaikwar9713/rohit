@@ -14,6 +14,7 @@ import 'package:streamit_laravel/screens/shops_section/shop_profile_screen.dart'
 import 'package:streamit_laravel/screens/shops_section/shop_registration_screen.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_controller.dart';
 import 'package:streamit_laravel/screens/video_channel/screens/create_channel_screen.dart';
+import 'package:streamit_laravel/screens/video_channel/screens/my_long_videos_screen.dart';
 import 'package:streamit_laravel/screens/video_channel/screens/video_channel_screen.dart';
 import 'package:streamit_laravel/screens/video_channel/video_channle_controller.dart';
 import 'package:streamit_laravel/screens/z%20drawer_sub_screen/drawer_sub_followers.dart';
@@ -22,6 +23,8 @@ import 'package:streamit_laravel/screens/z%20drawer_sub_screen/drawer_sub_reels.
 import 'package:streamit_laravel/screens/z%20drawer_sub_screen/drawer_sub_social.dart';
 import 'package:streamit_laravel/screens/z%20drawer_sub_screen/notice_board_screen.dart';
 import 'package:streamit_laravel/screens/walletSection/wallet_tab_manage.dart';
+import 'package:streamit_laravel/screens/messaging/message_inbox_screen.dart';
+import 'package:streamit_laravel/utils/push_notification_service.dart';
 
 class DashBoardDrawer extends StatefulWidget {
   const DashBoardDrawer({super.key});
@@ -65,8 +68,8 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
               //Clip
               _buildTileItem(
                   icon: Image.asset(
-                    'assets/launcher_icons/streamLogo.png',
-                    width: 30,
+                    'assets/launcher_icons/wammisLogo.png',
+                    width: 22,
                     color: Colors.white,
                   ),
                   title: "Clips",
@@ -90,6 +93,34 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                     if (c.hasChannel.value) {
                       Get.to(const VideoChannelScreen());
                     } else {
+                      Get.to(const CreateVideoChannelScreen());
+                    }
+                  },),
+
+              // My long videos (upload / list / edit / delete) – only when user has channel
+              _buildTileItem(
+                  icon: const Icon(
+                    Icons.video_library,
+                    color: Colors.white,
+                  ),
+                  title: "My long videos",
+                  onTap: () async {
+                    final VideoChannelController c =
+                        Get.put(VideoChannelController());
+                    showDialog(
+                        context: context,
+                        builder: (context) => WillPopScope(
+                            onWillPop: () async => false,
+                            child: const Center(
+                                child: CircularProgressIndicator(),
+                            ),),
+                        barrierDismissible: false,);
+                    await c.getChannel();
+                    Navigator.pop(context);
+                    if (c.hasChannel.value) {
+                      Get.to(const MyLongVideosScreen());
+                    } else {
+                      toast('Create a channel first to upload long videos');
                       Get.to(const CreateVideoChannelScreen());
                     }
                   },),
@@ -175,6 +206,16 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                     Get.to(const NoticeBoardScreen());
                   },),
 
+              _buildTileItem(
+                  icon: const Icon(
+                    Icons.chat_bubble_outline,
+                    color: Colors.white,
+                  ),
+                  title: "Messages",
+                  onTap: () {
+                    Get.to(() => const MessageInboxScreen());
+                  },),
+
               // Wallet - Watch Ads & Earn Bolts
               _buildTileItem(
                   icon: const Icon(
@@ -187,6 +228,11 @@ class _DashBoardDrawerState extends State<DashBoardDrawer> {
                   },),
 
               //
+              _buildTileItem(
+                  icon: const Icon(Icons.vpn_key, color: Colors.white),
+                  title: "Copy FCM Token",
+                  onTap: () => PushNotificationService.copyFcmTokenToClipboard(),),
+
               _buildTileItem(
                   icon: const Icon(
                     Icons.logout,

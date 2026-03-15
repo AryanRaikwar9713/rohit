@@ -29,14 +29,18 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>Add CFBundleURLSchemes here</string>
+				<string>com.googleusercontent.apps.228110272023-d4cmai99ein70d8ttl50ppvbmfgbjl25</string>
 			</array>
+			<key>CFBundleURLName</key>
+			<string>Google Sign-In / Firebase Auth</string>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>GIDClientID</key>
+	<string>228110272023-d4cmai99ein70d8ttl50ppvbmfgbjl25.apps.googleusercontent.com</string>
 	<key>GADApplicationIdentifier</key>
-    <string>Please add your ad id here</string>
+	<string>ca-app-pub-1073907455931977~7164377673</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -44,14 +48,16 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Streamit uses your location to show relevant shop and content for your region and to enable location-based features.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Streamit uses your location to show relevant shop and content for your region and to enable location-based features.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Streamit app requires access to microphone for screen cast</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Streamit app requires access to the photo library to upload user profile picture</string>
 	<key>NSCameraUsageDescription</key>
-    <string>Scan your card to add it automatically</string>
-    <key>NSCameraUsageDescription</key>
-    <string>To scan cards</string>
+	<string>Streamit uses camera to scan cards and capture photos</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Streamit needs this to search items in app</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

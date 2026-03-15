@@ -5,6 +5,7 @@ import 'package:streamit_laravel/configs.dart';
 import 'package:streamit_laravel/local_db.dart';
 import 'package:streamit_laravel/screens/auth/model/login_response.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/models/vammis_profile_model.dart';
+import 'package:streamit_laravel/utils/app_common.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/get_story_responce_model.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/story_controller.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/view_story_screen.dart';
@@ -12,7 +13,29 @@ import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/create_
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/my_story_screen.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/subScreen/story_secton/my_story_controller.dart';
 import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_api.dart';
+import 'package:streamit_laravel/screens/vammis_profileSection/vammis_profile_controller.dart';
 import 'package:streamit_laravel/utils/mohit/vammis_profile_avtar.dart';
+
+/// Same avatar resolution as profile page: prefer avatarUrl, then avatar (string or map with url).
+String _avatarStringFromProfileUser(User? user) {
+  if (user == null) return '';
+  final a = user.avatarUrl;
+  if (a != null && a.trim().isNotEmpty) return a;
+  final b = user.avatar;
+  if (b == null) return '';
+  if (b is String && b.trim().isNotEmpty) return b;
+  // Backend may send avatar as object; try to get url from map without strict typing
+  try {
+    if (b is Map && (b as Map).isNotEmpty) {
+      for (final key in ['url', 'avatar_url', 'avatar']) {
+        final v = (b as Map)[key];
+        if (v is String && v.trim().isNotEmpty) return v.trim();
+      }
+    }
+  } catch (_) {}
+  final s = b.toString().trim();
+  return (s.isNotEmpty && !s.contains('Instance of')) ? s : '';
+}
 
 /// Instagram-style stories row: "Your story" + followed users' stories.
 /// Use on Home and Social so stories from followed users appear in one place.
@@ -45,21 +68,38 @@ class _HomeStoriesRowState extends State<HomeStoriesRow> {
     final u = await DB().getUser();
     if (!mounted) return;
     setState(() => _currentUser = u);
-    final fromLogin = (u?.profileImage ?? '').trim();
-    if (fromLogin.isNotEmpty) {
-      setState(() => _yourStoryAvatar = fromLogin);
-      return;
+    final userId = u?.id ?? loginUserData.value.id;
+
+    // 1) Prefer cached profile from VammisProfileController (same source as profile page)
+    if (userId > 0 && Get.isRegistered<VammisProfileController>()) {
+      final profileCtrl = Get.find<VammisProfileController>();
+      if (profileCtrl.currentUserId == userId && profileCtrl.profileResponse.value?.data?.user != null) {
+        final cached = _avatarStringFromProfileUser(profileCtrl.profileResponse.value!.data!.user);
+        if (cached.isNotEmpty && mounted) {
+          setState(() => _yourStoryAvatar = cached);
+        }
+      }
     }
-    final userId = u?.id ?? -1;
+
+    // 2) Else use login/DB profile_image if present (until profile API returns)
+    final fromGlobal = (loginUserData.value.profileImage ?? '').trim();
+    final fromDb = (u?.profileImage ?? '').trim();
+    final fromLogin = fromGlobal.isNotEmpty ? fromGlobal : fromDb;
+    if (fromLogin.isNotEmpty && _yourStoryAvatar.isEmpty && mounted) {
+      setState(() => _yourStoryAvatar = fromLogin);
+    }
+
     if (userId <= 0) return;
+
+    // 3) Always fetch profile API so story circle gets same avatar as profile page
     VammisProfileApi().getUserProfile(
       userId: userId,
       onError: (_) {},
       onFailure: (_) {},
       onSuccess: (VammisProfileResponceModel profile) {
-        final avatar = profile.data?.user?.avatarUrl ?? profile.data?.user?.avatar?.toString();
-        if (avatar != null && avatar.trim().isNotEmpty && mounted) {
-          setState(() => _yourStoryAvatar = avatar.trim());
+        final avatar = _avatarStringFromProfileUser(profile.data?.user);
+        if (avatar.isNotEmpty && mounted) {
+          setState(() => _yourStoryAvatar = avatar);
         }
       },
     );
@@ -138,13 +178,22 @@ class _HomeStoriesRowState extends State<HomeStoriesRow> {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: _YourStoryCircle(
-                    avatar: _yourStoryAvatar.isNotEmpty ? _yourStoryAvatar : (_currentUser?.profileImage ?? ''),
-                    displayName: ((_currentUser?.fullName ?? '').trim().isNotEmpty)
-                        ? _currentUser!.fullName
-                        : 'Your story',
-                    onTap: () => _showYourStoryOptions(context, hasOwnStory),
-                  ),
+                  child: Obx(() {
+                    // Same avatar source as profile page: prefer profile API/cached, then login/DB
+                    final pic = _yourStoryAvatar.isNotEmpty
+                        ? _yourStoryAvatar
+                        : ((loginUserData.value.profileImage ?? '').trim().isNotEmpty
+                            ? loginUserData.value.profileImage!
+                            : (_currentUser?.profileImage ?? ''));
+                    final name = ((_currentUser?.fullName ?? loginUserData.value.fullName ?? '').trim().isNotEmpty)
+                        ? (_currentUser?.fullName ?? loginUserData.value.fullName ?? 'Your story')
+                        : 'Your story';
+                    return _YourStoryCircle(
+                      avatar: pic,
+                      displayName: name,
+                      onTap: () => _showYourStoryOptions(context, hasOwnStory),
+                    );
+                  }),
                 ),
                 for (int i = 0; i < _storyController.storyList.length; i++)
                   if (_storyController.storyList[i].isOwnStory != true) ...[
@@ -187,22 +236,11 @@ class _YourStoryCircle extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.grey.shade600, width: 2),
-            ),
-            padding: const EdgeInsets.all(2),
-            child: CircleAvatar(
-              radius: 36,
-              backgroundColor: Colors.grey.shade800,
-              backgroundImage: avatar.trim().isEmpty
-                  ? null
-                  : NetworkImage(resolveImageUrl(avatar, pathPrefix: 'storage/avatars/')),
-              child: avatar.trim().isEmpty
-                  ? const Icon(Icons.person, color: Colors.white54, size: 32)
-                  : null,
-            ),
+          WamimsProfileAvtar(
+            image: avatar,
+            story: false,
+            radious: 36,
+            onTap: onTap,
           ),
           6.height,
           SizedBox(

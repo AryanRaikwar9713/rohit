@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:streamit_laravel/utils/image_cache_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,8 +8,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/ads/components/admob_banner_widget.dart';
 import 'package:streamit_laravel/components/admob_native_ad_widget.dart';
-import 'package:streamit_laravel/screens/dash_boad_drawer.dart';
+import 'package:streamit_laravel/screens/messaging/message_inbox_screen.dart';
 import 'package:streamit_laravel/screens/notificationSection/notification_screen.dart';
+import 'package:streamit_laravel/utils/app_common.dart';
 import 'package:streamit_laravel/screens/social/comment_responce_model.dart';
 import 'package:streamit_laravel/screens/social/social_post_card.dart';
 import 'package:streamit_laravel/local_db.dart';
@@ -37,6 +39,7 @@ class SocialScreen extends StatefulWidget {
 class _SocialScreenState extends State<SocialScreen>
     with WidgetsBindingObserver {
   final ScrollController _controller = ScrollController();
+  final GlobalKey<_TopReelsSectionState> _reelsSectionKey = GlobalKey<_TopReelsSectionState>();
   late SocialController controller;
   late StoryContrller storyController;
 
@@ -52,6 +55,14 @@ class _SocialScreenState extends State<SocialScreen>
     storyController = (Get.isRegistered<StoryContrller>())
         ? Get.find<StoryContrller>()
         : Get.put(StoryContrller());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && isLoggedIn.value) {
+        final ctrl = Get.isRegistered<WamimsNotificationController>()
+            ? Get.find<WamimsNotificationController>()
+            : Get.put(WamimsNotificationController(), permanent: true);
+        ctrl.refreshUnreadCount();
+      }
+    });
     // Defer story load so first frame paints faster (reduces jank/crash on weak devices)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) storyController.loadStory();
@@ -91,7 +102,6 @@ class _SocialScreenState extends State<SocialScreen>
     return GetBuilder<SocialController>(
       builder: (controller) {
         return Scaffold(
-          drawer: const DashBoardDrawer(),
           backgroundColor: appBackgroundColorDark,
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(88),
@@ -105,7 +115,7 @@ class _SocialScreenState extends State<SocialScreen>
                 bottom: false,
                 child: Row(
                   children: [
-                    // Title only (no logo for v1)
+                    // Title only (drawer/menu removed per request)
                     Text(
                       'WAMIMS',
                       style: GoogleFonts.poppins(
@@ -116,68 +126,88 @@ class _SocialScreenState extends State<SocialScreen>
                       ),
                     ),
                     const Spacer(),
-                    // Megaphone icon (campaign icon)
-                    // IconButton(`
-
-
-                    //   onPressed: () {},
-                    //   icon: const Icon(
-                    //     Icons.campaign,
-                    //     color: Colors.white,
-                    //     size: 24,
-                    //   ),
-                    //   padding: EdgeInsets.zero,
-                    //   constraints: const BoxConstraints(),
-                    // ),
-                    4.width,
-                    // Notification with badge
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        IconButton(
+                    // Messages (compact, responsive)
+                    Builder(
+                      builder: (ctx) {
+                        final iconSize = MediaQuery.sizeOf(ctx).width < 360 ? 20.0 : 22.0;
+                        return IconButton(
                           onPressed: () {
-                            Get.to(const WamimsNotificationScreen());
+                            doIfLogin(onLoggedIn: () {
+                              Get.to(() => const MessageInboxScreen());
+                            },);
                           },
-                          icon: const Icon(
-                            Icons.notifications_none_rounded,
+                          icon: Icon(
+                            Icons.chat_bubble_outline,
                             color: Colors.white,
-                            size: 24,
+                            size: iconSize,
                           ),
                           padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
-                        Positioned(
-                          right: 8,
-                          top: 10,
-                          child: Container(
-                            width: 17,
-                            height: 17,
-                            padding: const EdgeInsets.all(2),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.yellow.shade400,  // Yellow
-                                  Colors.orange.shade500,  // Orange
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              shape: BoxShape.circle,
-                              border: Border.all(color: appScreenBackgroundDark, width: 1.5),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '1',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
+                          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                          tooltip: 'Messages',
+                        );
+                      },
+                    ),
+                    2.width,
+                    // Notification with real unread count badge
+                    Builder(
+                      builder: (ctx) {
+                        final notifCtrl = Get.isRegistered<WamimsNotificationController>()
+                            ? Get.find<WamimsNotificationController>()
+                            : Get.put(WamimsNotificationController(), permanent: true);
+                        return Obx(() {
+                          final count = notifCtrl.unreadCount.value;
+                          return Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  Get.to(const WamimsNotificationScreen())?.then((_) {
+                                    notifCtrl.refreshUnreadCount();
+                                  });
+                                },
+                                icon: const Icon(
+                                  Icons.notifications_none_rounded,
+                                  color: Colors.white,
+                                  size: 24,
                                 ),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
                               ),
-                            ),
-                          ),
-                        ),
-                      ],
+                              if (count > 0)
+                                Positioned(
+                                  right: 8,
+                                  top: 10,
+                                  child: Container(
+                                    constraints: const BoxConstraints(minWidth: 17, minHeight: 17),
+                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.yellow.shade400,
+                                          Colors.orange.shade500,
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: appScreenBackgroundDark, width: 1.5),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        count > 99 ? '99+' : '$count',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        });
+                      },
                     ),
                     4.width,
                     // Wallet Icon - Watch Ads & Earn Bolts
@@ -249,13 +279,19 @@ class _SocialScreenState extends State<SocialScreen>
             ),
           ),
           body: SafeArea(
-            child: SingleChildScrollView(
-              controller: _controller,
-              child: RefreshIndicator(
-                //
-                onRefresh: () async {
-                  controller.refreshData();
-                },
+            child: RefreshIndicator(
+              color: Colors.white,
+              onRefresh: () async {
+                // Refresh stories, reels and posts so latest content shows first (like Instagram)
+                await Future.wait([
+                  controller.refreshData(),
+                  storyController.loadStory(),
+                  _reelsSectionKey.currentState?.refresh() ?? Future.value(),
+                ]);
+              },
+              child: SingleChildScrollView(
+                controller: _controller,
+                physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   children: [
 
@@ -281,7 +317,7 @@ class _SocialScreenState extends State<SocialScreen>
 
                     const HomeStoriesRow(),
 
-                    const _TopReelsSection(),
+                    _TopReelsSection(key: _reelsSectionKey),
 
                     // Social Feed
                     Obx(() {
@@ -380,18 +416,34 @@ class _SocialScreenState extends State<SocialScreen>
                               context: context,
                               builder: (context) => Blur(
                                 blur: 7,
-                                child: Card(
-                                  margin: EdgeInsets.zero,
-                                  color: Colors.transparent,
-                                  elevation: 0,
-                                  shape: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(0),
-                                    borderSide: BorderSide.none,
-                                    gapPadding: 0,
-                                  ),
-                                  child: Image.network(
-                                    resolveImageUrl(controller.posts[i].imageUrl ?? ''),
-                                    fit: BoxFit.contain,
+                                child: Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  insetPadding: EdgeInsets.zero,
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height,
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        CachedNetworkImage(
+                                          imageUrl: resolveImageUrl(controller.posts[i].imageUrl ?? ''),
+                                          cacheManager: ExtendedTimeoutCacheManager(),
+                                          fit: BoxFit.contain,
+                                          width: double.infinity,
+                                          height: double.infinity,
+                                          placeholder: (_, __) => Container(color: Colors.grey[900], child: const Center(child: CircularProgressIndicator())),
+                                          errorWidget: (_, __, ___) => const Icon(Icons.image_not_supported, color: Colors.grey, size: 48),
+                                        ),
+                                        Positioned(
+                                          top: MediaQuery.of(context).padding.top + 8,
+                                          right: 12,
+                                          child: IconButton(
+                                            icon: const Icon(Icons.close, color: Colors.white, size: 28),
+                                            onPressed: () => Navigator.of(context).pop(),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -939,7 +991,7 @@ class _CommentBottomSheetState extends State<_CommentBottomSheet> {
 
 /// Top reels section: horizontal list, 5 per load, tap opens ReelsScreen.
 class _TopReelsSection extends StatefulWidget {
-  const _TopReelsSection();
+  const _TopReelsSection({super.key});
 
   @override
   State<_TopReelsSection> createState() => _TopReelsSectionState();
@@ -958,6 +1010,17 @@ class _TopReelsSectionState extends State<_TopReelsSection> {
     _loadMore();
   }
 
+  /// Call from parent RefreshIndicator to reload reels (latest first).
+  Future<void> refresh() async {
+    if (!mounted) return;
+    setState(() {
+      _reels.clear();
+      _page = 0;
+      _hasMore = true;
+    });
+    await _loadMore();
+  }
+
   Future<void> _loadMore() async {
     if (_loading || !_hasMore) return;
     setState(() => _loading = true);
@@ -966,10 +1029,21 @@ class _TopReelsSectionState extends State<_TopReelsSection> {
       nextPage,
       onSuccess: (res) {
         final list = res.data?.reels ?? [];
+        // Latest first (like Instagram)
+        list.sort((a, b) {
+          final at = a.stats?.createdAt ?? DateTime(0);
+          final bt = b.stats?.createdAt ?? DateTime(0);
+          return bt.compareTo(at);
+        });
         final toAdd = list.take(_pageSize).toList();
         if (mounted) {
           setState(() {
             _reels.addAll(toAdd);
+            _reels.sort((a, b) {
+              final at = a.stats?.createdAt ?? DateTime(0);
+              final bt = b.stats?.createdAt ?? DateTime(0);
+              return bt.compareTo(at);
+            });
             _page = nextPage;
             _hasMore = (res.data?.pagination?.hasMore ?? false) && list.length >= _pageSize;
             _loading = false;
@@ -1006,7 +1080,7 @@ class _TopReelsSectionState extends State<_TopReelsSection> {
             ),
           ),
           SizedBox(
-            height: 140,
+            height: 168,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -1034,7 +1108,10 @@ class _TopReelsSectionState extends State<_TopReelsSection> {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: GestureDetector(
-                    onTap: () => Get.to(() => const ReelsScreen()),
+                    onTap: () {
+                      final reelId = reel.id;
+                      Get.to(() => ReelsScreen(initialReelId: reelId));
+                    },
                     child: Container(
                       width: 100,
                       decoration: BoxDecoration(
@@ -1051,24 +1128,31 @@ class _TopReelsSectionState extends State<_TopReelsSection> {
                                     child: Icon(Icons.videocam_outlined,
                                         color: Colors.white54, size: 36,),
                                   )
-                                : Image.network(
-                                    url,
+                                : CachedNetworkImage(
+                                    imageUrl: url,
+                                    cacheManager: ExtendedTimeoutCacheManager(),
                                     fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => const Center(
+                                    placeholder: (_, __) => const Center(child: CircularProgressIndicator(color: Colors.white54)),
+                                    errorWidget: (_, __, ___) => const Center(
                                         child: Icon(Icons.videocam_outlined,
                                             color: Colors.white54, size: 36,),),
                                   ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(6),
+                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                             child: Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.favorite_border,
-                                    size: 14, color: Colors.grey[400],),
-                                4.width,
+                                Image.asset(
+                                  'assets/icons/like_bulbe.png',
+                                  width: 12,
+                                  height: 12,
+                                  color: Colors.yellow.shade400,
+                                ),
+                                3.width,
                                 Text(
                                   '${reel.stats?.likesCount ?? 0}',
-                                  style: secondaryTextStyle(size: 12, color: Colors.grey),
+                                  style: secondaryTextStyle(size: 11, color: Colors.grey[500]),
                                 ),
                               ],
                             ),

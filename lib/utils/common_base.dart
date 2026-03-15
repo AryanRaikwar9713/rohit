@@ -1,7 +1,6 @@
 // ignore_for_file: body_might_complete_normally_catch_error, deprecated_member_use
 
 import 'dart:async';
-import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -310,13 +309,7 @@ Widget backButton({Object? result, double size = 20, EdgeInsets? padding}) {
 }
 
 /// Routes name to directly navigate the route by its name
-
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-  }
-}
+/// (MyHttpOverrides moved to http_overrides_io.dart for web compatibility.)
 
 String movieDurationTime(String time) {
   // Parse the input string

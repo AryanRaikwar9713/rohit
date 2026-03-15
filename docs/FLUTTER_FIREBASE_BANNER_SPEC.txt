@@ -1,0 +1,158 @@
+================================================================================
+FLUTTER – FIREBASE BANNER / AUTO NOTIFICATIONS (FOR CURSOR)
+================================================================================
+Backend already sends FCM with notification (title, body) + data. Use this file
+so Flutter shows banner (app open/closed) and on tap opens the right screen.
+================================================================================
+
+--------------------------------------------------------------------------------
+1) FCM TOPICS – SUBSCRIBE ON LOGIN
+--------------------------------------------------------------------------------
+After login, subscribe to BOTH:
+  - FirebaseMessaging.instance.subscribeToTopic('user_${userId}');
+  - FirebaseMessaging.instance.subscribeToTopic('all_users');
+
+On logout, unsubscribe from both.
+Without this, no push will be received.
+
+--------------------------------------------------------------------------------
+2) BANNER / POPUP – APP CLOSED OR BACKGROUND
+--------------------------------------------------------------------------------
+Backend sends BOTH "notification" and "data" in FCM. So:
+  - When app is in background or killed: OS shows the banner/popup automatically
+    (title + body). No extra Flutter code needed for the system banner.
+  - When app is in foreground: you can show an in-app banner (e.g. overlay or
+    snackbar) using the title/body from the RemoteMessage, then on tap navigate.
+
+Implementation outline:
+  - FirebaseMessaging.onBackgroundMessage: handle data-only if needed; for
+    notification+data, OS usually shows the notification. You can still
+    schedule a local notification with the same title/body for consistency.
+  - FirebaseMessaging.onMessage: app in foreground – show in-app banner/snackbar
+    with message.notification?.title and message.notification?.body, and
+    message.data for tap (navigate to screen).
+  - FirebaseMessaging.onMessageOpenedApp: user tapped notification (app was
+    background) – use message.data to navigate.
+  - FirebaseMessaging.getInitialMessage: app opened from killed state by tap –
+    use message.data to navigate.
+
+--------------------------------------------------------------------------------
+3) ALL NOTIFICATION TYPES + DATA PAYLOAD (TAP → WHERE TO GO)
+--------------------------------------------------------------------------------
+Use data.type and the ids below to open the correct screen.
+
+| data.type       | Title/Body (example)        | Tap action – open screen          | Data keys to use          |
+|-----------------|-----------------------------|-----------------------------------|---------------------------|
+| message         | "New message", "X sent you a message" | Chat with sender           | conversation_id, sender_user_id, sender_name |
+| like            | "New like", "X liked your post"       | Post detail                | post_id                   |
+| comment         | "New comment", "X commented on your post" | Post detail / comments   | post_id                   |
+| share           | "New share", "X shared your post"     | Post detail                | post_id                   |
+| reel_like       | "New like", "X liked your reel"       | Reel detail                | post_id (reel id)         |
+| reel_comment    | "New comment", "X commented on your reel" | Reel detail            | post_id                   |
+| reel_upload     | "New reel", "X posted a new reel"     | Reel / feed                | post_id                   |
+| post_upload     | "New post", "X posted"                | Post / feed                | post_id, user_name        |
+| story_upload    | "New story", "X posted a story"       | Story viewer / home        | id (story id)             |
+| long_upload     | "New long video", "X uploaded a long video" | Long video play      | video_id, user_name       |
+| long_like       | "New like", "X liked your long video" | Long video detail         | video_id                  |
+| long_comment    | "New comment", "X commented on your long video" | Long video detail   | video_id                  |
+| follow          | "New follower", "X started following you" | User profile           | user_id                   |
+| impact_project  | "New impact project", "<title>"       | Impact project detail      | project_id                |
+| impact_donated  | "New donation", "X donated to your project" | Impact project       | project_id, user_name     |
+| impact_viewed   | "Project viewed", "X viewed your project" | Impact project        | project_id, user_name     |
+| admin_broadcast | Any title/body from admin             | Notification list or home | id (optional)             |
+
+--------------------------------------------------------------------------------
+4) FLUTTER – HANDLE TAP (NAVIGATION)
+--------------------------------------------------------------------------------
+In onMessageOpenedApp and getInitialMessage:
+
+  final type = message.data['type'] ?? '';
+  final postId = message.data['post_id'];
+  final videoId = message.data['video_id'];
+  final projectId = message.data['project_id'];
+  final userId = message.data['user_id'] ?? message.data['sender_user_id'];
+  final conversationId = message.data['conversation_id'];
+  final senderName = message.data['sender_name'];
+
+  switch (type) {
+    case 'message':
+      // Open ChatScreen(conversationId: conversationId, senderUserId: ..., senderName: senderName);
+      break;
+    case 'like':
+    case 'comment':
+    case 'share':
+    case 'post_upload':
+      // Open post detail or feed with post_id
+      break;
+    case 'reel_like':
+    case 'reel_comment':
+    case 'reel_upload':
+      // Open reel with post_id (reel id)
+      break;
+    case 'long_upload':
+    case 'long_like':
+    case 'long_comment':
+      // Open long video player/detail with video_id
+      break;
+    case 'story_upload':
+      // Open story viewer or home
+      break;
+    case 'follow':
+      // Open user profile with user_id
+      break;
+    case 'impact_project':
+    case 'impact_donated':
+    case 'impact_viewed':
+      // Open impact project detail with project_id
+      break;
+    case 'admin_broadcast':
+      // Open notification list or home
+      break;
+  }
+
+--------------------------------------------------------------------------------
+5) BACKEND – WHAT SENDS EACH TYPE (REFERENCE)
+--------------------------------------------------------------------------------
+message         → message/send_message.php
+like, comment, share → post_likes.php, post_comments.php, post_share.php
+post_upload     → upload_posts.php (followers)
+reel_like, reel_comment → reels/reel_like.php, reels/add_comment.php
+reel_upload     → reels/create_reel.php (followers)
+story_upload    → story_api.php (followers)
+long_upload     → long_video_api.php action=upload (followers)
+long_like       → long_video_api.php action=long_video_like
+long_comment    → long_video_api.php action=long_video_comment
+follow          → follow_api.php
+impact_project  → impact/social_impact_api.php createProject (followers)
+impact_donated  → impact/donate.php
+impact_viewed   → impact/get_projects.php (single project view)
+admin_broadcast → admin panel Send notification (one user or all_users topic)
+
+--------------------------------------------------------------------------------
+6) LONG VIDEO – NEW API ACTIONS (FLUTTER CALL THESE)
+--------------------------------------------------------------------------------
+Like:  POST long_video_api.php?action=long_video_like  (video_id, auth)
+Comment: POST long_video_api.php?action=long_video_comment (video_id, body or comment, auth)
+
+Response: { "success": true, "message": "Liked" } / { "success": true, "message": "Comment added", "comment_id": ... }
+
+--------------------------------------------------------------------------------
+7) IN-APP NOTIFICATION LIST (ALREADY FROM BACKEND)
+--------------------------------------------------------------------------------
+GET api/notification-list (Bearer token) → notification_data, all_unread_count.
+POST api/notification-mark-read → mark all read.
+POST api/notification-mark-read/{id} → mark one read.
+
+Use for the Notification page; badge = all_unread_count.
+
+--------------------------------------------------------------------------------
+8) CHECKLIST – FLUTTER SIDE
+--------------------------------------------------------------------------------
+[x] Subscribe to topic user_<userId> and all_users on login.
+[x] Unsubscribe on logout.
+[x] onMessage (foreground): show in-app banner/snackbar with title + body; on tap use data to navigate.
+[x] onMessageOpenedApp: use data.type + ids to navigate to correct screen.
+[x] getInitialMessage: same navigation when app opened from killed state by notification tap.
+[x] Handle all types: message, like, comment, share, reel_*, post_upload, story_upload, long_upload, long_like, long_comment, follow, impact_*, admin_broadcast.
+
+================================================================================

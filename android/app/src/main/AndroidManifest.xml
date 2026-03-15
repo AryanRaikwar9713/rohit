@@ -37,10 +37,10 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_stat_ic_notification" />
 
-        <!-- Google ads -->
+        <!-- Google AdMob -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-1073907455931977~7164377673" />
 
         <meta-data
             android:name="applovin.sdk.key"

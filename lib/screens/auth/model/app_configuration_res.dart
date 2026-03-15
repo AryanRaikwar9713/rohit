@@ -59,6 +59,8 @@ class ConfigurationResponse {
   bool enableTvShow;
   bool enableVideo;
   bool enableContinueWatch;
+  /// Admin toggle: Long form (movies/tv/videos) screen. false = blur+lock+"Coming soon", true = usable
+  bool enableLongForm;
 
   bool enableRateUs;
   List<Tax> taxPercentage;
@@ -124,6 +126,7 @@ class ConfigurationResponse {
     this.enableLiveTv = false,
     this.enableVideo = false,
     this.enableContinueWatch = false,
+    this.enableLongForm = false,
     this.enableRateUs = false,
     this.taxPercentage = const <Tax>[],
     this.entitlementId = '',
@@ -239,6 +242,7 @@ class ConfigurationResponse {
       enableLiveTv: json['enable_livetv'] is int && (json['enable_livetv'] == 1),
       enableVideo: json['enable_video'] is int && (json['enable_video'] == 1),
       enableContinueWatch: _toBool(json['continue_watch'], false),
+      enableLongForm: _toBool(json['enable_long_form'], false),
       enableRateUs: json['enable_rate_us'] is int && (json['enable_rate_us'] == 1),
       taxPercentage: json['tax'] is List
           ? List<Tax>.from(json['tax'].map((x) => Tax.fromJson(x)))
@@ -308,6 +312,7 @@ class ConfigurationResponse {
       'enable_livetv': enableLiveTv,
       'enable_video': enableVideo,
       'continue_watch': enableContinueWatch,
+      'enable_long_form': enableLongForm,
       'enable_rate_us': enableRateUs,
       'tax': taxPercentage.map((e) => e.toJson()).toList(),
       'enable_in_app': enableInAppPurchase,

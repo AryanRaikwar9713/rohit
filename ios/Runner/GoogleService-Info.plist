@@ -3,23 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>215579898202-otcmigde5l2f12jogr39g10d1haa8f09.apps.googleusercontent.com</string>
+	<string>228110272023-d4cmai99ein70d8ttl50ppvbmfgbjl25.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.215579898202-otcmigde5l2f12jogr39g10d1haa8f09</string>
+	<string>com.googleusercontent.apps.228110272023-d4cmai99ein70d8ttl50ppvbmfgbjl25</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>215579898202-8kqgqcqn8peijjhh0qk9mossihr3lrvs.apps.googleusercontent.com</string>
+	<string>228110272023-e67prudmcahjliotdej9skm13rbm7pkq.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCWjF4CG7ieCMDMG8rx1yPxSg8ll-GQj5Y</string>
+	<string>AIzaSyC4kw-1D81c7I75jINuUZYBcAO82q-O0jY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>215579898202</string>
+	<string>228110272023</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.anytimeott.live</string>
 	<key>PROJECT_ID</key>
-	<string>streamit-laravel-flutter</string>
+	<string>maarket-points</string>
 	<key>STORAGE_BUCKET</key>
-	<string>streamit-laravel-flutter.appspot.com</string>
+	<string>maarket-points.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,8 +31,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:215579898202:ios:817645a0fa6e94f2e24363</string>
+	<string>1:228110272023:ios:669dc4bf7b9bed03087e52</string>
 	<key>DATABASE_URL</key>
-	<string>https://streamit-laravel-flutter-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+	<string>https://maarket-points-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>

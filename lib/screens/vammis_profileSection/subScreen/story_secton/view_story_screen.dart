@@ -81,31 +81,74 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
   }
 
 
-
-  Column _buildUsers(StoryUser model,StoryContrller controller)
-  {
+  Column _buildUsers(StoryUser model, StoryContrller controller) {
     final userId = model.user?.id ?? 0;
+    final stories = model.stories ?? [];
     return Column(
       children: [
         10.height,
+        // White progress bars (fill when viewing this user's stories) - like WhatsApp status
+        Obx(() {
+          if (controller.selectedUserId.value != userId) return const SizedBox.shrink();
+          final currentIndex = stories.indexWhere(
+            (s) => s.id == controller.selectedStoryId.value,
+          );
+          final idx = currentIndex < 0 ? 0 : currentIndex;
+          if (stories.isEmpty) return const SizedBox.shrink();
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+            child: Row(
+              children: [
+                for (int i = 0; i < stories.length; i++)
+                  Expanded(
+                    key: ValueKey('other_progress_${model.user?.id}_${stories[i].id}_$i'),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        right: i < stories.length - 1 ? 4.0 : 0,
+                      ),
+                      child: _OtherUserStoryProgressBar(
+                        key: ValueKey('other_bar_${stories[i].id}_${i == idx}'),
+                        isActive: i == idx,
+                        isCompleted: i < idx,
+                        duration: const Duration(seconds: 7),
+                        onComplete: controller.nextStory,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        }),
         ListTile(
           onTap: () async {
             if (userId <= 0) return;
             final u = await DB().getUser();
             openVammisProfile(userId: userId, isOwnProfile: u?.id == userId);
           },
-          leading: WamimsProfileAvtar(image: model.user?.avatar??'', story: true, radious: 30,),
-          title: Text(model.user?.username??'No Name',style: TextStyle(color: Colors.white,fontFamily: GoogleFonts.poppins().fontFamily),),
+          leading: WamimsProfileAvtar(
+            image: model.user?.avatar ?? '',
+            story: true,
+            radious: 30,
+          ),
+          title: Text(
+            model.user?.username ?? 'No Name',
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+            ),
+          ),
         ),
         Expanded(
           child: PageView(
             controller: controller.storyPageController,
-            onPageChanged: (index){
-              controller.onStoryChange(model.stories?[index].id??0,model.user?.id ??0);
+            onPageChanged: (index) {
+              controller.onStoryChange(
+                model.stories?[index].id ?? 0,
+                model.user?.id ?? 0,
+              );
             },
             children: [
-              for(final StoryStory story in model.stories??[])
-                _buildStory(story,controller),
+              for (final StoryStory story in stories) _buildStory(story, controller),
             ],
           ),
         ),
@@ -133,49 +176,185 @@ class _ViewStoryScreenState extends State<ViewStoryScreen> {
     );
   }
 
-  Container _buildStory(StoryStory s,StoryContrller controller)
-  {
+  Container _buildStory(StoryStory s, StoryContrller controller) {
+    final storyId = s.id ?? 0;
+    final size = MediaQuery.of(context).size;
     return Container(
       color: Colors.grey[900],
       alignment: Alignment.center,
-      child: Stack(
-        children: [
-          _buildStoryMedia(s),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        // Double‑tap anywhere to like this story.
+        onDoubleTap: () => controller.toggleLikeOnStory(storyId),
+        child: Stack(
+          children: [
+            _buildStoryMedia(s),
 
-          //
-          InkWell(
-            onTap: (){
-              print("ajsdf");
-            },
-            child: SizedBox(
-
-              height: double.infinity,
-              width:MediaQuery.of(context).size.width*.3,
-            ),
-          ),
-
-          Positioned(
-            right: 0,
-            top: 0,
-            bottom: 0,
-            child: InkWell(
-              onTap: (){
-                controller.nextStory();
-              },
-              child: Container(
-
-                width:MediaQuery.of(context).size.width*.3,
+            // Left tap area (reserved for future: previous story).
+            Positioned(
+              left: 0,
+              top: 0,
+              bottom: 0,
+              child: SizedBox(
+                height: double.infinity,
+                width: size.width * .3,
               ),
             ),
-          ),
 
-        ],
+            // Right tap area – go to next story (same as before).
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: InkWell(
+                onTap: () {
+                  controller.nextStory();
+                },
+                child: SizedBox(
+                  width: size.width * .3,
+                ),
+              ),
+            ),
+
+            // Small heart + like state at bottom‑left (only when liked).
+            Positioned(
+              left: 16,
+              bottom: 24,
+              child: Obx(() {
+                final liked = controller.isStoryLiked(storyId);
+                if (!liked) return const SizedBox.shrink();
+                return Row(
+                  children: const [
+                    Icon(
+                      Icons.favorite,
+                      color: Colors.redAccent,
+                      size: 22,
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      'Liked',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }
-
-
 }
 
+/// Progress bar for other user's story - white line that fills (like WhatsApp status).
+class _OtherUserStoryProgressBar extends StatefulWidget {
+  final bool isActive;
+  final bool isCompleted;
+  final Duration duration;
+  final VoidCallback onComplete;
+
+  const _OtherUserStoryProgressBar({
+    super.key,
+    required this.isActive,
+    required this.isCompleted,
+    required this.duration,
+    required this.onComplete,
+  });
+
+  @override
+  State<_OtherUserStoryProgressBar> createState() =>
+      _OtherUserStoryProgressBarState();
+}
+
+class _OtherUserStoryProgressBarState extends State<_OtherUserStoryProgressBar>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: widget.duration,
+    );
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
+
+    if (widget.isCompleted) {
+      _controller.value = 1.0;
+    } else if (widget.isActive) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && widget.isActive && !widget.isCompleted) {
+          _controller.forward().then((_) {
+            if (mounted && widget.isActive) widget.onComplete();
+          });
+        }
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(_OtherUserStoryProgressBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.duration != oldWidget.duration) {
+      _controller.duration = widget.duration;
+    }
+    if (widget.isCompleted && !oldWidget.isCompleted) {
+      _controller.value = 1.0;
+    } else if (!widget.isCompleted && oldWidget.isCompleted) {
+      _controller.reset();
+    }
+    if (widget.isActive && !oldWidget.isActive) {
+      _controller.reset();
+      if (!widget.isCompleted) {
+        _controller.forward().then((_) {
+          if (mounted && widget.isActive) widget.onComplete();
+        });
+      }
+    } else if (!widget.isActive && oldWidget.isActive) {
+      _controller.stop();
+      _controller.reset();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        final double progress = widget.isCompleted
+            ? 1.0
+            : (widget.isActive ? _animation.value : 0.0);
+        return Container(
+          height: 3,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(2),
+          ),
+          child: FractionallySizedBox(
+            alignment: Alignment.centerLeft,
+            widthFactor: progress,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
 
 

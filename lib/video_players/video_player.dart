@@ -88,6 +88,10 @@ class VideoPlayersComponent extends StatelessWidget {
   bool get isWebView =>
       isVimeo || (isLive ? liveShowModel?.streamType.toLowerCase() == PlayerTypes.embedded.toLowerCase() : (controller.videoUploadType.value.toLowerCase() == PlayerTypes.embedded.toLowerCase()));
 
+  /// User-uploaded long videos are free: skip device/subscription block.
+  static bool _isFreeUserUploadVideo(VideoPlayerModel m) =>
+      m.planId <= 0 && m.requiredPlanLevel <= 0 && m.movieAccess == MovieAccess.freeAccess;
+
   String getVideoURLLink() {
     String url = "";
     if (isLive) {
@@ -130,7 +134,7 @@ class VideoPlayersComponent extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   if (isLoggedIn.value) ...[
-                    if (!isSupportedDevice.value) ...[
+                    if (!isSupportedDevice.value && !VideoPlayersComponent._isFreeUserUploadVideo(videoModel)) ...[
                       DeviceNotSupportedComponent(title: videoModel.name),
                     ] else ...<Widget>[
                       if (controller.isBuffering.isTrue)

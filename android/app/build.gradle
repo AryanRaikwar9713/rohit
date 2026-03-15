@@ -19,6 +19,17 @@ def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
+// Resolve keystore path relative to android/ so storeFile=maarketpoint.jks means android/maarketpoint.jks
+def releaseStoreFile = null
+if (keystoreProperties['storeFile']) {
+    def kFile = file(keystoreProperties['storeFile'])
+    if (!kFile.isAbsolute()) {
+        kFile = rootProject.file(keystoreProperties['storeFile'])
+    }
+    if (kFile.exists()) {
+        releaseStoreFile = kFile
+    }
+}
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
@@ -68,9 +79,12 @@ android {
 
     signingConfigs {
         release {
+            if (!releaseStoreFile) {
+                throw new GradleException("Release keystore not found. Put maarketpoint.jks in the android/ folder (or set storeFile in android/key.properties).")
+            }
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storeFile releaseStoreFile
             storePassword keystoreProperties['storePassword']
         }
     }
@@ -95,6 +109,10 @@ android {
             ndk {
                 abiFilters.clear()
                 abiFilters.addAll(['arm64-v8a'])
+            }
+            // Skip Crashlytics mapping upload so release build works without network
+            firebaseCrashlytics {
+                mappingFileUploadEnabled false
             }
         }
     }

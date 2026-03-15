@@ -26,6 +26,12 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
   String? mediaUrl;
 
   TextEditingController captionController = TextEditingController();
+  TextEditingController tagSearchController = TextEditingController();
+
+  /// Selected tagged user IDs (for request body).
+  final RxList<int> _taggedUserIds = <int>[].obs;
+  final RxList<_TagUser> _searchResults = <_TagUser>[].obs;
+  bool _isSearching = false;
 
   @override
   Widget build(BuildContext context) {
@@ -178,18 +184,21 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
           },),
     );
 
-    //
     await StoryApi().createStory(
-        mediaUrl: mediaUrl!,
-        caption: (captionController.text.trim().isNotEmpty)?captionController.text.trim():null,
-        onSuccess: () {
-          toast("Story Created Successfully");
-          Navigator.pop(context);
-        },
-        onError: onError,
-        onFail: (d) {
-          toast("Failed To create Story with ${d.statusCode}");
-        },);
+      mediaUrl: mediaUrl!,
+      caption: (captionController.text.trim().isNotEmpty)
+          ? captionController.text.trim()
+          : null,
+      taggedUserIds: _taggedUserIds.toList(),
+      onSuccess: () {
+        toast("Story Created Successfully");
+        Navigator.pop(context);
+      },
+      onError: onError,
+      onFail: (d) {
+        toast("Failed To create Story with ${d.statusCode}");
+      },
+    );
 
     //
     Navigator.pop(context);
@@ -197,24 +206,101 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
   }
 
   Widget _buildBody() {
-    if (mediaUrl == null) {
-      return _buildEmptyState();
-    }
-    if (mediaUrl.isImage) {
-      return _buildImagePreview();
-    }
-    if (mediaUrl.isVideo) {
-      return const Center(child: Text('This is Video', style: TextStyle(color: Colors.white)));
-    }
-    return const SizedBox.shrink();
-  }
-
-  Widget _buildEmptyState() {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (mediaUrl == null)
+            _buildEmptyState()
+          else ...[
+            if (mediaUrl.isImage)
+              _buildImagePreview()
+            else if (mediaUrl.isVideo)
+              const Center(
+                child: Text(
+                  'This is Video',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+          ],
+          const SizedBox(height: 24),
+          _buildTagPeopleSection(),
+          const SizedBox(height: 120),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImagePreview() {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: Image.file(File(mediaUrl!), fit: BoxFit.cover),
+        ),
+        Positioned(
+          top: 16,
+          right: 16,
+          child: GestureDetector(
+            onTap: _selectimage,
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              decoration: BoxDecoration(
+                gradient: _addStoryGradient,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color:
+                        _addStoryGradient.colors.last.withValues(alpha: 0.4),
+                    blurRadius: 12,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.edit_rounded,
+                      color: Colors.white, size: 18),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Change',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _selectimage() async {
+    final reselt = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'png', 'jpeg', 'mp4'],
+    );
+
+    if (reselt != null) {
+      mediaUrl = reselt.files.first.path;
+      setState(() {});
+    }
+  }
+
+  Widget _buildEmptyState() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
           const SizedBox(height: 40),
           // Main tap area - card style
           GestureDetector(
@@ -313,69 +399,278 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
               ],
             ),
           ),
+      ],
+    );
+  }
+
+  Widget _buildTagPeopleSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Tag people',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            fontFamily: GoogleFonts.poppins().fontFamily,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Obx(() {
+          final tags = _taggedUserIds.toList();
+          return Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final user in _searchResults
+                  .where((u) => tags.contains(u.id))
+                  .toList())
+                _buildTagChip(user),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isSearching = true;
+                  });
+                  _openTagSearchSheet();
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: _addStoryGradient.colors.first
+                          .withValues(alpha: 0.6),
+                    ),
+                    color: const Color(0xFF1a1510),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.person_add_alt_1,
+                          color: Colors.white70, size: 16),
+                      SizedBox(width: 6),
+                      Text(
+                        'Tag people',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        }),
+      ],
+    );
+  }
+
+  Widget _buildTagChip(_TagUser user) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: _addStoryGradient,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '@${user.username}',
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(width: 4),
+          GestureDetector(
+            onTap: () {
+              _taggedUserIds.remove(user.id);
+            },
+            child: const Icon(Icons.close, size: 14, color: Colors.black87),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildImagePreview() {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        SizedBox(
-          width: double.infinity,
-          height: double.infinity,
-          child: Image.file(File(mediaUrl!), fit: BoxFit.cover),
-        ),
-        Positioned(
-          top: 16,
-          right: 16,
-          child: GestureDetector(
-            onTap: _selectimage,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: BoxDecoration(
-                gradient: _addStoryGradient,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: _addStoryGradient.colors.last.withValues(alpha: 0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 3),
+  Future<void> _openTagSearchSheet() async {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF121212),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      isScrollControlled: true,
+      builder: (ctx) {
+        return Padding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+          child: SizedBox(
+            height: MediaQuery.of(ctx).size.height * 0.6,
+            child: Column(
+              children: [
+                const SizedBox(height: 12),
+                Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(999),
                   ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.edit_rounded, color: Colors.white, size: 18),
-                  const SizedBox(width: 6),
-                  Text(
-                    'Change',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Tag people',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: TextField(
+                    controller: tagSearchController,
+                    onChanged: (value) async {
+                      await _searchUsers(value.trim());
+                    },
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search,
+                          color: Colors.white70, size: 20),
+                      hintText: 'Search username',
+                      hintStyle: const TextStyle(
+                        color: Colors.white54,
+                        fontSize: 14,
+                      ),
+                      filled: true,
+                      fillColor: const Color(0xFF1a1510),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: Obx(() {
+                    if (_searchResults.isEmpty &&
+                        tagSearchController.text.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'Start typing to search people',
+                          style:
+                              TextStyle(color: Colors.white60, fontSize: 13),
+                        ),
+                      );
+                    }
+                    if (_searchResults.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'No users found',
+                          style:
+                              TextStyle(color: Colors.white60, fontSize: 13),
+                        ),
+                      );
+                    }
+                    return ListView.builder(
+                      itemCount: _searchResults.length,
+                      itemBuilder: (ctx, index) {
+                        final user = _searchResults[index];
+                        final selected = _taggedUserIds.contains(user.id);
+                        return ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.grey.shade800,
+                            child: Text(
+                              user.username.isNotEmpty
+                                  ? user.username[0].toUpperCase()
+                                  : '?',
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                            ),
+                          ),
+                          title: Text(
+                            user.name,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 14),
+                          ),
+                          subtitle: Text(
+                            '@${user.username}',
+                            style: const TextStyle(
+                                color: Colors.white70, fontSize: 12),
+                          ),
+                          trailing: selected
+                              ? const Icon(Icons.check_circle,
+                                  color: Colors.greenAccent, size: 20)
+                              : const Icon(Icons.radio_button_unchecked,
+                                  color: Colors.white38, size: 20),
+                          onTap: () {
+                            if (selected) {
+                              _taggedUserIds.remove(user.id);
+                            } else {
+                              _taggedUserIds.add(user.id);
+                            }
+                          },
+                        );
+                      },
+                    );
+                  }),
+                ),
+              ],
             ),
           ),
-        ),
-      ],
-    );
+        );
+      },
+    ).whenComplete(() {
+      setState(() {
+        _isSearching = false;
+      });
+    });
   }
 
-  Future<void> _selectimage() async {
-    final reselt = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['jpg', 'png', 'jpeg', 'mp4'],);
-
-    if (reselt != null) {
-      mediaUrl = reselt.files.first.path;
-      setState(() {});
+  Future<void> _searchUsers(String query) async {
+    if (query.isEmpty) {
+      _searchResults.clear();
+      return;
+    }
+    try {
+      final raw = await StoryApi().searchUsersForTag(query: query);
+      final mapped = raw
+          .map((e) => _TagUser(
+                id: e['id'] as int? ?? 0,
+                username: (e['username'] as String? ?? '').trim(),
+                name: (e['name'] as String? ?? '').trim(),
+              ))
+          .where((u) => u.id > 0 && u.username.isNotEmpty)
+          .toList();
+      _searchResults
+        ..clear()
+        ..addAll(mapped);
+    } catch (_) {
+      // ignore; UI will just show "No users found"
     }
   }
+
+}
+
+class _TagUser {
+  final int id;
+  final String username;
+  final String name;
+
+  _TagUser({
+    required this.id,
+    required this.username,
+    required this.name,
+  });
 }

@@ -4,9 +4,6 @@ import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:streamit_laravel/location_api.dart';
 import 'package:streamit_laravel/main.dart';
-import '../components/app_scaffold.dart';
-import '../components/loader_widget.dart';
-import '../utils/colors.dart';
 import 'splash_controller.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -22,7 +19,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   final SplashScreenController splashController =
       Get.put(SplashScreenController());
-  bool _locationPermissionChecked = false;
 
   @override
   void initState() {
@@ -31,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkLocationPermission() async {
-    const Duration maxWait = Duration(seconds: 20);
+    const Duration maxWait = Duration(seconds: 8);
     final DateTime start = DateTime.now();
 
     void proceed() {
@@ -44,7 +40,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
     while (mounted) {
       if (DateTime.now().difference(start) > maxWait) {
-        setState(() => _locationPermissionChecked = true);
         proceed();
         return;
       }
@@ -53,53 +48,68 @@ class _SplashScreenState extends State<SplashScreen> {
           await locationApi.checkMandatoryLocationPermission(context);
 
       if (hasPermission) {
-        setState(() => _locationPermissionChecked = true);
         proceed();
         return;
       }
-      setState(() => _locationPermissionChecked = true);
       await Future.delayed(const Duration(seconds: 2));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      hideAppBar: true,
-      scaffoldBackgroundColor: appScreenBackgroundDark,
-      body: SizedBox(
-        height: Get.height,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Container(
         width: Get.width,
+        height: Get.height,
+        color: Colors.black,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // WALK A MILE IN MY SHOES logo (splash)
-            Image.asset(
-              'assets/splash_logo.png',
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.contain,
-              errorBuilder: (_, __, ___) => Icon(
-                Icons.image_not_supported_outlined,
-                size: 80,
-                color: Colors.grey[600],
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/splash_logo.png',
+                      fit: BoxFit.contain,
+                      width: 200,
+                      height: 200,
+                      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                    ),
+                    24.height,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Text(
+                        'Walk a mile in my shoes',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            if (!_locationPermissionChecked)
-              const LoaderWidget().center()
-            else
-              Obx(
-                () => splashController.isLoading.value
-                    ? const LoaderWidget().center()
-                    : TextButton(
-                        child:
-                            Text(locale.value.reload, style: boldTextStyle()),
+            Obx(
+              () => splashController.appNotSynced.isTrue
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 48),
+                      child: TextButton(
                         onPressed: () {
                           _checkLocationPermission();
                           splashController.init(showLoader: true);
                         },
-                      ).visible(splashController.appNotSynced.isTrue),
-              ),
+                        child: Text(locale.value.reload, style: boldTextStyle().copyWith(color: Colors.white)),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
           ],
         ),
       ),

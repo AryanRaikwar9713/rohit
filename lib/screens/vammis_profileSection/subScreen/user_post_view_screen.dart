@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:streamit_laravel/utils/image_cache_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -100,11 +101,12 @@ class _UserPostViewScreenState extends State<UserPostViewScreen> {
                       child: Hero(
                           tag: p.postId ??
                               '',
-                          child: Image.network(
-                            p
-                                .imageUrl ??
-                                '',
+                          child: CachedNetworkImage(
+                            imageUrl: p.imageUrl ?? '',
+                            cacheManager: ExtendedTimeoutCacheManager(),
                             fit: BoxFit.contain,
+                            placeholder: (_, __) => Container(color: Colors.grey[900], child: const Center(child: CircularProgressIndicator())),
+                            errorWidget: (_, __, ___) => const Icon(Icons.image_not_supported, color: Colors.grey, size: 48),
                           ),),
                     ),
                   ),
